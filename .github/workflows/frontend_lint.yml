@@ -1,0 +1,43 @@
+name: Frontend Lint and Code Formatting Check
+
+on:
+  push:
+    branches:
+      - main
+      - dev
+  pull_request:
+    branches:
+      - main
+      - dev
+
+jobs:
+  frontend-lint-and-format:
+    runs-on: ubuntu-latest
+    steps:
+      # Step 1: Check out the code
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # Step 2: Set up Node.js
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '22'
+
+      # Step 3: Install dependencies
+      - name: Install dependencies
+        run: |
+          npm install
+        working-directory: frontend
+          
+      # Step 4: Run ESLint
+      - name: Run ESLint
+        run: |
+          npm run lint
+        working-directory: frontend
+          
+      # Step 5: Check code formatting (using Prettier)
+      - name: Check code formatting with Prettier
+        run: |
+          npx prettier --check "src/**/*.{js,jsx,ts,tsx}"
+        working-directory: frontend
