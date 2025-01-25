@@ -39,5 +39,5 @@ jobs:
       # Step 5: Check code formatting (using Prettier)
       - name: Check code formatting with Prettier
         run: |
-          npx prettier --check "src/**/*.{js,jsx,ts,tsx}"
+          npx prettier --check "app/**/*.{js,jsx,ts,tsx}"
         working-directory: frontend
