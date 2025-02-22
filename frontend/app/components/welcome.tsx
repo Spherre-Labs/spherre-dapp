@@ -11,7 +11,7 @@ const Welcome = () => {
         <Image
           src={wall}
           alt={''}
-          className="w-full h-32 lg:h-screen object-cover p-4 rounded-lg"
+          className="h-32 lg:h-screen p-4 rounded-lg"
         />
       </div>
 
