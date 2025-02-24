@@ -2,6 +2,7 @@ import Image from 'next/image'
 import logo from '../public/Images/spherrelogo.png'
 import wall from '../public/Images/wall.png'
 import add from '../public/Images/Add.png'
+import Logo from './shared/Logo'
 
 const Welcome = () => {
   return (
@@ -18,10 +19,8 @@ const Welcome = () => {
       {/* Right Section */}
       <div className="flex-1 flex flex-col justify-between p-4 lg:p-14">
         {/* Logo and Title */}
-        <div className="flex items-center gap-2">
-          <Image src={logo} height={50} width={50} alt={''} />
-          <p className="text-xl font-semibold">Spherre</p>
-        </div>
+        <Logo className='w-[50px]' href='/' image={logo} />
+
 
         {/* Centered Content */}
         <div className="flex flex-col justify-center items-center flex-1 gap-4">
@@ -40,7 +39,7 @@ const Welcome = () => {
           </div>
         </div>
       </div>
-    </div>
+    </div >
   )
 }
 
