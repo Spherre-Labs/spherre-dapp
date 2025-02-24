@@ -1,7 +1,7 @@
 import Image from 'next/image'
-import logo from '../../public/Images/spherrelogo.png'
-import wall from '../../public/Images/wall.png'
-import add from '../../public/Images/Add.png'
+import logo from '../public/Images/spherrelogo.png'
+import wall from '../public/Images/wall.png'
+import add from '../public/Images/Add.png'
 
 const Welcome = () => {
   return (
