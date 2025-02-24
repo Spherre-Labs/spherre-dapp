@@ -1,10 +1,15 @@
+'use client'
 import Image from 'next/image'
 import logo from '../public/Images/spherrelogo.png'
 import wall from '../public/Images/wall.png'
 import add from '../public/Images/Add.png'
 import Logo from './shared/Logo'
+import { useRouter } from 'next/navigation'
 
 const Welcome = () => {
+  // for navigation
+  const router = useRouter()
+
   return (
     <div className="flex flex-col lg:flex-row">
       {/* Left Section with Image */}
@@ -32,7 +37,7 @@ const Welcome = () => {
             </p>
 
             {/* Responsive Button */}
-            <button className="bg-white w-full sm:w-72 flex items-center justify-center gap-1 px-6 py-2 rounded-lg mx-auto my-3">
+            <button onClick={() => router.push("/onboarding")} className="bg-white w-full sm:w-72 flex items-center justify-center gap-1 px-6 py-2 rounded-lg mx-auto my-3">
               <Image src={add} height={30} width={24} alt={'add'} />
               <p className="text-black">Create Spherre</p>
             </button>
