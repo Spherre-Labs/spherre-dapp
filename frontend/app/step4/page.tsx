@@ -1,4 +1,4 @@
-import ConfirmationFooter from '../components/ConfirmationFooter'
+import ConfirmationFooter from '../../components/ConfirmationFooter'
 import ReviewAccount from './ReviewAccount'
 
 export default function Page() {
