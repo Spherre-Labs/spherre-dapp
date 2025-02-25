@@ -1,6 +1,4 @@
 import Image from 'next/image'
-
-const SphereLogo = '/Images/spherre-vector.svg'
 const group = '/Images/group.svg'
 const bookNum = '/Images/book-num.svg'
 
