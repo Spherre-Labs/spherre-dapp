@@ -1,5 +1,5 @@
-import React from 'react';
-import Image from 'next/image';
+import React from 'react'
+import Image from 'next/image'
 import Users from '@/public/Images/users-group.png'
 import Book from '@/public/Images/fluent-book.png'
 
@@ -10,7 +10,7 @@ const MembersThreshold = ({ members = 3, threshold = '1/2' }) => {
         {/* Members Card */}
         <div className="bg-gray-800 rounded-lg p-2 flex items-center justify-between">
           <div className="justify-between items-center">
-            <Image src={Users} alt=''></Image>
+            <Image src={Users} alt=""></Image>
             <p className="text-sm text-gray-400">Members</p>
           </div>
           <p className="text-lg font-semibold text-white">{members}</p>
@@ -19,7 +19,7 @@ const MembersThreshold = ({ members = 3, threshold = '1/2' }) => {
         {/* Threshold Card */}
         <div className="bg-gray-800 rounded-lg p-2 flex items-center justify-between">
           <div className="justify-between items-center">
-            <Image src={Book} alt=''></Image>
+            <Image src={Book} alt=""></Image>
             <p className="text-sm text-gray-400">Threshold</p>
           </div>
           <p className="text-lg font-semibold text-white">{threshold}</p>
@@ -36,7 +36,7 @@ const MembersThreshold = ({ members = 3, threshold = '1/2' }) => {
         </button>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default MembersThreshold;
+export default MembersThreshold
