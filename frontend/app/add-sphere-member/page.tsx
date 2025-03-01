@@ -1,7 +1,7 @@
-import Header from '../components/Header';
-import SecondStepper from '../components/SecondStepper';
-import AddShereMembers from '../components/AddSphereMembers';
-import ConfigureThreshold from '../components/ConfigureThreshold';
+import Header from '../components/Header'
+import SecondStepper from '../components/SecondStepper'
+import AddShereMembers from '../components/AddSphereMembers'
+import ConfigureThreshold from '../components/ConfigureThreshold'
 
 export default function Home() {
   return (
@@ -15,10 +15,11 @@ export default function Home() {
         {/* Heading and Description */}
         <div className="w-full px-4 sm:w-[456px]">
           <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4 text-center">
-          Add Members to a Multisig Vault
+            Add Members to a Multisig Vault
           </h1>
           <p className="text-gray-400 text-sm sm:text-base text-center mb-6 sm:mb-8 max-w-lg">
-          Add your team members & customize security settings to fit your team needs.
+            Add your team members & customize security settings to fit your team
+            needs.
           </p>
         </div>
 
@@ -29,5 +30,5 @@ export default function Home() {
         </div>
       </div>
     </div>
-  );
+  )
 }

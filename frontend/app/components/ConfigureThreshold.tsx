@@ -1,19 +1,21 @@
-"use client";
+'use client'
 
-import React, { useState } from 'react';
+import React, { useState } from 'react'
 
 const ConfigureThreshold = () => {
-  const [threshold, setThreshold] = useState(1); // Default value of 1
+  const [threshold, setThreshold] = useState(1) // Default value of 1
 
   // Handle slider change
   const handleThresholdChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setThreshold(Number(e.target.value));
-  };
+    setThreshold(Number(e.target.value))
+  }
 
   return (
     <div className="w-full max-w-md bg-gray-900 rounded-lg p-6">
       {/* Title */}
-      <h1 className="text-lg font-semibold text-white mb-2">Configure Threshold</h1>
+      <h1 className="text-lg font-semibold text-white mb-2">
+        Configure Threshold
+      </h1>
 
       {/* Description */}
       <p className="text-sm text-gray-400 mb-6">
@@ -41,7 +43,7 @@ const ConfigureThreshold = () => {
         Continue
       </button>
     </div>
-  );
-};
+  )
+}
 
-export default ConfigureThreshold;
+export default ConfigureThreshold

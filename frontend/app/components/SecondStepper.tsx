@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'
 
 const SecondStepper = () => {
   return (
@@ -29,7 +29,7 @@ const SecondStepper = () => {
         <span className="text-white text-sm mt-2">Confirm & Setup</span>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default SecondStepper;
+export default SecondStepper
