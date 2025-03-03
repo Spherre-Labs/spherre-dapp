@@ -1,7 +1,7 @@
 import React from 'react'
 import Image from 'next/image'
 import Logo from '@/public/Images/spherrelogo.png'
-import Avater from '@/public/Images/avatar.png'
+import Avatar from '@/public/Images/avatarr.png'
 
 const Header = () => {
   return (
@@ -30,7 +30,7 @@ const Header = () => {
       {/* User Profile */}
       <div className="flex items-center w-[188px] h-[50px] gap-[8px] rounded-[50px] border-[1.5px] p-[10px_20px] border border-white border-[1.5px]">
         <div className="w-8 h-8 bg-[#4A90E2] rounded-full flex items-center justify-center mr-2">
-          <Image src={Avater} alt=""></Image>
+          <Image src={Avatar} alt=""></Image>
         </div>
         <span className="text-white text-sm">0x60...5542</span>
       </div>
