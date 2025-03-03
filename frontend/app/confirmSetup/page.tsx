@@ -8,20 +8,21 @@ export default function Home() {
     <div className="min-h-screen bg-black text-white">
       <Header />
 
-      <div className="flex flex-col items-center pt-16 sm:pt-20 md:pt-24 pb-6 sm:pb-8">
+      <div className="flex flex-col items-center px-4 pt-16 sm:pt-20 md:pt-24 pb-6 sm:pb-8">
         <Stepper />
 
-        <div className="w-full px-4 sm:w-[456px]">
-          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4 text-center">
+        <div className="w-full max-w-[456px] text-center">
+          <h1 className="font-['Nunito_Sans'] font-bold text-2xl sm:text-3xl md:text-4xl leading-[1.2] tracking-[-0.8px] mb-3 sm:mb-4">
             Confirm and Secure Your Setup
           </h1>
-          <p className="text-gray-400 text-sm sm:text-base text-center mb-6 sm:mb-8 max-w-lg">
+          <p className="text-gray-400 text-sm sm:text-base mb-6 sm:mb-8 max-w-lg mx-auto">
             Review your vault configuration, approve key settings, and finalize
             your setup.
           </p>
         </div>
 
-        <div className="w-full px-4 flex flex-col items-center space-y-4">
+        {/* Review & Threshold Sections */}
+        <div className="w-full max-w-lg flex flex-col items-center space-y-4">
           <SphereAccountReview />
           <MembersThreshold />
         </div>

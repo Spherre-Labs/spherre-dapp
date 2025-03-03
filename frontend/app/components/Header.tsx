@@ -14,24 +14,24 @@ const Header = () => {
       </div>
 
       {/* Navigation Links */}
-      <nav className="hidden md:flex space-x-6">
-        <a href="#" className="text-gray-400 hover:text-white">
+      <nav className="hidden md:flex space-x-8 lg:ml-16">
+        <a href="#" className="text-gray-400 text-white">
           Docs
         </a>
-        <a href="#" className="text-gray-400 hover:text-white">
+        <a href="#" className="text-gray-400 text-white">
           Telegram
         </a>
-        <a href="#" className="text-gray-400 hover:text-white">
+        <a href="#" className="text-gray-400 text-white">
           Twitter
         </a>
       </nav>
 
       {/* User Profile */}
-      <div className="flex items-center">
+      <div className="flex items-center w-[188px] h-[50px] gap-[8px] rounded-[50px] border-[1.5px] p-[10px_20px] border border-white border-[1.5px]">
         <div className="w-8 h-8 bg-gray-700 rounded-full flex items-center justify-center mr-2">
           <span className="text-gray-400">👤</span>
         </div>
-        <span className="text-gray-400 text-sm">0x60...5542</span>
+        <span className="text-white text-sm">0x60...5542</span>
       </div>
     </header>
   )
