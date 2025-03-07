@@ -6,7 +6,7 @@ export default function StepIndicators() {
   const pathname = usePathname()
 
   const isStep2 = pathname.includes('step2')
-  const isStep3 = pathname.includes('step3')
+  const isStep3 = pathname.includes('step3') || pathname.includes('confirmSetup')
 
   return (
     <div className="w-full flex justify-between items-center md:px-8 relative">

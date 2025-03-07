@@ -5,24 +5,22 @@ import Avatar from '@/public/Images/avatarr.png'
 
 const Header = () => {
   return (
-    <header className="bg-black text-white flex justify-between items-center p-4 fixed top-0 w-full z-10">
+    <header className="text-white flex justify-between items-center p-8 fixed top-0 w-full z-10">
       <div className="w-[155.12px] h-[37px] flex items-center gap-[8.12px] text-white p-2">
-        <div className="w-8 h-8 bg-purple-600 rounded-full flex items-center justify-center">
-          <Image src={Logo} alt="" />
-        </div>
-        <h1 className="font-['Nunito_Sans'] font-bold text-[28.88px] leading-[49.63px] tracking-[2%] text-center">
+        <Image src={Logo} width={50} height={80} alt='logo' />
+        <h1 className="font-bold text-[20px] leading-[49.63px] tracking-[2%] text-center">
           Spherre
         </h1>
       </div>
 
       <nav className="hidden md:flex space-x-8 lg:ml-6">
-        <a href="#" className="text-gray-400 text-white">
+        <a href="#" className="text-white">
           Docs
         </a>
-        <a href="#" className="text-gray-400 text-white">
+        <a href="#" className="text-white">
           Telegram
         </a>
-        <a href="#" className="text-gray-400 text-white">
+        <a href="#" className="text-white">
           Twitter
         </a>
       </nav>

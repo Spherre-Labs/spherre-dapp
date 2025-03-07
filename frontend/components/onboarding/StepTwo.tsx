@@ -18,6 +18,15 @@ const StepTwo = () => {
   const deleteMember = (index: number) => {
     const newMembers = spherreMembers.filter((_, i) => i !== index)
     setSpherreMembers(newMembers)
+    if (approvals > newMembers.length) {
+      setApprovals(newMembers.length)
+    }
+  }
+
+  const clearMember = (index: number) => {
+    const updatedMembers = [...spherreMembers]
+    updatedMembers[index] = ''
+    setSpherreMembers(updatedMembers)
   }
 
   const handleApprovalsChange = (
@@ -85,7 +94,12 @@ const StepTwo = () => {
                     value={member}
                     required
                   />
-                  {index !== 0 && (
+                  {index === 0 ? (
+                    <LuTrash
+                      onClick={() => clearMember(index)}
+                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#8E9BAE] cursor-pointer"
+                    />
+                  ) : (
                     <LuTrash
                       onClick={() => deleteMember(index)}
                       className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#8E9BAE] cursor-pointer"
@@ -116,7 +130,7 @@ const StepTwo = () => {
               <input
                 type="range"
                 min="1"
-                max="2"
+                max={spherreMembers.length}
                 step="1"
                 value={approvals}
                 onChange={handleApprovalsChange}
@@ -124,15 +138,17 @@ const StepTwo = () => {
               />
               <div className="flex items-center justify-between px-1">
                 <span className="text-sm">1</span>
-                <span className="text-sm">2</span>
+                <span className="text-sm">{spherreMembers.length}</span>
               </div>
             </div>
             <button
+              onClick={() => router.push("/confirmSetup")}
               type="submit"
               className="w-full h-[50px] flex justify-center items-center bg-white shadow-[0px_1.08px_2.16px_0px_#1018280A] text-[#101213] font-[500] text-base rounded-[7px]"
             >
               Continue
             </button>
+
 
             <style>
               {`
