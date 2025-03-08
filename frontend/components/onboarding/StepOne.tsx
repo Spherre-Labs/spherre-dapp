@@ -16,7 +16,7 @@ const StepOne = () => {
    * If an error occurs during navigation, it's logged to console.
    */
   const handleSubmitStepOne = async (event: React.FormEvent) => {
-    event.preventDefault();
+    event.preventDefault()
     if (!accountName && !desc) {
       throw Error('Inputs are required')
     }

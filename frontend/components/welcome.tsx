@@ -24,8 +24,7 @@ const Welcome = () => {
       {/* Right Section */}
       <div className="flex-1 flex flex-col justify-between p-4 lg:p-14">
         {/* Logo and Title */}
-        <Logo className='w-[50px]' href='/' image={logo} />
-
+        <Logo className="w-[50px]" href="/" image={logo} />
 
         {/* Centered Content */}
         <div className="flex flex-col justify-center items-center flex-1 gap-4">
@@ -37,14 +36,17 @@ const Welcome = () => {
             </p>
 
             {/* Responsive Button */}
-            <button onClick={() => router.push("/onboarding/step1")} className="bg-white w-full sm:w-72 flex items-center justify-center gap-1 px-6 py-2 rounded-lg mx-auto my-3">
+            <button
+              onClick={() => router.push('/onboarding/step1')}
+              className="bg-white w-full sm:w-72 flex items-center justify-center gap-1 px-6 py-2 rounded-lg mx-auto my-3"
+            >
               <Image src={add} height={30} width={24} alt={'add'} />
               <p className="text-black">Create Spherre</p>
             </button>
           </div>
         </div>
       </div>
-    </div >
+    </div>
   )
 }
 

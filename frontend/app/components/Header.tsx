@@ -7,7 +7,7 @@ const Header = () => {
   return (
     <header className="text-white flex justify-between items-center p-8 fixed top-0 w-full z-10">
       <div className="w-[155.12px] h-[37px] flex items-center gap-[8.12px] text-white p-2">
-        <Image src={Logo} width={50} height={80} alt='logo' />
+        <Image src={Logo} width={50} height={80} alt="logo" />
         <h1 className="font-bold text-[20px] leading-[49.63px] tracking-[2%] text-center">
           Spherre
         </h1>
