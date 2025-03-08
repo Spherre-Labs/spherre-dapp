@@ -15,7 +15,8 @@ const StepOne = () => {
    * If valid, logs the inputs to console and navigates to Step 2.
    * If an error occurs during navigation, it's logged to console.
    */
-  const handleSubmitStepOne = async () => {
+  const handleSubmitStepOne = async (event: React.FormEvent) => {
+    event.preventDefault()
     if (!accountName && !desc) {
       throw Error('Inputs are required')
     }
@@ -36,7 +37,7 @@ const StepOne = () => {
         <h1 className="text-center text-white font-[700] text-[40px] leading-[47.42px]">
           Secure Your Digital Assets Seamlessly
         </h1>
-        <p className="font-[400] text-[16px] leading-[25px] text-center text-[#8E9BAE] lg:px-8 mt-3">
+        <p className="text-[16px] leading-[25px] text-center text-[#8E9BAE] mx-auto w-[337px] mt-3">
           Name your Spherre account, Spherre ensures seamless integration,
           giving you full control over your digital assets.
         </p>
@@ -67,7 +68,7 @@ const StepOne = () => {
               id="accountName"
               value={accountName}
               onChange={(e) => setAccountName(e.target.value)}
-              className="w-full border border-[#292929] rounded-[7px] placeholder:text-[#8E9BAE] px-4 py-3 bg-transparent outline-none"
+              className="w-full rounded-[7px] placeholder:text-[#8E9BAE] px-4 py-3 bg-transparent outline-none"
               placeholder="Enter a team name"
               required
             />
@@ -77,7 +78,7 @@ const StepOne = () => {
           <div className="w-full">
             <label
               htmlFor="description"
-              className="font-[400] text-[14px]leading-[24px] text-white mb-1 block"
+              className="font-[400] text-[14px]leading-[24px] text-white mb-1 block pb-2"
             >
               Spherre Description
             </label>
