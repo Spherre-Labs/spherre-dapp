@@ -5,10 +5,9 @@ import Nav from '@/components/onboarding/Nav'
 
 export default function ConfirmSetup() {
   return (
-    <div className='w-full lg:px-[50px] md:px-6 px-4 md:py-[50px] py-4 overflow-x-hidden bg-[#0a0a0a]'>
+    <div className="w-full lg:px-[50px] md:px-6 px-4 md:py-[50px] py-4 overflow-x-hidden bg-[#0a0a0a]">
       <Nav />
       <div className="text-white">
-
         {/* Main Container */}
         <div className="flex flex-col items-center px-4 pt-16 sm:pt-20 md:pt-24 pb-6 sm:pb-8">
           <div className="max-w-[672px] w-full pt-[1rem]">
@@ -20,8 +19,8 @@ export default function ConfirmSetup() {
                 Confirm and Secure Your Setup
               </h1>
               <p className="font-[400] text-[16px] leading-[25px] text-[#8E9BAE] mt-3">
-                Review your vault configuration, approve key settings, and finalize
-                your setup.
+                Review your vault configuration, approve key settings, and
+                finalize your setup.
               </p>
             </div>
 
@@ -43,7 +42,7 @@ export default function ConfirmSetup() {
             </div>
           </div>
         </div>
-      </div>  
+      </div>
     </div>
   )
 }
