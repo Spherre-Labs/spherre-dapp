@@ -22,26 +22,10 @@ const Nav = () => {
       document.body.style.overflow = 'unset'
     }
   })
-
-  // Navigation links
-  // const navlinks: { name: string; href: string }[] = [
-  //   { name: 'Docs', href: '/' },
-  //   { name: 'Telegram', href: '/' },
-  //   { name: 'Twitter', href: '/' },
-  // ]
   return (
     <header className="w-full flex justify-between items-center">
       {/* Logo */}
       <Logo href={'/'} className="md:w-[50px] w-[40px]" image={spherreLogo} />
-
-      {/* Links */}
-      {/* <ul className="md:flex hidden items-center gap-6">
-        {navlinks.map((link, index) => (
-          <li key={index} className="text-base font-medium text-white">
-            <Link href={link.href}>{link.name}</Link>
-          </li>
-        ))}
-      </ul> */}
 
       {/* Connect button & Hamburger Menu Button */}
       <div className="flex items-center gap-4">
@@ -80,14 +64,6 @@ const Nav = () => {
               <IoClose />
             </button>
           </header>
-
-          {/* <ul className="flex flex-col mt-6 items-start gap-6">
-            {navlinks.map((link, index) => (
-              <li key={index} className="text-lg font-medium text-white">
-                <Link href={link.href}>{link.name}</Link>
-              </li>
-            ))}
-          </ul> */}
         </div>
       </div>
     </header>

@@ -1,0 +1,42 @@
+name: Backend Lint and Code Formatting Check
+
+on:
+  push:
+    branches:
+      - main
+      - dev
+  pull_request:
+    branches:
+      - main
+      - dev
+
+jobs:
+  frontend-lint-and-format:
+    runs-on: ubuntu-latest
+    steps:
+      # Step 1: Check out the code
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # Step 2: Set up Node.js
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.12"
+
+      # Step 3: Install dependencies
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+        working-directory: backend
+          
+      # Step 4: Run Ruff Lint
+      - name: Run Ruff Lint
+        run: |
+          ruff check .
+        working-directory: backend
+      
+      # Step 5: Run Ruff for formatting
+      - name: Run Ruff for formatting
+        run: ruff format --check .
+        working-directory: backend
