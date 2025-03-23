@@ -81,7 +81,7 @@ const Sidebar = () => {
                         width={expanded ? 24 : 40} 
                         height={expanded ? 24 : 40} 
                     />
-                    {expanded && <h2 className="text-[24px] font-semibold">Spherre Protocol</h2>}
+                    {expanded && <h2 className="text-[24px] font-semibold">Spherre</h2>}
                 </div>
 
                 {/* Menu Items */}
