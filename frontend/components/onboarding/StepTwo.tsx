@@ -41,7 +41,8 @@ const StepTwo = () => {
     setSpherreMembers(updatedMembers)
   }
 
-  const handleSubmitStepTwo = async () => {
+  const handleSubmitStepTwo = async (e: { preventDefault: () => void }) => {
+    e.preventDefault()
     if (spherreMembers[0] === '') {
       throw Error('Please add at least one member to continue')
     }
@@ -49,7 +50,7 @@ const StepTwo = () => {
     try {
       console.log({ spherreMembers, approvals })
       // Necessay submit logic
-      router.push('/onboarding/step3')
+      router.push('/confirmSetup')
     } catch (error) {
       console.error(error)
     }
@@ -142,7 +143,6 @@ const StepTwo = () => {
               </div>
             </div>
             <button
-              onClick={() => router.push('/confirmSetup')}
               type="submit"
               className="w-full h-[50px] flex justify-center items-center bg-white shadow-[0px_1.08px_2.16px_0px_#1018280A] text-[#101213] font-[500] text-base rounded-[7px]"
             >

@@ -6,7 +6,7 @@ import Fill from '@/public/Images/sphere-fill.png'
 const SphereAccountReview = ({
   groupName = 'Backstage Boys',
   members = 'Deon, John and Joshua',
-  deployFee = '~0.0530 SOL',
+  deployFee = '~100 STRK',
 }) => {
   const [showTooltip, setShowTooltip] = useState(false)
 
