@@ -31,7 +31,7 @@ export default function DashboardPage() {
                 alt="Wallet Icon"
               />
             </div>
-            <h2 className="text-[45px] font-bold">$250.35</h2>
+            <h2 className="text-[45px] text-white font-bold">$250.35</h2>
           </div>
           <div className="grid grid-cols-3 gap-x-3">
             <Button

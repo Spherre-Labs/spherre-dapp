@@ -354,6 +354,7 @@ const AmountAnalysisChart = () => {
                         style={{
                             padding: '8px 16px',
                             borderRadius: '4px',
+                            color: '#ffffff',
                             border: '1px solid #292929',
                             backgroundColor: timeRange === 'ALL' ? '#272729' : '#272729',
                             cursor: timeRange === 'ALL' ? 'not-allowed' : 'pointer'
