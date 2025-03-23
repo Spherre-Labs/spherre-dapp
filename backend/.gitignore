@@ -1,0 +1,8 @@
+env/
+.env
+.ruff_cache/
+instance/
+.webassets-cache
+__pycache__/
+*.py[cod]
+*$py.class
