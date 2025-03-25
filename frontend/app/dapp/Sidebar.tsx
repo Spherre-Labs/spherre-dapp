@@ -67,9 +67,8 @@ const Sidebar = () => {
   return (
     <aside
       id="sidebar"
-      className={`fixed top-0 left-0 h-screen bg-[#1c1d1f] text-white border-r-[1px] border-gray-600 transition-all duration-300 z-10 ${
-        expanded ? 'w-64' : 'w-16'
-      }`}
+      className={`fixed top-0 left-0 h-screen bg-[#1c1d1f] text-white border-r-[1px] border-gray-600 transition-all duration-300 z-10 ${expanded ? 'w-64' : 'w-16'
+        }`}
       onMouseEnter={() => setExpanded(true)}
       onMouseLeave={() => setExpanded(false)}
     >
@@ -93,22 +92,35 @@ const Sidebar = () => {
             <li
               key={item.name}
               onClick={() => handleNavClick(item.name)}
-              className={`flex items-center cursor-pointer p-3 rounded-lg transition-all ${
-                expanded ? 'gap-3' : 'justify-center'
-              } ${
-                activePage === item.name
+              className={`flex items-center cursor-pointer p-3 rounded-lg transition-all ${expanded ? 'gap-3' : 'justify-center'
+                } ${activePage === item.name
                   ? 'bg-[#27292D] text-white'
                   : 'text-gray-400'
-              }`}
+                }`}
+              style={{
+                width: expanded ? 'auto' : '40px', // Ensure enough space for icons when collapsed
+                height: '40px', // Fixed height for consistency
+              }}
             >
-              <div className="relative">
+              <div
+                className="relative flex items-center justify-center"
+                style={{
+                  width: expanded ? 'auto' : '40px', // Adjust width for collapsed state
+                  height: '40px', // Fixed height for icons
+                }}
+              >
                 <Image
                   src={item.icon}
                   alt={item.name}
-                  width={expanded ? 24 : 40}
-                  height={expanded ? 24 : 40}
+                  width={expanded ? 24 : 30} // Dynamically adjust icon size
+                  height={expanded ? 24 : 30} // Dynamically adjust icon size
+                  className="transition-all duration-300" // Smooth transition for size changes
                 />
-                {item.notification}
+                {item.notification && expanded && (
+                  <span className="absolute top-0 right-0 text-[10px] bg-red-500 text-white rounded-full px-1">
+                    {item.notification}
+                  </span>
+                )}
               </div>
 
               {expanded && (
