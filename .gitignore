@@ -280,3 +280,13 @@ Cargo.lock
 
 # MSVC Windows builds of rustc generate these, which store debugging information
 *.pdb
+/.idea/git_toolbox_blame.xml
+/.idea/git_toolbox_prj.xml
+/.idea/modules.xml
+/package-lock.json
+/.idea/prettier.xml
+/.idea/inspectionProfiles/Project_Default.xml
+/.idea/spherre-dapp.iml
+/.idea/vcs.xml
+
+/frontend/package-lock.json
