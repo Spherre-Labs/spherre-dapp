@@ -54,9 +54,9 @@ const Members = () => {
       <div className="text-white mt-4">
         {activeTab === 'members' && (
           <div className="grid grid-cols-4 gap-5">
-            <div className="w-[271px] h-[244px] bg-[#1C1D1F]  rounded-[10px] ">
-              <div className="flex flex-col items-center">
-                <div className="w-[257px] h-[78px] bg-[#272729] mt-2 justify-center  flex items-center gap-[15px] rounded-[7px]">
+            <div className=" h-[244px] bg-[#1C1D1F]  rounded-[10px] ">
+              <div className="flex flex-col items-center ">
+                <div className="w-[95%] h-[78px] bg-[#272729] mt-2 justify-center  flex items-center gap-[15px] rounded-[7px]">
                   <Image
                     src="/member1.svg"
                     alt="member avatar"
@@ -92,7 +92,9 @@ const Members = () => {
                     className="mb-5"
                   />
                 </div>
-                <div className="flex mt-5 items-center gap-[10px]">
+              
+              </div>
+              <div className="flex mt-5 ml-5 gap-[10px]">
                   {' '}
                   <p className="text-[#8E9BAE] text-[14px] font-semibold">
                     Roles:
@@ -107,7 +109,6 @@ const Members = () => {
                     Executer{' '}
                   </div>
                 </div>
-              </div>
 
               <div className="flex mt-5 ml-4 gap-[10px]">
                 {' '}
@@ -119,14 +120,16 @@ const Members = () => {
                 </p>{' '}
               </div>
               <div className="flex items-center justify-center mt-5">
-                <button className="bg-[#272729] rounded-[7px] flex items-center justify-center font-medium text-[14px] text-white w-[239px] h-[36px]">
+                <button className="bg-[#272729] rounded-[7px] flex items-center justify-center font-medium text-[14px] text-white w-[90%] h-[36px]">
                   Remove member
                 </button>
               </div>
             </div>{' '}
-            <div className="w-[271px] h-[244px] bg-[#1C1D1F]  rounded-[10px] ">
+
+
+            <div className=" h-[244px] bg-[#1C1D1F]  rounded-[10px] ">
               <div className="flex flex-col items-center">
-                <div className="w-[257px] h-[78px] bg-[#272729] mt-2 justify-center  flex items-center gap-[15px] rounded-[7px]">
+                <div className="w-[95%] h-[78px] bg-[#272729] mt-2 justify-center  flex items-center gap-[15px] rounded-[7px]">
                   <Image
                     src="/member2.svg"
                     alt="member avatar"
@@ -183,14 +186,14 @@ const Members = () => {
                 </p>{' '}
               </div>
               <div className="flex items-center justify-center mt-5">
-                <button className="bg-[#272729] rounded-[7px] flex items-center justify-center font-medium text-[14px] text-white w-[239px] h-[36px]">
+                <button className="bg-[#272729] rounded-[7px] flex items-center justify-center font-medium text-[14px] text-white w-[90%] h-[36px]">
                   Remove member
                 </button>
               </div>
             </div>{' '}
-            <div className="w-[271px] h-[244px] bg-[#1C1D1F]  rounded-[10px] ">
+            <div className=" h-[244px] bg-[#1C1D1F]  rounded-[10px] ">
               <div className="flex flex-col items-center">
-                <div className="w-[257px] h-[78px] bg-[#272729] mt-2 justify-center  flex items-center gap-[15px] rounded-[7px]">
+                <div className="w-[95%] h-[78px] bg-[#272729] mt-2 justify-center  flex items-center gap-[15px] rounded-[7px]">
                   <Image
                     src="/member3.svg"
                     alt="member avatar"
@@ -247,14 +250,14 @@ const Members = () => {
                 </p>{' '}
               </div>
               <div className="flex items-center justify-center mt-5">
-                <button className="bg-[#272729] rounded-[7px] flex items-center justify-center font-medium text-[14px] text-white w-[239px] h-[36px]">
+                <button className="bg-[#272729] rounded-[7px] flex items-center justify-center font-medium text-[14px] text-white w-[90%] h-[36px]">
                   Remove member
                 </button>
               </div>
             </div>{' '}
-            <div className="w-[271px] h-[244px] bg-[#1C1D1F]  rounded-[10px] ">
+            <div className="h-[244px] bg-[#1C1D1F]  rounded-[10px] ">
               <div className="flex flex-col items-center">
-                <div className="w-[257px] h-[78px] bg-[#272729] mt-2 justify-center  flex items-center gap-[15px] rounded-[7px]">
+                <div className="w-[95%] h-[78px] bg-[#272729] mt-2 justify-center  flex items-center gap-[15px] rounded-[7px]">
                   <Image
                     src="/member4.svg"
                     alt="member avatar"
@@ -308,14 +311,14 @@ const Members = () => {
                 </p>{' '}
               </div>
               <div className="flex items-center justify-center mt-5">
-                <button className="bg-[#272729] rounded-[7px] flex items-center justify-center font-medium text-[14px] text-white w-[239px] h-[36px]">
+                <button className="bg-[#272729] rounded-[7px] flex items-center justify-center font-medium text-[14px] text-white w-[90%] h-[36px]">
                   Remove member
                 </button>
               </div>
             </div>{' '}
-            <div className="w-[271px] h-[244px] bg-[#1C1D1F]  rounded-[10px] ">
+            <div className=" h-[244px] bg-[#1C1D1F]  rounded-[10px] ">
               <div className="flex flex-col items-center">
-                <div className="w-[257px] h-[78px] bg-[#272729] mt-2 justify-center  flex items-center gap-[15px] rounded-[7px]">
+                <div className="w-[95%] h-[78px] bg-[#272729] mt-2 justify-center  flex items-center gap-[15px] rounded-[7px]">
                   <Image
                     src="/member5.svg"
                     alt="member avatar"
@@ -368,12 +371,12 @@ const Members = () => {
                 </p>{' '}
               </div>
               <div className="flex items-center justify-center mt-5">
-                <button className="bg-[#272729] rounded-[7px] flex items-center justify-center font-medium text-[14px] text-white w-[239px] h-[36px]">
+                <button className="bg-[#272729] rounded-[7px] flex items-center justify-center font-medium text-[14px] text-white w-[90%] h-[36px]">
                   Remove member
                 </button>
               </div>
             </div>
-            <div className="w-[271px] h-[244px] bg-[#1C1D1F]  flex flex-col gap-5 items-center justify-center rounded-[10px] ">
+            <div className=" h-[244px] bg-[#1C1D1F]  flex flex-col gap-5 items-center justify-center rounded-[10px] ">
               <div className="size-[51px] rounded-full flex items-center justify-center bg-[#00000040]/25">
                 <Image
                   src="/cross.svg"
