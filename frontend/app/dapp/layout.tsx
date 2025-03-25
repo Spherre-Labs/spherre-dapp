@@ -28,7 +28,7 @@ export default function DappLayout({children}: DappLayoutProps) {
     const navItems: NavItem[] = [
         { name: 'Dashboard', icon: Dashboard, route: '/dapp/' },
         { name: 'Trade', icon: Trade/*, route: '/dapp/trade'*/ },
-        { name: 'Members', icon: Trade/*, route: '/dapp/members'*/ }, // Using Trade icon temporarily for Members
+        { name: 'Members', icon: Trade, route: '/dapp/members' }, // Using Trade icon temporarily for Members
         { name: 'Transactions', icon: Transactions/*, route: '/dapp/transactions'*/ },
         { name: 'Stake', icon: Stake, comingSoon: true/*, route: '/dapp/stake'*/ },
         { name: 'Treasury', icon: Treasury/*, route: '/dapp/treasury'*/ },

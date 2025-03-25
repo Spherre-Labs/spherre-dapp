@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react'
 import logo from '../../public/Images/spherrelogo.png'
 import Image from 'next/image'
 import SidebarProfile from './Profile'
-import { getSelectedPage, NavItem } from '@/app/dapp/navigation'
+import { NavItem } from '@/app/dapp/navigation'
 import Link from 'next/link'
 
 const Sidebar = ({
