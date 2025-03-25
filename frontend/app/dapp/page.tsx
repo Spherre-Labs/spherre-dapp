@@ -38,7 +38,7 @@ export default function Dapp() {
           sidebarExpanded ? 'ml-64' : 'ml-16'
         }`}
       >
-        <Navbar title={'Dashboard'} />
+        <Navbar title={selectedPage} />
         <main className="flex-1 overflow-auto p-4">
           {/* Your page content goes here */}
           {selectedPage === 'Members' && <Members />}
