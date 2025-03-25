@@ -8,7 +8,6 @@ const nunito = Nunito_Sans({
   weight: ['200', '300', '400', '500', '600', '700', '800', '900'],
 })
 
-
 const Members = () => {
   const [activeTab, setActiveTab] = useState('members')
 
@@ -55,60 +54,59 @@ const Members = () => {
         {activeTab === 'members' && (
           <div className="grid grid-cols-4 gap-5">
             <div className=" h-[244px] bg-[#1C1D1F]  rounded-[10px] ">
-              <div className="flex flex-col items-center ">
-                <div className="w-[95%] h-[78px] bg-[#272729] mt-2 justify-center  flex items-center gap-[15px] rounded-[7px]">
-                  <Image
-                    src="/member1.svg"
-                    alt="member avatar"
-                    height={50}
-                    width={50}
-                    className="rounded-full"
-                  />{' '}
-                  <div className="flex flex-col">
-                    <p className="text-[20px] text-white font-semibold">
-                      Member 1{' '}
-                      <span className="text-[#8E9BAE] text-[16px] font-medium">
-                        You
-                      </span>
-                    </p>
-                    <div className="flex items-center justify-center gap-[5px]">
-                      <p className="font-semibold text-[16px] text-[#8E9BAE]">
-                        22yquq...qyqiia
+            <div className="flex flex-col items-center">
+                <div className="w-[95%] h-[78px] bg-[#272729] mt-2 justify-between px-2 flex items-center  rounded-[7px]">
+                  <div className='flex gap-3'>
+                    <Image
+                      src="/member1.svg"
+                      alt="member avatar"
+                      height={50}
+                      width={50}
+                      className="rounded-full"
+                    />{' '}
+                    <div className="flex flex-col">
+                      <p className="text-[20px] text-white font-semibold">
+                        Member 1
                       </p>
-                      <Image
-                        src="/copy.svg"
-                        alt="copy"
-                        height={18}
-                        width={18}
-                        className="rounded-full mt-1"
-                      />
+                      <div className="flex items-center justify-center gap-[5px]">
+                        <p className="font-semibold text-[16px] text-[#8E9BAE]">
+                          22yquq...qyqiia
+                        </p>
+                        <Image
+                          src="/copy.svg"
+                          alt="copy"
+                          height={18}
+                          width={18}
+                          className="rounded-full mt-1"
+                        />
+                      </div>
                     </div>
                   </div>
+
                   <Image
                     src="/dots.svg"
                     alt="member avatar"
                     height={24}
                     width={24}
-                    className="mb-5"
+                    className="mb-12"
                   />
                 </div>
-              
               </div>
               <div className="flex mt-5 ml-5 gap-[10px]">
-                  {' '}
-                  <p className="text-[#8E9BAE] text-[14px] font-semibold">
-                    Roles:
-                  </p>{' '}
-                  <div className="flex items-center justify-center text-[12px]  px-2 py-[2px] border-[1px] rounded-3xl text-[#FF7BE9] border-[#FF7BE9] bg-[#FF7BE9]/10">
-                    Voter{' '}
-                  </div>
-                  <div className="flex items-center justify-center text-[12px]  px-2 py-[2px] border-[1px] rounded-3xl text-[#FF8A25] border-[#FF8A25] bg-[#FF8A25]/10">
-                    Proposer{' '}
-                  </div>
-                  <div className="flex items-center justify-center text-[12px]  px-2 py-[2px] border-[1px] rounded-3xl text-[#19B360] border-[#19B360] bg-[#19B360]/10">
-                    Executer{' '}
-                  </div>
+                {' '}
+                <p className="text-[#8E9BAE] text-[14px] font-semibold">
+                  Roles:
+                </p>{' '}
+                <div className="flex items-center justify-center text-[12px]  px-2 py-[2px] border-[1px] rounded-3xl text-[#FF7BE9] border-[#FF7BE9] bg-[#FF7BE9]/10">
+                  Voter{' '}
                 </div>
+                <div className="flex items-center justify-center text-[12px]  px-2 py-[2px] border-[1px] rounded-3xl text-[#FF8A25] border-[#FF8A25] bg-[#FF8A25]/10">
+                  Proposer{' '}
+                </div>
+                <div className="flex items-center justify-center text-[12px]  px-2 py-[2px] border-[1px] rounded-3xl text-[#19B360] border-[#19B360] bg-[#19B360]/10">
+                  Executer{' '}
+                </div>
+              </div>
 
               <div className="flex mt-5 ml-4 gap-[10px]">
                 {' '}
@@ -125,41 +123,42 @@ const Members = () => {
                 </button>
               </div>
             </div>{' '}
-
-
             <div className=" h-[244px] bg-[#1C1D1F]  rounded-[10px] ">
               <div className="flex flex-col items-center">
-                <div className="w-[95%] h-[78px] bg-[#272729] mt-2 justify-center  flex items-center gap-[15px] rounded-[7px]">
-                  <Image
-                    src="/member2.svg"
-                    alt="member avatar"
-                    height={50}
-                    width={50}
-                    className="rounded-full"
-                  />{' '}
-                  <div className="flex flex-col">
-                    <p className="text-[20px] text-white font-semibold">
-                      Member 2
-                    </p>
-                    <div className="flex items-center justify-center gap-[5px]">
-                      <p className="font-semibold text-[16px] text-[#8E9BAE]">
-                        22yquq...qyqiia
+                <div className="w-[95%] h-[78px] bg-[#272729] mt-2 justify-between px-2 flex items-center  rounded-[7px]">
+                  <div className='flex gap-3'>
+                    <Image
+                      src="/member2.svg"
+                      alt="member avatar"
+                      height={50}
+                      width={50}
+                      className="rounded-full"
+                    />{' '}
+                    <div className="flex flex-col">
+                      <p className="text-[20px] text-white font-semibold">
+                        Member 2
                       </p>
-                      <Image
-                        src="/copy.svg"
-                        alt="copy"
-                        height={18}
-                        width={18}
-                        className="rounded-full mt-1"
-                      />
+                      <div className="flex items-center justify-center gap-[5px]">
+                        <p className="font-semibold text-[16px] text-[#8E9BAE]">
+                          22yquq...qyqiia
+                        </p>
+                        <Image
+                          src="/copy.svg"
+                          alt="copy"
+                          height={18}
+                          width={18}
+                          className="rounded-full mt-1"
+                        />
+                      </div>
                     </div>
                   </div>
+
                   <Image
                     src="/dots.svg"
                     alt="member avatar"
                     height={24}
                     width={24}
-                    className="mb-5"
+                    className="mb-12"
                   />
                 </div>
               </div>
@@ -193,41 +192,44 @@ const Members = () => {
             </div>{' '}
             <div className=" h-[244px] bg-[#1C1D1F]  rounded-[10px] ">
               <div className="flex flex-col items-center">
-                <div className="w-[95%] h-[78px] bg-[#272729] mt-2 justify-center  flex items-center gap-[15px] rounded-[7px]">
-                  <Image
-                    src="/member3.svg"
-                    alt="member avatar"
-                    height={50}
-                    width={50}
-                    className="rounded-full"
-                  />{' '}
-                  <div className="flex flex-col">
-                    <p className="text-[20px] text-white font-semibold">
-                      Member 3{' '}
-                    </p>
-                    <div className="flex items-center justify-center gap-[5px]">
-                      <p className="font-semibold text-[16px] text-[#8E9BAE]">
-                        22yquq...qyqiia
+                <div className="w-[95%] h-[78px] bg-[#272729] mt-2 justify-between px-2 flex items-center  rounded-[7px]">
+                  <div className='flex gap-3'>
+                    <Image
+                      src="/member3.svg"
+                      alt="member avatar"
+                      height={50}
+                      width={50}
+                      className="rounded-full"
+                    />{' '}
+                    <div className="flex flex-col">
+                      <p className="text-[20px] text-white font-semibold">
+                        Member 3
                       </p>
-                      <Image
-                        src="/copy.svg"
-                        alt="copy"
-                        height={18}
-                        width={18}
-                        className="rounded-full mt-1"
-                      />
+                      <div className="flex items-center justify-center gap-[5px]">
+                        <p className="font-semibold text-[16px] text-[#8E9BAE]">
+                          22yquq...qyqiia
+                        </p>
+                        <Image
+                          src="/copy.svg"
+                          alt="copy"
+                          height={18}
+                          width={18}
+                          className="rounded-full mt-1"
+                        />
+                      </div>
                     </div>
                   </div>
+
                   <Image
                     src="/dots.svg"
                     alt="member avatar"
                     height={24}
                     width={24}
-                    className="mb-5"
+                    className="mb-12"
                   />
                 </div>
               </div>
-              <div className="flex mt-5 ml-4 items-center gap-[10px]">
+              <div className="flex mt-5 ml-4 gap-[10px]">
                 {' '}
                 <p className="text-[#8E9BAE] text-[14px] font-semibold">
                   Roles:
@@ -255,44 +257,46 @@ const Members = () => {
                 </button>
               </div>
             </div>{' '}
-            <div className="h-[244px] bg-[#1C1D1F]  rounded-[10px] ">
+            <div className=" h-[244px] bg-[#1C1D1F]  rounded-[10px] ">
               <div className="flex flex-col items-center">
-                <div className="w-[95%] h-[78px] bg-[#272729] mt-2 justify-center  flex items-center gap-[15px] rounded-[7px]">
-                  <Image
-                    src="/member4.svg"
-                    alt="member avatar"
-                    height={50}
-                    width={50}
-                    className="rounded-full"
-                  />{' '}
-                  <div className="flex flex-col">
-                    <p className="text-[20px] text-white font-semibold">
-                      Member 4{' '}
-                    </p>
-                    <div className="flex items-center justify-center gap-[5px]">
-                      <p className="font-semibold text-[16px] text-[#8E9BAE]">
-                        22yquq...qyqiia
+                <div className="w-[95%] h-[78px] bg-[#272729] mt-2 justify-between px-2 flex items-center  rounded-[7px]">
+                  <div className='flex gap-3'>
+                    <Image
+                      src="/member4.svg"
+                      alt="member avatar"
+                      height={50}
+                      width={50}
+                      className="rounded-full"
+                    />{' '}
+                    <div className="flex flex-col">
+                      <p className="text-[20px] text-white font-semibold">
+                        Member 4
                       </p>
-                      <Image
-                        src="/copy.svg"
-                        alt="copy"
-                        height={18}
-                        width={18}
-                        className="rounded-full mt-1"
-                      />
+                      <div className="flex items-center justify-center gap-[5px]">
+                        <p className="font-semibold text-[16px] text-[#8E9BAE]">
+                          22yquq...qyqiia
+                        </p>
+                        <Image
+                          src="/copy.svg"
+                          alt="copy"
+                          height={18}
+                          width={18}
+                          className="rounded-full mt-1"
+                        />
+                      </div>
                     </div>
                   </div>
+
                   <Image
                     src="/dots.svg"
                     alt="member avatar"
                     height={24}
                     width={24}
-                    className="mb-5"
+                    className="mb-12"
                   />
                 </div>
               </div>
-
-              <div className="flex mt-5  ml-4 items-center gap-[10px]">
+              <div className="flex mt-5 ml-4 gap-[10px]">
                 {' '}
                 <p className="text-[#8E9BAE] text-[14px] font-semibold">
                   Roles:
@@ -300,7 +304,9 @@ const Members = () => {
                 <div className="flex items-center justify-center text-[12px]  px-2 py-[2px] border-[1px] rounded-3xl text-[#FF7BE9] border-[#FF7BE9] bg-[#FF7BE9]/10">
                   Voter{' '}
                 </div>
+                
               </div>
+
               <div className="flex mt-5 ml-4 gap-[10px]">
                 {' '}
                 <p className="text-[#8E9BAE] text-[14px] font-semibold">
@@ -318,41 +324,44 @@ const Members = () => {
             </div>{' '}
             <div className=" h-[244px] bg-[#1C1D1F]  rounded-[10px] ">
               <div className="flex flex-col items-center">
-                <div className="w-[95%] h-[78px] bg-[#272729] mt-2 justify-center  flex items-center gap-[15px] rounded-[7px]">
-                  <Image
-                    src="/member5.svg"
-                    alt="member avatar"
-                    height={50}
-                    width={50}
-                    className="rounded-full"
-                  />{' '}
-                  <div className="flex flex-col">
-                    <p className="text-[20px] text-white font-semibold">
-                      Member 5{' '}
-                    </p>
-                    <div className="flex items-center justify-center gap-[5px]">
-                      <p className="font-semibold text-[16px] text-[#8E9BAE]">
-                        22yquq...qyqiia
+                <div className="w-[95%] h-[78px] bg-[#272729] mt-2 justify-between px-2 flex items-center  rounded-[7px]">
+                  <div className='flex gap-3'>
+                    <Image
+                      src="/member5.svg"
+                      alt="member avatar"
+                      height={50}
+                      width={50}
+                      className="rounded-full"
+                    />{' '}
+                    <div className="flex flex-col">
+                      <p className="text-[20px] text-white font-semibold">
+                        Member 5
                       </p>
-                      <Image
-                        src="/copy.svg"
-                        alt="copy"
-                        height={18}
-                        width={18}
-                        className="rounded-full mt-1"
-                      />
+                      <div className="flex items-center justify-center gap-[5px]">
+                        <p className="font-semibold text-[16px] text-[#8E9BAE]">
+                          22yquq...qyqiia
+                        </p>
+                        <Image
+                          src="/copy.svg"
+                          alt="copy"
+                          height={18}
+                          width={18}
+                          className="rounded-full mt-1"
+                        />
+                      </div>
                     </div>
                   </div>
+
                   <Image
                     src="/dots.svg"
                     alt="member avatar"
                     height={24}
                     width={24}
-                    className="mb-5"
+                    className="mb-12"
                   />
                 </div>
               </div>
-              <div className="flex mt-5 ml-4 items-center gap-[10px]">
+              <div className="flex mt-5 ml-4 gap-[10px]">
                 {' '}
                 <p className="text-[#8E9BAE] text-[14px] font-semibold">
                   Roles:
@@ -360,7 +369,9 @@ const Members = () => {
                 <div className="flex items-center justify-center text-[12px]  px-2 py-[2px] border-[1px] rounded-3xl text-[#FF7BE9] border-[#FF7BE9] bg-[#FF7BE9]/10">
                   Voter{' '}
                 </div>
+               
               </div>
+
               <div className="flex mt-5 ml-4 gap-[10px]">
                 {' '}
                 <p className="text-[#8E9BAE] text-[14px] font-semibold">
@@ -375,7 +386,7 @@ const Members = () => {
                   Remove member
                 </button>
               </div>
-            </div>
+            </div>{' '}
             <div className=" h-[244px] bg-[#1C1D1F]  flex flex-col gap-5 items-center justify-center rounded-[10px] ">
               <div className="size-[51px] rounded-full flex items-center justify-center bg-[#00000040]/25">
                 <Image
