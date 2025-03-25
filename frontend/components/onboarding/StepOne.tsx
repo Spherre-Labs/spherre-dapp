@@ -7,26 +7,24 @@ import StepIndicator from './StepIndicators'
 
 
 
-// Main Onboarding Component
 export default function StepOne() {
-  // State to track the current step
   const [currentStep, setCurrentStep] = useState(1)
   
-  // Loading state for data fetching operations
+
   const [isLoading, setIsLoading] = useState(false)
   
-  // Form data state (combined from all steps)
+  
   const [formData, setFormData] = useState({
-    // Step 1 data
+    
     accountName: '',
     description: '',
     
-    // Step 2 data
+    
     spherreMembers: [''],
     approvals: 1,
   })
   
-  // Handle changes to accountName and description
+  
   const handleAccountNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, accountName: e.target.value })
   }
@@ -35,7 +33,7 @@ export default function StepOne() {
     setFormData({ ...formData, description: e.target.value })
   }
   
-  // Handle adding, deleting and updating members
+  
   const addNewMember = () => {
     setFormData({
       ...formData,
@@ -81,7 +79,6 @@ export default function StepOne() {
     })
   }
   
-  // Form submission handlers for each step
   const handleSubmitStepOne = async (e: React.FormEvent) => {
     e.preventDefault()
     
@@ -92,14 +89,14 @@ export default function StepOne() {
     try {
       setIsLoading(true)
       
-      // Simulate API call to save step 1 data
+    
       await new Promise(resolve => setTimeout(resolve, 500))
       console.log('Step 1 data:', { 
         accountName: formData.accountName, 
         description: formData.description 
       })
       
-      // Move to next step
+  
       setCurrentStep(2)
     } catch (error) {
       console.error(error)
@@ -118,14 +115,12 @@ export default function StepOne() {
     try {
       setIsLoading(true)
       
-      // Simulate API call to save step 2 data
       await new Promise(resolve => setTimeout(resolve, 500))
       console.log('Step 2 data:', { 
         spherreMembers: formData.spherreMembers, 
         approvals: formData.approvals 
       })
       
-      // Move to next step
       setCurrentStep(3)
     } catch (error) {
       console.error(error)
@@ -140,14 +135,10 @@ export default function StepOne() {
     try {
       setIsLoading(true)
       
-      // Simulate final API call to save all data
       await new Promise(resolve => setTimeout(resolve, 800))
       
-      // Log the complete form data
       console.log('Complete onboarding data:', formData)
       
-      // Here you would navigate to the success page or dashboard
-      // For now, we'll reset the form and go back to step 1
       alert('Multisig account successfully created!')
       setFormData({
         accountName: '',
@@ -165,15 +156,12 @@ export default function StepOne() {
   
   return (
     <div className="w-full max-w-3xl mx-auto">
-      {/* Step Indicator */}
+      
       <div className="mb-8">
         <StepIndicator currentStep={currentStep} />
       </div>
-      
-      {/* Step 1: Account Details */}
       {currentStep === 1 && (
         <>
-          {/* Writeup */}
           <div className="max-w-sm my-12 text-white mx-auto">
             <h1 className="text-center text-white font-[700] text-[40px] leading-[47.42px]">
               Secure Your Digital Assets Seamlessly
@@ -183,12 +171,9 @@ export default function StepOne() {
               giving you full control over your digital assets.
             </p>
           </div>
-          
-          {/* form */}
           <form onSubmit={handleSubmitStepOne}>
             <OnboardingCard title="Create Account">
               <div className="w-full flex flex-col gap-6 py-4 md:px-[26px] px-4">
-                {/* Account name */}
                 <div className="w-full">
                   <label
                     htmlFor="accountName"
@@ -202,13 +187,12 @@ export default function StepOne() {
                     id="accountName"
                     value={formData.accountName}
                     onChange={handleAccountNameChange}
-                    className="w-full border border-[#292929] rounded-[7px] placeholder:text-[#8E9BAE] px-4 py-3 bg-transparent outline-none"
+                    className="w-full border border-[#292929] rounded-[7px] placeholder:text-[#8E9BAE] px-4 py-3 bg-transparent outline-none text-[#8E9BAE]"
                     placeholder="Enter a team name"
                     required
                   />
                 </div>
-                
-                {/* Description */}
+          
                 <div className="w-full">
                   <label
                     htmlFor="description"
@@ -221,13 +205,11 @@ export default function StepOne() {
                     id="description"
                     value={formData.description}
                     onChange={handleDescriptionChange}
-                    className="w-full h-[100px] border border-[#292929] rounded-[7px] placeholder:text-[#8E9BAE] px-4 py-3 bg-transparent outline-none resize-y shadow-[0px_1.08px_2.16px_0px_#1018280A]"
+                    className="w-full h-[100px] border border-[#292929] text-[#8E9BAE] rounded-[7px] placeholder:text-[#8E9BAE] px-4 py-3 bg-transparent outline-none resize-y shadow-[0px_1.08px_2.16px_0px_#1018280A]"
                     placeholder="Write here..."
                     required
                   ></textarea>
                 </div>
-                
-                {/* Button */}
                 <button
                   type="submit"
                   disabled={isLoading}
@@ -240,11 +222,9 @@ export default function StepOne() {
           </form>
         </>
       )}
-      
-      {/* Step 2: Members & Threshold */}
       {currentStep === 2 && (
         <>
-          {/* Writeup */}
+          
           <div className="max-w-sm my-12 mx-auto">
             <h1 className="text-center text-white font-[700] text-[40px] leading-[47.42px]">
               Add Members to a Multisig Vault
@@ -255,12 +235,9 @@ export default function StepOne() {
             </p>
           </div>
           
-          {/* form */}
           <form onSubmit={handleSubmitStepTwo} className="w-full space-y-4">
             <OnboardingCard title="Add Spherre Members">
-              {/* Inputs */}
               <div className="w-full flex flex-col gap-6 py-4 md:px-[26px] px-4">
-                {/* Account name */}
                 {formData.spherreMembers.map((member, index) => (
                   <div key={index} className="w-full">
                     <label
@@ -275,7 +252,7 @@ export default function StepOne() {
                         type="text"
                         name="accountName"
                         id={`accountName-${index}`}
-                        className="w-full border border-[#292929] rounded-[7px] placeholder:text-[#8E9BAE] px-4 py-3 bg-transparent outline-none pr-10"
+                        className="w-full border border-[#292929] rounded-[7px] placeholder:text-[#8E9BAE] px-4 py-3 bg-transparent text-[#8E9BAE] outline-none pr-10"
                         placeholder="Enter team member's address"
                         onChange={(e) => handleMembersChange(index, e.target.value)}
                         value={member}
@@ -321,7 +298,7 @@ export default function StepOne() {
                     step="1"
                     value={formData.approvals}
                     onChange={handleApprovalsChange}
-                    className="flex-grow w-full appearance-none h-2 bg-[#272729] rounded-lg outline-none cursor-pointer"
+                    className="flex-grow w-full appearance-none h-2 bg-[#272729] text-[#8E9BAE ] rounded-lg outline-none cursor-pointer"
                   />
                   <div className="flex items-center justify-between px-1">
                     <span className="text-sm">1</span>
@@ -361,11 +338,9 @@ export default function StepOne() {
           </form>
         </>
       )}
-      
-      {/* Step 3: Confirm & Setup */}
       {currentStep === 3 && (
         <>
-          {/* Writeup */}
+          
           <div className="max-w-sm my-12 mx-auto">
             <h1 className="text-center text-white font-[700] text-[40px] leading-[47.42px]">
               Confirm Your Setup
