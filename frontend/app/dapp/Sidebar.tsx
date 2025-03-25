@@ -1,10 +1,11 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, Dispatch, SetStateAction } from 'react'
 import logo from '../../public/Images/spherrelogo.png'
 import Image, { StaticImageData } from 'next/image'
 import Dashboard from '../../public/Images/Dash.png'
 import Trade from '../../public/Images/Trade.png'
+import Members from '../../public/Images/Members.svg'
 import Transactions from '../../public/Images/Transactions.png'
 import Stake from '../../public/Images/Stake.png'
 import Treasury from '../../public/Images/Treasury.png'
@@ -22,7 +23,11 @@ interface NavItem {
   notification?: number
 }
 
-const Sidebar = () => {
+interface onSelectFunc {
+  onSelect: Dispatch<SetStateAction<string>>
+}
+
+const Sidebar = ({ onSelect }: onSelectFunc) => {
   // State to track active page - set dashboard as default
   const [activePage, setActivePage] = useState('Dashboard')
 
@@ -33,7 +38,7 @@ const Sidebar = () => {
   const navItems: NavItem[] = [
     { name: 'Dashboard', icon: Dashboard },
     { name: 'Trade', icon: Trade },
-    { name: 'Members', icon: Trade }, // Using Trade icon temporarily for Members
+    { name: 'Members', icon: Members },
     { name: 'Transactions', icon: Transactions },
     { name: 'Stake', icon: Stake, comingSoon: true },
     { name: 'Treasury', icon: Treasury },
@@ -91,7 +96,10 @@ const Sidebar = () => {
           {navItems.map((item) => (
             <li
               key={item.name}
-              onClick={() => handleNavClick(item.name)}
+              onClick={() => {
+                handleNavClick(item.name)
+                onSelect(item.name)
+              }}
               className={`flex items-center cursor-pointer p-3 rounded-lg transition-all ${expanded ? 'gap-3' : 'justify-center'
                 } ${activePage === item.name
                   ? 'bg-[#27292D] text-white'
@@ -116,10 +124,11 @@ const Sidebar = () => {
                   height={expanded ? 24 : 30} // Dynamically adjust icon size
                   className="transition-all duration-300" // Smooth transition for size changes
                 />
-                {item.notification && expanded && (
-                  <span className="absolute top-0 right-0 text-[10px] bg-red-500 text-white rounded-full px-1">
-                    {item.notification}
-                  </span>
+                {/* Green Dot for Coming Soon */}
+                {item.comingSoon && !expanded && (
+                  <span
+                    className="absolute top-3 left-4 w-[4px] h-[4px] bg-green-400 rounded-full"
+                  ></span>
                 )}
               </div>
 
