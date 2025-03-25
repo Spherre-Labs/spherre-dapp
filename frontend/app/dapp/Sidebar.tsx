@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, Dispatch, SetStateAction } from 'react'
 import logo from '../../public/Images/spherrelogo.png'
 import Image, { StaticImageData } from 'next/image'
 import Dashboard from '../../public/Images/Dash.png'
@@ -22,7 +22,11 @@ interface NavItem {
   notification?: number
 }
 
-const Sidebar = () => {
+interface onSelectFunc {
+  onSelect: Dispatch<SetStateAction<string>>
+}
+
+const Sidebar = ({ onSelect }: onSelectFunc) => {
   // State to track active page - set dashboard as default
   const [activePage, setActivePage] = useState('Dashboard')
 
@@ -92,7 +96,10 @@ const Sidebar = () => {
           {navItems.map((item) => (
             <li
               key={item.name}
-              onClick={() => handleNavClick(item.name)}
+              onClick={() => {
+                handleNavClick(item.name)
+                onSelect(item.name)
+              }}
               className={`flex items-center cursor-pointer p-3 rounded-lg transition-all ${
                 expanded ? 'gap-3' : 'justify-center'
               } ${
