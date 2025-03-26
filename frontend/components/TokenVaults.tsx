@@ -23,22 +23,23 @@ const TokenVaults: React.FC = () => {
           {data.map((item, index) => (
             <tr key={index} className="border-t border-gray-700">
               <td className="py-2 px-4 flex items-center">
-                <img
-                  src="/path-to-strk-icon.png"
-                  alt="STRK"
-                  className="w-5 h-5 mr-2"
-                />
+                <img src={"/path-to-icon.png"} alt="New Icon" className="w-5 h-5 mr-2" />
                 {item.coin}
               </td>
               <td className="py-2 px-4">${item.price.toFixed(2)}</td>
               <td className="py-2 px-4">{item.balance}</td>
               <td className="py-2 px-4">${item.value.toFixed(2)}</td>
-              <td className="py-2 px-4">
-                <div className="relative w-24 bg-gray-700 h-2 rounded">
-                  <div
-                    className="absolute top-0 left-0 h-2 bg-blue-500 rounded"
-                    style={{ width: item.size }}
-                  ></div>
+              <td className="py-2 px-4 text-center">
+                <div className="relative w-24">
+                  <div className="absolute -top-5 left-1/2 transform -translate-x-1/2 text-sm font-semibold">
+                    {item.size}
+                  </div>
+                  <div className="bg-gray-700 h-2 rounded relative">
+                    <div
+                      className="absolute top-0 left-0 h-2 bg-white rounded"
+                      style={{ width: item.size }}
+                    ></div>
+                  </div>
                 </div>
               </td>
             </tr>
