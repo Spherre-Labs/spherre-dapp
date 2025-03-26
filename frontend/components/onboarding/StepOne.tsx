@@ -1,12 +1,39 @@
 'use client'
 import { useRouter } from 'next/navigation'
-import React, { useState } from 'react'
+import React from 'react'
+
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useForm } from 'react-hook-form'
+import * as z from 'zod'
+
+// Define validation schema for Step 1
+const stepOneSchema = z.object({
+  accountName: z
+    .string()
+    .min(2, { message: 'Account Name must be at least 2 characters' })
+    .max(100, { message: 'Account name must be less than 100 characters' }),
+  desc: z
+    .string()
+    .min(50, { message: 'Description must be at least 50 characters' }),
+})
+
+type StepOneData = z.infer<typeof stepOneSchema>
 
 const StepOne = () => {
-  const [accountName, setAccountName] = useState('')
-  const [desc, setDesc] = useState('')
-
   const router = useRouter()
+
+  // Initialize react-hook-form with zod validation
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<StepOneData>({
+    resolver: zodResolver(stepOneSchema),
+    defaultValues: {
+      accountName: '',
+      desc: '',
+    },
+  })
 
   /**
    * Handles form submission for Step 1 of the onboarding process.
@@ -15,15 +42,10 @@ const StepOne = () => {
    * If valid, logs the inputs to console and navigates to Step 2.
    * If an error occurs during navigation, it's logged to console.
    */
-  const handleSubmitStepOne = async (event: React.FormEvent) => {
-    event.preventDefault()
-    if (!accountName && !desc) {
-      throw Error('Inputs are required')
-    }
-
+  const handleSubmitStepOne = async (data: StepOneData) => {
     try {
-      console.log({ accountName, description: desc })
-      // Necessay submit logic
+      console.log(data)
+      // Necessary submit logic
       router.push('/onboarding/step2')
     } catch (error) {
       console.error(error)
@@ -51,7 +73,7 @@ const StepOne = () => {
 
         {/* Inputs */}
         <form
-          onSubmit={handleSubmitStepOne}
+          onSubmit={handleSubmit(handleSubmitStepOne)}
           className="w-full flex flex-col gap-6 py-4 md:px-[26px] px-4"
         >
           {/* Account name */}
@@ -64,14 +86,18 @@ const StepOne = () => {
             </label>
             <input
               type="text"
-              name="accountName"
               id="accountName"
-              value={accountName}
-              onChange={(e) => setAccountName(e.target.value)}
-              className="w-full rounded-[7px] placeholder:text-[#8E9BAE] px-4 py-3 bg-transparent outline-none"
+              className={`w-full rounded-[7px] placeholder:text-[#8E9BAE] text-white px-4 py-3 bg-transparent outline-none border ${
+                errors.accountName ? 'border-red-500' : 'border-[#292929]'
+              }`}
               placeholder="Enter a team name"
-              required
+              {...register('accountName')}
             />
+            {errors.accountName && (
+              <p className="text-red-500 text-sm mt-1">
+                {errors.accountName.message}
+              </p>
+            )}
           </div>
 
           {/* Description */}
@@ -83,22 +109,28 @@ const StepOne = () => {
               Spherre Description
             </label>
             <textarea
-              name="description"
-              id="description"
-              value={desc}
-              onChange={(e) => setDesc(e.target.value)}
-              className="w-full h-[100px] border border-[#292929] rounded-[7px] placeholder:text-[#8E9BAE] px-4 py-3 bg-transparent outline-none resize-y shadow-[0px_1.08px_2.16px_0px_#1018280A]"
+              id="desc"
+              className={`w-full h-[100px] text-white border rounded-[7px] placeholder:text-[#8E9BAE] px-4 py-3 bg-transparent outline-none resize-y shadow-[0px_1.08px_2.16px_0px_#1018280A] ${
+                errors.desc ? 'border-red-500' : 'border-[#292929]'
+              }`}
               placeholder="Write here..."
-              required
+              {...register('desc')}
             ></textarea>
+            {errors.desc && (
+              <p className="text-red-500 text-sm mt-1">{errors.desc.message}</p>
+            )}
+            <p className="text-[#8E9BAE] text-xs mt-1">
+              Minimum 50 characters required
+            </p>
           </div>
 
           {/* Button */}
           <button
             type="submit"
+            disabled={isSubmitting}
             className="w-full h-[50px] flex justify-center items-center bg-white shadow-[0px_1.08px_2.16px_0px_#1018280A] text-[#101213] font-[500] text-base rounded-[7px]"
           >
-            Continue
+            {isSubmitting ? 'Processing...' : 'Continue'}
           </button>
         </form>
       </div>

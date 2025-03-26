@@ -1,55 +1,117 @@
 'use client'
 import { useRouter } from 'next/navigation'
-import React, { useState } from 'react'
+import React, { useEffect } from 'react'
 import { FaPlus } from 'react-icons/fa6'
 import { LuTrash } from 'react-icons/lu'
 import OnboardingCard from './OnboardingCard'
 
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useForm, useFieldArray } from 'react-hook-form'
+import * as z from 'zod'
+import { isValidStarknetAddress } from '@/lib/utils/starknet'
+
+// Define validation schema for Step 2
+const stepTwoSchema = z.object({
+  members: z
+    .array(
+      z.object({
+        address: z
+          .string()
+          .refine((val) => val.trim() !== '' && isValidStarknetAddress(val), {
+            message: 'Please enter a valid Starknet wallet address',
+          }),
+      }),
+    )
+    .min(1, { message: 'Please add at least one member' })
+    .refine(
+      (members) => {
+        // Extract all non-empty addresses
+        const addresses = members
+          .map((m) => m.address.trim())
+          .filter((addr) => addr !== '')
+
+        // Check if there are any duplicates
+        return new Set(addresses).size === addresses.length
+      },
+      {
+        message: 'Each member address must be unique',
+        // Remove the custom path: path: ['unique']
+      },
+    ),
+  approvals: z.number().min(1),
+})
+
+type StepTwoData = z.infer<typeof stepTwoSchema>
+
 const StepTwo = () => {
   const router = useRouter()
 
-  const [spherreMembers, setSpherreMembers] = useState([''])
-  const [approvals, setApprovals] = useState(1)
+  const {
+    register,
+    handleSubmit,
+    control,
+    watch,
+    setValue,
+    formState: { errors, isSubmitting },
+    setFocus,
+  } = useForm<StepTwoData>({
+    resolver: zodResolver(stepTwoSchema),
+    defaultValues: {
+      members: [{ address: '' }],
+      approvals: 1,
+    },
+  })
+
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: 'members',
+  })
+
+  // Watch members to update max approvals
+  const members = watch('members')
+  const approvals = watch('approvals')
+
+  // Set focus to the first member input on page load
+  useEffect(() => {
+    const focusTimer = setTimeout(() => {
+      setFocus('members.0.address')
+    }, 100)
+
+    return () => clearTimeout(focusTimer)
+  }, [setFocus])
+
+  // Update approvals if it exceeds members length
+  useEffect(() => {
+    if (approvals > members.length) {
+      setValue('approvals', members.length)
+    }
+  }, [members, approvals, setValue])
 
   const addNewMember = () => {
-    setSpherreMembers([...spherreMembers, ''])
-  }
-
-  const deleteMember = (index: number) => {
-    const newMembers = spherreMembers.filter((_, i) => i !== index)
-    setSpherreMembers(newMembers)
-    if (approvals > newMembers.length) {
-      setApprovals(newMembers.length)
-    }
-  }
-
-  const clearMember = (index: number) => {
-    const updatedMembers = [...spherreMembers]
-    updatedMembers[index] = ''
-    setSpherreMembers(updatedMembers)
+    append({ address: '' })
   }
 
   const handleApprovalsChange = (
     event: React.ChangeEvent<HTMLInputElement>,
   ) => {
-    setApprovals(Number(event.target.value))
+    setValue('approvals', Number(event.target.value))
   }
 
-  const handleMembersChange = (index: number, value: string) => {
-    const updatedMembers = [...spherreMembers]
-    updatedMembers[index] = value
-    setSpherreMembers(updatedMembers)
-  }
+  // Check for duplicate addresses to highlight them
+  const memberAddresses = watch('members')
+    .map((m) => m.address.trim())
+    .filter((addr) => addr !== '')
+  const duplicateAddresses = memberAddresses.filter(
+    (addr, index) => memberAddresses.indexOf(addr) !== index,
+  )
 
-  const handleSubmitStepTwo = async (e: { preventDefault: () => void }) => {
-    e.preventDefault()
-    if (spherreMembers[0] === '') {
-      throw Error('Please add at least one member to continue')
-    }
-
+  const handleSubmitStepTwo = async (data: StepTwoData) => {
     try {
-      console.log({ spherreMembers, approvals })
-      // Necessay submit logic
+      console.log({
+        spherreMembers: data.members.map((m) => m.address),
+        approvals: data.approvals,
+      })
+      // Necessary submit logic
       router.push('/confirmSetup')
     } catch (error) {
       console.error(error)
@@ -70,15 +132,32 @@ const StepTwo = () => {
       </div>
 
       {/* form */}
-      <form onSubmit={handleSubmitStepTwo} className="w-full space-y-4">
+      <form
+        onSubmit={handleSubmit(handleSubmitStepTwo)}
+        className="w-full space-y-4"
+      >
         <OnboardingCard title="Add Spherre Members">
           {/* Inputs */}
           <div className="w-full flex flex-col gap-6 py-4 md:px-[26px] px-4">
-            {/* Account name */}
-            {spherreMembers.map((member, index) => (
-              <div key={index} className="w-full">
+            {/* Display array-level error if any */}
+            {errors.members?.root && (
+              <p className="text-red-500 text-sm">
+                {errors.members.root.message}
+              </p>
+            )}
+
+            {/* Display uniqueness error if any */}
+            {errors.members?.message && (
+              <p className="text-red-500 text-sm bg-red-500/10 p-2 rounded">
+                {errors.members.message}
+              </p>
+            )}
+
+            {/* Members inputs */}
+            {fields.map((field: { id: string }, index: number) => (
+              <div key={field.id} className="w-full">
                 <label
-                  htmlFor={`accountName-${index}`}
+                  htmlFor={`members.${index}.address`}
                   className="font-[400] text-[14px] leading-[24px] text-white mb-1 block"
                 >
                   Member {index + 1}
@@ -87,26 +166,44 @@ const StepTwo = () => {
                 <div className="relative w-full">
                   <input
                     type="text"
-                    name="accountName"
-                    id={`accountName-${index}`}
-                    className="w-full border border-[#292929] rounded-[7px] placeholder:text-[#8E9BAE] px-4 py-3 bg-transparent outline-none pr-10"
+                    id={`members.${index}.address`}
+                    className={`w-full border text-white rounded-[7px] placeholder:text-[#8E9BAE] px-4 py-3 bg-transparent outline-none pr-10 ${
+                      errors.members?.[index]?.address ||
+                      (duplicateAddresses.includes(
+                        watch(`members.${index}.address`).trim(),
+                      ) &&
+                        watch(`members.${index}.address`).trim() !== '')
+                        ? 'border-red-500'
+                        : 'border-[#292929]'
+                    }`}
                     placeholder="Enter team member's address"
-                    onChange={(e) => handleMembersChange(index, e.target.value)}
-                    value={member}
-                    required
+                    {...register(`members.${index}.address`)}
                   />
                   {index === 0 ? (
                     <LuTrash
-                      onClick={() => clearMember(index)}
+                      onClick={() => setValue(`members.${index}.address`, '')}
                       className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#8E9BAE] cursor-pointer"
                     />
                   ) : (
                     <LuTrash
-                      onClick={() => deleteMember(index)}
+                      onClick={() => remove(index)}
                       className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#8E9BAE] cursor-pointer"
                     />
                   )}
                 </div>
+                {errors.members?.[index]?.address && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.members[index]?.address?.message}
+                  </p>
+                )}
+                {duplicateAddresses.includes(
+                  watch(`members.${index}.address`).trim(),
+                ) &&
+                  watch(`members.${index}.address`).trim() !== '' && (
+                    <p className="text-red-500 text-sm mt-1">
+                      This address is already added
+                    </p>
+                  )}
               </div>
             ))}
 
@@ -131,22 +228,25 @@ const StepTwo = () => {
               <input
                 type="range"
                 min="1"
-                max={spherreMembers.length}
+                max={members.length}
                 step="1"
                 value={approvals}
                 onChange={handleApprovalsChange}
                 className="flex-grow w-full appearance-none h-2 bg-[#272729] rounded-lg outline-none cursor-pointer"
               />
               <div className="flex items-center justify-between px-1">
-                <span className="text-sm">1</span>
-                <span className="text-sm">{spherreMembers.length}</span>
+                <span className="text-sm text-white">1</span>
+                <span className="text-sm text-white">{members.length}</span>
               </div>
+              <p className="text-center text-white mt-2">
+                {approvals} of {members.length} approvals required
+              </p>
             </div>
             <button
-              type="submit"
+              disabled={isSubmitting}
               className="w-full h-[50px] flex justify-center items-center bg-white shadow-[0px_1.08px_2.16px_0px_#1018280A] text-[#101213] font-[500] text-base rounded-[7px]"
             >
-              Continue
+              {isSubmitting ? 'Processing...' : 'Continue'}
             </button>
 
             <style>
