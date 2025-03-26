@@ -2,52 +2,29 @@
 
 import React, { useState, useEffect } from 'react'
 import logo from '../../public/Images/spherrelogo.png'
-import Image, { StaticImageData } from 'next/image'
-import Dashboard from '../../public/Images/Dash.png'
-import Trade from '../../public/Images/Trade.png'
-import Transactions from '../../public/Images/Transactions.png'
-import Stake from '../../public/Images/Stake.png'
-import Treasury from '../../public/Images/Treasury.png'
-import Payments from '../../public/Images/Payments.png'
-import Apps from '../../public/Images/Apps.png'
-import Settings from '../../public/Images/Settings.png'
-import Support from '../../public/Images/Support.png'
+import Image from 'next/image'
 import SidebarProfile from './Profile'
+import { NavItem } from '@/app/dapp/navigation'
+import Link from 'next/link'
 
-// Navigation item type
-interface NavItem {
-  name: string
-  icon: StaticImageData
-  comingSoon?: boolean
-  notification?: number
-}
-
-const Sidebar = () => {
+const Sidebar = ({
+  navItems,
+  selectedPage,
+}: {
+  navItems: NavItem[]
+  selectedPage: string
+}) => {
   // State to track active page - set dashboard as default
-  const [activePage, setActivePage] = useState('Dashboard')
+  // const [activePage, setActivePage] = useState('Dashboard')
 
   // State to track sidebar expansion
   const [expanded, setExpanded] = useState(false)
 
-  // Define navigation items
-  const navItems: NavItem[] = [
-    { name: 'Dashboard', icon: Dashboard },
-    { name: 'Trade', icon: Trade },
-    { name: 'Members', icon: Trade }, // Using Trade icon temporarily for Members
-    { name: 'Transactions', icon: Transactions },
-    { name: 'Stake', icon: Stake, comingSoon: true },
-    { name: 'Treasury', icon: Treasury },
-    { name: 'Payments', icon: Payments, comingSoon: true },
-    { name: 'Apps', icon: Apps, comingSoon: true },
-    { name: 'Settings', icon: Settings },
-    { name: 'Support', icon: Support },
-  ]
-
   // Function to handle navigation click
-  const handleNavClick = (pageName: string) => {
-    setActivePage(pageName)
-    // You can add navigation logic here if needed
-  }
+  /* const handleNavClick = (pageName: string) => {
+         setActivePage(pageName)
+         // You can add navigation logic here if needed
+       }*/
 
   // Reset expanded state when clicking outside
   useEffect(() => {
@@ -90,37 +67,53 @@ const Sidebar = () => {
         {/* Menu Items */}
         <ul className="flex flex-col gap-5 text-[16px]">
           {navItems.map((item) => (
-            <li
-              key={item.name}
-              onClick={() => handleNavClick(item.name)}
-              className={`flex items-center cursor-pointer p-3 rounded-lg transition-all ${
-                expanded ? 'gap-3' : 'justify-center'
-              } ${
-                activePage === item.name
-                  ? 'bg-[#27292D] text-white'
-                  : 'text-gray-400'
-              }`}
-            >
-              <div className="relative">
-                <Image
-                  src={item.icon}
-                  alt={item.name}
-                  width={expanded ? 24 : 40}
-                  height={expanded ? 24 : 40}
-                />
-                {item.notification}
-              </div>
-
-              {expanded && (
-                <>
-                  <span>{item.name}</span>
-                  {item.comingSoon && (
-                    <span className="text-[10px] text-green-400 border-[0.5px] bg-green-400/10 border-green-400/40 px-2 py-[0.5px] rounded-xl ml-auto">
-                      Coming soon
+            <li key={item.name}>
+              <Link
+                href={item?.route ?? '/dapp/'}
+                className={`flex items-center cursor-pointer p-3 rounded-lg transition-all ${
+                  expanded ? 'gap-3' : 'justify-center'
+                } ${
+                  selectedPage === item.name
+                    ? 'bg-[#27292D] text-white'
+                    : 'text-gray-400'
+                }`}
+                style={{
+                  width: expanded ? 'auto' : '40px', // Ensure enough space for icons when collapsed
+                  height: '40px', // Fixed height for consistency
+                }}
+              >
+                <div
+                  className="relative flex items-center justify-center"
+                  style={{
+                    width: expanded ? 'auto' : '40px', // Adjust width for collapsed state
+                    height: '40px', // Fixed height for icons
+                  }}
+                >
+                  <Image
+                    src={item.icon}
+                    alt={item.name}
+                    width={expanded ? 24 : 30} // Dynamically adjust icon size
+                    height={expanded ? 24 : 30} // Dynamically adjust icon size
+                    className="transition-all duration-300" // Smooth transition for size changes
+                  />
+                  {item.notification && expanded && (
+                    <span className="absolute top-0 right-0 text-[10px] bg-red-500 text-white rounded-full px-1">
+                      {item.notification}
                     </span>
                   )}
-                </>
-              )}
+                </div>
+
+                {expanded && (
+                  <>
+                    <span>{item.name}</span>
+                    {item.comingSoon && (
+                      <span className="text-[10px] text-green-400 border-[0.5px] bg-green-400/10 border-green-400/40 px-2 py-[0.5px] rounded-xl ml-auto">
+                        Coming soon
+                      </span>
+                    )}
+                  </>
+                )}
+              </Link>
             </li>
           ))}
         </ul>
