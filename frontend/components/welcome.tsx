@@ -37,7 +37,7 @@ const Welcome = () => {
 
             {/* Responsive Button */}
             <button
-              onClick={() => router.push('/onboarding/step1')}
+              onClick={() => router.push('/onboarding/step')}
               className="bg-white w-full sm:w-72 flex items-center justify-center gap-1 px-6 py-2 rounded-lg mx-auto my-3"
             >
               <Image src={add} height={30} width={24} alt={'add'} />
