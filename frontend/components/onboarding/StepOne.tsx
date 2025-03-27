@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 import { FaPlus } from 'react-icons/fa6'
 import { LuTrash } from 'react-icons/lu'
 import OnboardingCard from './OnboardingCard'
+
 import StepIndicator from './StepIndicators'
 
 export default function StepOne() {
