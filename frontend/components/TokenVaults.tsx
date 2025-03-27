@@ -1,4 +1,6 @@
 import React from 'react';
+import Image from 'next/image';
+import Logo from '../assets/Coin Facecard-2.png';
 
 const TokenVaults: React.FC = () => {
   const data = [
@@ -9,9 +11,9 @@ const TokenVaults: React.FC = () => {
 
   return (
     <div className="overflow-x-auto p-4 bg-black text-white">
-      <table className="min-w-full border border-gray-700">
+      <table className="min-w-full">
         <thead>
-          <tr className="bg-gray-800 text-gray-300">
+          <tr className=" text-[#8E9BAE]">
             <th className="py-2 px-4 text-left">Coin</th>
             <th className="py-2 px-4 text-left">Price</th>
             <th className="py-2 px-4 text-left">Balance</th>
@@ -21,9 +23,9 @@ const TokenVaults: React.FC = () => {
         </thead>
         <tbody>
           {data.map((item, index) => (
-            <tr key={index} className="border-t border-gray-700">
+            <tr key={index}>
               <td className="py-2 px-4 flex items-center">
-                <img src={"/path-to-icon.png"} alt="New Icon" className="w-5 h-5 mr-2" />
+                <Image src={Logo} alt="New Icon" className="w-5 h-5 mr-2" />
                 {item.coin}
               </td>
               <td className="py-2 px-4">${item.price.toFixed(2)}</td>
@@ -31,7 +33,7 @@ const TokenVaults: React.FC = () => {
               <td className="py-2 px-4">${item.value.toFixed(2)}</td>
               <td className="py-2 px-4 text-center">
                 <div className="relative w-24">
-                  <div className="absolute -top-5 left-1/2 transform -translate-x-1/2 text-sm font-semibold">
+                  <div className="absolute -top-5 left-1/2 transform -translate-x-1/2 text-sm  font-semibold">
                     {item.size}
                   </div>
                   <div className="bg-gray-700 h-2 rounded relative">
