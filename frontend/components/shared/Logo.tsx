@@ -2,15 +2,14 @@ import Image, { StaticImageData } from 'next/image'
 import Link from 'next/link'
 import React from 'react'
 
-const Logo = ({
-  className,
-  image,
-  href,
-}: {
+interface LogoProps {
   className: string
   image: StaticImageData
   href: string
-}) => {
+  textColor?: 'white' | 'default'
+}
+
+const Logo = ({ className, image, href, textColor = 'default' }: LogoProps) => {
   return (
     // A reuseable component for rendering Logo
     <Link href={href} className="flex items-center gap-2">
@@ -23,7 +22,11 @@ const Logo = ({
         priority
         quality={100}
       />
-      <span className="text-xl font-semibold">Spherre</span>
+      <span
+        className={`text-xl font-semibold ${textColor === 'white' ? 'text-white' : ''}`}
+      >
+        Spherre
+      </span>
     </Link>
   )
 }
