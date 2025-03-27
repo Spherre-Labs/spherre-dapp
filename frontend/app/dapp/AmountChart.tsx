@@ -1,5 +1,5 @@
 'use client'
-import React, {useState, useEffect, useCallback} from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -64,304 +64,309 @@ const AmountAnalysisChart: React.FC<AmountAnalysisChartProps> = ({
 
   // Generate mock data based on date range
   const generateChartData = useCallback(
-      (range: DateRangeType, year?: string): DataItem[] => {
-        const data: DataItem[] = []
+    (range: DateRangeType, year?: string): DataItem[] => {
+      const data: DataItem[] = []
 
-        // Parse the selected year
-        const currentYear = parseInt(moment().format('YYYY'))
-        const selectedYearInt = year ? parseInt(year) : currentYear
+      // Parse the selected year
+      const currentYear = parseInt(moment().format('YYYY'))
+      const selectedYearInt = year ? parseInt(year) : currentYear
 
-        // Base value for the chart (starting point)
-        let baseValue = 500 + Math.random() * 500
+      // Base value for the chart (starting point)
+      let baseValue = 500 + Math.random() * 500
 
-        switch (range) {
-          case '1D':
-            // For 1D, create data for the current day but in the selected year
-            const dayStart =
-                selectedYearInt === currentYear
-                    ? moment().startOf('day')
-                    : moment().startOf('day').year(selectedYearInt)
+      switch (range) {
+        case '1D':
+          // For 1D, create data for the current day but in the selected year
+          const dayStart =
+            selectedYearInt === currentYear
+              ? moment().startOf('day')
+              : moment().startOf('day').year(selectedYearInt)
 
-            // Generate 24 hourly data points
-            for (let i = 0; i < 24; i++) {
-              const date = moment(dayStart).add(i, 'hours').toDate()
+          // Generate 24 hourly data points
+          for (let i = 0; i < 24; i++) {
+            const date = moment(dayStart).add(i, 'hours').toDate()
 
-              // Small random changes for hourly data
-              baseValue += (Math.random() - 0.5) * 20
+            // Small random changes for hourly data
+            baseValue += (Math.random() - 0.5) * 20
 
-              data.push({
-                date,
-                year: moment(date).format('YYYY'),
-                displayDate: moment(date).format('HH:mm'),
-                value: Math.max(50, Math.round(baseValue)),
-              })
-            }
-            break
+            data.push({
+              date,
+              year: moment(date).format('YYYY'),
+              displayDate: moment(date).format('HH:mm'),
+              value: Math.max(50, Math.round(baseValue)),
+            })
+          }
+          break
 
-          case '7D':
-            // For 7D, create data for the last 7 days but in the selected year
-            const weekStart =
-                selectedYearInt === currentYear
-                    ? moment().subtract(6, 'days').startOf('day')
-                    : moment().subtract(6, 'days').startOf('day').year(selectedYearInt)
+        case '7D':
+          // For 7D, create data for the last 7 days but in the selected year
+          const weekStart =
+            selectedYearInt === currentYear
+              ? moment().subtract(6, 'days').startOf('day')
+              : moment()
+                  .subtract(6, 'days')
+                  .startOf('day')
+                  .year(selectedYearInt)
 
-            // Generate 7 daily data points
-            for (let i = 0; i < 7; i++) {
-              const date = moment(weekStart).add(i, 'days').toDate()
+          // Generate 7 daily data points
+          for (let i = 0; i < 7; i++) {
+            const date = moment(weekStart).add(i, 'days').toDate()
 
-              // Slightly larger changes for daily data
-              baseValue += (Math.random() - 0.5) * 50
+            // Slightly larger changes for daily data
+            baseValue += (Math.random() - 0.5) * 50
 
-              data.push({
-                date,
-                year: moment(date).format('YYYY'),
-                displayDate: moment(date).format('MMM DD'),
-                value: Math.max(50, Math.round(baseValue)),
-              })
-            }
-            break
+            data.push({
+              date,
+              year: moment(date).format('YYYY'),
+              displayDate: moment(date).format('MMM DD'),
+              value: Math.max(50, Math.round(baseValue)),
+            })
+          }
+          break
 
-          case '1M':
-            // For 1M, create data for the last 30 days but in the selected year
-            const monthStart =
-                selectedYearInt === currentYear
-                    ? moment().subtract(15, 'days').startOf('day')
-                    : moment().subtract(15, 'days').startOf('day').year(selectedYearInt)
+        case '1M':
+          // For 1M, create data for the last 30 days but in the selected year
+          const monthStart =
+            selectedYearInt === currentYear
+              ? moment().subtract(15, 'days').startOf('day')
+              : moment()
+                  .subtract(15, 'days')
+                  .startOf('day')
+                  .year(selectedYearInt)
 
-            // Generate 30 daily data points
-            for (let i = 0; i < 15; i++) {
-              const date = moment(monthStart).add(i, 'days').toDate()
+          // Generate 30 daily data points
+          for (let i = 0; i < 15; i++) {
+            const date = moment(monthStart).add(i, 'days').toDate()
 
-              // More noticeable changes for monthly view
-              baseValue += (Math.random() - 0.5) * 60
+            // More noticeable changes for monthly view
+            baseValue += (Math.random() - 0.5) * 60
 
-              data.push({
-                date,
-                year: moment(date).format('YYYY'),
-                displayDate: moment(date).format('MMM DD'),
-                value: Math.max(50, Math.round(baseValue)),
-              })
-            }
-            break
+            data.push({
+              date,
+              year: moment(date).format('YYYY'),
+              displayDate: moment(date).format('MMM DD'),
+              value: Math.max(50, Math.round(baseValue)),
+            })
+          }
+          break
 
-          case '3M':
-            // For 3M, create data for the last 12 weeks but in the selected year
-            const quarterStart =
-                selectedYearInt === currentYear
-                    ? moment().subtract(11, 'weeks').startOf('week')
-                    : moment()
-                        .subtract(11, 'weeks')
-                        .startOf('week')
-                        .year(selectedYearInt)
+        case '3M':
+          // For 3M, create data for the last 12 weeks but in the selected year
+          const quarterStart =
+            selectedYearInt === currentYear
+              ? moment().subtract(11, 'weeks').startOf('week')
+              : moment()
+                  .subtract(11, 'weeks')
+                  .startOf('week')
+                  .year(selectedYearInt)
 
-            // Generate 12 weekly data points
-            for (let i = 0; i < 12; i++) {
-              const date = moment(quarterStart).add(i, 'weeks').toDate()
+          // Generate 12 weekly data points
+          for (let i = 0; i < 12; i++) {
+            const date = moment(quarterStart).add(i, 'weeks').toDate()
 
-              // Larger changes for 3-month view
-              baseValue += (Math.random() - 0.5) * 100
+            // Larger changes for 3-month view
+            baseValue += (Math.random() - 0.5) * 100
 
-              data.push({
-                date,
-                year: moment(date).format('YYYY'),
-                displayDate: moment(date).format('MMM DD'),
-                value: Math.max(50, Math.round(baseValue)),
-              })
-            }
-            break
+            data.push({
+              date,
+              year: moment(date).format('YYYY'),
+              displayDate: moment(date).format('MMM DD'),
+              value: Math.max(50, Math.round(baseValue)),
+            })
+          }
+          break
 
-          case '1Y':
-            // For 1Y, create data for all 12 months of the selected year
-            // Start from January of the selected year
-            const yearStart = moment().month(0).date(1).year(selectedYearInt)
+        case '1Y':
+          // For 1Y, create data for all 12 months of the selected year
+          // Start from January of the selected year
+          const yearStart = moment().month(0).date(1).year(selectedYearInt)
 
-            // Generate 12 monthly data points
-            for (let i = 0; i < 12; i++) {
-              const date = moment(yearStart).add(i, 'months').toDate()
+          // Generate 12 monthly data points
+          for (let i = 0; i < 12; i++) {
+            const date = moment(yearStart).add(i, 'months').toDate()
 
-              // Significant changes for yearly view
-              baseValue += (Math.random() - 0.5) * 150
+            // Significant changes for yearly view
+            baseValue += (Math.random() - 0.5) * 150
 
-              data.push({
-                date,
-                year: moment(date).format('YYYY'),
-                displayDate: moment(date).format('MMM YYYY'),
-                value: Math.max(50, Math.round(baseValue)),
-              })
-            }
-            break
+            data.push({
+              date,
+              year: moment(date).format('YYYY'),
+              displayDate: moment(date).format('MMM YYYY'),
+              value: Math.max(50, Math.round(baseValue)),
+            })
+          }
+          break
 
+        case 'ALL':
+          // Generate yearly data for all available years (7 years)
+          baseValue = 500 // Start with a base value
 
-          case 'ALL':
-            // Generate yearly data for all available years (7 years)
-            baseValue = 500 // Start with a base value
+          // Sort years in ascending order
+          const sortedYears = [...availableYears].sort()
 
-            // Sort years in ascending order
-            const sortedYears = [...availableYears].sort();
+          for (let i = 0; i < sortedYears.length; i++) {
+            const yearValue = sortedYears[i]
+            // Use mid-year point for better visualization
+            const date = moment(yearValue, 'YYYY').startOf('year').toDate()
 
-            for (let i = 0; i < sortedYears.length; i++) {
-              const yearValue = sortedYears[i];
-              // Use mid-year point for better visualization
-              const date = moment(yearValue, 'YYYY').startOf('year').toDate();
+            // Yearly trend with some randomness
+            baseValue += 100 + (Math.random() - 0.3) * 200
 
-              // Yearly trend with some randomness
-              baseValue += 100 + (Math.random() - 0.3) * 200;
+            data.push({
+              date,
+              year: yearValue,
+              displayDate: yearValue,
+              value: Math.max(50, Math.round(baseValue)),
+            })
+          }
+          break
 
-              data.push({
-                date,
-                year: yearValue,
-                displayDate: yearValue,
-                value: Math.max(50, Math.round(baseValue)),
-              });
-            }
-            break;
+        default:
+          console.warn(`Unexpected date range: ${range}`)
+          break
+      }
 
-          default:
-            console.warn(`Unexpected date range: ${range}`)
-            break
-        }
-
-        // Ensure data is sorted chronologically
-        return data.sort((a, b) => a.date.getTime() - b.date.getTime())
-      },
-      [availableYears] // Add availableYears as a dependency since it's used in the ALL case
+      // Ensure data is sorted chronologically
+      return data.sort((a, b) => a.date.getTime() - b.date.getTime())
+    },
+    [availableYears], // Add availableYears as a dependency since it's used in the ALL case
   )
 
   // Update chart options based on date range
-  const getChartOptions = useCallback((
-    range: DateRangeType,
-  ): ChartOptions<'line'> => {
-    let unit: TimeUnit = 'day'
-    let tooltipFormat = 'MMM DD, YYYY'
+  const getChartOptions = useCallback(
+    (range: DateRangeType): ChartOptions<'line'> => {
+      let unit: TimeUnit = 'day'
+      let tooltipFormat = 'MMM DD, YYYY'
 
-    switch (range) {
-      case '1D':
-        unit = 'hour'
-        tooltipFormat = 'HH:mm, DD/MM/YYYY'
-        break
-      case '7D':
-        unit = 'day'
-        tooltipFormat = 'DD/MM/YYYY'
-        break
-      case '1M':
-        unit = 'day'
-        tooltipFormat = 'DD/MM/YYYY'
-        break
-      case '3M':
-        unit = 'week'
-        tooltipFormat = 'DD/MM/YYYY'
-        break
-      case '1Y':
-        unit = 'month'
-        tooltipFormat = 'MMM YYYY'
-        break
-      case 'ALL':
-        unit = 'year'
-        tooltipFormat = 'YYYY'
-        break
-      default:
-        console.warn(`Unexpected date range: ${range}`)
-        break
-    }
+      switch (range) {
+        case '1D':
+          unit = 'hour'
+          tooltipFormat = 'HH:mm, DD/MM/YYYY'
+          break
+        case '7D':
+          unit = 'day'
+          tooltipFormat = 'DD/MM/YYYY'
+          break
+        case '1M':
+          unit = 'day'
+          tooltipFormat = 'DD/MM/YYYY'
+          break
+        case '3M':
+          unit = 'week'
+          tooltipFormat = 'DD/MM/YYYY'
+          break
+        case '1Y':
+          unit = 'month'
+          tooltipFormat = 'MMM YYYY'
+          break
+        case 'ALL':
+          unit = 'year'
+          tooltipFormat = 'YYYY'
+          break
+        default:
+          console.warn(`Unexpected date range: ${range}`)
+          break
+      }
 
-
-    return {
-      responsive: true,
-      maintainAspectRatio: false,
-      scales: {
-        x: {
-          type: 'time',
-          time: {
-            unit,
-            tooltipFormat,
-            displayFormats: {
-              hour: 'HH:mm',
-              day: 'MMM DD',
-              week: 'MMM DD',
-              month: 'MMM',
-              year: 'YYYY',
+      return {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          x: {
+            type: 'time',
+            time: {
+              unit,
+              tooltipFormat,
+              displayFormats: {
+                hour: 'HH:mm',
+                day: 'MMM DD',
+                week: 'MMM DD',
+                month: 'MMM',
+                year: 'YYYY',
+              },
+            },
+            grid: {
+              display: true,
+              color: '#292929',
+              lineWidth: 1,
+              drawOnChartArea: true,
+              drawTicks: true,
+            },
+            ticks: {
+              color: '#FFFFFF',
             },
           },
-          grid: {
-            display: true,
-            color: '#292929',
-            lineWidth: 1,
-            drawOnChartArea: true,
-            drawTicks: true,
-          },
-          ticks: {
-            color: '#FFFFFF',
-          },
-        },
-        y: {
-          beginAtZero: false,
-          grid: {
-            display: true,
-            color: '#292929',
-            lineWidth: 1,
-            drawOnChartArea: true,
-            drawTicks: true,
-          },
-        },
-      },
-      plugins: {
-        legend: {
-          display: false, // Hide legend since we only have one dataset
-        },
-        tooltip: {
-          mode: 'index',
-          intersect: false, // Allow tooltip when near point
-          backgroundColor: '#272729',
-          cornerRadius: 10,
-          titleColor: '#FFFFFF',
-          bodyColor: '#FFFFFF',
-          borderColor: '#6F2FCE',
-          borderWidth: 0,
-          padding: 12,
-          displayColors: true,
-          boxWidth: 8,
-          boxHeight: 8,
-          usePointStyle: true, // This makes the legend markers circular
-          // @ts-expect-error Chart.js types don't properly define pointStyle as allowing 'circle'
-          pointStyle: 'circle',
-          boxPadding: 3,
-          callbacks: {
-            label: (context: TooltipItem<'line'>): string => {
-              let label = 'Price: '
-              if (
-                context.parsed &&
-                context.parsed.y !== null &&
-                context.parsed.y !== undefined
-              ) {
-                label += `${context.parsed.y.toLocaleString()}`
-              }
-              return label
+          y: {
+            beginAtZero: false,
+            grid: {
+              display: true,
+              color: '#292929',
+              lineWidth: 1,
+              drawOnChartArea: true,
+              drawTicks: true,
             },
           },
         },
-      },
-      interaction: {
-        mode: 'nearest',
-        axis: 'x',
-        intersect: false,
-      },
-      elements: {
-        point: {
-          radius: 3, // Center point size
-          hoverRadius: 4,
-          backgroundColor: '#6F2FCE', // Center point color
-          borderColor: 'rgba(0, 0, 0, 0)', // Transparent space
-          borderWidth: 5, // Width of transparent space
-          hoverBackgroundColor: '#6F2FCE',
-          hoverBorderColor: '6F2FCE',
-          hoverBorderWidth: 5,
+        plugins: {
+          legend: {
+            display: false, // Hide legend since we only have one dataset
+          },
+          tooltip: {
+            mode: 'index',
+            intersect: false, // Allow tooltip when near point
+            backgroundColor: '#272729',
+            cornerRadius: 10,
+            titleColor: '#FFFFFF',
+            bodyColor: '#FFFFFF',
+            borderColor: '#6F2FCE',
+            borderWidth: 0,
+            padding: 12,
+            displayColors: true,
+            boxWidth: 8,
+            boxHeight: 8,
+            usePointStyle: true, // This makes the legend markers circular
+            // @ts-expect-error Chart.js types don't properly define pointStyle as allowing 'circle'
+            pointStyle: 'circle',
+            boxPadding: 3,
+            callbacks: {
+              label: (context: TooltipItem<'line'>): string => {
+                let label = 'Price: '
+                if (
+                  context.parsed &&
+                  context.parsed.y !== null &&
+                  context.parsed.y !== undefined
+                ) {
+                  label += `${context.parsed.y.toLocaleString()}`
+                }
+                return label
+              },
+            },
+          },
         },
-        line: {
-          tension: 0.4, // Smooth curve
+        interaction: {
+          mode: 'nearest',
+          axis: 'x',
+          intersect: false,
         },
-      },
-    }
-  }, [])
+        elements: {
+          point: {
+            radius: 3, // Center point size
+            hoverRadius: 4,
+            backgroundColor: '#6F2FCE', // Center point color
+            borderColor: 'rgba(0, 0, 0, 0)', // Transparent space
+            borderWidth: 5, // Width of transparent space
+            hoverBackgroundColor: '#6F2FCE',
+            hoverBorderColor: '6F2FCE',
+            hoverBorderWidth: 5,
+          },
+          line: {
+            tension: 0.4, // Smooth curve
+          },
+        },
+      }
+    },
+    [],
+  )
   // Prepare chart data from generated data
   const prepareChartData = (data: DataItem[]): ChartDataType => {
     return {
@@ -408,8 +413,6 @@ const AmountAnalysisChart: React.FC<AmountAnalysisChartProps> = ({
     setChartOptions(getChartOptions(dateRange))
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dateRange, selectedYear])
-
-
 
   // Date range selector buttons
   const dateRangeOptions: DateRangeType[] = [

@@ -1,8 +1,8 @@
 import React from 'react'
 import Image from 'next/image'
 import { Button } from '@/components/shared/Button'
-import Tabs from "./Tabs";
-import AmountChart from "@/app/dapp/AmountChart";
+import Tabs from './Tabs'
+import AmountChart from '@/app/dapp/AmountChart'
 
 export default function DashboardPage() {
   return (
@@ -34,22 +34,13 @@ export default function DashboardPage() {
             <h2 className="text-[45px] text-white font-bold">$250.35</h2>
           </div>
           <div className="grid grid-cols-3 gap-x-3">
-            <Button
-                variant="primary"
-                icon="/card-send-linear.svg"
-            >
+            <Button variant="primary" icon="/card-send-linear.svg">
               Withdraw
             </Button>
-            <Button
-                variant="primary"
-                icon="/card-recive-linear.svg"
-            >
+            <Button variant="primary" icon="/card-recive-linear.svg">
               Deposit
             </Button>
-            <Button
-                variant="secondary"
-                icon="/arrows-exchange.svg"
-            >
+            <Button variant="secondary" icon="/arrows-exchange.svg">
               Trade
             </Button>
           </div>
@@ -58,10 +49,10 @@ export default function DashboardPage() {
           <div className="bg-[#272729] rounded-[10px] py-[25px] px-[28px] flex items-center justify-between">
             <div className="flex flex-col justify-between h-full  gap-y-2">
               <Image
-                  height={25}
-                  width={25}
-                  src="/users-group-two-rounded-linear.svg"
-                  alt="Users Group Icon"
+                height={25}
+                width={25}
+                src="/users-group-two-rounded-linear.svg"
+                alt="Users Group Icon"
               />
               <p className="text-[#8E9BAE]">Members</p>
             </div>
@@ -70,18 +61,18 @@ export default function DashboardPage() {
           <div className="bg-[#272729] rounded-[10px] py-[25px] px-[28px] flex items-center justify-between">
             <div className="flex flex-col justify-between h-full  gap-y-2">
               <Image
-                  height={25}
-                  width={25}
-                  src="/book-number-16-regular.svg"
-                  alt="Boo number Icon"
+                height={25}
+                width={25}
+                src="/book-number-16-regular.svg"
+                alt="Boo number Icon"
               />
               <div className="flex items-center gap-x-2">
                 <p className="text-[#8E9BAE]">Threshold</p>
                 <Image
-                    height={25}
-                    width={25}
-                    src="/proicons_info.svg"
-                    alt="Info Icon"
+                  height={25}
+                  width={25}
+                  src="/proicons_info.svg"
+                  alt="Info Icon"
                 />
               </div>
             </div>
@@ -94,14 +85,18 @@ export default function DashboardPage() {
           <AmountChart />
         </div>
         <div className="bg-[#272729] flex flex-col gap-y-[23px] items-center justify-between rounded-[10px] py-[25px] px-[28px]">
-          <h3 className="self-start mb-5 text-[#8E9BAE] text-[16px] font-bold">Request Status</h3>
+          <h3 className="self-start mb-5 text-[#8E9BAE] text-[16px] font-bold">
+            Request Status
+          </h3>
           <Image
-              height={100}
-              width={100}
-              src="/request_placeholder.svg"
-              alt="Request Placeholder Icon"
+            height={100}
+            width={100}
+            src="/request_placeholder.svg"
+            alt="Request Placeholder Icon"
           />
-          <p className="text-[#8E9BAE] text-center">You currently haven’t sent for any fund conformation approval.</p>
+          <p className="text-[#8E9BAE] text-center">
+            You currently haven’t sent for any fund conformation approval.
+          </p>
         </div>
       </div>
       <Tabs />
