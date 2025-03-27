@@ -5,98 +5,95 @@ import { LuTrash } from 'react-icons/lu'
 import OnboardingCard from './OnboardingCard'
 import StepIndicator from './StepIndicators'
 
-
-
 export default function StepOne() {
   const [currentStep, setCurrentStep] = useState(1)
-  
 
   const [isLoading, setIsLoading] = useState(false)
-  
-  
+
   const [formData, setFormData] = useState({
-    
     accountName: '',
     description: '',
-    
-    
+
     spherreMembers: [''],
     approvals: 1,
   })
-  
-  
+
   const handleAccountNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, accountName: e.target.value })
   }
-  
-  const handleDescriptionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+
+  const handleDescriptionChange = (
+    e: React.ChangeEvent<HTMLTextAreaElement>,
+  ) => {
     setFormData({ ...formData, description: e.target.value })
   }
-  
-  
+
   const addNewMember = () => {
     setFormData({
       ...formData,
-      spherreMembers: [...formData.spherreMembers, '']
+      spherreMembers: [...formData.spherreMembers, ''],
     })
   }
-  
+
   const deleteMember = (index: number) => {
     const newMembers = formData.spherreMembers.filter((_, i) => i !== index)
-    const newApprovals = formData.approvals > newMembers.length ? newMembers.length : formData.approvals
-    
+    const newApprovals =
+      formData.approvals > newMembers.length
+        ? newMembers.length
+        : formData.approvals
+
     setFormData({
       ...formData,
       spherreMembers: newMembers,
-      approvals: newApprovals
+      approvals: newApprovals,
     })
   }
-  
+
   const clearMember = (index: number) => {
     const updatedMembers = [...formData.spherreMembers]
     updatedMembers[index] = ''
-    
+
     setFormData({
       ...formData,
-      spherreMembers: updatedMembers
+      spherreMembers: updatedMembers,
     })
   }
-  
+
   const handleMembersChange = (index: number, value: string) => {
     const updatedMembers = [...formData.spherreMembers]
     updatedMembers[index] = value
-    
+
     setFormData({
       ...formData,
-      spherreMembers: updatedMembers
+      spherreMembers: updatedMembers,
     })
   }
-  
-  const handleApprovalsChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+
+  const handleApprovalsChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
     setFormData({
       ...formData,
-      approvals: Number(event.target.value)
+      approvals: Number(event.target.value),
     })
   }
-  
+
   const handleSubmitStepOne = async (e: React.FormEvent) => {
     e.preventDefault()
-    
+
     if (!formData.accountName || !formData.description) {
       throw Error('Account name and description are required')
     }
-    
+
     try {
       setIsLoading(true)
-      
-    
-      await new Promise(resolve => setTimeout(resolve, 500))
-      console.log('Step 1 data:', { 
-        accountName: formData.accountName, 
-        description: formData.description 
+
+      await new Promise((resolve) => setTimeout(resolve, 500))
+      console.log('Step 1 data:', {
+        accountName: formData.accountName,
+        description: formData.description,
       })
-      
-  
+
       setCurrentStep(2)
     } catch (error) {
       console.error(error)
@@ -104,23 +101,23 @@ export default function StepOne() {
       setIsLoading(false)
     }
   }
-  
+
   const handleSubmitStepTwo = async (e: React.FormEvent) => {
     e.preventDefault()
-    
+
     if (formData.spherreMembers[0] === '') {
       throw Error('Please add at least one member to continue')
     }
-    
+
     try {
       setIsLoading(true)
-      
-      await new Promise(resolve => setTimeout(resolve, 500))
-      console.log('Step 2 data:', { 
-        spherreMembers: formData.spherreMembers, 
-        approvals: formData.approvals 
+
+      await new Promise((resolve) => setTimeout(resolve, 500))
+      console.log('Step 2 data:', {
+        spherreMembers: formData.spherreMembers,
+        approvals: formData.approvals,
       })
-      
+
       setCurrentStep(3)
     } catch (error) {
       console.error(error)
@@ -128,23 +125,23 @@ export default function StepOne() {
       setIsLoading(false)
     }
   }
-  
+
   const handleFinalSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    
+
     try {
       setIsLoading(true)
-      
-      await new Promise(resolve => setTimeout(resolve, 800))
-      
+
+      await new Promise((resolve) => setTimeout(resolve, 800))
+
       console.log('Complete onboarding data:', formData)
-      
+
       alert('Multisig account successfully created!')
       setFormData({
         accountName: '',
         description: '',
         spherreMembers: [''],
-        approvals: 1
+        approvals: 1,
       })
       setCurrentStep(1)
     } catch (error) {
@@ -153,10 +150,9 @@ export default function StepOne() {
       setIsLoading(false)
     }
   }
-  
+
   return (
     <div className="w-full max-w-3xl mx-auto">
-      
       <div className="mb-8">
         <StepIndicator currentStep={currentStep} />
       </div>
@@ -192,7 +188,7 @@ export default function StepOne() {
                     required
                   />
                 </div>
-          
+
                 <div className="w-full">
                   <label
                     htmlFor="description"
@@ -224,7 +220,6 @@ export default function StepOne() {
       )}
       {currentStep === 2 && (
         <>
-          
           <div className="max-w-sm my-12 mx-auto">
             <h1 className="text-center text-white font-[700] text-[40px] leading-[47.42px]">
               Add Members to a Multisig Vault
@@ -234,7 +229,7 @@ export default function StepOne() {
               team&apos;s needs.
             </p>
           </div>
-          
+
           <form onSubmit={handleSubmitStepTwo} className="w-full space-y-4">
             <OnboardingCard title="Add Spherre Members">
               <div className="w-full flex flex-col gap-6 py-4 md:px-[26px] px-4">
@@ -254,7 +249,9 @@ export default function StepOne() {
                         id={`accountName-${index}`}
                         className="w-full border border-[#292929] rounded-[7px] placeholder:text-[#8E9BAE] px-4 py-3 bg-transparent text-[#8E9BAE] outline-none pr-10"
                         placeholder="Enter team member's address"
-                        onChange={(e) => handleMembersChange(index, e.target.value)}
+                        onChange={(e) =>
+                          handleMembersChange(index, e.target.value)
+                        }
                         value={member}
                         required
                       />
@@ -302,10 +299,12 @@ export default function StepOne() {
                   />
                   <div className="flex items-center justify-between px-1">
                     <span className="text-sm">1</span>
-                    <span className="text-sm">{formData.spherreMembers.length}</span>
+                    <span className="text-sm">
+                      {formData.spherreMembers.length}
+                    </span>
                   </div>
                 </div>
-                
+
                 <div className="flex space-x-4">
                   <button
                     type="button"
@@ -340,35 +339,41 @@ export default function StepOne() {
       )}
       {currentStep === 3 && (
         <>
-          
           <div className="max-w-sm my-12 mx-auto">
             <h1 className="text-center text-white font-[700] text-[40px] leading-[47.42px]">
               Confirm Your Setup
             </h1>
             <p className="font-[400] text-[16px] leading-[25px] text-center text-[#8E9BAE] lg:px-8 mt-3">
-              Please review the details of your multisig account before finalizing setup.
+              Please review the details of your multisig account before
+              finalizing setup.
             </p>
           </div>
-          
+
           <form onSubmit={handleFinalSubmit} className="w-full space-y-4">
             <OnboardingCard title="Account Details">
               <div className="w-full flex flex-col gap-4 py-4 md:px-[26px] px-4">
                 <div>
-                  <h4 className="text-white text-sm font-medium">Account Name</h4>
+                  <h4 className="text-white text-sm font-medium">
+                    Account Name
+                  </h4>
                   <p className="text-[#8E9BAE] mt-1">{formData.accountName}</p>
                 </div>
-                
+
                 <div>
-                  <h4 className="text-white text-sm font-medium">Description</h4>
+                  <h4 className="text-white text-sm font-medium">
+                    Description
+                  </h4>
                   <p className="text-[#8E9BAE] mt-1">{formData.description}</p>
                 </div>
               </div>
             </OnboardingCard>
-            
+
             <OnboardingCard title="Members & Threshold">
               <div className="w-full flex flex-col gap-4 py-4 md:px-[26px] px-4">
                 <div>
-                  <h4 className="text-white text-sm font-medium">Members ({formData.spherreMembers.length})</h4>
+                  <h4 className="text-white text-sm font-medium">
+                    Members ({formData.spherreMembers.length})
+                  </h4>
                   <ul className="mt-2 space-y-2">
                     {formData.spherreMembers.map((member, index) => (
                       <li key={index} className="text-[#8E9BAE]">
@@ -377,16 +382,19 @@ export default function StepOne() {
                     ))}
                   </ul>
                 </div>
-                
+
                 <div>
-                  <h4 className="text-white text-sm font-medium">Required Approvals</h4>
+                  <h4 className="text-white text-sm font-medium">
+                    Required Approvals
+                  </h4>
                   <p className="text-[#8E9BAE] mt-1">
-                    {formData.approvals} out of {formData.spherreMembers.length} members
+                    {formData.approvals} out of {formData.spherreMembers.length}{' '}
+                    members
                   </p>
                 </div>
               </div>
             </OnboardingCard>
-            
+
             <div className="flex space-x-4 mt-6">
               <button
                 type="button"

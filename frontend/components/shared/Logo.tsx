@@ -9,12 +9,7 @@ interface LogoProps {
   textColor?: 'white' | 'default'
 }
 
-const Logo = ({
-  className,
-  image,
-  href,
-  textColor = 'default',
-}: LogoProps) => {
+const Logo = ({ className, image, href, textColor = 'default' }: LogoProps) => {
   return (
     // A reuseable component for rendering Logo
     <Link href={href} className="flex items-center gap-2">
@@ -27,7 +22,9 @@ const Logo = ({
         priority
         quality={100}
       />
-      <span className={`text-xl font-semibold ${textColor === 'white' ? 'text-white' : ''}`}>
+      <span
+        className={`text-xl font-semibold ${textColor === 'white' ? 'text-white' : ''}`}
+      >
         Spherre
       </span>
     </Link>

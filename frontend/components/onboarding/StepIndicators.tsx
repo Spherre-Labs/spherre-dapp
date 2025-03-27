@@ -1,22 +1,22 @@
 'use client'
 
 interface StepIndicatorProps {
-  currentStep: number;
+  currentStep: number
 }
 
 export default function StepIndicator({ currentStep }: StepIndicatorProps) {
-  const isStep2 = currentStep >= 2;
-  const isStep3 = currentStep >= 3;
+  const isStep2 = currentStep >= 2
+  const isStep3 = currentStep >= 3
 
   return (
     <div className="w-full flex justify-between items-center md:px-8 relative">
       <div className="absolute top-[22.5px] md:left-[18%] left-[23%] w-[15%] md:w-[25%] h-[1px] bg-[#8E9BAE] overflow-hidden">
-        <div 
+        <div
           className={`absolute top-0 left-0 h-full bg-[#6F2FCE] transition-all duration-500 ease-in-out ${isStep2 || isStep3 ? 'w-full' : 'w-0'}`}
         ></div>
       </div>
       <div className="absolute top-[22.5px] md:right-[18%] right-[23%] w-[15%] md:w-[25%] h-[1px] bg-[#8E9BAE] overflow-hidden">
-        <div 
+        <div
           className={`absolute top-0 left-0 h-full bg-[#6F2FCE] transition-all duration-500 ease-in-out ${isStep3 ? 'w-full' : 'w-0'}`}
         ></div>
       </div>
@@ -55,10 +55,14 @@ export default function StepIndicator({ currentStep }: StepIndicatorProps) {
 
       <style jsx>{`
         @keyframes slide-right {
-          from { width: 0; }
-          to { width: 100%; }
+          from {
+            width: 0;
+          }
+          to {
+            width: 100%;
+          }
         }
       `}</style>
     </div>
-  );
+  )
 }

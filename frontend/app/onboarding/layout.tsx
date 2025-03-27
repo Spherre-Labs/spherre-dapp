@@ -10,7 +10,6 @@ export default function layout({
       <Nav />
       <section className="max-w-2xl mx-auto md:mt-28 mt-20">
         <div className="w-full flex flex-col items-center gap-6">
-
           {children}
         </div>
       </section>
