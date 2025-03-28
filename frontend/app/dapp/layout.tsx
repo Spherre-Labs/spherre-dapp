@@ -4,79 +4,80 @@ import { ReactNode } from 'react'
 import { useState, useEffect } from 'react'
 import Sidebar from '../dapp/Sidebar'
 import Navbar from './Navbar'
-import Dashboard from "@/public/Images/Dash.png";
-import Trade from "@/public/Images/Trade.png";
-import Transactions from "@/public/Images/Transactions.png";
-import Stake from "@/public/Images/Stake.png";
-import Treasury from "@/public/Images/Treasury.png";
-import Payments from "@/public/Images/Payments.png";
-import Apps from "@/public/Images/Apps.png";
-import Settings from "@/public/Images/Settings.png";
-import Support from "@/public/Images/Support.png";
-import {getSelectedPage, NavItem} from "@/app/dapp/navigation";
-import {usePathname} from "next/navigation";
+import Dashboard from '@/public/Images/Dash.png'
+import Trade from '@/public/Images/Trade.png'
+import Transactions from '@/public/Images/Transactions.png'
+import Stake from '@/public/Images/Stake.png'
+import Treasury from '@/public/Images/Treasury.png'
+import Payments from '@/public/Images/Payments.png'
+import Apps from '@/public/Images/Apps.png'
+import Settings from '@/public/Images/Settings.png'
+import Support from '@/public/Images/Support.png'
+import { getSelectedPage, NavItem } from '@/app/dapp/navigation'
+import { usePathname } from 'next/navigation'
 
 interface DappLayoutProps {
-    children: ReactNode
+  children: ReactNode
 }
 
-export default function DappLayout({children}: DappLayoutProps) {
-    // State to track sidebar expansion
-    const [sidebarExpanded, setSidebarExpanded] = useState(false)
+export default function DappLayout({ children }: DappLayoutProps) {
+  // State to track sidebar expansion
+  const [sidebarExpanded, setSidebarExpanded] = useState(false)
 
-    // Define navigation items
-    const navItems: NavItem[] = [
-        { name: 'Dashboard', icon: Dashboard, route: '/dapp/' },
-        { name: 'Trade', icon: Trade/*, route: '/dapp/trade'*/ },
-        { name: 'Members', icon: Trade, route: '/dapp/members' }, // Using Trade icon temporarily for Members
-        { name: 'Transactions', icon: Transactions/*, route: '/dapp/transactions'*/ },
-        { name: 'Stake', icon: Stake, comingSoon: true/*, route: '/dapp/stake'*/ },
-        { name: 'Treasury', icon: Treasury/*, route: '/dapp/treasury'*/ },
-        {
-            name: 'Payments',
-            icon: Payments,
-            comingSoon: true/*,
-            route: '/dapp/payments',*/
-        },
-        { name: 'Apps', icon: Apps, comingSoon: true/*, route: '/dapp/apps'*/ },
-        { name: 'Settings', icon: Settings/*, route: '/dapp/settings'*/ },
-        { name: 'Support', icon: Support/*, route: '/dapp/support'*/ },
-    ]
-    // Listen for sidebar expansion state changes
-    useEffect(() => {
-        const sidebar = document.getElementById('sidebar')
+  // Define navigation items
+  const navItems: NavItem[] = [
+    { name: 'Dashboard', icon: Dashboard, route: '/dapp/' },
+    { name: 'Trade', icon: Trade /*, route: '/dapp/trade'*/ },
+    { name: 'Members', icon: Trade, route: '/dapp/members' }, // Using Trade icon temporarily for Members
+    {
+      name: 'Transactions',
+      icon: Transactions /*, route: '/dapp/transactions'*/,
+    },
+    { name: 'Stake', icon: Stake, comingSoon: true /*, route: '/dapp/stake'*/ },
+    { name: 'Treasury', icon: Treasury /*, route: '/dapp/treasury'*/ },
+    {
+      name: 'Payments',
+      icon: Payments,
+      comingSoon: true /*,
+            route: '/dapp/payments',*/,
+    },
+    { name: 'Apps', icon: Apps, comingSoon: true /*, route: '/dapp/apps'*/ },
+    { name: 'Settings', icon: Settings /*, route: '/dapp/settings'*/ },
+    { name: 'Support', icon: Support /*, route: '/dapp/support'*/ },
+  ]
+  // Listen for sidebar expansion state changes
+  useEffect(() => {
+    const sidebar = document.getElementById('sidebar')
 
-        const handleSidebarHover = () => setSidebarExpanded(true)
-        const handleSidebarLeave = () => setSidebarExpanded(false)
+    const handleSidebarHover = () => setSidebarExpanded(true)
+    const handleSidebarLeave = () => setSidebarExpanded(false)
 
-        if (sidebar) {
-            sidebar.addEventListener('mouseenter', handleSidebarHover)
-            sidebar.addEventListener('mouseleave', handleSidebarLeave)
-        }
+    if (sidebar) {
+      sidebar.addEventListener('mouseenter', handleSidebarHover)
+      sidebar.addEventListener('mouseleave', handleSidebarLeave)
+    }
 
-        return () => {
-            if (sidebar) {
-                sidebar.removeEventListener('mouseenter', handleSidebarHover)
-                sidebar.removeEventListener('mouseleave', handleSidebarLeave)
-            }
-        }
-    }, [])
+    return () => {
+      if (sidebar) {
+        sidebar.removeEventListener('mouseenter', handleSidebarHover)
+        sidebar.removeEventListener('mouseleave', handleSidebarLeave)
+      }
+    }
+  }, [])
 
-    const pathname = usePathname();
-    const selectedPage = getSelectedPage(pathname);
-    return (
-        <div className="flex h-screen">
-            <Sidebar navItems={navItems} selectedPage={selectedPage}/>
-            <div
-                className={`flex-1 flex flex-col transition-all duration-300 ${
-                    sidebarExpanded ? 'ml-64' : 'ml-16'
-                }`}
-            >
-                <Navbar title={selectedPage} />
-                <main className="flex-1 overflow-auto p-4">
-                    {children}
-                </main>
-            </div>
-        </div>
-    )
+  const pathname = usePathname()
+  const selectedPage = getSelectedPage(pathname)
+  return (
+    <div className="flex h-screen">
+      <Sidebar navItems={navItems} selectedPage={selectedPage} />
+      <div
+        className={`flex-1 flex flex-col transition-all duration-300 ${
+          sidebarExpanded ? 'ml-64' : 'ml-16'
+        }`}
+      >
+        <Navbar title={selectedPage} />
+        <main className="flex-1 overflow-auto p-4">{children}</main>
+      </div>
+    </div>
+  )
 }

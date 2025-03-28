@@ -14,7 +14,7 @@ import nft8 from "../assets/6398924.png";
 import { StaticImageData } from "next/image"; // Import StaticImageData
 
 interface NFTCardProps {
-  image: StaticImageData; // Change to StaticImageData
+  image: StaticImageData; 
   username: string;
   price: string;
 }
