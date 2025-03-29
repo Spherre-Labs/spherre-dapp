@@ -57,6 +57,7 @@ dist
 # https://nextjs.org/blog/next-9-1#public-directory-support
 # public
 
+
 # vuepress build output
 .vuepress/dist
 
@@ -290,3 +291,7 @@ Cargo.lock
 /.idea/vcs.xml
 
 /frontend/package-lock.json
+
+
+#misc
+.DS_Store
