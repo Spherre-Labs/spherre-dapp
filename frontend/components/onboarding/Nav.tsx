@@ -25,7 +25,12 @@ const Nav = () => {
   return (
     <header className="w-full flex justify-between items-center">
       {/* Logo */}
-      <Logo href={'/'} className="md:w-[50px] w-[40px]" image={spherreLogo} />
+      <Logo
+        href={'/'}
+        className="md:w-[50px] w-[40px] "
+        image={spherreLogo}
+        textColor="white"
+      />
 
       {/* Connect button & Hamburger Menu Button */}
       <div className="flex items-center gap-4">
