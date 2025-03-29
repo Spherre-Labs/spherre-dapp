@@ -11,7 +11,7 @@ export default function ConfirmSetup() {
         {/* Main Container */}
         <div className="flex flex-col items-center px-4 pt-16 sm:pt-20 md:pt-24 pb-6 sm:pb-8">
           <div className="max-w-[672px] w-full pt-[1rem]">
-            <StepIndicators />
+            <StepIndicators currentStep={3} />
 
             {/* Heading & Description */}
             <div className="max-w-sm mx-auto my-12 text-center pb-8">
