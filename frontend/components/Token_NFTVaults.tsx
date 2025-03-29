@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import TokenVaults from "./TokenVaults"; 
 import NFTVaults from "./NFTVaults"; 
-const HomePage: React.FC = () => {
+const Token_NFTVaults: React.FC = () => {
   const [activeComponent, setActiveComponent] = useState<"tokens" | "nfts">("tokens");
 
   return (
@@ -18,4 +18,4 @@ const HomePage: React.FC = () => {
   );
 };
 
-export default HomePage;
+export default Token_NFTVaults;
