@@ -7,6 +7,7 @@ import Navbar from './Navbar'
 import Dashboard from '@/public/Images/Dash.png'
 import Trade from '@/public/Images/Trade.png'
 import Transactions from '@/public/Images/Transactions.png'
+import Token_NFTVaults from '@/components/Token_NFTVaults'
 import Stake from '@/public/Images/Stake.png'
 import Treasury from '@/public/Images/Treasury.png'
 import Payments from '@/public/Images/Payments.png'
@@ -67,7 +68,12 @@ export default function DappLayout({ children }: DappLayoutProps) {
 
   const pathname = usePathname()
   const selectedPage = getSelectedPage(pathname)
-  return (
+  return (  
+    <div>
+
+      <Token_NFTVaults /> 
+
+   
     <div className="flex h-screen">
       <Sidebar navItems={navItems} selectedPage={selectedPage} />
       <div
@@ -77,7 +83,7 @@ export default function DappLayout({ children }: DappLayoutProps) {
       >
         <Navbar title={selectedPage} />
         <main className="flex-1 overflow-auto p-4">{children}</main>
-      </div>
-    </div>
+      </div>  
+    </div>  
   )
 }
