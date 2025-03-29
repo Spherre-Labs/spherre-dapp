@@ -8,7 +8,13 @@ import OnboardingCard from './OnboardingCard'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm, useFieldArray } from 'react-hook-form'
 import * as z from 'zod'
-import { isValidStarknetAddress } from '@/lib/utils/starknet'
+
+const isValidStarknetAddress = (address: string) => {
+  const addressRegex = /^0x[0-9a-fA-F]{64}$/
+
+  // Check if the address matches the regex
+  return addressRegex.test(address)
+}
 
 // Define validation schema for Step 2
 const stepTwoSchema = z.object({
