@@ -4,17 +4,17 @@ import { ReactNode } from 'react'
 import { useState, useEffect } from 'react'
 import Sidebar from '../dapp/Sidebar'
 import Navbar from './Navbar'
-import Dashboard from '@/public/Images/Dash.png'
-import Trade from '@/public/Images/Trade.png'
-import Transactions from '@/public/Images/Transactions.png'
-import Token_NFTVaults from '@/components/Token_NFTVaults'
-import Stake from '@/public/Images/Stake.png'
-import Treasury from '@/public/Images/Treasury.png'
-import Payments from '@/public/Images/Payments.png'
-import Apps from '@/public/Images/Apps.png'
-import Settings from '@/public/Images/Settings.png'
-import Support from '@/public/Images/Support.png'
-import { getSelectedPage, NavItem } from '@/app/dapp/navigation'
+import Dashboard from 'public/Images/Dash.png'
+import Trade from 'public/Images/Trade.png'
+import Transactions from 'public/Images/Transactions.png'
+import Token_NFTVaults from 'components/Token_NFTVaults'
+import Stake from 'public/Images/Stake.png'
+import Treasury from 'public/Images/Treasury.png'
+import Payments from 'public/Images/Payments.png'
+import Apps from 'public/Images/Apps.png'
+import Settings from 'public/Images/Settings.png'
+import Support from 'public/Images/Support.png'
+import { getSelectedPage, NavItem } from 'app/dapp/navigation'
 import { usePathname } from 'next/navigation'
 
 interface DappLayoutProps {
@@ -70,20 +70,18 @@ export default function DappLayout({ children }: DappLayoutProps) {
   const selectedPage = getSelectedPage(pathname)
   return (  
     <div>
-
       <Token_NFTVaults /> 
-
-   
-    <div className="flex h-screen">
-      <Sidebar navItems={navItems} selectedPage={selectedPage} />
-      <div
-        className={`flex-1 flex flex-col transition-all duration-300 ${
-          sidebarExpanded ? 'ml-64' : 'ml-16'
-        }`}
-      >
-        <Navbar title={selectedPage} />
-        <main className="flex-1 overflow-auto p-4">{children}</main>
+      <div className="flex h-screen">
+        <Sidebar navItems={navItems} selectedPage={selectedPage} />
+        <div
+          className={`flex-1 flex flex-col transition-all duration-300 ${
+            sidebarExpanded ? 'ml-64' : 'ml-16'
+          }`}
+        >
+          <Navbar title={selectedPage} />
+          <main className="flex-1 overflow-auto p-4">{children}</main>
+        </div>  
       </div>  
-    </div>  
+    </div>
   )
 }
