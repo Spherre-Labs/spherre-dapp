@@ -96,7 +96,7 @@ export default function Tabs() {
             activeTab === 'NFT' ? 'font-bold text-white' : 'text-[#8E9BAE]'
           }`}
         >
-          NFT Vaults
+          NFT Token Vaults
           {activeTab === 'NFT' && (
             <div className="absolute bottom-0 left-0 right-0 h-[.5px] bg-white"></div>
           )}
