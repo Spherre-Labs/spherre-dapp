@@ -22,22 +22,22 @@ export default function Tabs() {
       price: '$0.46',
       balance: '5',
       value: '$460.43',
-      size: '25%'
+      size: '25%',
     },
     {
       coin: 'STRK',
       price: '$0.46',
       balance: '2',
       value: '$700.20',
-      size: '25%'
+      size: '25%',
     },
     {
       coin: 'STRK',
       price: '$0.46',
       balance: '3',
       value: '$527.00',
-      size: '50%'
-    }
+      size: '50%',
+    },
   ]
 
   // NFT data with correctly imported image objects
@@ -73,7 +73,7 @@ export default function Tabs() {
     {
       id: 8,
       image: nft8,
-    }
+    },
   ]
 
   return (
@@ -81,8 +81,9 @@ export default function Tabs() {
       <div className="flex border-b border-[#292929]">
         <button
           onClick={() => setActiveTab('Tokens')}
-          className={`px-4 py-2 relative ${activeTab === 'Tokens' ? 'font-bold text-white' : 'text-[#8E9BAE]'
-            }`}
+          className={`px-4 py-2 relative ${
+            activeTab === 'Tokens' ? 'font-bold text-white' : 'text-[#8E9BAE]'
+          }`}
         >
           Tokens
           {activeTab === 'Tokens' && (
@@ -91,10 +92,11 @@ export default function Tabs() {
         </button>
         <button
           onClick={() => setActiveTab('NFT')}
-          className={`px-4 py-2 relative ${activeTab === 'NFT' ? 'font-bold text-white' : 'text-[#8E9BAE]'
-            }`}
+          className={`px-4 py-2 relative ${
+            activeTab === 'NFT' ? 'font-bold text-white' : 'text-[#8E9BAE]'
+          }`}
         >
-          NFT Vaults
+          NFT Token Vaults
           {activeTab === 'NFT' && (
             <div className="absolute bottom-0 left-0 right-0 h-[.5px] bg-white"></div>
           )}
@@ -115,7 +117,12 @@ export default function Tabs() {
             {tokens.map((token, index) => (
               <div key={index} className="grid grid-cols-5 py-4">
                 <div className="flex items-center gap-1">
-                  <Image src={strk} width={20} height={20} alt='starknet token icon' />
+                  <Image
+                    src={strk}
+                    width={20}
+                    height={20}
+                    alt="starknet token icon"
+                  />
                   <span>{token.coin}</span>
                 </div>
                 <div>{token.price}</div>
@@ -140,7 +147,10 @@ export default function Tabs() {
         <div className="p-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {nfts.map((nft) => (
-              <div key={nft.id} className="rounded-lg overflow-hidden bg-gray-800">
+              <div
+                key={nft.id}
+                className="rounded-lg overflow-hidden bg-gray-800"
+              >
                 <div className="aspect-square relative">
                   <Image
                     src={nft.image}
