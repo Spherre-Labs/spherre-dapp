@@ -8,7 +8,7 @@
   --sidebar-transition-duration: 500ms;
   --primary-color: #4f46e5;
   --primary-hover: #4338ca;
-  --purple-border-color: #6F2FCE;
+  --purple-border-color: #6f2fce;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -27,31 +27,76 @@ body {
 /* Snake-like Animated Purple Border */
 @keyframes snakeBorder {
   0% {
-    border-image-source: linear-gradient(to right, var(--purple-border-color) 0%, transparent 0%, transparent 100%);
+    border-image-source: linear-gradient(
+      to right,
+      var(--purple-border-color) 0%,
+      transparent 0%,
+      transparent 100%
+    );
   }
   12.5% {
-    border-image-source: linear-gradient(to bottom, var(--purple-border-color) 0%, transparent 0%, transparent 100%);
+    border-image-source: linear-gradient(
+      to bottom,
+      var(--purple-border-color) 0%,
+      transparent 0%,
+      transparent 100%
+    );
   }
   25% {
-    border-image-source: linear-gradient(to left, var(--purple-border-color) 0%, transparent 0%, transparent 100%);
+    border-image-source: linear-gradient(
+      to left,
+      var(--purple-border-color) 0%,
+      transparent 0%,
+      transparent 100%
+    );
   }
   37.5% {
-    border-image-source: linear-gradient(to top, var(--purple-border-color) 0%, transparent 0%, transparent 100%);
+    border-image-source: linear-gradient(
+      to top,
+      var(--purple-border-color) 0%,
+      transparent 0%,
+      transparent 100%
+    );
   }
   50% {
-    border-image-source: linear-gradient(to right, transparent 0%, var(--purple-border-color) 0%, transparent 100%);
+    border-image-source: linear-gradient(
+      to right,
+      transparent 0%,
+      var(--purple-border-color) 0%,
+      transparent 100%
+    );
   }
   62.5% {
-    border-image-source: linear-gradient(to bottom, transparent 0%, var(--purple-border-color) 0%, transparent 100%);
+    border-image-source: linear-gradient(
+      to bottom,
+      transparent 0%,
+      var(--purple-border-color) 0%,
+      transparent 100%
+    );
   }
   75% {
-    border-image-source: linear-gradient(to left, transparent 0%, transparent 0%, var(--purple-border-color) 100%);
+    border-image-source: linear-gradient(
+      to left,
+      transparent 0%,
+      transparent 0%,
+      var(--purple-border-color) 100%
+    );
   }
   87.5% {
-    border-image-source: linear-gradient(to top, transparent 0%, transparent 0%, var(--purple-border-color) 100%);
+    border-image-source: linear-gradient(
+      to top,
+      transparent 0%,
+      transparent 0%,
+      var(--purple-border-color) 100%
+    );
   }
   100% {
-    border-image-source: linear-gradient(to right, var(--purple-border-color) 0%, transparent 0%, transparent 100%);
+    border-image-source: linear-gradient(
+      to right,
+      var(--purple-border-color) 0%,
+      transparent 0%,
+      transparent 100%
+    );
   }
 }
 
@@ -117,7 +162,7 @@ body {
 
 /* Active item indicator */
 .sidebar-menu-item.active {
-  background-color: #27292D;
+  background-color: #27292d;
   color: white;
   border-left: 3px solid var(--primary-color);
 }
@@ -150,7 +195,9 @@ body {
 
 /* Profile section transition */
 .profile-section {
-  transition: height 0.5s ease, opacity 0.5s ease;
+  transition:
+    height 0.5s ease,
+    opacity 0.5s ease;
   overflow: hidden;
 }
 

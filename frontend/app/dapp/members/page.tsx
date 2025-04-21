@@ -83,7 +83,7 @@ const Members = () => {
   }
 
   const startEditing = (memberId: number) => {
-    const member = members.find(m => m.id === memberId)
+    const member = members.find((m) => m.id === memberId)
     if (member) {
       setEditingId(memberId)
       setEditName(member.name)
@@ -93,9 +93,11 @@ const Members = () => {
 
   const saveName = () => {
     if (editingId !== null && editName.trim()) {
-      setMembers(members.map(member =>
-        member.id === editingId ? { ...member, name: editName } : member
-      ))
+      setMembers(
+        members.map((member) =>
+          member.id === editingId ? { ...member, name: editName } : member,
+        ),
+      )
       setEditingId(null)
     }
   }
@@ -115,7 +117,7 @@ const Members = () => {
   // Snake border animation
   useEffect(() => {
     const animateBorder = () => {
-      setBorderPosition(prev => (prev + 0.5) % 100)
+      setBorderPosition((prev) => (prev + 0.5) % 100)
       animationRef.current = requestAnimationFrame(animateBorder)
     }
 
@@ -146,7 +148,10 @@ const Members = () => {
 
   const handleClickOutside = (event: MouseEvent) => {
     const target = event.target as HTMLElement
-    if (!target.closest('.dropdown-menu') && !target.closest('.dropdown-trigger')) {
+    if (
+      !target.closest('.dropdown-menu') &&
+      !target.closest('.dropdown-trigger')
+    ) {
       setDropdownOpen(null)
     }
   }
@@ -175,7 +180,12 @@ const Members = () => {
         </div>
 
         <button className="rounded-[7px] bg-[#6F2FCE] gap-[10px] text-[14px] font-medium absolute right-0 bottom-4 w-[156px] h-[45px] flex items-center justify-center">
-          <Image src="/user-add.svg" alt="member avatar" height={24} width={24} />
+          <Image
+            src="/user-add.svg"
+            alt="member avatar"
+            height={24}
+            width={24}
+          />
           <span> Add Member</span>
         </button>
       </div>
@@ -188,7 +198,7 @@ const Members = () => {
                 key={member.id}
                 className="h-[260px] bg-[#1C1D1F] rounded-[10px] relative"
                 style={{
-                  zIndex: dropdownOpen === member.id ? 20 : 10
+                  zIndex: dropdownOpen === member.id ? 20 : 10,
                 }}
               >
                 <div className="flex flex-col items-center">
@@ -265,7 +275,9 @@ const Members = () => {
                           <p className="font-semibold text-[16px] text-[#8E9BAE]">
                             {member.address}
                           </p>
-                          <button onClick={() => handleCopy(member.fullAddress)}>
+                          <button
+                            onClick={() => handleCopy(member.fullAddress)}
+                          >
                             <Image
                               src="/copy.svg"
                               alt="copy"
@@ -314,7 +326,9 @@ const Members = () => {
                 </div>
 
                 <div className="flex mt-5 ml-5 gap-[10px] flex-wrap">
-                  <p className="text-[#8E9BAE] text-[14px] font-semibold">Roles:</p>
+                  <p className="text-[#8E9BAE] text-[14px] font-semibold">
+                    Roles:
+                  </p>
                   {member.roles.map((role) => (
                     <div
                       key={role}
@@ -326,8 +340,12 @@ const Members = () => {
                 </div>
 
                 <div className="flex mt-5 ml-4 gap-[10px]">
-                  <p className="text-[#8E9BAE] text-[14px] font-semibold">Date added:</p>
-                  <p className="text-white text-[16px] font-semibold">{member.dateAdded}</p>
+                  <p className="text-[#8E9BAE] text-[14px] font-semibold">
+                    Date added:
+                  </p>
+                  <p className="text-white text-[16px] font-semibold">
+                    {member.dateAdded}
+                  </p>
                 </div>
 
                 <div className="flex items-center justify-center mt-5">
