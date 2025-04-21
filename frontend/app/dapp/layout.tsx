@@ -6,6 +6,7 @@ import Sidebar from '../dapp/Sidebar'
 import Navbar from './Navbar'
 import Dashboard from '@/public/Images/Dash.png'
 import Trade from '@/public/Images/Trade.png'
+import Members from '@/public/Images/members.png'
 import Transactions from '@/public/Images/Transactions.png'
 import Stake from '@/public/Images/Stake.png'
 import Treasury from '@/public/Images/Treasury.png'
@@ -28,7 +29,7 @@ export default function DappLayout({ children }: DappLayoutProps) {
   const navItems: NavItem[] = [
     { name: 'Dashboard', icon: Dashboard, route: '/dapp/' },
     { name: 'Trade', icon: Trade /*, route: '/dapp/trade'*/ },
-    { name: 'Members', icon: Trade, route: '/dapp/members' }, // Using Trade icon temporarily for Members
+    { name: 'Members', icon: Members, route: '/dapp/members' }, // Using Trade icon temporarily for Members
     {
       name: 'Transactions',
       icon: Transactions /*, route: '/dapp/transactions'*/,
