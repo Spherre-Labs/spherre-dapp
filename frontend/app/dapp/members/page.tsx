@@ -304,18 +304,18 @@ const Members = () => {
                         />
                       </button>
                       {dropdownOpen === member.id && (
-                        <div className="dropdown-menu absolute z-50 right-0 bg-[#272729] mt-2 rounded-md shadow-lg w-40 text-sm text-white">
-                          <ul className="py-2">
-                            <li className="px-4 py-2 hover:bg-[#383838] cursor-pointer">
+                        <div className="dropdown-menu absolute z-50 right-0 bg-black mt-[-50px] rounded-lg shadow-lg w-40 text-sm text-white px-2 py-2">
+                          <ul className="">
+                            <li className="px-4 py-2 rounded-lg hover:bg-[#232323] cursor-pointer">
                               Edit Roles
                             </li>
                             <li
-                              className="px-4 py-2 hover:bg-[#383838] cursor-pointer"
+                              className="px-4 py-2 rounded-lg hover:bg-[#383838] cursor-pointer"
                               onClick={() => startEditing(member.id)}
                             >
                               Edit Name
                             </li>
-                            <li className="px-4 py-2 hover:bg-[#383838] cursor-pointer">
+                            <li className="px-4 py-2 rounded-lg hover:bg-[#383838] cursor-pointer">
                               Change Picture
                             </li>
                           </ul>

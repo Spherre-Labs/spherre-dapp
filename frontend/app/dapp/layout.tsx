@@ -77,7 +77,7 @@ export default function DappLayout({ children }: DappLayoutProps) {
         }`}
       >
         <Navbar title={selectedPage} />
-        <main className="flex-1 overflow-auto p-4">{children}</main>
+        <main className="flex-1 overflow-auto">{children}</main>
       </div>
     </div>
   )
