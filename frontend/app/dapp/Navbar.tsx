@@ -15,8 +15,13 @@ const Navbar: React.FC<NavbarProps> = ({ title }) => {
         </Link>
       </div>
 
-      <div className='w-[20px] h-[20px]'>
-        <Image src={notification} width={40} height={40} alt='notification-icon' />
+      <div className="w-[20px] h-[20px]">
+        <Image
+          src={notification}
+          width={40}
+          height={40}
+          alt="notification-icon"
+        />
       </div>
     </nav>
   )
