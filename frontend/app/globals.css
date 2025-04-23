@@ -5,6 +5,10 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --sidebar-transition-duration: 500ms;
+  --primary-color: #4f46e5;
+  --primary-hover: #4338ca;
+  --purple-border-color: #6f2fce;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -18,4 +22,261 @@ body {
   color: var(--foreground);
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Snake-like Animated Purple Border */
+@keyframes snakeBorder {
+  0% {
+    border-image-source: linear-gradient(
+      to right,
+      var(--purple-border-color) 0%,
+      transparent 0%,
+      transparent 100%
+    );
+  }
+  12.5% {
+    border-image-source: linear-gradient(
+      to bottom,
+      var(--purple-border-color) 0%,
+      transparent 0%,
+      transparent 100%
+    );
+  }
+  25% {
+    border-image-source: linear-gradient(
+      to left,
+      var(--purple-border-color) 0%,
+      transparent 0%,
+      transparent 100%
+    );
+  }
+  37.5% {
+    border-image-source: linear-gradient(
+      to top,
+      var(--purple-border-color) 0%,
+      transparent 0%,
+      transparent 100%
+    );
+  }
+  50% {
+    border-image-source: linear-gradient(
+      to right,
+      transparent 0%,
+      var(--purple-border-color) 0%,
+      transparent 100%
+    );
+  }
+  62.5% {
+    border-image-source: linear-gradient(
+      to bottom,
+      transparent 0%,
+      var(--purple-border-color) 0%,
+      transparent 100%
+    );
+  }
+  75% {
+    border-image-source: linear-gradient(
+      to left,
+      transparent 0%,
+      transparent 0%,
+      var(--purple-border-color) 100%
+    );
+  }
+  87.5% {
+    border-image-source: linear-gradient(
+      to top,
+      transparent 0%,
+      transparent 0%,
+      var(--purple-border-color) 100%
+    );
+  }
+  100% {
+    border-image-source: linear-gradient(
+      to right,
+      var(--purple-border-color) 0%,
+      transparent 0%,
+      transparent 100%
+    );
+  }
+}
+
+.animated-purple-border {
+  border-width: 2px;
+  border-style: solid;
+  border-color: transparent;
+  border-image-slice: 1;
+  border-image-width: 2px;
+  position: relative;
+  animation: snakeBorder 3s infinite linear;
+}
+
+.animated-purple-border::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  background: var(--purple-border-color);
+  z-index: -1;
+  border-radius: inherit;
+  opacity: 0.15;
+}
+
+/* Sidebar transitions and animations */
+.sidebar-transition {
+  transition-property: all;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: var(--sidebar-transition-duration);
+}
+
+/* Menu item animations */
+@keyframes fadeInSlideRight {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.menu-item-animation {
+  animation: fadeInSlideRight 0.4s ease-out forwards;
+  animation-delay: calc(var(--index, 0) * 0.05s);
+}
+
+/* Hover effect for sidebar menu items */
+.sidebar-menu-item {
+  position: relative;
+  overflow: hidden;
+}
+
+.sidebar-menu-item:hover {
+  background-color: #2d2f33;
+}
+
+.sidebar-menu-item:active {
+  transform: scale(0.98);
+  transition: transform 0.1s;
+}
+
+/* Active item indicator */
+.sidebar-menu-item.active {
+  background-color: #27292d;
+  color: white;
+  border-left: 3px solid var(--primary-color);
+}
+
+/* Tooltip styles for collapsed sidebar */
+.sidebar-tooltip {
+  position: relative;
+}
+
+.sidebar-tooltip .tooltip-text {
+  visibility: hidden;
+  position: absolute;
+  z-index: 100;
+  background-color: #333;
+  color: white;
+  text-align: center;
+  padding: 5px 10px;
+  border-radius: 6px;
+  left: 100%;
+  margin-left: 10px;
+  opacity: 0;
+  transition: opacity 0.3s;
+  white-space: nowrap;
+}
+
+.sidebar-tooltip:hover .tooltip-text {
+  visibility: visible;
+  opacity: 1;
+}
+
+/* Profile section transition */
+.profile-section {
+  transition:
+    height 0.5s ease,
+    opacity 0.5s ease;
+  overflow: hidden;
+}
+
+/* Staggered animation for menu items based on their position */
+.staggered-item:nth-child(1) {
+  --stagger-delay: 0ms;
+}
+
+.staggered-item:nth-child(2) {
+  --stagger-delay: 50ms;
+}
+
+.staggered-item:nth-child(3) {
+  --stagger-delay: 100ms;
+}
+
+.staggered-item:nth-child(4) {
+  --stagger-delay: 150ms;
+}
+
+.staggered-item:nth-child(5) {
+  --stagger-delay: 200ms;
+}
+
+.staggered-item:nth-child(6) {
+  --stagger-delay: 250ms;
+}
+
+.staggered-item:nth-child(7) {
+  --stagger-delay: 300ms;
+}
+
+.staggered-item:nth-child(8) {
+  --stagger-delay: 350ms;
+}
+
+.staggered-item:nth-child(9) {
+  --stagger-delay: 400ms;
+}
+
+.staggered-item:nth-child(10) {
+  --stagger-delay: 450ms;
+}
+
+.staggered-item {
+  animation-delay: var(--stagger-delay);
+  animation-fill-mode: both;
+}
+
+/* Animation for sidebar toggle */
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.05);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+.toggle-button {
+  animation: pulse 2s infinite;
+}
+
+.toggle-button:hover {
+  animation: none;
+}
+
+/* Mobile sidebar adjustments */
+@media (max-width: 768px) {
+  .sidebar-mobile {
+    transition: transform 0.5s ease;
+  }
+
+  .sidebar-mobile.hidden {
+    transform: translateX(-100%);
+  }
 }

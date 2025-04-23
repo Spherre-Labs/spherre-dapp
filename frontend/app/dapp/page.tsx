@@ -6,7 +6,7 @@ import AmountChart from '@/app/dapp/AmountChart'
 
 export default function DashboardPage() {
   return (
-    <div className="py-[33px] px-[26px] rounded-[10px] grid gap-y-[36px] border-[#292929] border-2 w-full">
+    <div className="py-[33px] px-[26px] rounded-[10px] grid gap-y-[36px] border-[#292929] border-2 mx-4 my-4">
       <div className="grid lg:grid-cols-2 gap-[15px]">
         <div className="bg-[#272729] rounded-[10px] py-[25px] px-[28px]">
           <div className="grid gap-y-[26px] mb-[55px]">
@@ -31,7 +31,7 @@ export default function DashboardPage() {
                 alt="Wallet Icon"
               />
             </div>
-            <h2 className="text-[45px] text-white font-bold">$250.35</h2>
+            <h2 className="text-[45px] text-white font-semibold">$250.35</h2>
           </div>
           <div className="grid grid-cols-3 gap-x-3">
             <Button variant="primary" icon="/card-send-linear.svg">
@@ -56,7 +56,7 @@ export default function DashboardPage() {
               />
               <p className="text-[#8E9BAE]">Members</p>
             </div>
-            <h3 className="text-[45px] text-white font-bold">5</h3>
+            <h3 className="text-[45px] text-white font-semibold">5</h3>
           </div>
           <div className="bg-[#272729] rounded-[10px] py-[25px] px-[28px] flex items-center justify-between">
             <div className="flex flex-col justify-between h-full  gap-y-2">
@@ -76,7 +76,7 @@ export default function DashboardPage() {
                 />
               </div>
             </div>
-            <h3 className="text-[45px] text-white font-bold">3/5</h3>
+            <h3 className="text-[45px] text-white font-semibold">3/5</h3>
           </div>
         </div>
       </div>
