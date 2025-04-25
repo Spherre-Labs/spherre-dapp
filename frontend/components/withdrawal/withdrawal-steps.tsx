@@ -1,36 +1,40 @@
 interface WithdrawalStepsProps {
-    currentStep: number
-  }
-  
-  export default function WithdrawalSteps({ currentStep }: WithdrawalStepsProps) {
-    const steps = [
-      { number: 1, label: "Recipient" },
-      { number: 2, label: "Token and Amount" },
-      { number: 3, label: "Final Review" },
-    ]
-  
-    return (
-      <div className="flex items-center justify-center">
-        {steps.map((step, index) => (
-          <div key={step.number} className="flex items-center">
-            {/* Step Circle */}
-            <div
-              className={`
-                flex items-center justify-center w-8 h-8 rounded-full 
-                ${currentStep === step.number ? "bg-purple-600 text-white" : "bg-gray-800 text-gray-400"}
+  currentStep: number
+}
+
+export default function WithdrawalSteps({ currentStep }: WithdrawalStepsProps) {
+  const steps = [
+    { number: 1, label: 'Recipient' },
+    { number: 2, label: 'Token and Amount' },
+    { number: 3, label: 'Final Review' },
+  ]
+
+  return (
+    <div className="flex flex-wrap items-center justify-center pt-12 sm:pt-0">
+      {steps.map((step, index) => (
+        <div key={step.number} className="flex items-center mb-2 sm:mb-0">
+          {/* Step Circle */}
+          <div
+            className={`
+                flex items-center justify-center w-6 h-6 sm:w-8 sm:h-8 rounded-full 
+                ${currentStep === step.number ? 'bg-purple-600 text-white' : 'bg-gray-800 text-gray-400'}
+                text-xs sm:text-sm
               `}
-            >
-              {step.number}
-            </div>
-  
-            {/* Step Label */}
-            <div className="ml-2 text-sm text-gray-400">{step.label}</div>
-  
-            {/* Connector Line (except after the last step) */}
-            {index < steps.length - 1 && <div className="w-12 h-px bg-gray-700 mx-2"></div>}
+          >
+            {step.number}
           </div>
-        ))}
-      </div>
-    )
-  }
-  
+
+          {/* Step Label */}
+          <div className="ml-1 sm:ml-2 text-xs sm:text-sm text-gray-400">
+            {step.label}
+          </div>
+
+          {/* Connector Line (except after the last step) */}
+          {index < steps.length - 1 && (
+            <div className="w-6 sm:w-12 h-px bg-gray-700 mx-1 sm:mx-2"></div>
+          )}
+        </div>
+      ))}
+    </div>
+  )
+}

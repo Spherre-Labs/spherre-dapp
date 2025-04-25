@@ -24,6 +24,8 @@ export default function AddressInput({
     // Or other custom validation logic for your specific blockchain
     if (!address) return false
 
+    // This is a simplified validation - in a real app you would use a more robust check
+    // that's specific to the blockchain you're targeting
     return (
       /^(0x)?[0-9a-fA-F]{40}$/.test(address) ||
       /^[A-Za-z0-9]{30,50}$/.test(address)
@@ -58,8 +60,8 @@ export default function AddressInput({
   return (
     <div>
       <div
-        className={`flex items-center bg-[#1C1D1F] px-4 rounded-[10px]  
-            ${showError ? 'border border-red-500' : 'border border-transparent'}`}
+        className={`flex flex-col sm:flex-row items-stretch sm:items-center bg-[#1C1D1F] px-3 sm:px-4 rounded-[10px] 
+        ${showError ? 'border border-red-500' : 'border border-transparent'}`}
       >
         <input
           type="text"
@@ -67,27 +69,26 @@ export default function AddressInput({
           onChange={handleChange}
           onBlur={onBlur}
           placeholder="Write address, name of the recipient, strk, sol, glow..."
-          className={`
-            flex-grow  bg-transparent text-white  py-3 rounded-lg
-            focus:outline-none 
-          `}
+          className="flex-grow bg-transparent text-white py-3 rounded-lg focus:outline-none text-sm sm:text-base"
         />
-        <button
-          onClick={handlePaste}
-          className="ml-2 bg-white text-black px-4 py-1 rounded-lg hover:bg-gray-200 transition-colors"
-        >
-          Paste
-        </button>
-        <button
-          onClick={handleMySphereWallet}
-          className="ml-2 bg-[#29292A] text-white px-4 py-1 rounded-lg hover:bg-gray-800 transition-colors"
-        >
-          My Spherre Wallet
-        </button>
+        <div className="flex mb-3 sm:mb-0 space-x-2 sm:ml-2">
+          <button
+            onClick={handlePaste}
+            className="bg-white text-black px-3 sm:px-4 py-1 rounded-lg hover:bg-gray-200 transition-colors text-xs sm:text-sm"
+          >
+            Paste
+          </button>
+          <button
+            onClick={handleMySphereWallet}
+            className="bg-[#29292A] text-white px-3 sm:px-4 py-1 rounded-lg hover:bg-gray-800 transition-colors text-xs sm:text-sm"
+          >
+            My Spherre Wallet
+          </button>
+        </div>
       </div>
 
       {showError && (
-        <p className="text-red-500 text-sm mt-1">
+        <p className="text-red-500 text-xs sm:text-sm mt-1">
           Please enter a valid wallet address
         </p>
       )}
