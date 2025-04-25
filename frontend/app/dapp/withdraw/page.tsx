@@ -19,7 +19,7 @@ export default function WithdrawalPage() {
     name: 'Backstage Boys',
     address: 'G2SZ...62tsyw',
     balance: '$250.35',
-    avatar: '/placeholder.svg?height=40&width=40',
+    avatar: '/withdraw-placeholder.svg',
   }
 
   const handleGoBack = () => {
