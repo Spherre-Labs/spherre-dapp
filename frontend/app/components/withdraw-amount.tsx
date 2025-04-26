@@ -97,7 +97,7 @@ export function WithdrawAmount({
                 value={amount}
                 onChange={handleAmountChange}
                 placeholder="0.00"
-                className="text-[20px] md:text-[40px] leading-[48px] font-semibold h-[64px] bg-transparent focus:outline-none border-none focus:ring-0 focus:border-transparent placeholder:text-white "
+                className="text-[20px] md:text-[40px] leading-[48px] font-semibold h-[64px] bg-transparent border-none focus:ring-0 focus:border-transparent placeholder:text-white "
               />
               <div className=" text-sm text-gray-400">
                 Balance: {selectedTokenData?.balance || 0} {selectedToken}
