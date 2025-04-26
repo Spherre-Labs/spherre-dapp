@@ -1,46 +1,53 @@
+'use client';
+
 import React from 'react';
+import Image from 'next/image';
+import { ChevronDown } from 'lucide-react';
 
 interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
   error?: string;
-  label?: string;
+  tokenIcon?: string;
 }
 
 export function Select({ 
   className = '',
   error,
-  label,
+  tokenIcon,
   children,
   ...props 
 }: SelectProps) {
-  const baseStyles = [
-    'w-full bg-[#1C1C1E] text-white rounded-lg px-4 py-3',
-    'border border-gray-700',
-    'focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-purple-600',
-    'disabled:opacity-50 disabled:cursor-not-allowed',
-    'appearance-none bg-no-repeat bg-right'
-  ].join(' ');
-
-  const errorStyles = error ? 'border-red-500 focus:ring-red-500 focus:border-red-500' : '';
-  const classes = `${baseStyles} ${errorStyles} ${className}`;
-
   return (
-    <div className="w-full">
-      {label && (
-        <label className="block text-sm text-gray-400 mb-2">
-          {label}
-        </label>
-      )}
+    <div className="relative inline-flex items-center gap-2">
+      <div className="absolute left-2 flex items-center pointer-events-none">
+        {tokenIcon && (
+          <div className="w-5 h-5 rounded-full overflow-hidden mr-6">
+            <Image 
+              src={tokenIcon} 
+              alt="Token icon" 
+              width={20} 
+              height={20}
+            />
+          </div>
+        )}
+      </div>
       <select
-        className={classes}
+        className={`
+          appearance-none
+          bg-[#2C2C2E] text-white
+          rounded-full
+          pl-${tokenIcon ? '10' : '4'} pr-8 py-2
+          text-sm font-medium
+          focus:outline-none
+          cursor-pointer
+          ${className}
+        `}
         {...props}
       >
         {children}
       </select>
-      {error && (
-        <p className="mt-1 text-sm text-red-500">
-          {error}
-        </p>
-      )}
+      <div className="absolute right-4 pointer-events-none">
+        <ChevronDown className="h-4 w-4 text-gray-400" />
+      </div>
     </div>
   );
-}
+} 
