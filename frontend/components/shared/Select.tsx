@@ -11,7 +11,6 @@ interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
 
 export function Select({ 
   className = '',
-  error,
   tokenIcon,
   children,
   ...props 

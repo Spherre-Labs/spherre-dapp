@@ -1,12 +1,10 @@
 'use client'
 
 import { useState } from 'react'
-import Image from 'next/image'
 import { Button } from '@/components/shared/Button'
 import { Input } from '@/components/shared/Input'
 import { Select } from '@/components/shared/Select'
 
-import { useRouter } from 'next/navigation'
 
 interface Token {
   symbol: string
@@ -25,12 +23,10 @@ interface WithdrawAmountProps {
 export function WithdrawAmount({
   onNext,
   onCancel,
-  currentStep = 2,
-  onPrev,
 }: WithdrawAmountProps) {
   const [amount, setAmount] = useState<string>('')
   const [selectedToken, setSelectedToken] = useState<string>('STRK')
-  const [availableTokens, setAvailableTokens] = useState<Token[]>([
+  const [availableTokens,] = useState<Token[]>([
     {
       symbol: 'STRK',
       balance: 10.0,
