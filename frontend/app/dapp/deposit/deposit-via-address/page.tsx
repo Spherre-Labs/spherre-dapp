@@ -1,6 +1,9 @@
-import React from 'react'
+'use client'
+import React, { useEffect, useState } from 'react'
 import { Nunito_Sans } from 'next/font/google'
 import Image from 'next/image'
+import QRCode from 'qrcode'
+import { HiMiniArrowPath } from 'react-icons/hi2'
 
 const nunito = Nunito_Sans({
   subsets: ['latin'],
@@ -8,6 +11,38 @@ const nunito = Nunito_Sans({
 })
 
 const page = () => {
+  const [copied, setCopied] = useState(false)
+  const copyToClipboard = (text: string) => {
+    navigator.clipboard.writeText(text)
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2000)
+  }
+  const [src, setSrc] = useState<string>('')
+  const address = 'G2520xec7Spherre520bb71f30523bcce4c10ad62teyw'
+  const generateQRCode = (address: string) => {
+    QRCode.toDataURL(address, {
+      width: 250, // Size
+      margin: 2, // Less whitespace
+      color: {
+        dark: '#ffffff',
+        light: '#1C1D1F',
+      },
+      errorCorrectionLevel: 'H',
+    }).then(setSrc)
+  }
+
+  const downloadQRCode = () => {
+    const link = document.createElement('a')
+    link.href = src
+    link.download = `spherre-${address.slice(0, 5)}-qrcode-.png`
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+  }
+
+  useEffect(() => {
+    generateQRCode(address)
+  }, [])
   return (
     <div
       className={`${nunito.className} p-10 flex  items-center flex-col justify-center`}
@@ -81,8 +116,31 @@ const page = () => {
 
         <div className="flex  flex-col   h-[322px] w-[621px]">
           <div className="flex justify-between   gap-5">
-            <div className="bg-white size-[250px]"></div>
-            <div className="py-5 max-w-[345px] text-left ">
+            {/* <div className="bg-white size-[250px]"></div> */}
+            <div className="size-[250px] relative overflow-hidden rounded-[10px] bg-[#1C1D1F] p-2 shadow-lg">
+              {src ? (
+                <>
+                  <img
+                    src={src}
+                    alt="qrcode"
+                    className="w-full h-full object-cover"
+                  />
+                  <Image
+                    src="/depositAddy.svg"
+                    alt="member avatar"
+                    height={60}
+                    width={60}
+                    className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-[#1C1D1F] p-2"
+                  />
+                </>
+              ) : (
+                <div className="flex items-center justify-center w-full h-full">
+                  <HiMiniArrowPath  size={40} className='animate-spin' />
+                </div>
+              )}
+            </div>
+
+            <div className="my-2 max-w-[345px] text-left ">
               <p className="text-[16px] text-white">
                 Send funds to this address.
               </p>
@@ -102,10 +160,8 @@ const page = () => {
             </div>
           </div>
 
-          <div className="h-[48px] bg-[#1C1D1F] px-2 rounded-[10px]  flex justify-between items-center">
-            <span className="text-[#8E9BAE]">
-              G2520xec7Spherre520bb71f30523bcce4c10ad62teyw
-            </span>
+          <div className="h-[48px] bg-[#1C1D1F] px-2 mt-5 rounded-[10px]  flex justify-between items-center">
+            <span className="text-[#8E9BAE]">{address}</span>
             <div className="bg-[#29292A] rounded-[5px] gap-1 w-[90px] h-[28px] flex  items-center justify-center">
               <span className="text-white">Copy</span>{' '}
               <Image
@@ -113,17 +169,31 @@ const page = () => {
                 alt="copy"
                 height={20}
                 width={20}
+                onClick={() =>
+                  copyToClipboard(
+                    'G2520xec7Spherre520bb71f30523bcce4c10ad62teyw',
+                  )
+                }
                 className="cursor-pointer"
               />
-            </div>
+            </div>{' '}
+            {copied && <p className=" text-[11px] ">Copied!</p>}
           </div>
         </div>
 
         <div className="flex justify-between  gap-5 mt-5">
-          <button className="w-[304px] h-[50px] rounded-[7px]  bg-[#272729] text-white">
+          <button
+            onClick={downloadQRCode}
+            className="w-[304px] h-[50px] rounded-[7px]  bg-[#272729] text-white"
+          >
             Save as image
           </button>{' '}
-          <button className="w-[304px] h-[50px] rounded-[7px]  bg-[#6F2FCE] text-white">
+          <button
+            onClick={() =>
+              copyToClipboard('G2520xec7Spherre520bb71f30523bcce4c10ad62teyw')
+            }
+            className="w-[304px] h-[50px] rounded-[7px]  bg-[#6F2FCE] text-white"
+          >
             Copy address
           </button>{' '}
         </div>
