@@ -10,7 +10,7 @@ const nunito = Nunito_Sans({
   weight: ['200', '300', '400', '500', '600', '700', '800', '900'],
 })
 
-const page = () => {
+const Page = () => {
   const [copied, setCopied] = useState(false)
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text)
@@ -202,4 +202,4 @@ const page = () => {
   )
 }
 
-export default page
+export default Page
