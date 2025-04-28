@@ -1,10 +1,20 @@
+'use client'
+
 import React from 'react'
 import Image from 'next/image'
 import { Button } from '@/components/shared/Button'
 import Tabs from './Tabs'
 import AmountChart from '@/app/dapp/AmountChart'
+import { useState } from 'react'
 
 export default function DashboardPage() {
+  const [open, setOpen] = useState(false)
+  const handleOpen = () => setOpen(true)
+
+  React.useEffect(() => {
+    console.log("Modal state:", open);
+  }, [open]);
+ 
   return (
     <div className="py-[33px] px-[26px] rounded-[10px] grid gap-y-[36px] border-[#292929] border-2 mx-4 my-4">
       <div className="grid lg:grid-cols-2 gap-[15px]">
@@ -34,12 +44,18 @@ export default function DashboardPage() {
             <h2 className="text-[45px] text-white font-semibold">$250.35</h2>
           </div>
           <div className="grid grid-cols-3 gap-x-3">
-            <Button variant="primary" icon="/card-send-linear.svg">
+            <Button
+              variant="primary"
+              icon="/card-send-linear.svg"
+              onClick={handleOpen}
+            >
               Withdraw
             </Button>
+            
             <Button variant="primary" icon="/card-recive-linear.svg">
               Deposit
             </Button>
+          
             <Button variant="secondary" icon="/arrows-exchange.svg">
               Trade
             </Button>
