@@ -34,9 +34,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${nunitoSans.variable} antialiased`}
       >
-        <StarknetProvider>
-        {children}
-        </StarknetProvider>
+        <StarknetProvider>{children}</StarknetProvider>
       </body>
     </html>
   )

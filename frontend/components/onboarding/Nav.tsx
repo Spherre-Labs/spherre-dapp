@@ -16,8 +16,8 @@ const Nav = () => {
   const handleToggle = () => {
     setOpenMenu(!openMenu)
   }
-  const { address } = useAccount();
-  if(!address){
+  const { address } = useAccount()
+  if (!address) {
     router.replace('/')
   }
 
@@ -42,7 +42,7 @@ const Nav = () => {
       {/* Connect button & Hamburger Menu Button */}
       <div className="flex items-center gap-4">
         {/* Connected wallet */}
-        <WalletConnected address={address || "Wallet not connected"} />
+        <WalletConnected address={address || 'Wallet not connected'} />
 
         {/* Hamburger Menu */}
         <button
