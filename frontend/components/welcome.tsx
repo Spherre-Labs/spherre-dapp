@@ -5,10 +5,34 @@ import wall from '../public/Images/wall.png'
 import add from '../public/Images/Add.png'
 import Logo from './shared/Logo'
 import { useRouter } from 'next/navigation'
+ import {
+  Connector,
+  useAccount,
+  useConnect,
+  useDisconnect,
+} from '@starknet-react/core';
+import { StarknetkitConnector, useStarknetkitConnectModal } from 'starknetkit';
+
 
 const Welcome = () => {
   // for navigation
   const router = useRouter()
+  const { disconnect } = useDisconnect();
+ 
+  const { connect, connectors } = useConnect();
+  const { starknetkitConnectModal } = useStarknetkitConnectModal({
+    connectors: connectors as StarknetkitConnector[],
+  });
+ 
+  async function connectWallet() {
+    const { connector } = await starknetkitConnectModal();
+    if (!connector) {
+      return;
+    }
+    await connect({ connector: connector as Connector });
+  }
+ 
+  const { address } = useAccount();
 
   return (
     <div className="flex flex-col lg:flex-row">
@@ -36,13 +60,23 @@ const Welcome = () => {
             </p>
 
             {/* Responsive Button */}
-            <button
-              onClick={() => router.push('/onboarding/step')}
-              className="bg-white w-full sm:w-72 flex items-center justify-center gap-1 px-6 py-2 rounded-lg mx-auto my-3"
-            >
+            {address ?(
+              <button
+                onClick={() => router.push('/onboarding/step')}
+                className="bg-white w-full sm:w-72 flex items-center justify-center gap-1 px-6 py-2 rounded-lg mx-auto my-3"
+              >
               <Image src={add} height={30} width={24} alt={'add'} />
               <p className="text-black">Create Spherre</p>
-            </button>
+              </button>
+            ):(
+              <button
+                onClick={connectWallet}
+                className="bg-white w-full sm:w-72 flex items-center justify-center gap-1 px-6 py-2 rounded-lg mx-auto my-3"
+              >
+                <p className="text-black">Connect Wallet</p>
+              </button>
+            )}
+            
           </div>
         </div>
       </div>
