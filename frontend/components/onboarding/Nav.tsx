@@ -6,12 +6,19 @@ import spherreLogo from '../../public/Images/spherrelogo.png'
 import WalletConnected from '../shared/WalletConnected'
 import { IoMdMenu } from 'react-icons/io'
 import { IoClose } from 'react-icons/io5'
+import { useAccount } from '@starknet-react/core'
+import { useRouter } from 'next/navigation'
 
 const Nav = () => {
   const [openMenu, setOpenMenu] = useState(false)
+  const router = useRouter()
 
   const handleToggle = () => {
     setOpenMenu(!openMenu)
+  }
+  const { address } = useAccount()
+  if (!address) {
+    router.replace('/')
   }
 
   // to avoid body scroll on menu open
@@ -35,7 +42,7 @@ const Nav = () => {
       {/* Connect button & Hamburger Menu Button */}
       <div className="flex items-center gap-4">
         {/* Connected wallet */}
-        <WalletConnected address="0x5B8ecaB7096F8aBED873D246629ef9f05f467605" />
+        <WalletConnected address={address || 'Wallet not connected'} />
 
         {/* Hamburger Menu */}
         <button
