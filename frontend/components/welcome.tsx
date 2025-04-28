@@ -5,18 +5,12 @@ import wall from '../public/Images/wall.png'
 import add from '../public/Images/Add.png'
 import Logo from './shared/Logo'
 import { useRouter } from 'next/navigation'
-import {
-  Connector,
-  useAccount,
-  useConnect,
-  useDisconnect,
-} from '@starknet-react/core'
+import { Connector, useAccount, useConnect } from '@starknet-react/core'
 import { StarknetkitConnector, useStarknetkitConnectModal } from 'starknetkit'
 
 const Welcome = () => {
   // for navigation
   const router = useRouter()
-  const { disconnect } = useDisconnect()
 
   const { connect, connectors } = useConnect()
   const { starknetkitConnectModal } = useStarknetkitConnectModal({
