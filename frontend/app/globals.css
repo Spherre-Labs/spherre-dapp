@@ -280,3 +280,26 @@ body {
     transform: translateX(-100%);
   }
 }
+
+/* Add this to your global CSS file or component CSS */
+
+.transaction-expanded {
+  will-change: max-height, opacity;
+  transform-origin: top;
+}
+
+/* Optional: Add transform animation for more polished effect */
+.transaction-expanded {
+  transition:
+    max-height 0.3s ease-in-out,
+    opacity 0.2s ease-in-out;
+}
+
+/* For better performance, consider adding this if you have many transactions */
+@media (prefers-reduced-motion: no-preference) {
+  .transaction-expanded {
+    transition:
+      max-height 1s ease-in-out,
+      opacity 0.2s ease-in-out;
+  }
+}
