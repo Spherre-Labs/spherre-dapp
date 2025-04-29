@@ -1,7 +1,9 @@
-'use client';
+'use client'
 
-import { useState } from 'react';
-import Transaction, { Transaction as TransactionType } from './components/transaction';
+import { useState } from 'react'
+import Transaction, {
+  Transaction as TransactionType,
+} from './components/transaction'
 
 const transactions: TransactionType[] = [
   {
@@ -184,28 +186,30 @@ const transactions: TransactionType[] = [
     dateInitiated: 'Wed 18 Feb, 2025 4:45PM',
     account: 'Backstage Boys',
   },
-];
+]
 
 // Group transactions by date
-const groupedTransactions = transactions.reduce((acc, transaction) => {
-  if (!acc[transaction.date]) {
-    acc[transaction.date] = [];
-  }
-  acc[transaction.date].push(transaction);
-  return acc;
-}, {} as Record<string, TransactionType[]>);
+const groupedTransactions = transactions.reduce(
+  (acc, transaction) => {
+    if (!acc[transaction.date]) {
+      acc[transaction.date] = []
+    }
+    acc[transaction.date].push(transaction)
+    return acc
+  },
+  {} as Record<string, TransactionType[]>,
+)
 
 export default function TransactionPage() {
-  const [expandedId, setExpandedId] = useState<number | null>(null);
+  const [expandedId, setExpandedId] = useState<number | null>(null)
 
   const handleToggle = (id: number) => {
-    setExpandedId(expandedId === id ? null : id);
-  };
+    setExpandedId(expandedId === id ? null : id)
+  }
 
   return (
     <div className="">
       <div className="m-6 p-10 bg-[#1C1D1F] rounded-xl">
-        
         {Object.entries(groupedTransactions).map(([date, txns]) => (
           <div key={date} className="mb-6">
             <h2 className="text-gray-400 text-sm mb-2">{date}</h2>
@@ -227,5 +231,5 @@ export default function TransactionPage() {
         ))}
       </div>
     </div>
-  );
+  )
 }

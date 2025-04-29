@@ -32,7 +32,8 @@ export default function DappLayout({ children }: DappLayoutProps) {
     { name: 'Members', icon: Members, route: '/dapp/members' }, // Using Trade icon temporarily for Members
     {
       name: 'Transactions',
-      icon: Transactions , route: '/dapp/transactions',
+      icon: Transactions,
+      route: '/dapp/transactions',
     },
     { name: 'Stake', icon: Stake, comingSoon: true /*, route: '/dapp/stake'*/ },
     { name: 'Treasury', icon: Treasury /*, route: '/dapp/treasury'*/ },
