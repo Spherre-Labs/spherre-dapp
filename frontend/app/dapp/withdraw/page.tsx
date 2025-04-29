@@ -53,11 +53,11 @@ export default function WithdrawalPage() {
 
       <WithdrawalSteps currentStep={1} />
       {/* Main Content */}
-      <div className="flex flex-col pt-6 sm:pt-16 w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-2xl">
+      <div className="flex flex-col pt-6 sm:pt-16 h-full w-full max-w-xs sm:max-w-sm  md:max-w-lg xl:max-w-2xl">
         <h1 className="text-xl sm:text-2xl font-bold text-center mb-1 sm:mb-2">
           Withdraw to Another Wallet
         </h1>
-        <p className="text-gray-400 text-center text-sm sm:text-base mb-6 sm:mb-8">
+        <p className="text-ash text-center text-sm sm:text-base mb-6 sm:mb-8">
           Please select the account you wish to withdraw from Spherre and choose
           a recipient.
         </p>
@@ -65,7 +65,7 @@ export default function WithdrawalPage() {
         <div className="mb-6">
           <p className="text-gray-400 mb-2">From:</p>
           <AccountSelector account={accountData} />
-          <div className="flex items-center text-gray-400 text-sm mt-2">
+          <div className="flex items-center text-ash text-sm mt-2">
             <svg
               width="16"
               height="16"
@@ -102,7 +102,7 @@ export default function WithdrawalPage() {
         <div className="grid grid-cols-2 gap-2 sm:gap-4">
           <button
             onClick={handleCancel}
-            className="py-2 sm:py-3 px-3 sm:px-4 text-sm sm:text-base bg-gray-800 rounded-lg hover:bg-gray-700 transition-colors"
+            className="py-2 sm:py-3 px-3 sm:px-4 text-sm sm:text-base bg-[#272729] text-white rounded-lg hover:bg-gray-700 transition-colors"
           >
             Cancel
           </button>
@@ -111,8 +111,8 @@ export default function WithdrawalPage() {
             disabled={!isAddressValid}
             className={`py-2 sm:py-3 px-3 sm:px-4 text-sm sm:text-base rounded-lg ${
               isAddressValid
-                ? 'bg-purple-600 hover:bg-purple-700'
-                : 'bg-purple-600/50 cursor-not-allowed'
+                ? 'bg-primary hover:bg-purple-900'
+                : 'bg-primary/50 cursor-not-allowed'
             } transition-colors`}
           >
             Next

@@ -26,10 +26,8 @@ export default function AddressInput({
 
     // This is a simplified validation - in a real app you would use a more robust check
     // that's specific to the blockchain you're targeting
-    return (
-      /^(0x)?[0-9a-fA-F]{40}$/.test(address) ||
-      /^[A-Za-z0-9]{30,50}$/.test(address)
-    ) // Generic fallback for other chains
+    // Check if it matches the StarkNet address format
+    return /^0x[a-fA-F0-9]{64}$/.test(address)
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -69,7 +67,7 @@ export default function AddressInput({
           onChange={handleChange}
           onBlur={onBlur}
           placeholder="Write address, name of the recipient, strk, sol, glow..."
-          className="flex-grow bg-transparent text-white py-3 rounded-lg focus:outline-none text-sm sm:text-base"
+          className="flex-grow bg-transparent text-white py-3 rounded-lg focus:outline-none placeholder:text-ash text-sm sm:text-base"
         />
         <div className="flex mb-3 sm:mb-0 space-x-2 sm:ml-2">
           <button

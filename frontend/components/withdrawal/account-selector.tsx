@@ -13,7 +13,7 @@ interface AccountSelectorProps {
 
 export default function AccountSelector({ account }: AccountSelectorProps) {
   return (
-    <div className="bg-gray-800 rounded-lg py-4 sm:py-6 px-3 sm:px-[18px] flex items-center justify-between">
+    <div className="bg-[#1C1D1F]  rounded-lg py-4 sm:py-6 px-3 sm:px-[18px] flex items-center justify-between">
       <div className="flex items-center gap-2 sm:gap-3 text-base sm:text-2xl">
         <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full overflow-hidden">
           <Image
@@ -24,9 +24,9 @@ export default function AccountSelector({ account }: AccountSelectorProps) {
             className="object-cover"
           />
         </div>
-        <div>
+        <div className="space-y-2.5">
           <p className="font-bold text-sm sm:text-base">{account.name}</p>
-          <p className="text-xs sm:text-sm text-[#8E9BAE] font-medium">
+          <p className="text-xs sm:text-sm text-ash font-medium">
             {account.address}
           </p>
         </div>
