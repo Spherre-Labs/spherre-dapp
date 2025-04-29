@@ -20,7 +20,7 @@ interface WithdrawAmountProps {
   onPrev?: () => void
 }
 
-export function WithdrawAmount({
+export default function WithdrawStepTwo({
   onNext,
   onCancel,
 }: WithdrawAmountProps) {
@@ -85,7 +85,7 @@ export function WithdrawAmount({
 
       <div className="flex flex-col gap-6">
         <div className=" flex flex-col gap-5 md:p-6">
-          <label className="block text-sm text-gray-400">Enter Amount</label>
+          <label className="block text-xl text-gray-500">Enter Amount</label>
           <div className="flex border border-[#272729] rounded-lg p-4 text-white">
             <div className="flex-1 flex flex-col gap-2">
               <Input
@@ -95,7 +95,7 @@ export function WithdrawAmount({
                 placeholder="0.00"
                 className="text-[20px] md:text-[40px] leading-[48px] font-semibold h-[64px] bg-transparent border-none focus:ring-0 focus:border-transparent placeholder:text-white "
               />
-              <div className=" text-sm text-gray-400">
+              <div className=" text-sm text-gray-500">
                 Balance: {selectedTokenData?.balance || 0} {selectedToken}
               </div>
             </div>
@@ -126,7 +126,7 @@ export function WithdrawAmount({
           <Button
             variant="secondary"
             onClick={onCancel}
-            className="flex-1 bg-[#272729] text-white hover:bg-[#323234] px-6 py-3 rounded-lg"
+            className="flex-1 bg-gray-600 text-white hover:bg-[#323234] px-6 py-3 rounded-lg"
           >
             Cancel
           </Button>
