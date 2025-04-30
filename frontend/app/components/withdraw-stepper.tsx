@@ -6,7 +6,6 @@ interface WithdrawStepperProps {
 }
 
 const WithdrawStepper = ({ currentStep, steps }: WithdrawStepperProps) => {
-
   return (
     <div className="flex flex-col items-start md:items-center w-full ">
       <div className="flex flex-col items-start md:flex-row md:items-center md:justify-center  md:space-x-1 mb-4 gap-3 ">
@@ -37,7 +36,8 @@ const WithdrawStepper = ({ currentStep, steps }: WithdrawStepperProps) => {
       </div>
       <div className="hidden md:flex gap-16">
         {steps.map((item, index) => (
-          <span key={new Date().toISOString() + index}
+          <span
+            key={new Date().toISOString() + index}
             className={`ml-2 text-sm text-gray-400 ${currentStep === item.step && 'text-white'}`}
           >
             {item.label}
@@ -49,4 +49,3 @@ const WithdrawStepper = ({ currentStep, steps }: WithdrawStepperProps) => {
 }
 
 export default WithdrawStepper
-

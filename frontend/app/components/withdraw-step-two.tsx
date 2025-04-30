@@ -1,88 +1,29 @@
 'use client'
-
-import { useState } from 'react'
-import { Button } from '@/components/shared/Button'
 import { Input } from '@/components/shared/Input'
 import { Select } from '@/components/shared/Select'
-
-
-interface Token {
-  symbol: string
-  balance: number
-  icon?: string
-  usdValue?: number
-}
+import { Token } from '../dapp/withdraw/page'
 
 interface WithdrawAmountProps {
-  onNext: () => void
-  onCancel: () => void
-  currentStep?: number
-  onPrev?: () => void
+  amount: string
+  onChangeAmount: (e: React.ChangeEvent<HTMLInputElement>) => void
+  selectedToken: string
+  onChangeSelectedToken: (e: React.ChangeEvent<HTMLSelectElement>) => void
+  availableTokens: Token[]
 }
 
 export default function WithdrawStepTwo({
-  onNext,
-  onCancel,
+  amount,
+  onChangeAmount,
+  onChangeSelectedToken,
+  selectedToken,
+  availableTokens,
 }: WithdrawAmountProps) {
-  const [amount, setAmount] = useState<string>('')
-  const [selectedToken, setSelectedToken] = useState<string>('STRK')
-  const [availableTokens,] = useState<Token[]>([
-    {
-      symbol: 'STRK',
-      balance: 10.0,
-      icon: '/Images/starknet.svg',
-      usdValue: 0.15,
-    },
-    {
-      symbol: 'ETH',
-      balance: 0.0,
-      usdValue: 0,
-    },
-  ])
-
-  // Validation
-  const isValidAmount = () => {
-    const numAmount = parseFloat(amount)
-    const selectedTokenData = availableTokens.find(
-      (t) => t.symbol === selectedToken,
-    )
-    return (
-      !isNaN(numAmount) &&
-      numAmount > 0 &&
-      selectedTokenData &&
-      numAmount <= selectedTokenData.balance
-    )
-  }
-
-  const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value
-    // Only allow numbers and decimals
-    if (value === '' || /^\d*\.?\d*$/.test(value)) {
-      setAmount(value)
-    }
-  }
-
-  const handleNext = () => {
-    if (isValidAmount()) {
-      onNext()
-    }
-  }
-
   const selectedTokenData = availableTokens.find(
     (t) => t.symbol === selectedToken,
   )
 
   return (
-    <div className="max-w-2xl mx-auto pr-6 md:p-6 space-y-6 flex flex-col  md:items-center w-full">
-      <div>
-        <h1 className="text-2xl font-semibold text-white mb-4">
-          Withdraw to Another Wallet
-        </h1>
-        <p className="text-gray-400">
-          Please select the token and amount you wish to send
-        </p>
-      </div>
-
+    <>
       <div className="flex flex-col gap-6">
         <div className=" flex flex-col gap-5 md:p-6">
           <label className="block text-xl text-gray-500">Enter Amount</label>
@@ -91,7 +32,7 @@ export default function WithdrawStepTwo({
               <Input
                 type="text"
                 value={amount}
-                onChange={handleAmountChange}
+                onChange={(e) => onChangeAmount(e)}
                 placeholder="0.00"
                 className="text-[20px] md:text-[40px] leading-[48px] font-semibold h-[64px] bg-transparent border-none focus:ring-0 focus:border-transparent placeholder:text-white "
               />
@@ -101,7 +42,7 @@ export default function WithdrawStepTwo({
             </div>
             <Select
               value={selectedToken}
-              onChange={(e) => setSelectedToken(e.target.value)}
+              onChange={(e) => onChangeSelectedToken(e)}
               className="min-w-[130px] pl-10 pr-10 pt-4 pb-4"
               tokenIcon={selectedTokenData?.icon}
             >
@@ -121,25 +62,7 @@ export default function WithdrawStepTwo({
             ).toFixed(2)}
           </div>
         </div>
-
-        <div className="flex gap-4">
-          <Button
-            variant="secondary"
-            onClick={onCancel}
-            className="flex-1 bg-gray-600 text-white hover:bg-[#323234] px-6 py-3 rounded-lg"
-          >
-            Cancel
-          </Button>
-          <Button
-            variant="primary"
-            onClick={handleNext}
-            disabled={!isValidAmount()}
-            className="flex-1 bg-purple-600 text-white hover:bg-purple-700 px-6 py-3 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            Next
-          </Button>
-        </div>
       </div>
-    </div>
+    </>
   )
 }

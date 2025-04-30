@@ -3,14 +3,63 @@ import { useRouter } from 'next/navigation'
 import WithdrawStepTwo from '@/app/components/withdraw-step-two'
 import { useState } from 'react'
 import { ArrowLeft } from 'lucide-react'
-
 import { Button } from '@/components/shared/Button'
 import WithdrawStepper from '@/app/components/withdraw-stepper'
 import WithdrawalPage from '@/app/components/withdraw-step-one'
 
+export interface Token {
+  symbol: string
+  balance: number
+  icon?: string
+  usdValue?: number
+}
+
 export default function WithdrawPage() {
   const [currentStep, setCurrentStep] = useState(1)
   const router = useRouter()
+  const [isAddressValid, setIsAddressValid] = useState<boolean>(false)
+  const [recipientAddress, setRecipientAddress] = useState<string>('')
+  const [addressTouched, setAddressTouched] = useState<boolean>(false)
+  const [amount, setAmount] = useState<string>('')
+  const [selectedToken, setSelectedToken] = useState<string>('STRK')
+  const [availableTokens] = useState<Token[]>([
+    {
+      symbol: 'STRK',
+      balance: 10.0,
+      icon: '/Images/starknet.svg',
+      usdValue: 0.15,
+    },
+    {
+      symbol: 'ETH',
+      balance: 0.0,
+      usdValue: 0,
+    },
+  ])
+
+  const onAddressChange = (isValid: boolean) => {
+    setIsAddressValid(isValid)
+  }
+
+  const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value
+    // Only allow numbers and decimals
+    if (value === '' || /^\d*\.?\d*$/.test(value)) {
+      setAmount(value)
+    }
+  }
+  // Validation
+  const isValidAmount = (amount: string) => {
+    const numAmount = parseFloat(amount)
+    const selectedTokenData = availableTokens.find(
+      (t) => t.symbol === selectedToken,
+    )
+    return (
+      !isNaN(numAmount) &&
+      numAmount > 0 &&
+      selectedTokenData &&
+      numAmount <= selectedTokenData.balance
+    )
+  }
 
   const handleNext = () => {
     // Store the withdrawal details and navigate to the next step
@@ -19,7 +68,8 @@ export default function WithdrawPage() {
     if (currentStep > 3) {
       // router.push('/withdraw/review')
     } else {
-      setCurrentStep((prev) => prev + 1)
+      if (isAddressValid || isValidAmount(amount))
+        setCurrentStep((prev) => prev + 1)
     }
   }
 
@@ -54,20 +104,65 @@ export default function WithdrawPage() {
       </div>
 
       <WithdrawStepper currentStep={currentStep} steps={steps} />
-      {currentStep === 1 && (
-        <WithdrawalPage
-          onNext={handleNext}
-          onCancel={handleCancel}
-        />
-      )}
-      {currentStep === 2 && (
-        <WithdrawStepTwo
-          onNext={handleNext}
-          onCancel={handleCancel}
-          currentStep={currentStep}
-          onPrev={handlePrev}
-        />
-      )}
+      <div className="max-w-2xl mx-auto pr-6 md:p-6 space-y-6 flex flex-col  md:items-center w-full">
+        {/* Main Content */}
+        <div className="flex flex-col h-full w-full md:max-w-lg xl:max-w-2xl">
+          <h1 className="text-xl sm:text-3xl font-bold text-center mb-1 sm:mb-2">
+            Withdraw to Another Wallet
+          </h1>
+          <p className="text-ash text-center text-sm sm:text-base mb-6 sm:mb-8">
+            {currentStep === 1 &&
+              'Please select the account you wish to withdraw from Spherre and choose a recipient.'}
+            {currentStep === 2 &&
+              'Please select the token and amount you wish to withdraw.'}
+          </p>
+
+          {currentStep === 1 && (
+            <WithdrawalPage
+              isAddressValid={isAddressValid}
+              onAddressChange={onAddressChange}
+              recipientAddress={recipientAddress}
+              onChangeRecipientAddress={setRecipientAddress}
+              addressTouched={addressTouched}
+              onChangeAddressTouched={setAddressTouched}
+            />
+          )}
+          {currentStep === 2 && (
+            <WithdrawStepTwo
+              amount={amount}
+              onChangeSelectedToken={(e) => setSelectedToken(e.target.value)}
+              onChangeAmount={handleAmountChange}
+              availableTokens={availableTokens}
+              selectedToken={selectedToken}
+            />
+          )}
+
+          {/* Action Buttons */}
+          <div className="grid grid-cols-2 gap-2 sm:gap-4">
+            <button
+              onClick={handleCancel}
+              className="py-2 sm:py-3 px-3 sm:px-4 text-sm sm:text-base bg-[#272729] text-white rounded-lg hover:bg-gray-700 transition-colors"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={handleNext}
+              disabled={
+                (!isAddressValid && currentStep === 1) ||
+                (!isValidAmount(amount) && currentStep === 2)
+              }
+              className={`py-2 sm:py-3 px-3 sm:px-4 text-sm sm:text-base rounded-lg disabled:opacity-50 disabled:cursor-not-allowed ${
+                (isAddressValid && currentStep === 1) ||
+                (isValidAmount(amount) && currentStep === 2)
+                  ? 'bg-primary hover:bg-purple-900'
+                  : 'bg-primary/50 cursor-not-allowed'
+              } transition-colors`}
+            >
+              Next
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   )
 }
