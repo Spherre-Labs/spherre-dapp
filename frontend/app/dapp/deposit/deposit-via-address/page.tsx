@@ -135,7 +135,7 @@ const Page = () => {
                 </>
               ) : (
                 <div className="flex items-center justify-center w-full h-full">
-                  <HiMiniArrowPath  size={40} className='animate-spin' />
+                  <HiMiniArrowPath size={40} className="animate-spin" />
                 </div>
               )}
             </div>
