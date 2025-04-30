@@ -3,6 +3,7 @@ import Image from 'next/image'
 import { Button } from '@/components/shared/Button'
 import Tabs from './Tabs'
 import AmountChart from '@/app/dapp/AmountChart'
+import Link from 'next/link'
 
 export default function DashboardPage() {
   return (
@@ -35,8 +36,10 @@ export default function DashboardPage() {
           </div>
           <div className="grid grid-cols-3 gap-x-3">
             <Button variant="primary" icon="/card-send-linear.svg">
-              Withdraw
+              {' '}
+              <Link href={'/dapp/withdraw'}>Withdraw </Link>
             </Button>
+
             <Button variant="primary" icon="/card-recive-linear.svg">
               Deposit
             </Button>

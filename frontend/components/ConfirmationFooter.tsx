@@ -4,7 +4,7 @@ const bookNum = '/Images/book-num.svg'
 
 const ConfirmationFooter = () => {
   return (
-    <div className=" w-full max-w-[628px] min-w-[300px] px-[26px] py-[28px] bg-[#1C1D1F]  md:h-[283px] rounded-[10px] flex flex-col items-start justify-center gap-7  ">
+    <div className=" w-full max-w-[628px] min-w-[300px] px-[26px] py-[28px] bg-[#1C1D1F]  md:h-[283px] rounded-[10px] flex flex-col items-start justify-center gap-7">
       <div className=" w-full flex items-center justify-between gap-5  ">
         <div className="basis-1/2 bg-[#272729] rounded-[10px] w-[130px] md:max-w-[281px] h-[139px] flex flex-row items-center justify-between gap-3 py-[33px] px-[14px] md:px-[26px] ">
           <div className=" h-[90px] flex flex-col justify-between items-start  ">
