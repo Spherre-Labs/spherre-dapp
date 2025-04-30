@@ -1,5 +1,4 @@
 'use client'
-
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import WithdrawalSteps from '@/components/withdrawal/withdrawal-steps'
