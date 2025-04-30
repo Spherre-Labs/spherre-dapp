@@ -1,5 +1,4 @@
 'use client'
-// this is the step one logic 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import WithdrawalSteps from '@/components/withdrawal/withdrawal-steps'
