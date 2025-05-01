@@ -1,104 +1,146 @@
 'use client'
-import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import WithdrawalSteps from '@/components/withdrawal/withdrawal-steps'
-import AccountSelector from '@/components/withdrawal/account-selector'
-import AddressInput from '@/components/withdrawal/address-input'
+import { useState } from 'react'
 import { ArrowLeft } from 'lucide-react'
+import { Button } from '@/components/shared/Button'
+import WithdrawalStepOne from './withdraw-step-one'
+import WithdrawStepTwo from './withdraw-step-two'
+import WithdrawStepper from './withdraw-stepper'
+import WithdrawalReviewPage from './step3/page'
 
-export default function WithdrawalPage() {
+export interface Token {
+  symbol: string
+  balance: number
+  icon?: string
+  usdValue?: number
+}
+
+export default function WithdrawPage() {
+  const [currentStep, setCurrentStep] = useState(1)
   const router = useRouter()
-  const [recipientAddress, setRecipientAddress] = useState<string>('')
   const [isAddressValid, setIsAddressValid] = useState<boolean>(false)
+  const [recipientAddress, setRecipientAddress] = useState<string>('')
   const [addressTouched, setAddressTouched] = useState<boolean>(false)
+  const [amount, setAmount] = useState<string>('')
+  const [selectedToken, setSelectedToken] = useState<string>('STRK')
+  const [availableTokens] = useState<Token[]>([
+    {
+      symbol: 'STRK',
+      balance: 10.0,
+      icon: '/Images/starknet.svg',
+      usdValue: 0.15,
+    },
+    {
+      symbol: 'ETH',
+      balance: 0.0,
+      usdValue: 0,
+    },
+  ])
 
-  // Dummy data for the account
-  const accountData = {
-    name: 'Backstage Boys',
-    address: 'G2SZ...62tsyw',
-    balance: '$250.35',
-    avatar: '/placeholder.svg?height=40&width=40',
+  const onAddressChange = (isValid: boolean) => {
+    setIsAddressValid(isValid)
   }
 
-  const handleGoBack = () => {
-    router.push('/dapp')
+  const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value
+    // Only allow numbers and decimals
+    if (value === '' || /^\d*\.?\d*$/.test(value)) {
+      setAmount(value)
+    }
+  }
+  // Validation
+  const isValidAmount = (amount: string) => {
+    const numAmount = parseFloat(amount)
+    const selectedTokenData = availableTokens.find(
+      (t) => t.symbol === selectedToken,
+    )
+    return (
+      !isNaN(numAmount) &&
+      numAmount > 0 &&
+      selectedTokenData &&
+      numAmount <= selectedTokenData.balance
+    )
   }
 
   const handleNext = () => {
-    if (isAddressValid) {
-      // In a real app, you would store this data in state management or context
-      // For now, we'll just log it
-      console.log('Proceeding to next step with address:', recipientAddress)
+    // Store the withdrawal details and navigate to the next step
 
-      // Navigate to the next step (would be implemented in a real app)
-      // router.push("/dapp/withdraw/amount");
+    // Navigate to the next step (review)
+    if (currentStep === 3) {
+      router.push('/dapp')
+    } else {
+      if (isAddressValid || isValidAmount(amount))
+        setCurrentStep((prev) => prev + 1)
     }
   }
 
+  const handlePrev = () => {
+    if (currentStep === 1) {
+      router.push('/dapp')
+    }
+    setCurrentStep((prev) => (prev <= 1 ? 1 : prev - 1))
+  }
+
   const handleCancel = () => {
+    // Navigate back to the dashboard or previous page
     router.push('/dapp')
   }
 
+  const steps = [
+    { step: 1, label: 'Recipient' },
+    { step: 2, label: 'Token and Amount' },
+    { step: 3, label: 'Final Review' },
+  ]
+
   return (
-    <div className="min-h-screen w-full font-sans bg-black text-white p-4 sm:p-6 flex items-center justify-center relative">
-      {/* Go Back Button */}
-      <button
-        onClick={handleGoBack}
-        className="flex items-center gap-2 sm:gap-3 text-white group absolute top-4 sm:top-10 left-4 sm:left-10 text-sm sm:text-base font-bold transition-colors"
-      >
-        <ArrowLeft className="p-1 sm:p-2 bg-[#29292A] w-8 h-8 sm:w-10 sm:h-10 text-white group-hover:ml-1 sm:group-hover:ml-2 duration-300 rounded-md" />
-        <span className="inline">Go Back</span>
-      </button>
+    <div className="min-h-screen bg-[#000] text-white pt-16 pl-6">
+      <div className="flex items-center mb-6 md:mb-0">
+        <Button
+          className="p-2 bg-gray-800 rounded-lg hover:bg-gray-600 transition duration-200 px-[1.25rem]"
+          onClick={() => handlePrev()}
+        >
+          <ArrowLeft className="h-4 w-4 text-white" />
+        </Button>
+        <span className=" font-semibold text-white ml-4">Go Back</span>
+      </div>
 
-      <div>
-        <WithdrawalSteps currentStep={1} />
-
+      <WithdrawStepper currentStep={currentStep} steps={steps} />
+      <div className="max-w-2xl mx-auto pr-6 md:p-6 space-y-6 flex flex-col  md:items-center w-full">
         {/* Main Content */}
-        <div className="flex flex-col pt-32 sm:pt-40 h-full w-full max-w-xs sm:max-w-sm md:max-w-lg xl:max-w-2xl mt-[-10%]">
+        <div className="flex flex-col h-full w-full md:max-w-lg xl:max-w-2xl">
           <h1 className="text-xl sm:text-3xl font-bold text-center mb-1 sm:mb-2">
             Withdraw to Another Wallet
           </h1>
           <p className="text-ash text-center text-sm sm:text-base mb-6 sm:mb-8">
-            Please select the account you wish to withdraw from Spherre and
-            choose a recipient.
+            {currentStep === 1 &&
+              'Please select the account you wish to withdraw from Spherre and choose a recipient.'}
+            {currentStep === 2 &&
+              'Please select the token and amount you wish to withdraw.'}
+            {currentStep === 3 &&
+              'Please review your information before withdrawing.'}
           </p>
-          {/* From Account Selector */}
-          <div className="mb-6">
-            <p className="text-gray-400 mb-2">From:</p>
-            <AccountSelector account={accountData} />
-            <div className="flex items-center text-ash text-sm mt-2">
-              <svg
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-                className="mr-2"
-              >
-                <path
-                  d="M12 16V12M12 8H12.01M22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12Z"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-              Payments are processed within 24 hours
-            </div>
-          </div>
-          {/* To Address Input */}
-          <div className="mb-8">
-            <p className="text-gray-400 mb-2">To:</p>
-            <AddressInput
-              value={recipientAddress}
-              onChange={(value) => setRecipientAddress(value)}
-              onValidityChange={(isValid) => setIsAddressValid(isValid)}
-              onBlur={() => setAddressTouched(true)}
-              showError={
-                addressTouched && !isAddressValid && recipientAddress !== ''
-              }
+
+          {currentStep === 1 && (
+            <WithdrawalStepOne
+              isAddressValid={isAddressValid}
+              onAddressChange={onAddressChange}
+              recipientAddress={recipientAddress}
+              onChangeRecipientAddress={setRecipientAddress}
+              addressTouched={addressTouched}
+              onChangeAddressTouched={setAddressTouched}
             />
-          </div>
+          )}
+          {currentStep === 2 && (
+            <WithdrawStepTwo
+              amount={amount}
+              onChangeSelectedToken={(e) => setSelectedToken(e.target.value)}
+              onChangeAmount={handleAmountChange}
+              availableTokens={availableTokens}
+              selectedToken={selectedToken}
+            />
+          )}
+          {currentStep === 3 && <WithdrawalReviewPage />}
+
           {/* Action Buttons */}
           <div className="grid grid-cols-2 gap-2 sm:gap-4">
             <button
@@ -109,16 +151,29 @@ export default function WithdrawalPage() {
             </button>
             <button
               onClick={handleNext}
-              disabled={!isAddressValid}
-              className={`py-2 sm:py-3 px-3 sm:px-4 text-sm sm:text-base rounded-lg ${
-                isAddressValid
+              disabled={
+                (!isAddressValid && currentStep === 1) ||
+                (!isValidAmount(amount) && currentStep === 2) ||
+                (currentStep === 3 && !isAddressValid)
+              }
+              className={`py-2 sm:py-3 px-3 sm:px-4 text-sm sm:text-base rounded-lg disabled:opacity-50 disabled:cursor-not-allowed ${
+                (isAddressValid && currentStep === 1) ||
+                (isValidAmount(amount) && currentStep === 2) ||
+                (currentStep === 3 && isAddressValid)
                   ? 'bg-primary hover:bg-purple-900'
                   : 'bg-primary/50 cursor-not-allowed'
               } transition-colors`}
             >
-              Next
+              {currentStep === 3 ? 'Execute' : 'Next'}
             </button>
           </div>
+          {currentStep === 3 && (
+            <p className="text-xs sm:text-sm text-gray-500 mb-6 text-left mt-3">
+              By clicking Execute you`re withdrawing funds to an internal
+              wallet, please review the details before proceeding with the
+              transaction.
+            </p>
+          )}
         </div>
       </div>
     </div>
