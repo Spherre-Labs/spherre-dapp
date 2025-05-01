@@ -158,7 +158,7 @@ export default function WithdrawPage() {
               }
               className={`py-2 sm:py-3 px-3 sm:px-4 text-sm sm:text-base rounded-lg disabled:opacity-50 disabled:cursor-not-allowed ${
                 (isAddressValid && currentStep === 1) ||
-                (isValidAmount(amount) && currentStep === 2) || 
+                (isValidAmount(amount) && currentStep === 2) ||
                 (currentStep === 3 && isAddressValid)
                   ? 'bg-primary hover:bg-purple-900'
                   : 'bg-primary/50 cursor-not-allowed'
@@ -168,9 +168,10 @@ export default function WithdrawPage() {
             </button>
           </div>
           {currentStep === 3 && (
-              <p className="text-xs sm:text-sm text-gray-500 mb-6 text-left mt-3">
-              By clicking Execute you`re withdrawing funds to an internal wallet,
-              please review the details before proceeding with the transaction.
+            <p className="text-xs sm:text-sm text-gray-500 mb-6 text-left mt-3">
+              By clicking Execute you`re withdrawing funds to an internal
+              wallet, please review the details before proceeding with the
+              transaction.
             </p>
           )}
         </div>

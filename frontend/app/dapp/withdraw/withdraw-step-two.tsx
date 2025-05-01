@@ -3,7 +3,6 @@ import { Input } from '@/components/shared/Input'
 import { Select } from '@/components/shared/Select'
 import { Token } from './page'
 
-
 interface WithdrawAmountProps {
   amount: string
   onChangeAmount: (e: React.ChangeEvent<HTMLInputElement>) => void

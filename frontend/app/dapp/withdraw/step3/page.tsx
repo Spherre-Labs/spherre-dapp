@@ -1,13 +1,11 @@
 'use client'
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import Usdt from '@/public/Images/usdt.png'
 import Backstage from '@/public/Images/backstageboys.png'
 import Arrow from '@/public/Images/Arrow.png'
 
 export default function WithdrawalReviewPage() {
-  const router = useRouter()
   const [note, setNote] = useState<string>('')
 
   // Dummy data for the transaction
@@ -27,7 +25,6 @@ export default function WithdrawalReviewPage() {
     fee: '$0.0',
     total: '$245.6783447',
   }
-
 
   return (
     <>
