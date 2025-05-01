@@ -1,11 +1,12 @@
 'use client'
 import { useRouter } from 'next/navigation'
-import WithdrawStepTwo from '@/app/components/withdraw-step-two'
 import { useState } from 'react'
 import { ArrowLeft } from 'lucide-react'
 import { Button } from '@/components/shared/Button'
-import WithdrawStepper from '@/app/components/withdraw-stepper'
-import WithdrawalPage from '@/app/components/withdraw-step-one'
+import WithdrawalStepOne from './withdraw-step-one'
+import WithdrawStepTwo from './withdraw-step-two'
+import WithdrawStepper from './withdraw-stepper'
+import WithdrawalReviewPage from './step3/page'
 
 export interface Token {
   symbol: string
@@ -65,8 +66,8 @@ export default function WithdrawPage() {
     // Store the withdrawal details and navigate to the next step
 
     // Navigate to the next step (review)
-    if (currentStep > 3) {
-      // router.push('/withdraw/review')
+    if (currentStep === 3) {
+      router.push('/dapp')
     } else {
       if (isAddressValid || isValidAmount(amount))
         setCurrentStep((prev) => prev + 1)
@@ -115,10 +116,12 @@ export default function WithdrawPage() {
               'Please select the account you wish to withdraw from Spherre and choose a recipient.'}
             {currentStep === 2 &&
               'Please select the token and amount you wish to withdraw.'}
+            {currentStep === 3 &&
+              'Please review your information before withdrawing.'}
           </p>
 
           {currentStep === 1 && (
-            <WithdrawalPage
+            <WithdrawalStepOne
               isAddressValid={isAddressValid}
               onAddressChange={onAddressChange}
               recipientAddress={recipientAddress}
@@ -136,6 +139,7 @@ export default function WithdrawPage() {
               selectedToken={selectedToken}
             />
           )}
+          {currentStep === 3 && <WithdrawalReviewPage />}
 
           {/* Action Buttons */}
           <div className="grid grid-cols-2 gap-2 sm:gap-4">
@@ -149,18 +153,26 @@ export default function WithdrawPage() {
               onClick={handleNext}
               disabled={
                 (!isAddressValid && currentStep === 1) ||
-                (!isValidAmount(amount) && currentStep === 2)
+                (!isValidAmount(amount) && currentStep === 2) ||
+                (currentStep === 3 && !isAddressValid)
               }
               className={`py-2 sm:py-3 px-3 sm:px-4 text-sm sm:text-base rounded-lg disabled:opacity-50 disabled:cursor-not-allowed ${
                 (isAddressValid && currentStep === 1) ||
-                (isValidAmount(amount) && currentStep === 2)
+                (isValidAmount(amount) && currentStep === 2) || 
+                (currentStep === 3 && isAddressValid)
                   ? 'bg-primary hover:bg-purple-900'
                   : 'bg-primary/50 cursor-not-allowed'
               } transition-colors`}
             >
-              Next
+              {currentStep === 3 ? 'Execute' : 'Next'}
             </button>
           </div>
+          {currentStep === 3 && (
+              <p className="text-xs sm:text-sm text-gray-500 mb-6 text-left mt-3">
+              By clicking Execute you`re withdrawing funds to an internal wallet,
+              please review the details before proceeding with the transaction.
+            </p>
+          )}
         </div>
       </div>
     </div>

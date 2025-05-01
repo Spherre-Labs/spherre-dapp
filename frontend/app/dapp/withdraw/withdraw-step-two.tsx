@@ -1,7 +1,8 @@
 'use client'
 import { Input } from '@/components/shared/Input'
 import { Select } from '@/components/shared/Select'
-import { Token } from '../dapp/withdraw/page'
+import { Token } from './page'
+
 
 interface WithdrawAmountProps {
   amount: string
