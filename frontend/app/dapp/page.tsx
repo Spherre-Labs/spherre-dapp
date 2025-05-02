@@ -9,24 +9,24 @@ import WithdrawalModal from '@/app/components/modal'
 
 export default function DashboardPage() {
   const [open, setOpen] = useState(false)
-  
+
   const handleOpen = () => {
     setOpen(true)
   }
-  
+
   const handleClose = () => {
     setOpen(false)
   }
 
   const handleSelectOption = (option: string) => {
-    console.log("Selected option:", option)
+    console.log('Selected option:', option)
     // Handle the selected option
   }
-  
+
   useEffect(() => {
-    console.log("Modal state:", open)
+    console.log('Modal state:', open)
   }, [open])
- 
+
   return (
     <div className="py-[33px] px-[26px] rounded-[10px] grid gap-y-[36px] border-[#292929] border-2 mx-4 my-4">
       <div className="grid lg:grid-cols-2 gap-[15px]">
@@ -63,11 +63,11 @@ export default function DashboardPage() {
             >
               Withdraw
             </Button>
-            
+
             <Button variant="primary" icon="/card-recive-linear.svg">
               Deposit
             </Button>
-          
+
             <Button variant="secondary" icon="/arrows-exchange.svg">
               Trade
             </Button>
@@ -128,9 +128,9 @@ export default function DashboardPage() {
         </div>
       </div>
       <Tabs />
-      
+
       {/* Add the WithdrawalModal component */}
-      <WithdrawalModal 
+      <WithdrawalModal
         open={open}
         handleClose={handleClose}
         onSelectOption={handleSelectOption}
