@@ -3,6 +3,7 @@ import * as React from 'react'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import Modal from '@mui/material/Modal'
+import Backdrop from '@mui/material/Backdrop'
 import CloseIcon from '@mui/icons-material/Close'
 import AccountBalanceWalletOutlinedIcon from '@mui/icons-material/AccountBalanceWalletOutlined'
 import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined'
@@ -21,6 +22,7 @@ const style = {
   flexDirection: 'column',
   alignItems: 'center',
   p: 0,
+  zIndex: 1300,
 }
 
 const headerStyle = {
@@ -65,6 +67,12 @@ const iconContainerStyle = {
   justifyContent: 'center',
 }
 
+// Custom backdrop style with blur effect
+const backdropStyle = {
+  backdropFilter: 'blur(8px)',
+  backgroundColor: 'rgba(0, 0, 0, 0.6)',
+}
+
 type WithdrawalModalProps = {
   open: boolean
   handleClose: () => void
@@ -86,6 +94,14 @@ export default function WithdrawalModal({
       open={open}
       onClose={handleClose}
       aria-labelledby="withdrawal-modal-title"
+      closeAfterTransition
+      slots={{ backdrop: Backdrop }}
+      slotProps={{
+        backdrop: {
+          sx: backdropStyle,
+          timeout: 500,
+        },
+      }}
     >
       <Box sx={style}>
         <Box
