@@ -4,10 +4,13 @@ import { Button } from '@/components/shared/Button'
 import Tabs from './Tabs'
 import AmountChart from '@/app/dapp/AmountChart'
 import Link from 'next/link'
+import DepositModal from '../components/deposit-modal'
 
 export default function DashboardPage() {
   return (
     <div className="py-[33px] px-[26px] rounded-[10px] grid gap-y-[36px] border-[#292929] border-2 mx-4 my-4">
+      {/* Modal root for portal rendering */}
+      <div id="modal-root"></div>
       <div className="grid lg:grid-cols-2 gap-[15px]">
         <div className="bg-[#272729] rounded-[10px] py-[25px] px-[28px]">
           <div className="grid gap-y-[26px] mb-[55px]">
@@ -40,9 +43,9 @@ export default function DashboardPage() {
               <Link href={'/dapp/withdraw'}>Withdraw </Link>
             </Button>
 
-            <Button variant="primary" icon="/card-recive-linear.svg">
-              Deposit
-            </Button>
+         
+              <DepositModal />
+         
             <Button variant="secondary" icon="/arrows-exchange.svg">
               Trade
             </Button>
