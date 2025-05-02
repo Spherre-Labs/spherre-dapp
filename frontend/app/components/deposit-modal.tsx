@@ -68,7 +68,7 @@ export default function DepositModal() {
               <div className="flex items-center justify-between p-4">
                 <h2
                   id="modal-title"
-                  className="text-xl font-semibold mx-auto text-white"
+                  className="text-3xl font-bold mx-auto text-white"
                 >
                   Deposit
                 </h2>
