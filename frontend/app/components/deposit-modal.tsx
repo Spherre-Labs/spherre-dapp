@@ -50,14 +50,18 @@ export default function DepositModal() {
   return (
     <div className="space-y-4">
       <div onClick={openModal}>
-        <Button variant="primary" icon="/card-recive-linear.svg">
+        <Button
+          className="w-full"
+          variant="primary"
+          icon="/card-recive-linear.svg"
+        >
           Deposit
         </Button>
       </div>
       {isOpen &&
         portalElement &&
         createPortal(
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
             <div
               ref={modalRef}
               className="bg-[#1C1D1F] border-[4px] py-[28px] px-[15px] border-[#292929] rounded-lg shadow-lg w-full max-w-[583px] mx-4 overflow-hidden text-center relative"
