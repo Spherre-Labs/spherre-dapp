@@ -34,6 +34,8 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${nunitoSans.variable} antialiased`}
       >
+        {/* Modal root for portal rendering */}
+        <div id="modal-root"></div>
         <StarknetProvider>{children}</StarknetProvider>
       </body>
     </html>

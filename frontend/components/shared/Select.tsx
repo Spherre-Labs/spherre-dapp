@@ -1,31 +1,26 @@
-'use client';
+'use client'
 
-import React from 'react';
-import Image from 'next/image';
-import { ChevronDown } from 'lucide-react';
+import React from 'react'
+import Image from 'next/image'
+import { ChevronDown } from 'lucide-react'
 
 interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
-  error?: string;
-  tokenIcon?: string;
+  error?: string
+  tokenIcon?: string
 }
 
-export function Select({ 
+export function Select({
   className = '',
   tokenIcon,
   children,
-  ...props 
+  ...props
 }: SelectProps) {
   return (
     <div className="relative inline-flex items-center gap-2">
       <div className="absolute left-2 flex items-center pointer-events-none">
         {tokenIcon && (
           <div className="w-5 h-5 rounded-full overflow-hidden mr-6">
-            <Image 
-              src={tokenIcon} 
-              alt="Token icon" 
-              width={20} 
-              height={20}
-            />
+            <Image src={tokenIcon} alt="Token icon" width={20} height={20} />
           </div>
         )}
       </div>
@@ -48,5 +43,5 @@ export function Select({
         <ChevronDown className="h-4 w-4 text-gray-400" />
       </div>
     </div>
-  );
-} 
+  )
+}

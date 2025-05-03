@@ -6,6 +6,7 @@ import { Button } from '@/components/shared/Button'
 import Tabs from './Tabs'
 import AmountChart from '@/app/dapp/AmountChart'
 import WithdrawalModal from '@/app/components/modal'
+import DepositModal from '../components/deposit-modal'
 
 export default function DashboardPage() {
   const [open, setOpen] = useState(false)
@@ -64,9 +65,7 @@ export default function DashboardPage() {
               Withdraw
             </Button>
 
-            <Button variant="primary" icon="/card-recive-linear.svg">
-              Deposit
-            </Button>
+            <DepositModal />
 
             <Button variant="secondary" icon="/arrows-exchange.svg">
               Trade
