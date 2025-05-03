@@ -1,12 +1,33 @@
-import React from 'react'
+'use client'
+
+import React, { useState, useEffect } from 'react'
 import Image from 'next/image'
 import { Button } from '@/components/shared/Button'
 import Tabs from './Tabs'
 import AmountChart from '@/app/dapp/AmountChart'
-import Link from 'next/link'
+import WithdrawalModal from '@/app/components/modal'
 import DepositModal from '../components/deposit-modal'
 
 export default function DashboardPage() {
+  const [open, setOpen] = useState(false)
+
+  const handleOpen = () => {
+    setOpen(true)
+  }
+
+  const handleClose = () => {
+    setOpen(false)
+  }
+
+  const handleSelectOption = (option: string) => {
+    console.log('Selected option:', option)
+    // Handle the selected option
+  }
+
+  useEffect(() => {
+    console.log('Modal state:', open)
+  }, [open])
+
   return (
     <div className="py-[33px] px-[26px] rounded-[10px] grid gap-y-[36px] border-[#292929] border-2 mx-4 my-4">
       <div className="grid lg:grid-cols-2 gap-[15px]">
@@ -36,9 +57,12 @@ export default function DashboardPage() {
             <h2 className="text-[45px] text-white font-semibold">$250.35</h2>
           </div>
           <div className="grid grid-cols-3 gap-x-3">
-            <Button variant="primary" icon="/card-send-linear.svg">
-              {' '}
-              <Link href={'/dapp/withdraw'}>Withdraw </Link>
+            <Button
+              variant="primary"
+              icon="/card-send-linear.svg"
+              onClick={handleOpen}
+            >
+              Withdraw
             </Button>
 
             <DepositModal />
@@ -98,11 +122,18 @@ export default function DashboardPage() {
             alt="Request Placeholder Icon"
           />
           <p className="text-[#8E9BAE] text-center">
-            You currently haven’t sent for any fund conformation approval.
+            You currently havent sent for any fund conformation approval.
           </p>
         </div>
       </div>
       <Tabs />
+
+      {/* Add the WithdrawalModal component */}
+      <WithdrawalModal
+        open={open}
+        handleClose={handleClose}
+        onSelectOption={handleSelectOption}
+      />
     </div>
   )
 }
