@@ -61,9 +61,9 @@ const StepOne = () => {
   }
 
   return (
-    <>
+    <div>
       {/* Writeup */}
-      <div className="max-w-sm my-12">
+      <div >
         <h1 className="text-center text-white font-[700] text-[40px] leading-[47.42px]">
           Secure Your Digital Assets Seamlessly
         </h1>
@@ -74,7 +74,7 @@ const StepOne = () => {
       </div>
 
       {/* form */}
-      <div className="rounded-[10px] bg-[#1C1D1F] w-full overflow-hidden">
+      <div className="rounded-[10px] bg-[#1C1D1F] w-full overflow-hidden mt-4">
         <div className="bg-[#272729] py-[18px] md:px-[26px] px-4 w-full h-[62px]">
           <h4 className="text-white font-[700] text-xl">Create Account</h4>
         </div>
@@ -143,7 +143,7 @@ const StepOne = () => {
           </button>
         </form>
       </div>
-    </>
+    </div>
   )
 }
 
