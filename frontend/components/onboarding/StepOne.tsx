@@ -14,18 +14,20 @@ const stepOneSchema = z.object({
     .max(100, { message: 'Account name must be less than 100 characters' }),
   desc: z
     .string()
-    .min(50, { message: 'Description must be at least 50 characters' }),
+    .max(500, { message: 'Description must be less than 500 characters' }),
 })
 
 type StepOneData = z.infer<typeof stepOneSchema>
 
 const StepOne = () => {
   const router = useRouter()
+  const [charCount, setCharCount] = React.useState(0)
 
   // Initialize react-hook-form with zod validation
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors, isSubmitting },
   } = useForm<StepOneData>({
     resolver: zodResolver(stepOneSchema),
@@ -34,6 +36,12 @@ const StepOne = () => {
       desc: '',
     },
   })
+
+  // Watch the description field for changes
+  const description = watch('desc')
+  React.useEffect(() => {
+    setCharCount(description?.length || 0)
+  }, [description])
 
   /**
    * Handles form submission for Step 1 of the onboarding process.
@@ -87,9 +95,8 @@ const StepOne = () => {
             <input
               type="text"
               id="accountName"
-              className={`w-full rounded-[7px] placeholder:text-[#8E9BAE] text-white px-4 py-3 bg-transparent outline-none border ${
-                errors.accountName ? 'border-red-500' : 'border-[#292929]'
-              }`}
+              className={`w-full rounded-[7px] placeholder:text-[#8E9BAE] text-white px-4 py-3 bg-transparent outline-none border ${errors.accountName ? 'border-red-500' : 'border-[#292929]'
+                }`}
               placeholder="Enter a team name"
               {...register('accountName')}
             />
@@ -111,17 +118,19 @@ const StepOne = () => {
             <textarea
               id="desc"
               className={`w-full h-[100px] text-white border rounded-[7px] placeholder:text-[#8E9BAE] px-4 py-3 bg-transparent outline-none resize-y shadow-[0px_1.08px_2.16px_0px_#1018280A] ${
-                errors.desc ? 'border-red-500' : 'border-[#292929]'
+                charCount > 500 ? 'border-red-500' : errors.desc ? 'border-red-500' : 'border-[#292929]'
               }`}
               placeholder="Write here..."
               {...register('desc')}
             ></textarea>
-            {errors.desc && (
-              <p className="text-red-500 text-sm mt-1">{errors.desc.message}</p>
-            )}
-            <p className="text-[#8E9BAE] text-xs mt-1">
-              Minimum 50 characters required
-            </p>
+            <div className='flex justify-between items-center gap-1'>
+              {errors.desc && (
+                <p className="text-red-500 text-sm mt-1">{errors.desc.message}</p>
+              )}
+              <p className={`text-xs mt-1 ${charCount > 500 ? 'text-red-500' : 'text-[#8E9BAE]'}`}>
+                {charCount} of 500 characters
+              </p>
+            </div>
           </div>
 
           {/* Button */}
