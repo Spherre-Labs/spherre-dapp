@@ -7,19 +7,24 @@ import WalletConnected from '../shared/WalletConnected'
 import { IoMdMenu } from 'react-icons/io'
 import { IoClose } from 'react-icons/io5'
 import { useAccount } from '@starknet-react/core'
-import { useRouter } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation'
 
 const Nav = () => {
   const [openMenu, setOpenMenu] = useState(false)
   const router = useRouter()
+  const pathname = usePathname()
 
   const handleToggle = () => {
     setOpenMenu(!openMenu)
   }
   const { address } = useAccount()
-  if (!address) {
-    router.replace('/')
-  }
+
+  // Temporarily disabled for development
+  // useEffect(() => {
+  //   if (!address && !pathname?.startsWith('/dapp')) {
+  //     router.replace('/')
+  //   }
+  // }, [address, pathname, router])
 
   // to avoid body scroll on menu open
   useEffect(() => {
