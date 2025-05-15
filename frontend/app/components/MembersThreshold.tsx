@@ -1,9 +1,16 @@
+"use client"
 import React from 'react'
 import Image from 'next/image'
 import Users from '@/public/Images/users-group.png'
 import Book from '@/public/Images/fluent-book.png'
+import { useOnboarding } from '@/context/OnboardingContext'
 
-const MembersThreshold = ({ members = 3, threshold = '1/2' }) => {
+const MembersThreshold = () => {
+  const onboarding = useOnboarding()
+  if (!onboarding) throw new Error("OnboardingContext is missing")
+    
+  const { members, approvals } = onboarding
+
   return (
     <div className="w-full">
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
@@ -13,7 +20,7 @@ const MembersThreshold = ({ members = 3, threshold = '1/2' }) => {
             <p className="text-sm text-gray-400">Members</p>
           </div>
           <p className="font-['Nunito_Sans'] font-bold text-3xl sm:text-4xl leading-tight text-right">
-            {members}
+            {members.length}
           </p>
         </div>
 
@@ -23,7 +30,7 @@ const MembersThreshold = ({ members = 3, threshold = '1/2' }) => {
             <p className="text-sm text-gray-400">Threshold</p>
           </div>
           <p className="font-['Nunito_Sans'] font-bold text-3xl sm:text-4xl leading-tight text-right">
-            {threshold}
+            {approvals} / {members.length}
           </p>
         </div>
       </div>

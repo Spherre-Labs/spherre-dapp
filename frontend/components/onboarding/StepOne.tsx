@@ -5,6 +5,7 @@ import React from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import * as z from 'zod'
+import { useOnboarding } from '@/context/OnboardingContext';
 
 // Define validation schema for Step 1
 const stepOneSchema = z.object({
@@ -22,6 +23,9 @@ type StepOneData = z.infer<typeof stepOneSchema>
 const StepOne = () => {
   const router = useRouter()
   const [charCount, setCharCount] = React.useState(0)
+  const onboarding = useOnboarding();
+  if (!onboarding) throw new Error("OnboardingContext is missing");
+  const { setAccountName, setDescription } = onboarding;
 
   // Initialize react-hook-form with zod validation
   const {
@@ -53,6 +57,8 @@ const StepOne = () => {
   const handleSubmitStepOne = async (data: StepOneData) => {
     try {
       console.log(data)
+      setAccountName(data.accountName);
+      setDescription(data.desc);
       // Necessary submit logic
       router.push('/onboarding/step2')
     } catch (error) {

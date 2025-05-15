@@ -1,7 +1,9 @@
+// "use client"
 import type { Metadata } from 'next'
 import { Geist, Geist_Mono, Nunito_Sans } from 'next/font/google'
 import './globals.css'
 import { StarknetProvider } from './components/Providers'
+import { OnboardingProvider } from '@/context/OnboardingContext'
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -36,7 +38,11 @@ export default function RootLayout({
       >
         {/* Modal root for portal rendering */}
         <div id="modal-root"></div>
-        <StarknetProvider>{children}</StarknetProvider>
+        <StarknetProvider>
+          <OnboardingProvider>
+            {children}
+          </OnboardingProvider>
+        </StarknetProvider>
       </body>
     </html>
   )
