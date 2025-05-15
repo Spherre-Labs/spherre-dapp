@@ -5,6 +5,7 @@ import React from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import * as z from 'zod'
+import { useOnboarding } from '@/context/OnboardingContext'
 
 // Define validation schema for Step 1
 const stepOneSchema = z.object({
@@ -22,6 +23,9 @@ type StepOneData = z.infer<typeof stepOneSchema>
 const StepOne = () => {
   const router = useRouter()
   const [charCount, setCharCount] = React.useState(0)
+  const onboarding = useOnboarding()
+  if (!onboarding) throw new Error('OnboardingContext is missing')
+  const { setAccountName, setDescription } = onboarding
 
   // Initialize react-hook-form with zod validation
   const {
@@ -53,6 +57,8 @@ const StepOne = () => {
   const handleSubmitStepOne = async (data: StepOneData) => {
     try {
       console.log(data)
+      setAccountName(data.accountName)
+      setDescription(data.desc)
       // Necessary submit logic
       router.push('/onboarding/step2')
     } catch (error) {
@@ -63,7 +69,7 @@ const StepOne = () => {
   return (
     <div>
       {/* Writeup */}
-      <div >
+      <div>
         <h1 className="text-center text-white font-[700] text-[40px] leading-[47.42px]">
           Secure Your Digital Assets Seamlessly
         </h1>
@@ -95,8 +101,9 @@ const StepOne = () => {
             <input
               type="text"
               id="accountName"
-              className={`w-full rounded-[7px] placeholder:text-[#8E9BAE] text-white px-4 py-3 bg-transparent outline-none border ${errors.accountName ? 'border-red-500' : 'border-[#292929]'
-                }`}
+              className={`w-full rounded-[7px] placeholder:text-[#8E9BAE] text-white px-4 py-3 bg-transparent outline-none border ${
+                errors.accountName ? 'border-red-500' : 'border-[#292929]'
+              }`}
               placeholder="Enter a team name"
               {...register('accountName')}
             />
@@ -118,16 +125,24 @@ const StepOne = () => {
             <textarea
               id="desc"
               className={`w-full h-[100px] text-white border rounded-[7px] placeholder:text-[#8E9BAE] px-4 py-3 bg-transparent outline-none resize-y shadow-[0px_1.08px_2.16px_0px_#1018280A] ${
-                charCount > 500 ? 'border-red-500' : errors.desc ? 'border-red-500' : 'border-[#292929]'
+                charCount > 500
+                  ? 'border-red-500'
+                  : errors.desc
+                    ? 'border-red-500'
+                    : 'border-[#292929]'
               }`}
               placeholder="Write here..."
               {...register('desc')}
             ></textarea>
-            <div className='flex justify-between items-center gap-1'>
+            <div className="flex justify-between items-center gap-1">
               {errors.desc && (
-                <p className="text-red-500 text-sm mt-1">{errors.desc.message}</p>
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.desc.message}
+                </p>
               )}
-              <p className={`text-xs mt-1 ${charCount > 500 ? 'text-red-500' : 'text-[#8E9BAE]'}`}>
+              <p
+                className={`text-xs mt-1 ${charCount > 500 ? 'text-red-500' : 'text-[#8E9BAE]'}`}
+              >
                 {charCount} of 500 characters
               </p>
             </div>

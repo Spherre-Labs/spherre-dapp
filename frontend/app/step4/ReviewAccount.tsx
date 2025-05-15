@@ -22,10 +22,6 @@ const ReviewAccount = () => {
           </h1>
         </div>
 
-        <p className="text-[#8E9BAE] font-normal text-sm  ">
-          Members: Deon, John and Joshua
-        </p>
-
         <div className="flex items-center gap-[44px] my-3  ">
           <div className="w-full flex items-center gap-[10px]  ">
             <p className="font-normal  text-sm md:text-base text-[#8E9BAE] ">
