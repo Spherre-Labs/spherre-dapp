@@ -12,16 +12,13 @@ import { useRouter } from 'next/navigation'
 const Nav = () => {
   const [openMenu, setOpenMenu] = useState(false)
   const router = useRouter()
-  const { address } = useAccount()
-
-  useEffect(() => {
-    if (!address) {
-      router.replace('/')
-    }
-  }, [address, router])
 
   const handleToggle = () => {
     setOpenMenu(!openMenu)
+  }
+  const { address } = useAccount()
+  if (!address) {
+    router.replace('/')
   }
 
   // to avoid body scroll on menu open
@@ -31,8 +28,7 @@ const Nav = () => {
     } else {
       document.body.style.overflow = 'unset'
     }
-  }, [openMenu])
-
+  })
   return (
     <header className="w-full flex justify-between items-center">
       {/* Logo */}

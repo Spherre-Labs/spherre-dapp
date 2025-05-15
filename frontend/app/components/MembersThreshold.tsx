@@ -1,4 +1,4 @@
-"use client"
+'use client'
 import React from 'react'
 import Image from 'next/image'
 import Users from '@/public/Images/users-group.png'
@@ -7,8 +7,8 @@ import { useOnboarding } from '@/context/OnboardingContext'
 
 const MembersThreshold = () => {
   const onboarding = useOnboarding()
-  if (!onboarding) throw new Error("OnboardingContext is missing")
-    
+  if (!onboarding) throw new Error('OnboardingContext is missing')
+
   const { members, approvals } = onboarding
 
   return (

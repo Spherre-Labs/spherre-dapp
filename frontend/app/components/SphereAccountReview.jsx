@@ -5,26 +5,17 @@ import Fill from '@/public/Images/sphere-fill.png'
 import { useOnboarding } from '@/context/OnboardingContext'
 
 function shortenAddress(address) {
-  if (!address) return '';
-  return address.slice(0, 6) + '...' + address.slice(-4);
+  if (!address) return ''
+  return address.slice(0, 6) + '...' + address.slice(-4)
 }
 
-const SphereAccountReview = ({
-  deployFee = '~100 STRK',
-}) => {
+const SphereAccountReview = ({ deployFee = '~100 STRK' }) => {
   const [showTooltip, setShowTooltip] = useState(false)
-  const onboarding = useOnboarding();
+  const onboarding = useOnboarding()
 
   // Fallbacks in case context is not available
-  const groupName = onboarding?.accountName || 'Unnamed Group';
-  const members = onboarding?.members || [];
-  const approvals = onboarding?.approvals || 1;
-
-  const handleApprovalsChange = (event) => {
-    if (onboarding?.setApprovals) {
-      onboarding.setApprovals(Number(event.target.value));
-    }
-  };
+  const groupName = onboarding?.accountName || 'Unnamed Group'
+  const members = onboarding?.members || []
 
   return (
     <div className="w-full">
@@ -43,7 +34,9 @@ const SphereAccountReview = ({
       <div className="flex gap-2 text-sm text-white mb-4 pl-4 list-disc">
         {members.length > 0 ? (
           members.map((addr) => (
-            <p key={addr} className="break-all">{shortenAddress(addr)},</p>
+            <p key={addr} className="break-all">
+              {shortenAddress(addr)},
+            </p>
           ))
         ) : (
           <p className="text-gray-500">No members added</p>
@@ -90,7 +83,7 @@ const SphereAccountReview = ({
       </div>
 
       {/* Approval Progress */}
-      {/* <div className="mb-4">
+      <div className="mb-4">
         <div className="text-sm text-gray-400 mb-2">Approval Progress:</div>
         <input
           type="range"
@@ -105,7 +98,7 @@ const SphereAccountReview = ({
             accentColor: '#6F2FCE',
           }}
         />
-      </div> */}
+      </div>
     </div>
   )
 }

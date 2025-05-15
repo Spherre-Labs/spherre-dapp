@@ -53,7 +53,7 @@ type StepTwoData = z.infer<typeof stepTwoSchema>
 const StepTwo = () => {
   const router = useRouter()
   const onboarding = useOnboarding()
-  if (!onboarding) throw new Error("OnboardingContext is missing")
+  if (!onboarding) throw new Error('OnboardingContext is missing')
   const { setMembers, setApprovals } = onboarding
 
   const {
@@ -116,10 +116,10 @@ const StepTwo = () => {
   )
 
   const handleSubmitStepTwo = async (data: StepTwoData) => {
-    setMembers(data.members.map((m) => m.address));
-    setApprovals(data.approvals);
-    router.push('/confirmSetup');
-  };
+    setMembers(data.members.map((m) => m.address))
+    setApprovals(data.approvals)
+    router.push('/confirmSetup')
+  }
 
   return (
     <>
@@ -170,14 +170,15 @@ const StepTwo = () => {
                   <input
                     type="text"
                     id={`members.${index}.address`}
-                    className={`w-full border text-white rounded-[7px] placeholder:text-[#8E9BAE] px-4 py-3 bg-transparent outline-none pr-10 ${errors.members?.[index]?.address ||
-                        (duplicateAddresses.includes(
-                          watch(`members.${index}.address`).trim(),
-                        ) &&
-                          watch(`members.${index}.address`).trim() !== '')
+                    className={`w-full border text-white rounded-[7px] placeholder:text-[#8E9BAE] px-4 py-3 bg-transparent outline-none pr-10 ${
+                      errors.members?.[index]?.address ||
+                      (duplicateAddresses.includes(
+                        watch(`members.${index}.address`).trim(),
+                      ) &&
+                        watch(`members.${index}.address`).trim() !== '')
                         ? 'border-red-500'
                         : 'border-[#292929]'
-                      }`}
+                    }`}
                     placeholder="Enter team member's address"
                     {...register(`members.${index}.address`)}
                   />
@@ -257,9 +258,9 @@ const StepTwo = () => {
 
             <style jsx>{`
               input[type='range']::-webkit-slider-runnable-track {
-                background: #272729;
+                background: white;
                 height: 8px;
-                border-radius: 3px;
+                border-radius: 4px;
               }
               input[type='range']::-moz-range-track {
                 background: white;

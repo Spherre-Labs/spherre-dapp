@@ -39,9 +39,7 @@ export default function RootLayout({
         {/* Modal root for portal rendering */}
         <div id="modal-root"></div>
         <StarknetProvider>
-          <OnboardingProvider>
-            {children}
-          </OnboardingProvider>
+          <OnboardingProvider>{children}</OnboardingProvider>
         </StarknetProvider>
       </body>
     </html>
