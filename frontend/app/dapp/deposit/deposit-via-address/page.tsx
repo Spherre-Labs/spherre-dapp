@@ -45,7 +45,7 @@ const Page = () => {
   }, [])
   return (
     <div
-      className={`${nunito.className} p-10 flex  items-center flex-col justify-center`}
+      className={`${nunito.className} p-10 flex  items-center flex-col justify-center h-full`}
     >
       <div className="flex-col items-center flex justify-center">
         <p className="font-bold text-[30px]">Deposit to Spherre Wallet</p>
@@ -162,7 +162,7 @@ const Page = () => {
 
           <div className="h-[48px] bg-[#1C1D1F] px-2 mt-5 rounded-[10px]  flex justify-between items-center">
             <span className="text-[#8E9BAE]">{address}</span>
-            <div className="bg-[#29292A] rounded-[5px] gap-1 w-[90px] h-[28px] flex  items-center justify-center">
+            <div className="bg-[#29292A] rounded-[5px] gap-1 w-[90px] h-[28px] flex  items-center justify-center cursor-pointer">
               <span className="text-white">Copy</span>{' '}
               <Image
                 src="/copy-white.svg"

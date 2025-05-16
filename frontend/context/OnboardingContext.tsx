@@ -1,7 +1,7 @@
 'use client'
 import React, { createContext, useContext, useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
-import { useAccount } from '@starknet-react/core'
+// import { useRouter } from 'next/navigation'
+// import { useAccount } from '@starknet-react/core'
 // import { StarknetProvider } from '@starknet-react/core';
 
 type OnboardingContextType = {
@@ -28,14 +28,15 @@ export const OnboardingProvider = ({
   const [description, setDescription] = useState('')
   const [members, setMembers] = useState<string[]>([])
   const [approvals, setApprovals] = useState<number>(1)
-  const router = useRouter()
-  const { address } = useAccount()
+  // const router = useRouter()
+  // const { address } = useAccount()
 
-  useEffect(() => {
-    if (!address) {
-      router.replace('/')
-    }
-  }, [address, router])
+  // Temporarily disabled for development
+  // useEffect(() => {
+  //   if (!address) {
+  //     router.replace('/')
+  //   }
+  // }, [address, router])
 
   return (
     <OnboardingContext.Provider
