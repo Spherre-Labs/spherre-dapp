@@ -4,6 +4,7 @@ import React, { useEffect } from 'react'
 import { FaPlus } from 'react-icons/fa6'
 import { LuTrash } from 'react-icons/lu'
 import OnboardingCard from './OnboardingCard'
+import { useOnboarding } from '@/context/OnboardingContext'
 
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm, useFieldArray } from 'react-hook-form'
@@ -51,6 +52,9 @@ type StepTwoData = z.infer<typeof stepTwoSchema>
 
 const StepTwo = () => {
   const router = useRouter()
+  const onboarding = useOnboarding()
+  if (!onboarding) throw new Error('OnboardingContext is missing')
+  const { setMembers, setApprovals } = onboarding
 
   const {
     register,
@@ -112,16 +116,9 @@ const StepTwo = () => {
   )
 
   const handleSubmitStepTwo = async (data: StepTwoData) => {
-    try {
-      console.log({
-        spherreMembers: data.members.map((m) => m.address),
-        approvals: data.approvals,
-      })
-      // Necessary submit logic
-      router.push('/confirmSetup')
-    } catch (error) {
-      console.error(error)
-    }
+    setMembers(data.members.map((m) => m.address))
+    setApprovals(data.approvals)
+    router.push('/confirmSetup')
   }
 
   return (
@@ -233,12 +230,16 @@ const StepTwo = () => {
             <div className="w-full">
               <input
                 type="range"
-                min="1"
+                min={1}
                 max={members.length}
-                step="1"
+                step={1}
                 value={approvals}
                 onChange={handleApprovalsChange}
-                className="flex-grow w-full appearance-none h-2 bg-[#272729] rounded-lg outline-none cursor-pointer"
+                className="w-full appearance-none h-2 rounded-lg outline-none cursor-pointer transition-all"
+                style={{
+                  background: 'white',
+                  accentColor: '#FFFFFF', // thumb color
+                }}
               />
               <div className="flex items-center justify-between px-1">
                 <span className="text-sm text-white">1</span>
@@ -255,16 +256,23 @@ const StepTwo = () => {
               {isSubmitting ? 'Processing...' : 'Continue'}
             </button>
 
-            <style>
-              {`
-                input[type='range']::-webkit-slider-thumb {
-                    appearance: none;
-                    width: 16px;
-                    height: 16px;
-                    background: white;
-                    border-radius: 50%;
-                }`}
-            </style>
+            <style jsx>{`
+              input[type='range']::-webkit-slider-runnable-track {
+                background: white;
+                height: 8px;
+                border-radius: 4px;
+              }
+              input[type='range']::-moz-range-track {
+                background: white;
+                height: 8px;
+                border-radius: 4px;
+              }
+              input[type='range']::-ms-fill-lower,
+              input[type='range']::-ms-fill-upper {
+                background: white;
+                border-radius: 4px;
+              }
+            `}</style>
           </div>
         </OnboardingCard>
       </form>

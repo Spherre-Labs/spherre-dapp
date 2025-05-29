@@ -6,7 +6,7 @@ import Sidebar from '../dapp/Sidebar'
 import Navbar from './Navbar'
 import Dashboard from '@/public/Images/Dash.png'
 import Trade from '@/public/Images/Trade.png'
-import Members from '@/public/Images/members.png'
+import Members from '@/public/Images/Members.png'
 import Transactions from '@/public/Images/Transactions.png'
 import Stake from '@/public/Images/Stake.png'
 import Treasury from '@/public/Images/Treasury.png'
@@ -32,7 +32,8 @@ export default function DappLayout({ children }: DappLayoutProps) {
     { name: 'Members', icon: Members, route: '/dapp/members' }, // Using Trade icon temporarily for Members
     {
       name: 'Transactions',
-      icon: Transactions /*, route: '/dapp/transactions'*/,
+      icon: Transactions,
+      route: '/dapp/transactions',
     },
     { name: 'Stake', icon: Stake, comingSoon: true /*, route: '/dapp/stake'*/ },
     { name: 'Treasury', icon: Treasury /*, route: '/dapp/treasury'*/ },
@@ -77,7 +78,7 @@ export default function DappLayout({ children }: DappLayoutProps) {
         }`}
       >
         <Navbar title={selectedPage} />
-        <main className="flex-1 overflow-auto p-4">{children}</main>
+        <main className="flex-1 overflow-auto">{children}</main>
       </div>
     </div>
   )

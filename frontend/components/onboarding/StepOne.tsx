@@ -5,6 +5,7 @@ import React from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import * as z from 'zod'
+import { useOnboarding } from '@/context/OnboardingContext'
 
 // Define validation schema for Step 1
 const stepOneSchema = z.object({
@@ -14,18 +15,23 @@ const stepOneSchema = z.object({
     .max(100, { message: 'Account name must be less than 100 characters' }),
   desc: z
     .string()
-    .min(50, { message: 'Description must be at least 50 characters' }),
+    .max(500, { message: 'Description must be less than 500 characters' }),
 })
 
 type StepOneData = z.infer<typeof stepOneSchema>
 
 const StepOne = () => {
   const router = useRouter()
+  const [charCount, setCharCount] = React.useState(0)
+  const onboarding = useOnboarding()
+  if (!onboarding) throw new Error('OnboardingContext is missing')
+  const { setAccountName, setDescription } = onboarding
 
   // Initialize react-hook-form with zod validation
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors, isSubmitting },
   } = useForm<StepOneData>({
     resolver: zodResolver(stepOneSchema),
@@ -34,6 +40,12 @@ const StepOne = () => {
       desc: '',
     },
   })
+
+  // Watch the description field for changes
+  const description = watch('desc')
+  React.useEffect(() => {
+    setCharCount(description?.length || 0)
+  }, [description])
 
   /**
    * Handles form submission for Step 1 of the onboarding process.
@@ -45,6 +57,8 @@ const StepOne = () => {
   const handleSubmitStepOne = async (data: StepOneData) => {
     try {
       console.log(data)
+      setAccountName(data.accountName)
+      setDescription(data.desc)
       // Necessary submit logic
       router.push('/onboarding/step2')
     } catch (error) {
@@ -53,9 +67,9 @@ const StepOne = () => {
   }
 
   return (
-    <>
+    <div>
       {/* Writeup */}
-      <div className="max-w-sm my-12">
+      <div>
         <h1 className="text-center text-white font-[700] text-[40px] leading-[47.42px]">
           Secure Your Digital Assets Seamlessly
         </h1>
@@ -66,7 +80,7 @@ const StepOne = () => {
       </div>
 
       {/* form */}
-      <div className="rounded-[10px] bg-[#1C1D1F] w-full overflow-hidden">
+      <div className="rounded-[10px] bg-[#1C1D1F] w-full overflow-hidden mt-4">
         <div className="bg-[#272729] py-[18px] md:px-[26px] px-4 w-full h-[62px]">
           <h4 className="text-white font-[700] text-xl">Create Account</h4>
         </div>
@@ -111,17 +125,27 @@ const StepOne = () => {
             <textarea
               id="desc"
               className={`w-full h-[100px] text-white border rounded-[7px] placeholder:text-[#8E9BAE] px-4 py-3 bg-transparent outline-none resize-y shadow-[0px_1.08px_2.16px_0px_#1018280A] ${
-                errors.desc ? 'border-red-500' : 'border-[#292929]'
+                charCount > 500
+                  ? 'border-red-500'
+                  : errors.desc
+                    ? 'border-red-500'
+                    : 'border-[#292929]'
               }`}
               placeholder="Write here..."
               {...register('desc')}
             ></textarea>
-            {errors.desc && (
-              <p className="text-red-500 text-sm mt-1">{errors.desc.message}</p>
-            )}
-            <p className="text-[#8E9BAE] text-xs mt-1">
-              Minimum 50 characters required
-            </p>
+            <div className="flex justify-between items-center gap-1">
+              {errors.desc && (
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.desc.message}
+                </p>
+              )}
+              <p
+                className={`text-xs mt-1 ${charCount > 500 ? 'text-red-500' : 'text-[#8E9BAE]'}`}
+              >
+                {charCount} of 500 characters
+              </p>
+            </div>
           </div>
 
           {/* Button */}
@@ -134,7 +158,7 @@ const StepOne = () => {
           </button>
         </form>
       </div>
-    </>
+    </div>
   )
 }
 

@@ -27,7 +27,7 @@ jobs:
       # Step 3: Install dependencies
       - name: Install dependencies
         run: |
-          npm install
+          npm install --force
         working-directory: frontend
           
       # Step 4: Run ESLint

@@ -11,6 +11,8 @@ export default {
       colors: {
         background: 'var(--background)',
         foreground: 'var(--foreground)',
+        primary: '#6F2FCE',
+        ash: '#8E9BAE',
       },
       fontFamily: {
         sans: ['var(--font-nunito-sans)', 'sans-serif'],
