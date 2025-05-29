@@ -25,7 +25,12 @@ This is the official backend for the spherre multisig
     ```
 3. **Start the Application**:
     ```bash
-    make install
+    make start
+    ```
+    or 
+    ```bash
+    chmod +x ./start
+    ./start
     ```
 
 ## Contributing
