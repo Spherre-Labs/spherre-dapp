@@ -10,3 +10,15 @@ lint:
 
 start:
 	python spherre/wsgi.py
+
+makemigration:
+	cd spherre
+	flask db migrate -m "$(message)"
+
+db_init:
+	cd spherre
+	flask db init
+
+migrate:
+	cd spherre
+	flask db upgrade
