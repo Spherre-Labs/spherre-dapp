@@ -1,6 +1,8 @@
-from settings import app as flask_app
+import os
+
+from app import create_app
+
+app = create_app(os.getenv("FLASK_CONFIG") or "development")
 
 if __name__ == "__main__":
-    import app  # noqa
-
-    flask_app.run(debug=True)
+    app.run(debug=True)
