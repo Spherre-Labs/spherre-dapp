@@ -11,7 +11,7 @@ on:
       - dev
 
 jobs:
-  frontend-lint-and-format:
+  backend-lint-and-format:
     runs-on: ubuntu-latest
     steps:
       # Step 1: Check out the code
