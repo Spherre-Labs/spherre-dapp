@@ -1,4 +1,5 @@
 from functools import wraps
+
 from flask import jsonify
 from flask_jwt_extended import jwt_required
 
@@ -8,5 +9,5 @@ def login_required(f):
     @jwt_required()
     def decorated_function(*args, **kwargs):
         return f(*args, **kwargs)
-    return decorated_function
 
+    return decorated_function
