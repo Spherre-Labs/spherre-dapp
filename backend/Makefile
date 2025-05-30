@@ -8,11 +8,11 @@ format:
 lint:
 	ruff check .
 
-start:
-	python spherre/wsgi.py
+run:
+	python -m spherre.wsgi
 
 makemigration:
-	cd spherre && flask db migrate -m "$(message)"
+	cd spherre && flask db migrate -m "$(command)"
 
 db_init:
 	cd spherre && flask db init

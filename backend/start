@@ -10,4 +10,4 @@ if [[ -z "$VIRTUAL_ENV" ]]; then
 fi
 
 
-python spherre/wsgi.py
+python -m spherre.wsgi
