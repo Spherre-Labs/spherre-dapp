@@ -2,6 +2,7 @@
 import Image from 'next/image'
 import React, { useState, useEffect, useRef } from 'react'
 import { Nunito_Sans } from 'next/font/google'
+import RemoveMemberModal from './components/remove-modal' 
 
 const nunito = Nunito_Sans({
   subsets: ['latin'],
@@ -62,6 +63,16 @@ const roleColors: Record<string, string> = {
   Executer: 'text-[#19B360] border-[#19B360] bg-[#19B360]/10',
 }
 
+interface Member {
+  id: number;
+  name: string;
+  address: string;
+  fullAddress: string;
+  roles: string[];
+  dateAdded: string;
+  image: string;
+}
+
 const Members = () => {
   const [activeTab, setActiveTab] = useState('members')
   const [dropdownOpen, setDropdownOpen] = useState<number | null>(null)
@@ -71,6 +82,10 @@ const Members = () => {
   const [editName, setEditName] = useState('')
   const [borderPosition, setBorderPosition] = useState(0)
   const animationRef = useRef<number>(0)
+  
+  // Modal state
+  const [isRemoveModalOpen, setIsRemoveModalOpen] = useState(false)
+  const [selectedMember, setSelectedMember] = useState<Member | null>(null)
 
   const handleCopy = (address: string) => {
     navigator.clipboard.writeText(address)
@@ -112,6 +127,25 @@ const Members = () => {
     } else if (e.key === 'Escape') {
       cancelEditing()
     }
+  }
+
+  // Handle remove member button click
+  const handleRemoveMember = (member: Member) => {
+    setSelectedMember(member)
+    setIsRemoveModalOpen(true)
+  }
+
+  // Handle modal close
+  const handleCloseModal = () => {
+    setIsRemoveModalOpen(false)
+    setSelectedMember(null)
+  }
+
+  // Handle confirm removal
+  const handleConfirmRemoval = (memberId: number) => {
+    setMembers(members.filter(member => member.id !== memberId))
+    console.log(`Member ${memberId} removed and transaction proposed`)
+    // Here you would typically call your blockchain transaction function
   }
 
   // Snake border animation
@@ -349,7 +383,10 @@ const Members = () => {
                 </div>
 
                 <div className="flex items-center justify-center mt-5">
-                  <button className="bg-[#272729] rounded-[7px] flex items-center justify-center font-medium text-[14px] text-white w-[90%] h-[36px]">
+                  <button 
+                    className="bg-[#272729] rounded-[7px] flex items-center justify-center font-medium text-[14px] text-white w-[90%] h-[36px] hover:bg-[#353538] transition-colors"
+                    onClick={() => handleRemoveMember(member)}
+                  >
                     Remove member
                   </button>
                 </div>
@@ -367,7 +404,7 @@ const Members = () => {
                 />
               </div>
               <p className="text-[16px] font-semibold text-[#8E9BAE]">
-                Add Member
+                Add Member 
               </p>
             </div>
           </div>
@@ -389,6 +426,16 @@ const Members = () => {
           {copiedMessage}
         </div>
       )}
+
+ 
+      
+      <RemoveMemberModal
+        isOpen={isRemoveModalOpen}
+        member={selectedMember}
+        onClose={handleCloseModal}
+        onConfirm={handleConfirmRemoval}
+      />
+     
     </div>
   )
 }
