@@ -5,6 +5,7 @@ Flask-Migrate==4.1.0
 Flask-RESTful==0.3.10
 Flask-SQLAlchemy==3.1.1
 marshmallow==3.26.1
+pytest==8.3.5
 python-dotenv==1.1.0
 ruff==0.9.10
 SQLAlchemy==2.0.39

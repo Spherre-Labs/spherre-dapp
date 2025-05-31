@@ -1,7 +1,7 @@
-from spherre.app.config import config
-from spherre.app.extensions import cors, db, jwt, migrate
 from flask import Flask
 
+from spherre.app.config import config
+from spherre.app.extensions import cors, db, jwt, migrate
 
 
 def create_app(config_name="development"):
@@ -13,9 +13,8 @@ def create_app(config_name="development"):
     migrate.init_app(app, db)
     jwt.init_app(app)
     cors.init_app(app)
-    
+
     from spherre.app import models
-    
 
     # Register blueprints
     # from app.views.auth import auth_bp

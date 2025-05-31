@@ -1,5 +1,6 @@
 from spherre.app.models.account import Member
 
+
 class MemberService:
     @classmethod
     def get_member_by_address(cls, address: str) -> Member | None:
@@ -7,9 +8,8 @@ class MemberService:
         Get a member by their address
         """
         return Member.query.filter_by(address=address).one_or_none()
-    def update_member_email(
-        member_address: str, new_email: str
-    ) -> Member | None:
+
+    def update_member_email(member_address: str, new_email: str) -> Member | None:
         """
         Update the email of a member
         """
@@ -19,11 +19,10 @@ class MemberService:
         member.email = new_email
         member.save()
         return member
-    def get_or_create_member(
-        member_address: str, **kwargs
-    ) -> Member:
+
+    def get_or_create_member(member_address: str, **kwargs) -> Member:
         """
         Get or create a member by their address and email
         """
-        member =  Member.get_or_create(address=member_address, **kwargs)
+        member = Member.get_or_create(address=member_address, **kwargs)
         return member
