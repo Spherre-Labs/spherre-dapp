@@ -64,7 +64,6 @@ class Member(ModelMixin, db.Model):
     __tablename__ = "members"
     address = db.Column(db.String, unique=True, nullable=False)
     email = db.Column(db.String, nullable=True)
-    account_id = db.Column(db.String, db.ForeignKey("accounts.id"))
 
     def __repr__(self):
         return f"<Member {self.address[0:10]}... >"

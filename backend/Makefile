@@ -9,7 +9,7 @@ lint:
 	ruff check .
 
 run:
-	python spherre/wsgi.py
+	python -m spherre.wsgi
 
 makemigration:
 	cd spherre && flask db migrate -m "$(command)"

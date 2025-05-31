@@ -9,7 +9,8 @@ class MemberService:
         """
         return Member.query.filter_by(address=address).one_or_none()
 
-    def update_member_email(member_address: str, new_email: str) -> Member | None:
+    @classmethod
+    def update_member_email(cls, member_address: str, new_email: str) -> Member | None:
         """
         Update the email of a member
         """
@@ -20,7 +21,8 @@ class MemberService:
         member.save()
         return member
 
-    def get_or_create_member(member_address: str, **kwargs) -> Member:
+    @classmethod
+    def get_or_create_member(cls, member_address: str, **kwargs) -> Member:
         """
         Get or create a member by their address and email
         """
