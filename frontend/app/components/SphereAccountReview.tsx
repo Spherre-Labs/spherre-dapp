@@ -4,13 +4,20 @@ import Image from 'next/image'
 import Fill from '@/public/Images/sphere-fill.png'
 import { useOnboarding } from '@/context/OnboardingContext'
 
-function shortenAddress(address) {
+interface SphereAccountReviewProps {
+  deployFee?: string
+}
+
+function shortenAddress(address: string): string {
   if (!address) return ''
   return address.slice(0, 6) + '...' + address.slice(-4)
 }
 
-const SphereAccountReview = ({ deployFee = '~100 STRK' }) => {
-  const [showTooltip, setShowTooltip] = useState(false)
+const SphereAccountReview: React.FC<SphereAccountReviewProps> = ({
+  deployFee = '~100 STRK',
+}) => {
+  const [showTooltip, setShowTooltip] = useState<boolean>(false)
+  // const [approvals, setApprovals] = useState<number>(1)
   const onboarding = useOnboarding()
 
   // Fallbacks in case context is not available
@@ -33,7 +40,7 @@ const SphereAccountReview = ({ deployFee = '~100 STRK' }) => {
       <div className="text-sm text-gray-400 mb-2">Members:</div>
       <div className="flex gap-2 text-sm text-white mb-4 pl-4 list-disc">
         {members.length > 0 ? (
-          members.map((addr) => (
+          members.map((addr: string) => (
             <p key={addr} className="break-all">
               {shortenAddress(addr)},
             </p>
@@ -80,24 +87,6 @@ const SphereAccountReview = ({ deployFee = '~100 STRK' }) => {
           This info section should explain why there is a {deployFee} deploy
           fee. Please the information should be quite detailed.
         </p>
-      </div>
-
-      {/* Approval Progress */}
-      <div className="mb-4">
-        <div className="text-sm text-gray-400 mb-2">Approval Progress:</div>
-        <input
-          type="range"
-          min={1}
-          max={members.length}
-          step={1}
-          value={approvals}
-          onChange={handleApprovalsChange}
-          className="w-full appearance-none h-2 rounded-lg outline-none cursor-pointer transition-all"
-          style={{
-            background: 'white',
-            accentColor: '#6F2FCE',
-          }}
-        />
       </div>
     </div>
   )
