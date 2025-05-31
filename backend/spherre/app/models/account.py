@@ -1,7 +1,7 @@
 import uuid
 from datetime import datetime
 
-from app.extensions import db
+from spherre.app.extensions import db
 
 
 def generate_uuid():
@@ -12,7 +12,7 @@ def generate_uuid():
 account_members = db.Table(
     "account_members",
     db.Column("account_id", db.String, db.ForeignKey("accounts.id"), primary_key=True),
-    db.Column("member_id", db.String, db.ForeignKey("member.id"), primary_key=True),
+    db.Column("member_id", db.String, db.ForeignKey("members.id"), primary_key=True),
 )
 
 
@@ -50,11 +50,11 @@ class ModelMixin:
 class Account(ModelMixin, db.Model):
     __tablename__ = "accounts"
     address = db.Column(db.String, unique=True, nullable=False)
-    name = db.Column(db.String(100), required=True)
-    description = db.Column(db.String, nullable=True, required=False)
+    name = db.Column(db.String(100), nullable=True)
+    description = db.Column(db.String, nullable=True)
     is_private = db.Column(db.Boolean, default=True)
     threshold = db.Column(db.Integer)
-    members = db.relationship("Member", secondary=account_members, backref="members")
+    members = db.relationship("Member", secondary=account_members, backref="accounts")
 
     def __repr__(self):
         return f"<Account {self.name} >"
@@ -63,7 +63,7 @@ class Account(ModelMixin, db.Model):
 class Member(ModelMixin, db.Model):
     __tablename__ = "members"
     address = db.Column(db.String, unique=True, nullable=False)
-    email = db.Column(db.String, required=False, nullable=True)
+    email = db.Column(db.String, nullable=True)
     account_id = db.Column(db.String, db.ForeignKey("accounts.id"))
 
     def __repr__(self):
