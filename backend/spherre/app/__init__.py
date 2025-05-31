@@ -14,7 +14,7 @@ def create_app(config_name="development"):
     jwt.init_app(app)
     cors.init_app(app)
 
-    from spherre.app import models
+    from spherre.app import models  # noqa
 
     # Register blueprints
     # from app.views.auth import auth_bp
