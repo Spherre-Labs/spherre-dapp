@@ -101,6 +101,20 @@ export default function EditProfile() {
             Cancel
           </button>
         </div>
+
+        <div className="mb-6 mt-10">
+          <label className="block text-gray-300 mb-2">Email Address</label>
+          <div className="flex items-center bg-[#232325] w-full rounded-[14px] px-6 py-4 mb-2">
+            <span className="flex-1 text-white text-lg">jacklovermacazie@gmail.com</span>
+            <button className="bg-white text-black rounded-[7px] px-4 py-2 font-medium ml-4">
+              Edit Email Address
+            </button>
+          </div>
+          <p className="text-[#8E9BAE] italic text-base">
+            This email will be used to notify you on the account multisig transactions
+            <a href="#" className="text-[#6F2FCE] ml-1 hover:underline">Learn More</a>
+          </p>
+        </div>
       </div>
     </div>
   );
