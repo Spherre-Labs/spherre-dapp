@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from 'react';
+import EmailModal from './EmailModal';
 
 interface EditProfileProps {
   onCancel?: () => void;
@@ -18,6 +19,8 @@ const tabs = [
 export default function EditProfile({ onCancel }: EditProfileProps) {
   const [activeTab, setActiveTab] = useState('Profile');
   const [displayName, setDisplayName] = useState('');
+  const [showEditEmailModal, setShowEditEmailModal] = useState(false);
+  const [email, setEmail] = useState('johndoe@gmail.com'); // ejemplo de email actual
 
   const walletName = 'Argent Wallet';
   const walletId = '352By...wtuya';
@@ -109,8 +112,11 @@ export default function EditProfile({ onCancel }: EditProfileProps) {
         <div className="mb-6 mt-10">
           <label className="block text-gray-300 mb-2">Email Address</label>
           <div className="flex items-center bg-[#232325] w-full rounded-[14px] px-6 py-4 mb-2">
-            <span className="flex-1 text-white text-lg">jacklovermacazie@gmail.com</span>
-            <button className="bg-white text-black rounded-[7px] px-4 py-2 font-medium ml-4">
+            <span className="flex-1 text-white text-lg">{email}</span>
+            <button
+              className="bg-white text-black rounded-[7px] px-4 py-2 font-medium ml-4"
+              onClick={() => setShowEditEmailModal(true)}
+            >
               Edit Email Address
             </button>
           </div>
@@ -119,6 +125,17 @@ export default function EditProfile({ onCancel }: EditProfileProps) {
             <a href="#" className="text-[#6F2FCE] ml-1 hover:underline">Learn More</a>
           </p>
         </div>
+
+        <EmailModal
+          open={showEditEmailModal}
+          onClose={() => setShowEditEmailModal(false)}
+          onSign={newEmail => {
+            setEmail(newEmail);
+            setShowEditEmailModal(false);
+          }}
+          title="Edit Email Address"
+          initialEmail={email}
+        />
       </div>
     </div>
   );
