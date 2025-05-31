@@ -2,6 +2,10 @@
 
 import React, { useState } from 'react';
 
+interface EditProfileProps {
+  onCancel?: () => void;
+}
+
 const tabs = [
   'Profile',
   'Wallet & Account',
@@ -11,7 +15,7 @@ const tabs = [
   'Smart Lock',
 ];
 
-export default function EditProfile() {
+export default function EditProfile({ onCancel }: EditProfileProps) {
   const [activeTab, setActiveTab] = useState('Profile');
   const [displayName, setDisplayName] = useState('');
 
@@ -97,7 +101,7 @@ export default function EditProfile() {
           >
             Save Changes
           </button>
-          <button className="w-[154px] h-[50px] rounded-[7px] px-[19.4px] py-[12.93px] flex items-center justify-center gap-[6.47px] bg-[#272729] hover:bg-[#353537] text-white font-semibold transition">
+          <button className="w-[154px] h-[50px] rounded-[7px] px-[19.4px] py-[12.93px] flex items-center justify-center gap-[6.47px] bg-[#272729] hover:bg-[#353537] text-white font-semibold transition" onClick={onCancel}>
             Cancel
           </button>
         </div>
