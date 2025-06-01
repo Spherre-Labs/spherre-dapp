@@ -2,7 +2,7 @@
 import Image from 'next/image'
 import React, { useState, useEffect, useRef } from 'react'
 import { Nunito_Sans } from 'next/font/google'
-import RemoveMemberModal from './components/remove-modal' 
+import RemoveMemberModal from './components/remove-modal'
 
 const nunito = Nunito_Sans({
   subsets: ['latin'],
@@ -64,13 +64,13 @@ const roleColors: Record<string, string> = {
 }
 
 interface Member {
-  id: number;
-  name: string;
-  address: string;
-  fullAddress: string;
-  roles: string[];
-  dateAdded: string;
-  image: string;
+  id: number
+  name: string
+  address: string
+  fullAddress: string
+  roles: string[]
+  dateAdded: string
+  image: string
 }
 
 const Members = () => {
@@ -82,7 +82,7 @@ const Members = () => {
   const [editName, setEditName] = useState('')
   const [borderPosition, setBorderPosition] = useState(0)
   const animationRef = useRef<number>(0)
-  
+
   // Modal state
   const [isRemoveModalOpen, setIsRemoveModalOpen] = useState(false)
   const [selectedMember, setSelectedMember] = useState<Member | null>(null)
@@ -143,7 +143,7 @@ const Members = () => {
 
   // Handle confirm removal
   const handleConfirmRemoval = (memberId: number) => {
-    setMembers(members.filter(member => member.id !== memberId))
+    setMembers(members.filter((member) => member.id !== memberId))
     console.log(`Member ${memberId} removed and transaction proposed`)
     // Here you would typically call your blockchain transaction function
   }
@@ -383,7 +383,7 @@ const Members = () => {
                 </div>
 
                 <div className="flex items-center justify-center mt-5">
-                  <button 
+                  <button
                     className="bg-[#272729] rounded-[7px] flex items-center justify-center font-medium text-[14px] text-white w-[90%] h-[36px] hover:bg-[#353538] transition-colors"
                     onClick={() => handleRemoveMember(member)}
                   >
@@ -404,7 +404,7 @@ const Members = () => {
                 />
               </div>
               <p className="text-[16px] font-semibold text-[#8E9BAE]">
-                Add Member 
+                Add Member
               </p>
             </div>
           </div>
@@ -427,15 +427,12 @@ const Members = () => {
         </div>
       )}
 
- 
-      
       <RemoveMemberModal
         isOpen={isRemoveModalOpen}
         member={selectedMember}
         onClose={handleCloseModal}
         onConfirm={handleConfirmRemoval}
       />
-     
     </div>
   )
 }
