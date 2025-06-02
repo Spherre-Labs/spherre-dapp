@@ -44,7 +44,7 @@ export default function DappLayout({ children }: DappLayoutProps) {
             route: '/dapp/payments',*/,
     },
     { name: 'Apps', icon: Apps, comingSoon: true /*, route: '/dapp/apps'*/ },
-    { name: 'Settings', icon: Settings /*, route: '/dapp/settings'*/ },
+    { name: 'Settings', icon: Settings , route: '/dapp/settings' },
     { name: 'Support', icon: Support /*, route: '/dapp/support'*/ },
   ]
   // Listen for sidebar expansion state changes
