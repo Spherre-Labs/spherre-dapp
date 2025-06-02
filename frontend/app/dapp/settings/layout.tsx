@@ -1,5 +1,5 @@
-import type React from "react"
-import SettingsNavbar from "./preferences/components/settings-navbar"
+import type React from 'react'
+import SettingsNavbar from './preferences/components/settings-navbar'
 
 export default function SettingsLayout({
   children,

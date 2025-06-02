@@ -31,7 +31,6 @@ export default function SettingsNavbar() {
             }`}
           >
             {tab.name}
-        
           </Link>
         ))}
       </div>
