@@ -23,12 +23,11 @@ export default function EditProfile({ onCancel }: EditProfileProps) {
   const [email, setEmail] = useState('johndoe@gmail.com'); // ejemplo de email actual
 
   const walletName = 'Argent Wallet';
-  const walletId = '352By...wtuya';
 
   return (
-    <div className="bg-[#181A20] min-h-screen p-8 text-white">
-      <div className="flex justify-center">
-        <div className="flex w-[1144px] h-[48px] bg-[#23242B] rounded-[5px] p-[9px_8px] gap-[10px] mb-8"
+    <div className="bg-[#181A20] min-h-screen pl-0 pr-8 pt-4 pb-8 text-white">
+      <div className="w-[1130px] p-4 pt-2">
+        <div className="flex w-[1130px] h-[48px] bg-[#23242B] rounded-[5px] p-[9px_8px] gap-[10px] mb-8"
           style={{ padding: '9px 8px' }}
         >
           {tabs.map((tab) => (
@@ -48,7 +47,7 @@ export default function EditProfile({ onCancel }: EditProfileProps) {
         </div>
       </div>
 
-      <div className="ml-[60px] w-[1144px] rounded-xl p-8 shadow-lg">
+      <div className="w-[1144px] rounded-xl p-8 shadow-lg">
         <div className="flex flex-col items-start mb-8">
           <div className="relative w-24 h-24 mb-2">
             <img

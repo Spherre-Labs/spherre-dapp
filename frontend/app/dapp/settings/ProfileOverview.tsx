@@ -5,21 +5,49 @@ interface ProfileOverviewProps {
   onEditProfile: () => void;
 }
 
+const tabs = [
+  'Profile',
+  'Wallet & Account',
+  'Preferences',
+  'Security',
+  'SmartWill',
+  'Smart Lock',
+];
+
 const ProfileOverview: React.FC<ProfileOverviewProps> = ({ onEditProfile }) => {
   const [showModal, setShowModal] = useState(false);
+  const [activeTab, setActiveTab] = useState('Profile');
 
   return (
-    <div className="w-full flex flex-col items-center bg-[#181A20] min-h-screen">
-      {/* Banner Add Email Address */}
-      <div className="w-[1130px] rounded-[10px] p-4 flex items-center justify-between mb-8 mt-[40px] gap-[10px] bg-[#232325]">
-        {/* Ícono a la izquierda */}
+    <div className="bg-[#181A20] min-h-screen pl-0 pr-8 pt-4 pb-8 text-white">
+      <div className="w-[1130px] p-4 pt-2">
+        <div className="flex w-[1130px] h-[48px] bg-[#23242B] rounded-[5px] p-[9px_8px] gap-[10px] mb-8"
+          style={{ padding: '9px 8px' }}
+        >
+          {tabs.map((tab) => (
+            <button
+              key={tab}
+              className={`px-4 py-1.5 rounded-[5px] font-medium focus:outline-none transition-colors duration-150 text-sm h-full ${
+                activeTab === tab
+                  ? 'bg-[#29292A] text-white'
+                  : 'bg-transparent text-gray-400 hover:text-white'
+              }`}
+              style={{ minWidth: '120px' }}
+              onClick={() => setActiveTab(tab)}
+            >
+              {tab}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="w-[1130px] rounded-[10px] p-4 flex items-center justify-between mb-8 gap-[10px] bg-[#232325] ml-4">
         <span>
           <svg className="w-6 h-6 text-[#A3ADC2]" fill="none" viewBox="0 0 24 24">
             <circle cx="12" cy="12" r="12" fill="currentColor" />
             <text x="12" y="17" textAnchor="middle" fontSize="18" fill="#181A20" fontWeight="bold">!</text>
           </svg>
         </span>
-        {/* Contenido del banner */}
         <div className="flex-1">
           <span className="text-xl font-semibold text-white">Add Email Address</span>
           <p className="text-[#8E9BAE] text-sm mt-1">
@@ -35,8 +63,7 @@ const ProfileOverview: React.FC<ProfileOverviewProps> = ({ onEditProfile }) => {
         </button>
       </div>
 
-      {/* Profile Card */}
-      <div className="flex flex-col items-center w-full mb-8">
+      <div className="flex flex-col items-center w-full mb-8 ml-4">
         <div className="relative w-32 h-32 mb-2">
           <img
             src="/Images/profile2.png"
@@ -60,22 +87,21 @@ const ProfileOverview: React.FC<ProfileOverviewProps> = ({ onEditProfile }) => {
         </button>
       </div>
 
-      {/* Table */}
-      <div className="w-[90%] max-w-4xl bg-[#232325] rounded-xl p-6 mt-8">
+      <div className="w-[910px] h-[122px] bg-[#232325] rounded-[10px] p-[20px_40px] mx-auto">
         <table className="w-full text-left">
           <thead>
             <tr className="text-[#8E9BAE] text-base">
-              <th className="pb-2">Email Address</th>
-              <th className="pb-2">Wallet Assigned Name</th>
-              <th className="pb-2">Wallet ID</th>
+              <th className="pb-2 pr-[119px]">Email Address</th>
+              <th className="pb-2 pr-[119px]">Wallet Assigned Name</th>
+              <th className="pb-2 pr-[119px]">Wallet ID</th>
               <th className="pb-2">Date Joined</th>
             </tr>
           </thead>
           <tbody>
             <tr className="text-white text-lg">
-              <td className="py-2">-------------</td>
-              <td className="py-2">Han Solo</td>
-              <td className="py-2">352By...wtuya</td>
+              <td className="py-2 pr-[119px]">-------------</td>
+              <td className="py-2 pr-[119px]">Han Solo</td>
+              <td className="py-2 pr-[119px]">352By...wtuya</td>
               <td className="py-2">May 2025</td>
             </tr>
           </tbody>
@@ -85,8 +111,7 @@ const ProfileOverview: React.FC<ProfileOverviewProps> = ({ onEditProfile }) => {
       <AddEmailModal
         open={showModal}
         onClose={() => setShowModal(false)}
-        onSign={email => {
-          // Aquí puedes manejar el email firmado
+        onSign={() => {
           setShowModal(false);
         }}
       />
