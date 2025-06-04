@@ -132,7 +132,7 @@ export default function PreferencesPage() {
   }
 
   return (
-    <div className="space-y-10 font-sans w-full">
+    <div className="space-y-10 font-sans w-full max-w-7x mx-auto px-4 md:px-8 py-8">
       {/* Header */}
       <div>
         <h1 className="text-2xl font-bold text-white mb-3">Preferences</h1>

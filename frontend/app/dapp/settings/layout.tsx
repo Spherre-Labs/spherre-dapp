@@ -8,7 +8,7 @@ export default function SettingsLayout({
 }) {
   return (
     <div className="min-h-screen bg-gray-950 text-white w-full font-sans">
-      <div className="max-w-7xl mx-auo px-7 w-full py-8 flex flex-col space-y-8 items-start">
+      <div className="mx-auto px-7 w-full py-8 flex flex-col space-y-8 items-start">
         <SettingsNavbar />
         {children}
       </div>

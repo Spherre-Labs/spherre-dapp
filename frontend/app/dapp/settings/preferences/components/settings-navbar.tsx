@@ -18,8 +18,8 @@ export default function SettingsNavbar() {
   const isActive = (href: string) => pathname === href
 
   return (
-    <nav className="border-b font-sans border-gray-800 bg-[#1C1D1F] py-2.5 px-8 w-full rounded-md">
-      <div className="flex space-x-5">
+    <nav className="border-b font-sans border-gray-800 bg-[#1C1D1F] py-2.5 px-8 w-full  rounded-md">
+      <div className="flex space-x-5 mx-auto max-w-7xl overflow-x-auto scrollbar-hide">
         {tabs.map((tab) => (
           <Link
             key={tab.name}
