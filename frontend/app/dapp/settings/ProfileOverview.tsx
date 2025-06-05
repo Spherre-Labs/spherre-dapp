@@ -9,9 +9,9 @@ const ProfileOverview: React.FC<ProfileOverviewProps> = ({ onEditProfile }) => {
   const [showModal, setShowModal] = useState(false);
 
   return (
-    <div className="bg-[#181A20] min-h-screen pl-0 pr-8 pt-4 pb-8 text-white">
+    <div className="bg-[#181A20] min-h-screen px-4 pt-4 pb-8 text-white">
 
-      <div className="w-[1130px] rounded-[10px] p-4 flex items-center justify-between mb-8 gap-[10px] bg-[#232325] ml-4">
+      <div className="w-full rounded-[10px] p-4 flex items-center justify-between mb-8 gap-[10px] bg-[#232325]">
         <span>
           <svg className="w-6 h-6 text-[#A3ADC2]" fill="none" viewBox="0 0 24 24">
             <circle cx="12" cy="12" r="12" fill="currentColor" />
@@ -33,7 +33,7 @@ const ProfileOverview: React.FC<ProfileOverviewProps> = ({ onEditProfile }) => {
         </button>
       </div>
 
-      <div className="flex flex-col items-center w-full mb-8 ml-4">
+      <div className="flex flex-col items-center w-full mb-8">
         <div className="relative w-32 h-32 mb-2">
           <img
             src="/Images/profile2.png"
@@ -57,7 +57,7 @@ const ProfileOverview: React.FC<ProfileOverviewProps> = ({ onEditProfile }) => {
         </button>
       </div>
 
-      <div className="w-[910px] h-[122px] bg-[#232325] rounded-[10px] p-[20px_40px] mx-auto">
+      <div className="w-full bg-[#232325] rounded-[10px] p-[20px_40px]">
         <table className="w-full text-left">
           <thead>
             <tr className="text-[#8E9BAE] text-base">

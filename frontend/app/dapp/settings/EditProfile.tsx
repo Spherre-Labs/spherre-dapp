@@ -15,9 +15,9 @@ export default function EditProfile({ onCancel }: EditProfileProps) {
   const walletName = 'Argent Wallet';
 
   return (
-    <div className="bg-[#181A20] min-h-screen pl-0 pr-8 pt-4 pb-8 text-white">
+    <div className="bg-[#181A20] min-h-screen px-4 pt-4 pb-8 text-white">
 
-      <div className="w-[1144px] rounded-xl p-8 shadow-lg">
+      <div className="w-full rounded-xl p-8 shadow-lg">
         <div className="flex flex-col items-start mb-8">
           <div className="relative w-24 h-24 mb-2">
             <img
@@ -30,7 +30,7 @@ export default function EditProfile({ onCancel }: EditProfileProps) {
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 text-white">
                 <rect x="3" y="5" width="18" height="14" rx="2" stroke="currentColor" strokeWidth="1.5" />
                 <circle cx="8.5" cy="10.5" r="1.5" fill="currentColor" />
-                <path stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" d="M21 19l-5.5-7-4.5 6-3-4-4 5" />
+                <path stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" d="M21 19l-5.5-7-4.5 6-3-4-4 5" />
               </svg>
             </label>
           </div>
@@ -43,14 +43,14 @@ export default function EditProfile({ onCancel }: EditProfileProps) {
             placeholder="Enter your display name"
             value={displayName}
             onChange={(e) => setDisplayName(e.target.value)}
-            className="w-[1144px] h-[60px] rounded-[10px] px-[24px] py-[17px] bg-[#1C1D1F] text-[#8E9BAE] border-gray-700 focus:outline-none focus:border-[#6C47FF]"
+            className="w-full h-[60px] rounded-[10px] px-[24px] py-[17px] bg-[#1C1D1F] text-[#8E9BAE] border-gray-700 focus:outline-none focus:border-[#6C47FF]"
           />
         </div>
 
         <div className="flex flex-col md:flex-row md:space-x-4 mb-8">
           <div className="flex-1 mb-4 md:mb-0">
             <label className="block text-gray-300 mb-2">Linked Wallet</label>
-            <div className="flex items-center bg-[#1C1D1F] w-[561px] h-[60px] rounded-[10px] px-[24px] py-[17px] gap-[10px] border-gray-700">
+            <div className="flex items-center bg-[#1C1D1F] w-full h-[60px] rounded-[10px] px-[24px] py-[17px] gap-[10px] border-gray-700">
               <span>
                 <img src="/Images/argent.png" alt="Argent Wallet" className="w-6 h-6 object-contain rounded-full" />
               </span>
@@ -60,8 +60,8 @@ export default function EditProfile({ onCancel }: EditProfileProps) {
           <div className="flex-1">
             <div className="flex-1 flex-col gap-[10px]">
               <label className="block text-gray-300 mb-2">Wallet ID</label>
-              <div className="flex items-center bg-[#1C1D1F] w-[561px] h-[60px] rounded-[10px] px-[24px] py-[17px] gap-[10px] border-gray-700">
-                <input type="text" placeholder="352By...wtuya" className="text-[#8E9BAE] bg-transparent border-none focus:outline-none" />
+              <div className="flex items-center bg-[#1C1D1F] w-full h-[60px] rounded-[10px] px-[24px] py-[17px] gap-[10px] border-gray-700">
+                <input type="text" placeholder="352By...wtuya" className="text-[#8E9BAE] bg-transparent border-none focus:outline-none w-full" />
               </div>
             </div>
           </div>
