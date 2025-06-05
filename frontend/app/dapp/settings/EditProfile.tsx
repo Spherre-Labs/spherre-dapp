@@ -7,17 +7,7 @@ interface EditProfileProps {
   onCancel?: () => void;
 }
 
-const tabs = [
-  'Profile',
-  'Wallet & Account',
-  'Preferences',
-  'Security',
-  'SmartWill',
-  'Smart Lock',
-];
-
 export default function EditProfile({ onCancel }: EditProfileProps) {
-  const [activeTab, setActiveTab] = useState('Profile');
   const [displayName, setDisplayName] = useState('');
   const [showEditEmailModal, setShowEditEmailModal] = useState(false);
   const [email, setEmail] = useState('johndoe@gmail.com'); // ejemplo de email actual
@@ -26,26 +16,6 @@ export default function EditProfile({ onCancel }: EditProfileProps) {
 
   return (
     <div className="bg-[#181A20] min-h-screen pl-0 pr-8 pt-4 pb-8 text-white">
-      <div className="w-[1130px] p-4 pt-2">
-        <div className="flex w-[1130px] h-[48px] bg-[#23242B] rounded-[5px] p-[9px_8px] gap-[10px] mb-8"
-          style={{ padding: '9px 8px' }}
-        >
-          {tabs.map((tab) => (
-            <button
-              key={tab}
-              className={`px-4 py-1.5 rounded-[5px] font-medium focus:outline-none transition-colors duration-150 text-sm h-full ${
-                activeTab === tab
-                  ? 'bg-[#29292A] text-white'
-                  : 'bg-transparent text-gray-400 hover:text-white'
-              }`}
-              style={{ minWidth: '120px' }}
-              onClick={() => setActiveTab(tab)}
-            >
-              {tab}
-            </button>
-          ))}
-        </div>
-      </div>
 
       <div className="w-[1144px] rounded-xl p-8 shadow-lg">
         <div className="flex flex-col items-start mb-8">
