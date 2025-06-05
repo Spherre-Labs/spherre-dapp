@@ -57,7 +57,7 @@ const Navbar: React.FC<NavbarProps> = ({ title }) => {
 
         {/* Notification Modal Dropdown */}
         {isNotificationOpen && (
-          <div className="absolute right-10 top-full mt-2 z-50 lg:w-[550px]">
+          <div className="absolute right-1 md:right-10 top-full mt-2 z-50 w-80 lg:w-[550px]">
             <NotificationModal onClose={() => setIsNotificationOpen(false)} />
           </div>
         )}
