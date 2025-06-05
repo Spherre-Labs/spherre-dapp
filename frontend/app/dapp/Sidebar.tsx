@@ -6,6 +6,7 @@ import Image from 'next/image'
 import SidebarProfile from './Profile'
 import { NavItem } from '@/app/dapp/navigation'
 import Link from 'next/link'
+import { ImageIcon } from 'lucide-react'
 
 const Sidebar = ({
   navItems,
@@ -138,13 +139,17 @@ const Sidebar = ({
                   }`}
                 >
                   <div className="relative flex items-center justify-center w-6 h-6 mr-3">
-                    <Image
-                      src={item.icon}
-                      alt={item.name}
-                      width={24}
-                      height={24}
-                      className="sidebar-transition"
-                    />
+                    {item.icon ? (
+                      <Image
+                        src={item.icon}
+                        alt={item.name}
+                        width={24}
+                        height={24}
+                        className="sidebar-transition"
+                      />
+                    ) : (
+                      <ImageIcon />
+                    )}
                     {item.notification && (
                       <span className="absolute -top-1 -right-1 text-xs bg-red-500 text-white rounded-full w-4 h-4 flex items-center justify-center">
                         {item.notification}
@@ -173,13 +178,17 @@ const Sidebar = ({
                     }}
                   >
                     <div className="relative flex items-center justify-center">
-                      <Image
-                        src={item.icon}
-                        alt={item.name}
-                        width={30}
-                        height={30}
-                        className="sidebar-transition"
-                      />
+                      {item.icon ? (
+                        <Image
+                          src={item.icon}
+                          alt={item.name}
+                          width={30}
+                          height={30}
+                          className="sidebar-transition"
+                        />
+                      ) : (
+                        <ImageIcon />
+                      )}
                       {item.notification && (
                         <span className="absolute -top-1 -right-1 text-xs bg-red-500 text-white rounded-full w-4 h-4 flex items-center justify-center">
                           {item.notification}

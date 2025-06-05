@@ -41,7 +41,7 @@ export const isActiveRoute = (pathname: string, route: string): boolean => {
 export interface NavItem {
   name: string
   route?: string
-  icon?: StaticImageData
+  icon: StaticImageData
   comingSoon?: boolean
   notification?: number
 }
