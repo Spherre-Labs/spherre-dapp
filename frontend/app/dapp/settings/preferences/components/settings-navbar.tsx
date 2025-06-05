@@ -19,7 +19,7 @@ export default function SettingsNavbar() {
 
   return (
     <nav className="border-b font-sans border-gray-800 bg-[#1C1D1F] py-2.5 px-8 w-full  rounded-md">
-      <div className="flex space-x-5 mx-auto max-w-7xl overflow-x-auto scrollbar-hide">
+      <div className="flex space-x-5 2xl:space-x-10 max-w-7xl overflow-x-auto scrollbar-hide">
         {tabs.map((tab) => (
           <Link
             key={tab.name}
