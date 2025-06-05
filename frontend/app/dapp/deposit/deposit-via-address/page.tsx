@@ -120,9 +120,11 @@ const Page = () => {
             <div className="size-[250px] relative overflow-hidden rounded-[10px] bg-[#1C1D1F] p-2 shadow-lg">
               {src ? (
                 <>
-                  <img
+                  <Image
                     src={src}
                     alt="qrcode"
+                    width={250}
+                    height={250}
                     className="w-full h-full object-cover"
                   />
                   <Image
