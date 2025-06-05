@@ -20,12 +20,16 @@ interface Notification {
   }
 }
 
-export default function NotificationModal() {
+interface NotificationModalProps {
+  onClose?: () => void
+}
+
+export default function NotificationModal({ onClose }: NotificationModalProps) {
   const [notifications, setNotifications] = useState<Notification[]>([])
 
   // Initialize notifications from localStorage or use default data
   useEffect(() => {
-    const savedNotifications = localStorage.getItem('notifications')
+    const savedNotifications = localStorage.getItem('spherre-notifications')
     if (savedNotifications) {
       setNotifications(JSON.parse(savedNotifications))
     } else {
@@ -69,7 +73,10 @@ export default function NotificationModal() {
   // Save notifications to localStorage whenever they change
   useEffect(() => {
     if (notifications.length > 0) {
-      localStorage.setItem('notifications', JSON.stringify(notifications))
+      localStorage.setItem(
+        'spherre-notifications',
+        JSON.stringify(notifications),
+      )
     }
   }, [notifications])
 
@@ -88,20 +95,19 @@ export default function NotificationModal() {
   ).length
 
   return (
-    <Card className="w-full max-w-md bg-zinc-900 text-white border-none shadow-xl">
-      <div className="flex justify-between items-center p-4 border-b border-zinc-800">
+    <Card className="w-full max-w-[530px] bg-[#1C1D1F] text-white border-4 border-[#292929] shadow-xl">
+      <div className="flex justify-between items-center p-4">
         <h2 className="text-xl font-bold">Notifications</h2>
         <Button
-          variant="ghost"
-          className="text-zinc-400 hover:text-white flex items-center gap-2"
+          className="bg-[#272729] text-zinc-400 hover:text-white flex items-center gap-2"
           onClick={markAllAsRead}
           disabled={unreadCount === 0}
         >
           <CheckCheck className="h-4 w-4" />
-          <span>Mark all as read</span>
+          <span className="hidden md:inline-block">Mark all as read</span>
         </Button>
       </div>
-      <div className="max-h-[400px] overflow-y-auto">
+      <div className="max-h-[400px] overflow-y-auto notification-scrollbar">
         {notifications.map((notification) => (
           <div
             key={notification.id}
