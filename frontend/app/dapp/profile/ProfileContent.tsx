@@ -1,9 +1,5 @@
-'use client'
-import Image from 'next/image'
 import React, { useState } from 'react'
-import profile_image from '@/public/Images/profile2.png'
-import capture_icon from '@/public/Images/capture.png'
-import argent_wallet from '@/public/Images/argent_logo.png'
+import Image from 'next/image'
 
 const ProfileContent = () => {
   const [displayName, setDisplayName] = useState('')
@@ -27,15 +23,23 @@ const ProfileContent = () => {
       <div className="flex items-center mb-8">
         <div className="relative w-[100px] h-[100px] group">
           <Image
-            src={profile_image}
+            src="/avatar-placeholder.png"
             alt="Profile"
+            width={100}
+            height={100}
             className="w-full h-full rounded-full object-cover bg-[#23242a] transition-opacity duration-200 group-hover:opacity-60"
           />
           <button
-            className="absolute bottom-6 right-7 border-2 border-white rounded-full p-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+            className="absolute bottom-2 right-2 bg-[#23242a] border-2 border-white rounded-full p-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
             tabIndex={-1}
           >
-            <Image src={capture_icon} alt="Edit" className="w-6 h-6" />
+            <Image
+              src="/camera-icon.svg"
+              alt="Edit"
+              width={24}
+              height={24}
+              className="w-6 h-6"
+            />
           </button>
         </div>
       </div>
@@ -58,8 +62,10 @@ const ProfileContent = () => {
           <label className="block text-white mb-2">Linked Wallet</label>
           <div className="flex items-center bg-[#23242a] rounded-lg px-4 py-3">
             <Image
-              src={argent_wallet}
+              src="/argent-wallet.svg"
               alt="Argent Wallet"
+              width={24}
+              height={24}
               className="w-6 h-6 mr-3"
             />
             <span className="text-[#8E9BAE]">Argent Wallet</span>
@@ -105,17 +111,17 @@ const ProfileContent = () => {
           </button>
         </div>
       </div>
-      <p className="text-[#8E9BAE] text-sm mt-4">
+      <p className="text-[#8E9BAE] text-sm mt-2">
         This email will be used to notify you on the account multisig
         transactions{' '}
-        <a href="#" className="text-[#a259ff]">
-          <em>Learn More</em>
+        <a href="#" className="text-[#a259ff] underline">
+          Learn More
         </a>
       </p>
 
       {/* Success Message */}
       {showSuccess && (
-        <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-[#f3e8ff] border border-[#6F2FCE] text-white px-6 py-3 rounded-lg shadow-lg font-semibold z-50">
+        <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2 bg-[#f3e8ff] border border-[#a259ff] text-[#a259ff] px-6 py-3 rounded-lg shadow-lg font-semibold z-50">
           Email updated successfully!
         </div>
       )}

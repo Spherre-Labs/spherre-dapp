@@ -1,25 +1,17 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 
-interface EmailModalProps {
+interface AddEmailModalProps {
   open: boolean
   onClose: () => void
   onSign: (email: string) => void
-  title?: string
-  initialEmail?: string
 }
 
-const EmailModal: React.FC<EmailModalProps> = ({
+const AddEmailModal: React.FC<AddEmailModalProps> = ({
   open,
   onClose,
   onSign,
-  title = 'Add Email Address',
-  initialEmail = '',
 }) => {
-  const [email, setEmail] = useState(initialEmail)
-
-  useEffect(() => {
-    setEmail(initialEmail)
-  }, [initialEmail, open])
+  const [email, setEmail] = useState('')
 
   if (!open) return null
 
@@ -33,11 +25,10 @@ const EmailModal: React.FC<EmailModalProps> = ({
           &times;
         </button>
         <h2 className="text-2xl font-bold text-white mb-2 text-center">
-          {title}
+          Add Email Address
         </h2>
         <p className="text-[#8E9BAE] text-center mb-6">
-          Please provide your email address and sign the message to{' '}
-          {title === 'Edit Email Address' ? 'update' : 'add'} it.
+          Please provide your email address and sign the message to add it.
         </p>
         <label className="block text-white mb-2">Email Address</label>
         <input
@@ -66,4 +57,4 @@ const EmailModal: React.FC<EmailModalProps> = ({
   )
 }
 
-export default EmailModal
+export default AddEmailModal

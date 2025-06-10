@@ -1,24 +1,14 @@
 'use client'
 
 import React, { useState } from 'react'
-import EmailModal from './EditModal'
+import EmailModal from './EmailModal'
 import Image from 'next/image'
-
-const tabs = [
-  'Profile',
-  'Wallet & Account',
-  'Preferences',
-  'Security',
-  'SmartWill',
-  'Smart Lock',
-]
 
 interface EditProfileProps {
   onCancel?: () => void
 }
 
 export default function EditProfile({ onCancel }: EditProfileProps) {
-  const [activeTab, setActiveTab] = useState('Profile')
   const [displayName, setDisplayName] = useState('')
   const [showEditEmailModal, setShowEditEmailModal] = useState(false)
   const [email, setEmail] = useState('johndoe@gmail.com') // example email
@@ -27,30 +17,8 @@ export default function EditProfile({ onCancel }: EditProfileProps) {
   const walletId = '352By...wtuya'
 
   return (
-    <div className="bg-[#181A20] min-h-screen p-8 text-white">
-      <div className="flex justify-center">
-        <div
-          className="flex w-[1144px] h-[48px] bg-[#23242B] rounded-[5px] p-[9px_8px] gap-[10px] mb-8"
-          style={{ padding: '9px 8px' }}
-        >
-          {tabs.map((tab) => (
-            <button
-              key={tab}
-              className={`px-4 py-1.5 rounded-[5px] font-medium focus:outline-none transition-colors duration-150 text-sm h-full ${
-                activeTab === tab
-                  ? 'bg-[#29292A] text-white'
-                  : 'bg-transparent text-gray-400 hover:text-white'
-              }`}
-              style={{ minWidth: '120px' }}
-              onClick={() => setActiveTab(tab)}
-            >
-              {tab}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      <div className="ml-[60px] w-[1144px] rounded-xl p-8 shadow-lg">
+    <div className="bg-[#181A20] min-h-screen px-4 pt-4 pb-8 text-white">
+      <div className="w-full rounded-xl p-8 shadow-lg">
         <div className="flex flex-col items-start mb-8">
           <div className="relative w-24 h-24 mb-2">
             <Image
@@ -170,7 +138,7 @@ export default function EditProfile({ onCancel }: EditProfileProps) {
         <EmailModal
           open={showEditEmailModal}
           onClose={() => setShowEditEmailModal(false)}
-          onSign={(newEmail) => {
+          onSign={(newEmail: string) => {
             setEmail(newEmail)
             setShowEditEmailModal(false)
           }}

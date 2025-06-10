@@ -15,6 +15,34 @@ interface ToastState {
   isVisible: boolean
 }
 
+const applyTheme = (theme: Theme) => {
+  const root = document.documentElement
+
+  if (theme === 'dark') {
+    root.style.setProperty('--bg-primary', '#030712') // gray-950
+    root.style.setProperty('--bg-secondary', '#111827') // gray-900
+    root.style.setProperty('--text-primary', '#ffffff')
+    root.style.setProperty('--text-secondary', '#9ca3af') // ash
+    document.body.style.backgroundColor = '#030712'
+    document.body.style.color = '#ffffff'
+  } else if (theme === 'light') {
+    root.style.setProperty('--bg-primary', '#ffffff')
+    root.style.setProperty('--bg-secondary', '#f9fafb') // gray-50
+    root.style.setProperty('--text-primary', '#111827') // gray-900
+    root.style.setProperty('--text-secondary', '#6b7280') // gray-500
+    document.body.style.backgroundColor = '#ffffff'
+    document.body.style.color = '#111827'
+  } else {
+    // System mode - check system preference
+    const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches
+    if (systemDark) {
+      applyTheme('dark')
+    } else {
+      applyTheme('light')
+    }
+  }
+}
+
 export default function PreferencesPage() {
   const [selectedTheme, setSelectedTheme] = useState<Theme>('dark')
   const [emailNotifications, setEmailNotifications] = useState(true)
@@ -26,6 +54,7 @@ export default function PreferencesPage() {
   })
 
   // Load preferences from localStorage on mount
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     const savedTheme = localStorage.getItem('spherre-theme') as Theme
     const savedEmail = localStorage.getItem('spherre-email-notifications')
@@ -37,37 +66,7 @@ export default function PreferencesPage() {
     }
     if (savedEmail) setEmailNotifications(savedEmail === 'true')
     if (savedBrowser) setBrowserNotifications(savedBrowser === 'true')
-  }, [])
-
-  const applyTheme = (theme: Theme) => {
-    const root = document.documentElement
-
-    if (theme === 'dark') {
-      root.style.setProperty('--bg-primary', '#030712') // gray-950
-      root.style.setProperty('--bg-secondary', '#111827') // gray-900
-      root.style.setProperty('--text-primary', '#ffffff')
-      root.style.setProperty('--text-secondary', '#9ca3af') // ash
-      document.body.style.backgroundColor = '#030712'
-      document.body.style.color = '#ffffff'
-    } else if (theme === 'light') {
-      root.style.setProperty('--bg-primary', '#ffffff')
-      root.style.setProperty('--bg-secondary', '#f9fafb') // gray-50
-      root.style.setProperty('--text-primary', '#111827') // gray-900
-      root.style.setProperty('--text-secondary', '#6b7280') // gray-500
-      document.body.style.backgroundColor = '#ffffff'
-      document.body.style.color = '#111827'
-    } else {
-      // System mode - check system preference
-      const systemDark = window.matchMedia(
-        '(prefers-color-scheme: dark)',
-      ).matches
-      if (systemDark) {
-        applyTheme('dark')
-      } else {
-        applyTheme('light')
-      }
-    }
-  }
+  }, [applyTheme])
 
   const showToast = (message: string, type: 'success' | 'error') => {
     setToast({ message, type, isVisible: true })
