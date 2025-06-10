@@ -1,14 +1,18 @@
 'use client'
-import { useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+import React, { useState } from 'react'
+import ProfileOverview from './ProfileOverview'
+import EditProfile from './EditProfile'
 
-export default function SettingsPage() {
-  const router = useRouter()
+export default function Page() {
+  const [editing, setEditing] = useState(false)
 
-  useEffect(() => {
-    // Redirect to profile settings by default
-    router.replace('/dapp/settings/profile')
-  }, [router])
-
-  return null
+  return (
+    <>
+      {editing ? (
+        <EditProfile onCancel={() => setEditing(false)} />
+      ) : (
+        <ProfileOverview onEditProfile={() => setEditing(true)} />
+      )}
+    </>
+  )
 }
