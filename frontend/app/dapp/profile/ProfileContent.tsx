@@ -1,21 +1,21 @@
-import React, { useState } from "react";
-import Image from "next/image";
+import React, { useState } from 'react'
+import Image from 'next/image'
 
 const ProfileContent = () => {
-  const [displayName, setDisplayName] = useState("");
-  const [email, setEmail] = useState("jacklovermacazie@gmail.com");
-  const [editingEmail, setEditingEmail] = useState(false);
-  const [walletId] = useState("352By...wtuya");
-  const [showSuccess, setShowSuccess] = useState(false);
+  const [displayName, setDisplayName] = useState('')
+  const [email, setEmail] = useState('jacklovermacazie@gmail.com')
+  const [editingEmail, setEditingEmail] = useState(false)
+  const [walletId] = useState('352By...wtuya')
+  const [showSuccess, setShowSuccess] = useState(false)
 
   const handleEmailEdit = () => {
     if (editingEmail) {
       // Save email
-      setShowSuccess(true);
-      setTimeout(() => setShowSuccess(false), 2000);
+      setShowSuccess(true)
+      setTimeout(() => setShowSuccess(false), 2000)
     }
-    setEditingEmail(e => !e);
-  };
+    setEditingEmail((e) => !e)
+  }
 
   return (
     <div className="w-full px-0">
@@ -33,7 +33,13 @@ const ProfileContent = () => {
             className="absolute bottom-2 right-2 bg-[#23242a] border-2 border-white rounded-full p-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
             tabIndex={-1}
           >
-            <Image src="/camera-icon.svg" alt="Edit" width={24} height={24} className="w-6 h-6" />
+            <Image
+              src="/camera-icon.svg"
+              alt="Edit"
+              width={24}
+              height={24}
+              className="w-6 h-6"
+            />
           </button>
         </div>
       </div>
@@ -46,7 +52,7 @@ const ProfileContent = () => {
           className="w-full bg-[#23242a] text-[#8E9BAE] rounded-lg px-4 py-3 outline-none border-none"
           placeholder="Enter your display name"
           value={displayName}
-          onChange={e => setDisplayName(e.target.value)}
+          onChange={(e) => setDisplayName(e.target.value)}
         />
       </div>
 
@@ -55,7 +61,13 @@ const ProfileContent = () => {
         <div className="flex-1">
           <label className="block text-white mb-2">Linked Wallet</label>
           <div className="flex items-center bg-[#23242a] rounded-lg px-4 py-3">
-            <Image src="/argent-wallet.svg" alt="Argent Wallet" width={24} height={24} className="w-6 h-6 mr-3" />
+            <Image
+              src="/argent-wallet.svg"
+              alt="Argent Wallet"
+              width={24}
+              height={24}
+              className="w-6 h-6 mr-3"
+            />
             <span className="text-[#8E9BAE]">Argent Wallet</span>
           </div>
         </div>
@@ -89,19 +101,22 @@ const ProfileContent = () => {
             className="flex-1 bg-transparent text-white outline-none border-none"
             value={email}
             disabled={!editingEmail}
-            onChange={e => setEmail(e.target.value)}
+            onChange={(e) => setEmail(e.target.value)}
           />
           <button
             className="ml-4 bg-white text-black px-4 py-2 rounded"
             onClick={handleEmailEdit}
           >
-            {editingEmail ? "Save Email" : "Edit Email Address"}
+            {editingEmail ? 'Save Email' : 'Edit Email Address'}
           </button>
         </div>
       </div>
       <p className="text-[#8E9BAE] text-sm mt-2">
-        This email will be used to notify you on the account multisig transactions{" "}
-        <a href="#" className="text-[#a259ff] underline">Learn More</a>
+        This email will be used to notify you on the account multisig
+        transactions{' '}
+        <a href="#" className="text-[#a259ff] underline">
+          Learn More
+        </a>
       </p>
 
       {/* Success Message */}
@@ -111,7 +126,7 @@ const ProfileContent = () => {
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default ProfileContent; 
+export default ProfileContent
