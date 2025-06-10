@@ -1,6 +1,4 @@
-'use client'
 import React, { useState } from 'react'
-import Image from 'next/image'
 
 const SecurityContent = () => {
   const [privacyOn, setPrivacyOn] = useState(true)
@@ -52,7 +50,7 @@ const SecurityContent = () => {
 
       {/* Success Message */}
       {showSuccess && (
-        <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2 bg-[#292929] border border-[#a259ff] text-white px-6 py-3 rounded-lg shadow-lg font-semibold z-50">
+        <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2 bg-[#f3e8ff] border border-[#a259ff] text-[#a259ff] px-6 py-3 rounded-lg shadow-lg font-semibold z-50">
           Privacy setting updated successfully!
         </div>
       )}

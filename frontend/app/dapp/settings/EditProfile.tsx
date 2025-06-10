@@ -11,9 +11,10 @@ interface EditProfileProps {
 export default function EditProfile({ onCancel }: EditProfileProps) {
   const [displayName, setDisplayName] = useState('')
   const [showEditEmailModal, setShowEditEmailModal] = useState(false)
-  const [email, setEmail] = useState('johndoe@gmail.com') // ejemplo de email actual
+  const [email, setEmail] = useState('johndoe@gmail.com') // example email
 
   const walletName = 'Argent Wallet'
+  const walletId = '352By...wtuya'
 
   return (
     <div className="bg-[#181A20] min-h-screen px-4 pt-4 pb-8 text-white">
@@ -24,8 +25,8 @@ export default function EditProfile({ onCancel }: EditProfileProps) {
               src="/Images/profile2.png"
               alt="Avatar"
               className="w-24 h-24 rounded-full object-cover border-4 border-[#181A20]"
-              width={24}
-              height={24}
+              width={96}
+              height={96}
             />
             <label className="absolute bottom-0 right-0 bg-[#6C47FF] p-2 rounded-full cursor-pointer border-2 border-[#23242B]">
               <input type="file" className="hidden" />
@@ -44,7 +45,7 @@ export default function EditProfile({ onCancel }: EditProfileProps) {
                   height="14"
                   rx="2"
                   stroke="currentColor"
-                  strokeWidth="1.5"
+                  strokeWidth={1.5}
                 />
                 <circle cx="8.5" cy="10.5" r="1.5" fill="currentColor" />
                 <path
@@ -92,8 +93,10 @@ export default function EditProfile({ onCancel }: EditProfileProps) {
               <div className="flex items-center bg-[#1C1D1F] w-full h-[60px] rounded-[10px] px-[24px] py-[17px] gap-[10px] border-gray-700">
                 <input
                   type="text"
-                  placeholder="352By...wtuya"
+                  placeholder={walletId}
                   className="text-[#8E9BAE] bg-transparent border-none focus:outline-none w-full"
+                  value={walletId}
+                  disabled
                 />
               </div>
             </div>
@@ -135,7 +138,7 @@ export default function EditProfile({ onCancel }: EditProfileProps) {
         <EmailModal
           open={showEditEmailModal}
           onClose={() => setShowEditEmailModal(false)}
-          onSign={(newEmail) => {
+          onSign={(newEmail: string) => {
             setEmail(newEmail)
             setShowEditEmailModal(false)
           }}
