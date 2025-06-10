@@ -14,7 +14,9 @@ const SecurityContent = () => {
     <div className="w-full px-0">
       {/* Security Title */}
       <h2 className="text-2xl font-bold text-white mb-2">Security</h2>
-      <p className="text-[#8E9BAE] mb-8">Protect your Spherre's account.</p>
+      <p className="text-[#8E9BAE] mb-8">
+        Protect your Spherre&apos;s account.
+      </p>
 
       <hr className="border-[#292929] mb-8" />
 
