@@ -21,11 +21,7 @@ interface Notification {
   }
 }
 
-interface NotificationModalProps {
-  onClose?: () => void
-}
-
-export default function NotificationModal({ onClose }: NotificationModalProps) {
+export default function NotificationModal() {
   const [notifications, setNotifications] = useState<Notification[]>([])
 
   // Initialize notifications from localStorage or use default data

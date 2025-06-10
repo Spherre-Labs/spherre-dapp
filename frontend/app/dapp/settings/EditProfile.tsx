@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react'
 import EmailModal from './EmailModal'
+import Image from 'next/image'
 
 interface EditProfileProps {
   onCancel?: () => void
@@ -19,10 +20,12 @@ export default function EditProfile({ onCancel }: EditProfileProps) {
       <div className="w-full rounded-xl p-8 shadow-lg">
         <div className="flex flex-col items-start mb-8">
           <div className="relative w-24 h-24 mb-2">
-            <img
+            <Image
               src="/Images/profile2.png"
               alt="Avatar"
               className="w-24 h-24 rounded-full object-cover border-4 border-[#181A20]"
+              width={24}
+              height={24}
             />
             <label className="absolute bottom-0 right-0 bg-[#6C47FF] p-2 rounded-full cursor-pointer border-2 border-[#23242B]">
               <input type="file" className="hidden" />
@@ -72,10 +75,12 @@ export default function EditProfile({ onCancel }: EditProfileProps) {
             <label className="block text-gray-300 mb-2">Linked Wallet</label>
             <div className="flex items-center bg-[#1C1D1F] w-full h-[60px] rounded-[10px] px-[24px] py-[17px] gap-[10px] border-gray-700">
               <span>
-                <img
+                <Image
                   src="/Images/argent.png"
                   alt="Argent Wallet"
                   className="w-6 h-6 object-contain rounded-full"
+                  width={24}
+                  height={24}
                 />
               </span>
               <span className="text-[#8E9BAE]">{walletName}</span>

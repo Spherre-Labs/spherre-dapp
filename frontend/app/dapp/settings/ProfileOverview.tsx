@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import AddEmailModal from './AddEmailModal'
+import Image from 'next/image'
 
 interface ProfileOverviewProps {
   onEditProfile: () => void
@@ -52,10 +53,12 @@ const ProfileOverview: React.FC<ProfileOverviewProps> = ({ onEditProfile }) => {
 
       <div className="flex flex-col items-center w-full mb-8">
         <div className="relative w-32 h-32 mb-2">
-          <img
+          <Image
             src="/Images/profile2.png"
             alt="Avatar"
             className="w-32 h-32 rounded-full object-cover border-4 border-[#181A20]"
+            width={24}
+            height={24}
           />
           <span className="absolute bottom-2 right-2 bg-[#6C47FF] p-2 rounded-full flex items-center justify-center">
             <svg
