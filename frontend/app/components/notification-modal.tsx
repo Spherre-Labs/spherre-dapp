@@ -6,6 +6,7 @@ import { CheckCheck } from 'lucide-react'
 import { Avatar } from '@/components/ui/avatar'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
+import Image from 'next/image'
 
 interface Notification {
   id: string
@@ -119,8 +120,8 @@ export default function NotificationModal() {
                   <Image
                     src={notification.avatar || '/placeholder.svg'}
                     alt={notification.title}
-                    width="8"
-                    height="8"
+                    width={40}
+                    height={40}
                   />
                 </Avatar>
               )}
