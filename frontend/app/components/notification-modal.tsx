@@ -1,4 +1,5 @@
 'use client'
+import Image from 'next/image'
 
 import { useState, useEffect } from 'react'
 import { CheckCheck } from 'lucide-react'
@@ -119,9 +120,11 @@ export default function NotificationModal({ onClose }: NotificationModalProps) {
               )}
               {notification.avatar && (
                 <Avatar className="h-8 w-8 rounded-full">
-                  <img
+                  <Image
                     src={notification.avatar || '/placeholder.svg'}
                     alt={notification.title}
+                    width="8"
+                    height="8"
                   />
                 </Avatar>
               )}
