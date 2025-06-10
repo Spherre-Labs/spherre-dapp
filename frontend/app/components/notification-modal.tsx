@@ -5,6 +5,7 @@ import { CheckCheck } from 'lucide-react'
 import { Avatar } from '@/components/ui/avatar'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
+import Image from 'next/image'
 
 interface Notification {
   id: string
@@ -20,11 +21,7 @@ interface Notification {
   }
 }
 
-interface NotificationModalProps {
-  onClose?: () => void
-}
-
-export default function NotificationModal({ onClose }: NotificationModalProps) {
+export default function NotificationModal() {
   const [notifications, setNotifications] = useState<Notification[]>([])
 
   // Initialize notifications from localStorage or use default data
@@ -119,9 +116,11 @@ export default function NotificationModal({ onClose }: NotificationModalProps) {
               )}
               {notification.avatar && (
                 <Avatar className="h-8 w-8 rounded-full">
-                  <img
+                  <Image
                     src={notification.avatar || '/placeholder.svg'}
                     alt={notification.title}
+                    width={40}
+                    height={40}
                   />
                 </Avatar>
               )}

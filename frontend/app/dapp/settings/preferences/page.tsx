@@ -26,6 +26,7 @@ export default function PreferencesPage() {
   })
 
   // Load preferences from localStorage on mount
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     const savedTheme = localStorage.getItem('spherre-theme') as Theme
     const savedEmail = localStorage.getItem('spherre-email-notifications')
