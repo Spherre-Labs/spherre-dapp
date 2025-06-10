@@ -199,8 +199,8 @@ const Members = () => {
 
   const handlePropose = (wallet: string, role: string) => {
     // TODO: Implement your logic here (e.g., add member, call API, etc.)
-    console.log('Propose Transaction:', wallet, role);
-  };
+    console.log('Propose Transaction:', wallet, role)
+  }
 
   return (
     <div className={`${nunito.className} bg-black min-h-screen p-5 py-10`}>
@@ -404,7 +404,10 @@ const Members = () => {
             ))}
 
             {/* Add Member Box */}
-            <div className="h-[260px] bg-[#1C1D1F] flex flex-col gap-5 items-center justify-center rounded-[10px] cursor-pointer" onClick={() => setIsAddMemberModalOpen(true)}>
+            <div
+              className="h-[260px] bg-[#1C1D1F] flex flex-col gap-5 items-center justify-center rounded-[10px] cursor-pointer"
+              onClick={() => setIsAddMemberModalOpen(true)}
+            >
               <div className="size-[51px] rounded-full flex items-center justify-center bg-[#00000040]/25">
                 <Image
                   src="/cross.svg"
