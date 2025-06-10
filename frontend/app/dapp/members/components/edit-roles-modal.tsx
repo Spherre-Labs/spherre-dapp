@@ -2,9 +2,21 @@ import React, { useState } from 'react'
 import Image from 'next/image'
 
 const roleOptions = [
-  { name: 'Voter', color: 'border-[#FF7BE9] text-[#FF7BE9] bg-[#FF7BE9]/10', check: 'bg-[#FF7BE9]' },
-  { name: 'Proposer', color: 'border-[#FF8A25] text-[#FF8A25] bg-[#FF8A25]/10', check: 'bg-[#FF8A25]' },
-  { name: 'Executer', color: 'border-[#19B360] text-[#19B360] bg-[#19B360]/10', check: 'bg-[#19B360]' },
+  {
+    name: 'Voter',
+    color: 'border-[#FF7BE9] text-[#FF7BE9] bg-[#FF7BE9]/10',
+    check: 'bg-[#FF7BE9]',
+  },
+  {
+    name: 'Proposer',
+    color: 'border-[#FF8A25] text-[#FF8A25] bg-[#FF8A25]/10',
+    check: 'bg-[#FF8A25]',
+  },
+  {
+    name: 'Executer',
+    color: 'border-[#19B360] text-[#19B360] bg-[#19B360]/10',
+    check: 'bg-[#19B360]',
+  },
 ]
 
 interface Member {
@@ -30,7 +42,9 @@ const EditMemberRolesModal: React.FC<EditMemberRolesModalProps> = ({
   onClose,
   onPropose,
 }) => {
-  const [selectedRoles, setSelectedRoles] = useState<string[]>(member?.roles || [])
+  const [selectedRoles, setSelectedRoles] = useState<string[]>(
+    member?.roles || [],
+  )
 
   React.useEffect(() => {
     setSelectedRoles(member?.roles || [])
@@ -40,7 +54,7 @@ const EditMemberRolesModal: React.FC<EditMemberRolesModalProps> = ({
 
   const toggleRole = (role: string) => {
     setSelectedRoles((prev) =>
-      prev.includes(role) ? prev.filter((r) => r !== role) : [...prev, role]
+      prev.includes(role) ? prev.filter((r) => r !== role) : [...prev, role],
     )
   }
 
@@ -56,11 +70,19 @@ const EditMemberRolesModal: React.FC<EditMemberRolesModalProps> = ({
           ×
         </button>
         {/* Title */}
-        <h2 className="text-3xl font-bold text-white text-center mb-4">Edit Member Roles</h2>
+        <h2 className="text-3xl font-bold text-white text-center mb-4">
+          Edit Member Roles
+        </h2>
         {/* Avatar */}
         <div className="flex flex-col items-center mb-2">
           <div className="rounded-full border-4 border-[#a259ff] p-1 mb-2">
-            <Image src={member.image} alt="avatar" width={90} height={90} className="rounded-full" />
+            <Image
+              src={member.image}
+              alt="avatar"
+              width={90}
+              height={90}
+              className="rounded-full"
+            />
           </div>
           <div className="text-2xl text-white font-semibold">{member.name}</div>
         </div>
@@ -84,9 +106,17 @@ const EditMemberRolesModal: React.FC<EditMemberRolesModalProps> = ({
               >
                 {role.name}
                 {checked && (
-                  <span className={`ml-2 w-5 h-5 rounded-full flex items-center justify-center ${role.check}`}>
+                  <span
+                    className={`ml-2 w-5 h-5 rounded-full flex items-center justify-center ${role.check}`}
+                  >
                     <svg width="14" height="14" viewBox="0 0 20 20" fill="none">
-                      <path d="M5 10.5L9 14.5L15 7.5" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                      <path
+                        d="M5 10.5L9 14.5L15 7.5"
+                        stroke="white"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
                     </svg>
                   </span>
                 )}
@@ -118,4 +148,4 @@ const EditMemberRolesModal: React.FC<EditMemberRolesModalProps> = ({
   )
 }
 
-export default EditMemberRolesModal 
+export default EditMemberRolesModal
