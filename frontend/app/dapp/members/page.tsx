@@ -4,7 +4,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import { Nunito_Sans } from 'next/font/google'
 import RemoveMemberModal from './components/remove-modal'
 import AddMemberModal from './components/add-modal'
-
+import EditMemberRolesModal from './components/edit-roles-modal'
 const nunito = Nunito_Sans({
   subsets: ['latin'],
   weight: ['200', '300', '400', '500', '600', '700', '800', '900'],
@@ -88,6 +88,8 @@ const Members = () => {
   const [isRemoveModalOpen, setIsRemoveModalOpen] = useState(false)
   const [selectedMember, setSelectedMember] = useState<Member | null>(null)
   const [isAddMemberModalOpen, setIsAddMemberModalOpen] = useState(false)
+  const [isEditRolesModalOpen, setIsEditRolesModalOpen] = useState(false)
+  const [editRolesMember, setEditRolesMember] = useState<Member | null>(null)
 
   const handleCopy = (address: string) => {
     navigator.clipboard.writeText(address)
@@ -200,6 +202,16 @@ const Members = () => {
   const handlePropose = (wallet: string, role: string) => {
     // TODO: Implement your logic here (e.g., add member, call API, etc.)
     console.log('Propose Transaction:', wallet, role)
+  }
+
+  const handleEditRoles = (member: Member) => {
+    setEditRolesMember(member)
+    setIsEditRolesModalOpen(true)
+  }
+
+  const handleProposeEditRoles = (roles: string[]) => {
+    // TODO: Implement your logic to update roles
+    console.log('Propose Edit Roles:', editRolesMember, roles)
   }
 
   return (
@@ -350,7 +362,10 @@ const Members = () => {
                       {dropdownOpen === member.id && (
                         <div className="dropdown-menu absolute z-50 right-0 bg-black mt-[-50px] rounded-lg shadow-lg w-40 text-sm text-white px-2 py-2">
                           <ul className="">
-                            <li className="px-4 py-2 rounded-lg hover:bg-[#232323] cursor-pointer">
+                            <li
+                              className="px-4 py-2 rounded-lg hover:bg-[#232323] cursor-pointer"
+                              onClick={() => handleEditRoles(member)}
+                            >
                               Edit Roles
                             </li>
                             <li
@@ -457,6 +472,13 @@ const Members = () => {
           onPropose={handlePropose}
         />
       )}
+
+      <EditMemberRolesModal
+        isOpen={isEditRolesModalOpen}
+        member={editRolesMember}
+        onClose={() => setIsEditRolesModalOpen(false)}
+        onPropose={handleProposeEditRoles}
+      />
     </div>
   )
 }
