@@ -3,6 +3,7 @@ import Image from 'next/image'
 import React, { useState, useEffect, useRef } from 'react'
 import { Nunito_Sans } from 'next/font/google'
 import RemoveMemberModal from './components/remove-modal'
+import AddMemberModal from './components/add-modal'
 
 const nunito = Nunito_Sans({
   subsets: ['latin'],
@@ -86,6 +87,7 @@ const Members = () => {
   // Modal state
   const [isRemoveModalOpen, setIsRemoveModalOpen] = useState(false)
   const [selectedMember, setSelectedMember] = useState<Member | null>(null)
+  const [isAddMemberModalOpen, setIsAddMemberModalOpen] = useState(false)
 
   const handleCopy = (address: string) => {
     navigator.clipboard.writeText(address)
@@ -195,6 +197,11 @@ const Members = () => {
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [])
 
+  const handlePropose = (wallet: string, role: string) => {
+    // TODO: Implement your logic here (e.g., add member, call API, etc.)
+    console.log('Propose Transaction:', wallet, role);
+  };
+
   return (
     <div className={`${nunito.className} bg-black min-h-screen p-5 py-10`}>
       <div className="flex text-white justify-between border-b-2 relative border-[#292929]">
@@ -213,7 +220,10 @@ const Members = () => {
           </p>
         </div>
 
-        <button className="rounded-[7px] bg-[#6F2FCE] gap-[10px] text-[14px] font-medium absolute right-0 bottom-4 w-[156px] h-[45px] flex items-center justify-center">
+        <button
+          className="rounded-[7px] bg-[#6F2FCE] gap-[10px] text-[14px] font-medium absolute right-0 bottom-4 w-[156px] h-[45px] flex items-center justify-center"
+          onClick={() => setIsAddMemberModalOpen(true)}
+        >
           <Image
             src="/user-add.svg"
             alt="member avatar"
@@ -394,7 +404,7 @@ const Members = () => {
             ))}
 
             {/* Add Member Box */}
-            <div className="h-[260px] bg-[#1C1D1F] flex flex-col gap-5 items-center justify-center rounded-[10px]">
+            <div className="h-[260px] bg-[#1C1D1F] flex flex-col gap-5 items-center justify-center rounded-[10px] cursor-pointer" onClick={() => setIsAddMemberModalOpen(true)}>
               <div className="size-[51px] rounded-full flex items-center justify-center bg-[#00000040]/25">
                 <Image
                   src="/cross.svg"
@@ -403,7 +413,10 @@ const Members = () => {
                   width={23}
                 />
               </div>
-              <p className="text-[16px] font-semibold text-[#8E9BAE]">
+              <p
+                className="text-[16px] font-semibold text-[#8E9BAE] cursor-pointer"
+                onClick={() => setIsAddMemberModalOpen(true)}
+              >
                 Add Member
               </p>
             </div>
@@ -433,6 +446,14 @@ const Members = () => {
         onClose={handleCloseModal}
         onConfirm={handleConfirmRemoval}
       />
+
+      {isAddMemberModalOpen && (
+        <AddMemberModal
+          isOpen={isAddMemberModalOpen}
+          onClose={() => setIsAddMemberModalOpen(false)}
+          onPropose={handlePropose}
+        />
+      )}
     </div>
   )
 }
