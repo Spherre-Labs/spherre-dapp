@@ -1,18 +1,6 @@
-'use client'
-import React, { useState } from 'react'
-import ProfileOverview from './ProfileOverview'
-import EditProfile from './EditProfile'
+import { redirect } from 'next/navigation'
 
 export default function Page() {
-  const [editing, setEditing] = useState(false)
-
-  return (
-    <>
-      {editing ? (
-        <EditProfile onCancel={() => setEditing(false)} />
-      ) : (
-        <ProfileOverview onEditProfile={() => setEditing(true)} />
-      )}
-    </>
-  )
+  redirect('/dapp/settings/profile')
+  return null
 }

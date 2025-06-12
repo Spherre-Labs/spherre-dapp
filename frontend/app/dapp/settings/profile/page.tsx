@@ -1,55 +1,58 @@
 'use client'
 import Image from 'next/image'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import profile_image from '@/public/Images/profile2.png'
-import capture_icon from '@/public/Images/capture.png'
 import argent_wallet from '@/public/Images/argent_logo.png'
+import { useRouter } from 'next/navigation'
 
 const ProfileContent = () => {
-  const [displayName, setDisplayName] = useState('')
-  const [email, setEmail] = useState('jacklovermacazie@gmail.com')
-  const [editingEmail, setEditingEmail] = useState(false)
-  const [walletId] = useState('352By...wtuya')
-  const [showSuccess, setShowSuccess] = useState(false)
+  const router = useRouter()
 
-  const handleEmailEdit = () => {
-    if (editingEmail) {
-      // Save email
-      setShowSuccess(true)
-      setTimeout(() => setShowSuccess(false), 2000)
+  // State for profile data
+  const [displayName, setDisplayName] = useState('')
+  const [email, setEmail] = useState('')
+  const walletId = '352By...wtuya'
+
+  useEffect(() => {
+    const fetchProfile = () => {
+      const savedData = sessionStorage.getItem('profileData')
+      if (savedData) {
+        const profileData = JSON.parse(savedData)
+        if (profileData.displayName) setDisplayName(profileData.displayName)
+        if (profileData.email) setEmail(profileData.email)
+      }
     }
-    setEditingEmail((e) => !e)
-  }
+
+    fetchProfile()
+
+    // Listen to storage event for cross-tab sync (optional)
+    window.addEventListener('storage', fetchProfile)
+
+    return () => {
+      window.removeEventListener('storage', fetchProfile)
+    }
+  }, [])
+
 
   return (
     <div className="w-full px-0">
-      {/* Avatar and camera icon */}
+      {/* Avatar */}
       <div className="flex items-center mb-8">
-        <div className="relative w-[100px] h-[100px] group">
+        <div className="relative w-[100px] h-[100px]">
           <Image
             src={profile_image}
             alt="Profile"
-            className="w-full h-full rounded-full object-cover bg-[#23242a] transition-opacity duration-200 group-hover:opacity-60"
+            className="w-full h-full rounded-full object-cover bg-[#23242a]"
           />
-          <button
-            className="absolute bottom-6 right-7 border-2 border-white rounded-full p-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
-            tabIndex={-1}
-          >
-            <Image src={capture_icon} alt="Edit" className="w-6 h-6" />
-          </button>
         </div>
       </div>
 
       {/* Display Name */}
       <div className="mb-6">
         <label className="block text-white mb-2">Display Name</label>
-        <input
-          type="text"
-          className="w-full bg-[#23242a] text-[#8E9BAE] rounded-lg px-4 py-3 outline-none border-none"
-          placeholder="Enter your display name"
-          value={displayName}
-          onChange={(e) => setDisplayName(e.target.value)}
-        />
+        <div className="w-full bg-[#23242a] text-[#8E9BAE] rounded-lg px-4 py-6">
+          {displayName}
+        </div>
       </div>
 
       {/* Linked Wallet and Wallet ID */}
@@ -67,42 +70,17 @@ const ProfileContent = () => {
         </div>
         <div className="flex-1">
           <label className="block text-white mb-2">Wallet ID</label>
-          <input
-            type="text"
-            className="w-full bg-[#23242a] text-[#8E9BAE] rounded-lg px-4 py-3 outline-none border-none"
-            value={walletId}
-            disabled
-          />
+          <div className="w-full bg-[#23242a] text-[#8E9BAE] rounded-lg px-4 py-3">
+            {walletId}
+          </div>
         </div>
-      </div>
-
-      {/* Save/Cancel Buttons */}
-      <div className="flex gap-4 mb-8">
-        <button className="bg-[#a259ff] text-white px-8 py-3 rounded-lg font-semibold text-lg hover:bg-[#7c3aed] transition">
-          Save Changes
-        </button>
-        <button className="bg-[#23242a] text-white px-8 py-3 rounded-lg font-semibold text-lg hover:bg-[#23242a]/80 transition">
-          Cancel
-        </button>
       </div>
 
       {/* Email Address */}
       <div className="mb-2">
         <label className="block text-white mb-2">Email Address</label>
-        <div className="flex items-center bg-[#23242a] rounded-lg px-4 py-3">
-          <input
-            type="email"
-            className="flex-1 bg-transparent text-white outline-none border-none"
-            value={email}
-            disabled={!editingEmail}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-          <button
-            className="ml-4 bg-white text-black px-4 py-2 rounded"
-            onClick={handleEmailEdit}
-          >
-            {editingEmail ? 'Save Email' : 'Edit Email Address'}
-          </button>
+        <div className="flex items-center bg-[#23242a] rounded-lg px-4 py-6">
+          <span className="flex-1 text-white">{email}</span>
         </div>
       </div>
       <p className="text-[#8E9BAE] text-sm mt-4">
@@ -113,14 +91,19 @@ const ProfileContent = () => {
         </a>
       </p>
 
-      {/* Success Message */}
-      {showSuccess && (
-        <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-[#f3e8ff] border border-[#6F2FCE] text-white px-6 py-3 rounded-lg shadow-lg font-semibold z-50">
-          Email updated successfully!
-        </div>
-      )}
+      {/* Edit Profile Button */}
+      <div className="flex gap-4 mt-8">
+        <button
+          className="bg-[#a259ff] text-white px-8 py-3 rounded-lg font-semibold text-lg hover:bg-[#7c3aed] transition"
+          onClick={() => router.push('/dapp/settings/edit-profile')}
+        >
+          Edit Profile
+        </button>
+      </div>
     </div>
   )
 }
 
-export default ProfileContent
+export default function Page() {
+  return <ProfileContent />
+}
