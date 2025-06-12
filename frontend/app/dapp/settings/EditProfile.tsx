@@ -1,258 +1,187 @@
 'use client'
-import React, { useState, useEffect } from 'react'
-import EmailModal from './EmailModal'
 import Image from 'next/image'
+import React, { useState, useEffect } from 'react'
+import profile_image from '@/public/Images/profile2.png'
+import capture_icon from '@/public/Images/capture.png'
+import argent_wallet from '@/public/Images/argent_logo.png'
 import { useRouter } from 'next/navigation'
 
-interface EditProfileProps {
-  onCancel?: () => void
-}
+const validateDisplayName = (name: string) => name.trim().length >= 3
+const validateEmail = (email: string) =>
+  email.includes('@') && email.includes('.')
 
-export default function EditProfile({ onCancel }: EditProfileProps) {
+const EditProfileContent = () => {
   const router = useRouter()
   const [displayName, setDisplayName] = useState('')
-  const [showEditEmailModal, setShowEditEmailModal] = useState(false)
-  const [email, setEmail] = useState('johndoe@gmail.com')
-  const [isLoading, setIsLoading] = useState(false)
-  const [showSuccessMessage, setShowSuccessMessage] = useState(false)
+  const [email, setEmail] = useState('')
+  const [editingEmail, setEditingEmail] = useState(false)
+  const [walletId] = useState('352By...wtuya')
+  const [showSuccess, setShowSuccess] = useState(false)
 
-  const walletName = 'Argent Wallet'
-
-  // Handle redirect after success message
+  // Load existing profile data from sessionStorage on mount
   useEffect(() => {
-    if (showSuccessMessage) {
-      const timer = setTimeout(() => {
-        router.push('/dapp/settings/profile')
-      }, 2000)
-      return () => clearTimeout(timer)
+    const savedData = sessionStorage.getItem('profileData')
+    if (savedData) {
+      const profileData = JSON.parse(savedData)
+      if (profileData.displayName) setDisplayName(profileData.displayName)
+      if (profileData.email) setEmail(profileData.email)
     }
-  }, [showSuccessMessage, router])
+  }, [])
 
-  const handleSaveChanges = async () => {
-    setIsLoading(true)
+  const isDisplayNameValid = validateDisplayName(displayName)
+  const isEmailValid = validateEmail(email)
+  const isFormValid = isDisplayNameValid && isEmailValid
 
-    try {
-      // Simulate API call - replace with your actual save logic
-      await new Promise((resolve) => setTimeout(resolve, 1000))
+  const handleSave = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!isFormValid) return
 
-      const profileData = {
-        displayName: displayName || 'Jack Lovermacazie',
-        email: email,
-        lastUpdated: new Date().toISOString(),
-      }
+    // Save updated profile to sessionStorage
+    sessionStorage.setItem(
+      'profileData',
+      JSON.stringify({ displayName, email }),
+    )
 
-      if (typeof window !== 'undefined') {
-        sessionStorage.setItem('profileData', JSON.stringify(profileData))
-      }
+    setShowSuccess(true)
+    setTimeout(() => {
+      setShowSuccess(false)
+      // Redirect to profile page after showing success
+      router.push('/dapp/settings/profile')
+    }, 1200)
+  }
 
-      setShowSuccessMessage(true)
-      // ✅ Let useEffect handle the redirect
-    } catch (error) {
-      console.error('Error saving profile:', error)
-      // You could show an error toast here
-    } finally {
-      setIsLoading(false)
-    }
+  const handleEmailEdit = () => {
+    setEditingEmail((e) => !e)
   }
 
   return (
-    <div className="bg-[#181A20] min-h-screen px-4 pt-4 pb-8 text-white">
-      {/* Success Message Overlay */}
-      {showSuccessMessage && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-[#23242B] rounded-lg p-6 text-center max-w-sm mx-4">
-            <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
-              <svg
-                className="w-8 h-8 text-white"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M5 13l4 4L19 7"
-                />
-              </svg>
-            </div>
-            <h3 className="text-lg font-semibold text-white mb-2">Success!</h3>
-            <p className="text-[#8E9BAE]">Profile updated successfully</p>
-            <div className="mt-4">
-              <div className="w-full bg-gray-700 rounded-full h-2">
-                <div
-                  className="bg-[#6F2FCE] h-2 rounded-full animate-pulse"
-                  style={{ width: '100%' }}
-                ></div>
-              </div>
-              <p className="text-xs text-[#8E9BAE] mt-2">
-                Redirecting to profile...
-              </p>
-            </div>
-          </div>
+    <form className="w-full px-0" onSubmit={handleSave} autoComplete="off">
+      {/* Avatar and camera icon */}
+      <div className="flex items-center mb-8">
+        <div className="relative w-[100px] h-[100px] group">
+          <Image
+            src={profile_image}
+            alt="Profile"
+            className="w-full h-full rounded-full object-cover bg-[#23242a] transition-opacity duration-200 group-hover:opacity-60"
+          />
+          <button
+            className="absolute bottom-6 right-7 border-2 border-white rounded-full p-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+            tabIndex={-1}
+            type="button"
+          >
+            <Image src={capture_icon} alt="Edit" className="w-6 h-6" />
+          </button>
         </div>
-      )}
+      </div>
 
-      <div className="w-full rounded-xl p-8 shadow-lg">
-        <div className="flex flex-col items-start mb-8">
-          <div className="relative w-24 h-24 mb-2">
+      {/* Display Name */}
+      <div className="mb-6">
+        <label className="block text-white mb-2">Display Name</label>
+        <input
+          type="text"
+          className={`w-full bg-[#23242a] text-[#8E9BAE] rounded-lg px-4 py-3 outline-none border ${
+            isDisplayNameValid ? 'border-none' : 'border-red-500'
+          }`}
+          placeholder="Enter your display name"
+          value={displayName}
+          onChange={(e) => setDisplayName(e.target.value)}
+        />
+        {!isDisplayNameValid && (
+          <span className="text-red-500 text-sm">
+            Display name must be at least 3 characters.
+          </span>
+        )}
+      </div>
+
+      {/* Linked Wallet and Wallet ID */}
+      <div className="flex flex-col md:flex-row gap-4 mb-8">
+        <div className="flex-1">
+          <label className="block text-white mb-2">Linked Wallet</label>
+          <div className="flex items-center bg-[#23242a] rounded-lg px-4 py-3">
             <Image
-              src="/Images/profile2.png"
-              alt="Avatar"
-              className="w-24 h-24 rounded-full object-cover border-4 border-[#181A20]"
-              width={96}
-              height={96}
+              src={argent_wallet}
+              alt="Argent Wallet"
+              className="w-6 h-6 mr-3"
             />
-            <label className="absolute bottom-0 right-0 bg-[#6C47FF] p-2 rounded-full cursor-pointer border-2 border-[#23242B]">
-              <input type="file" className="hidden" />
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={1.5}
-                stroke="currentColor"
-                className="w-5 h-5 text-white"
-              >
-                <rect
-                  x="3"
-                  y="5"
-                  width="18"
-                  height="14"
-                  rx="2"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                />
-                <circle cx="8.5" cy="10.5" r="1.5" fill="currentColor" />
-                <path
-                  stroke="currentColor"
-                  strokeWidth={1.5}
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M21 19l-5.5-7-4.5 6-3-4-4 5"
-                />
-              </svg>
-            </label>
+            <span className="text-[#8E9BAE]">Argent Wallet</span>
           </div>
         </div>
-
-        <div className="mb-6">
-          <label className="block text-gray-300 mb-2">Display Name</label>
+        <div className="flex-1">
+          <label className="block text-white mb-2">Wallet ID</label>
           <input
             type="text"
-            placeholder="Enter your display name"
-            value={displayName}
-            onChange={(e) => setDisplayName(e.target.value)}
-            className="w-full h-[60px] rounded-[10px] px-[24px] py-[17px] bg-[#1C1D1F] text-white border-gray-700 focus:outline-none focus:border-[#6C47FF]"
-            disabled={isLoading}
+            className="w-full bg-[#23242a] text-[#8E9BAE] rounded-lg px-4 py-3 outline-none border-none"
+            value={walletId}
+            disabled
           />
         </div>
-
-        <div className="flex flex-col md:flex-row md:space-x-4 mb-8">
-          <div className="flex-1 mb-4 md:mb-0">
-            <label className="block text-gray-300 mb-2">Linked Wallet</label>
-            <div className="flex items-center bg-[#1C1D1F] w-full h-[60px] rounded-[10px] px-[24px] py-[17px] gap-[10px] border-gray-700">
-              <span>
-                <Image
-                  src="/Images/argent.png"
-                  alt="Argent Wallet"
-                  className="w-6 h-6 object-contain rounded-full"
-                  width={24}
-                  height={24}
-                />
-              </span>
-              <span className="text-[#8E9BAE]">{walletName}</span>
-            </div>
-          </div>
-          <div className="flex-1">
-            <div className="flex-1 flex-col gap-[10px]">
-              <label className="block text-gray-300 mb-2">Wallet ID</label>
-              <div className="flex items-center bg-[#1C1D1F] w-full h-[60px] rounded-[10px] px-[24px] py-[17px] gap-[10px] border-gray-700">
-                <input
-                  type="text"
-                  placeholder="352By...wtuya"
-                  className="text-[#8E9BAE] bg-transparent border-none focus:outline-none w-full"
-                  disabled={isLoading}
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="flex space-x-4 justify-start">
-          <button
-            className="min-w-[156.8px] h-[50px] rounded-[7px] px-[19.4px] py-[12.93px] flex items-center justify-center gap-[6.47px] bg-[#6F2FCE] hover:bg-[#7d5fff] text-white font-semibold transition disabled:opacity-50 disabled:cursor-not-allowed"
-            onClick={handleSaveChanges}
-            disabled={isLoading}
-          >
-            {isLoading ? (
-              <>
-                <svg
-                  className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                >
-                  <circle
-                    className="opacity-25"
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    stroke="currentColor"
-                    strokeWidth="4"
-                  ></circle>
-                  <path
-                    className="opacity-75"
-                    fill="currentColor"
-                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                  ></path>
-                </svg>
-                Saving...
-              </>
-            ) : (
-              'Save Changes'
-            )}
-          </button>
-          <button
-            className="w-[154px] h-[50px] rounded-[7px] px-[19.4px] py-[12.93px] flex items-center justify-center gap-[6.47px] bg-[#272729] hover:bg-[#353537] text-white font-semibold transition disabled:opacity-50 disabled:cursor-not-allowed"
-            onClick={onCancel}
-            disabled={isLoading}
-          >
-            Cancel
-          </button>
-        </div>
-
-        <div className="mb-6 mt-10">
-          <label className="block text-gray-300 mb-2">Email Address</label>
-          <div className="flex items-center bg-[#232325] w-full rounded-[14px] px-6 py-4 mb-2">
-            <span className="flex-1 text-white text-lg">{email}</span>
-            <button
-              className="bg-white text-black rounded-[7px] px-4 py-2 font-medium ml-4 disabled:opacity-50 disabled:cursor-not-allowed"
-              onClick={() => setShowEditEmailModal(true)}
-              disabled={isLoading}
-            >
-              Edit Email Address
-            </button>
-          </div>
-          <p className="text-[#8E9BAE] italic text-base">
-            This email will be used to notify you on the account multisig
-            transactions
-            <a href="#" className="text-[#6F2FCE] ml-1 hover:underline">
-              Learn More
-            </a>
-          </p>
-        </div>
-
-        <EmailModal
-          open={showEditEmailModal}
-          onClose={() => setShowEditEmailModal(false)}
-          onSign={(newEmail) => {
-            setEmail(newEmail)
-            setShowEditEmailModal(false)
-          }}
-          title="Edit Email Address"
-          initialEmail={email}
-        />
       </div>
-    </div>
+
+      {/* Email Address */}
+      <div className="mb-2">
+        <label className="block text-white mb-2">Email Address</label>
+        <div
+          className={`flex items-center bg-[#23242a] rounded-lg px-4 py-3 ${
+            isEmailValid ? '' : 'border border-red-500'
+          }`}
+        >
+          <input
+            type="email"
+            className="flex-1 bg-transparent text-white outline-none border-none"
+            value={email}
+            disabled={!editingEmail}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+          <button
+            className="ml-4 bg-white text-black px-4 py-2 rounded"
+            type="button"
+            onClick={handleEmailEdit}
+          >
+            {editingEmail ? 'Save Email' : 'Edit Email Address'}
+          </button>
+        </div>
+        {!isEmailValid && (
+          <span className="text-red-500 text-sm">
+            Enter a valid email address.
+          </span>
+        )}
+      </div>
+      <p className="text-[#8E9BAE] text-sm mt-4">
+        This email will be used to notify you on the account multisig
+        transactions{' '}
+        <a href="#" className="text-[#a259ff]">
+          <em>Learn More</em>
+        </a>
+      </p>
+
+      {/* Save/Cancel Buttons */}
+      <div className="flex gap-4 mt-8">
+        <button
+          className="bg-[#a259ff] text-white px-8 py-3 rounded-lg font-semibold text-lg hover:bg-[#7c3aed] transition disabled:opacity-50"
+          type="submit"
+          disabled={!isFormValid}
+        >
+          Save Changes
+        </button>
+        <button
+          className="bg-[#23242a] text-white px-8 py-3 rounded-lg font-semibold text-lg hover:bg-[#23242a]/80 transition"
+          type="button"
+          onClick={() => router.push('/dapp/settings/profile')}
+        >
+          Cancel
+        </button>
+      </div>
+
+      {/* Success Message */}
+      {showSuccess && (
+        <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-[#f3e8ff] border border-[#6F2FCE] text-white px-6 py-3 rounded-lg shadow-lg font-semibold z-50">
+          Profile updated successfully!
+        </div>
+      )}
+    </form>
   )
+}
+
+export default function Page() {
+  return <EditProfileContent />
 }
