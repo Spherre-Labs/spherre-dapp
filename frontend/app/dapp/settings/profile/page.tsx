@@ -33,7 +33,6 @@ const ProfileContent = () => {
     }
   }, [])
 
-
   return (
     <div className="w-full px-0">
       {/* Avatar */}
