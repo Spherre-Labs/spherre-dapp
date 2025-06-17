@@ -54,7 +54,6 @@ export default function PreferencesPage() {
   })
 
   // Load preferences from localStorage on mount
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     const savedTheme = localStorage.getItem('spherre-theme') as Theme
     const savedEmail = localStorage.getItem('spherre-email-notifications')
@@ -66,7 +65,7 @@ export default function PreferencesPage() {
     }
     if (savedEmail) setEmailNotifications(savedEmail === 'true')
     if (savedBrowser) setBrowserNotifications(savedBrowser === 'true')
-  }, [applyTheme])
+  }, []) // Empty dependency array since applyTheme is defined outside component
 
   const showToast = (message: string, type: 'success' | 'error') => {
     setToast({ message, type, isVisible: true })
