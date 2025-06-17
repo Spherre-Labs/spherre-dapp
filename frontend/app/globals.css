@@ -25,14 +25,14 @@ body {
 }
 
 .bg-wallet {
-  background-image: url("/wallet-bg.jpg");
+  background-image: url('/wallet-bg.jpg');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
 }
 
 .bg-coin {
-  background-image: url("/coins.png");
+  background-image: url('/coins.png');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
