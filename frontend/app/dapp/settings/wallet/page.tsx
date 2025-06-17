@@ -2,7 +2,7 @@
 
 import React from 'react'
 import { useState } from 'react'
-import { Settings, Bell, Users, Edit3, HelpCircle, X } from 'lucide-react'
+import { Edit3, HelpCircle, X } from 'lucide-react'
 import Image from 'next/image'
 import profile from '../../../../public/member2.svg'
 import edit from '../../../../public/Images/edit.png'
