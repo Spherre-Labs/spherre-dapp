@@ -7,10 +7,10 @@ import SidebarProfile from './Profile'
 import { NavItem } from '@/app/dapp/navigation'
 import Link from 'next/link'
 // import WalletConnected from '@/components/shared/WalletConnected'
-import { useAccount, useConnect } from '@starknet-react/core'
+import { useConnect } from '@starknet-react/core'
 // import { ChevronUp, ChevronDown } from 'lucide-react'
 import { useStarknetkitConnectModal, StarknetkitConnector } from 'starknetkit'
-import { Connector } from '@starknet-react/core'
+// import { Connector } from '@starknet-react/core'
 
 const Sidebar = ({
   navItems,
@@ -78,10 +78,12 @@ const Sidebar = ({
   }, [])
 
   // const { address } = useAccount()
-  const { connect, connectors } = useConnect()
-  const { starknetkitConnectModal } = useStarknetkitConnectModal({
-    connectors: connectors as StarknetkitConnector[],
-  })
+
+  // const { connect, connectors } = useConnect()
+  // const { starknetkitConnectModal } = useStarknetkitConnectModal({
+  //   connectors: connectors as StarknetkitConnector[],
+  // })
+
   // const [profileOpen, setProfileOpen] = useState(false)
 
   // Tooltip component for collapsed state
