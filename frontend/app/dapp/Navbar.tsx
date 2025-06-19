@@ -5,7 +5,7 @@ import notification from '@/public/Images/notification.png'
 import NotificationModal from '../components/notification-modal'
 import WalletConnected from '@/components/shared/WalletConnected'
 // import { Sun, Moon } from 'lucide-react'
-import { useTheme } from '../context/ThemeContext'
+// import { useTheme } from '../context/ThemeContext'
 import { useAccount, useConnect } from '@starknet-react/core'
 import { useStarknetkitConnectModal, StarknetkitConnector } from 'starknetkit'
 import { Connector } from '@starknet-react/core'
@@ -17,7 +17,7 @@ interface NavbarProps {
 const Navbar: React.FC<NavbarProps> = ({ title }) => {
   const [isNotificationOpen, setIsNotificationOpen] = useState(false)
   const notificationRef = useRef<HTMLDivElement>(null)
-  const { theme, setTheme } = useTheme()
+  // const { theme, setTheme } = useTheme()
   const { address } = useAccount()
   const { connect, connectors } = useConnect()
   const { starknetkitConnectModal } = useStarknetkitConnectModal({

@@ -1,5 +1,5 @@
 import Image from 'next/image'
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import avatar from '../../public/Images/avatar.png'
 import { Copy, LogOut, X } from 'lucide-react'
 import { useAccount, useDisconnect } from '@starknet-react/core'
@@ -13,9 +13,6 @@ const WalletConnected = ({ address }: { address: string }) => {
   const router = useRouter()
   // Dummy balance for now
   const balance = '0.00'
-
-  // Only show if connected
-  if (!walletAddress && !address) return null
 
   // Close panel on outside click or ESC
   useEffect(() => {
@@ -48,6 +45,9 @@ const WalletConnected = ({ address }: { address: string }) => {
       document.removeEventListener('keydown', handleEsc)
     }
   }, [panelOpen])
+
+  // Only show if connected
+  if (!walletAddress && !address) return null
 
   const handleCopy = () => {
     navigator.clipboard.writeText(walletAddress || address)

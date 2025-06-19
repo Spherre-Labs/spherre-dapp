@@ -6,9 +6,9 @@ import Image from 'next/image'
 import SidebarProfile from './Profile'
 import { NavItem } from '@/app/dapp/navigation'
 import Link from 'next/link'
-import WalletConnected from '@/components/shared/WalletConnected'
+// import WalletConnected from '@/components/shared/WalletConnected'
 import { useAccount, useConnect } from '@starknet-react/core'
-import { ChevronUp, ChevronDown } from 'lucide-react'
+// import { ChevronUp, ChevronDown } from 'lucide-react'
 import { useStarknetkitConnectModal, StarknetkitConnector } from 'starknetkit'
 import { Connector } from '@starknet-react/core'
 
@@ -77,12 +77,12 @@ const Sidebar = ({
     }
   }, [])
 
-  const { address } = useAccount()
+  // const { address } = useAccount()
   const { connect, connectors } = useConnect()
   const { starknetkitConnectModal } = useStarknetkitConnectModal({
     connectors: connectors as StarknetkitConnector[],
   })
-  const [profileOpen, setProfileOpen] = useState(false)
+  // const [profileOpen, setProfileOpen] = useState(false)
 
   // Tooltip component for collapsed state
   const Tooltip = ({
@@ -98,11 +98,11 @@ const Sidebar = ({
     </div>
   )
 
-  async function handleConnectWallet() {
-    const { connector } = await starknetkitConnectModal()
-    if (!connector) return
-    await connect({ connector: connector as Connector })
-  }
+  // async function handleConnectWallet() {
+  //   const { connector } = await starknetkitConnectModal()
+  //   if (!connector) return
+  //   await connect({ connector: connector as Connector })
+  // }
 
   return (
     <aside
