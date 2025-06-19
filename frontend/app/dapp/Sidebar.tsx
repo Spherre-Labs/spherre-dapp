@@ -7,9 +7,9 @@ import SidebarProfile from './Profile'
 import { NavItem } from '@/app/dapp/navigation'
 import Link from 'next/link'
 // import WalletConnected from '@/components/shared/WalletConnected'
-import { useConnect } from '@starknet-react/core'
+// import { useConnect } from '@starknet-react/core'
 // import { ChevronUp, ChevronDown } from 'lucide-react'
-import { useStarknetkitConnectModal, StarknetkitConnector } from 'starknetkit'
+// import { useStarknetkitConnectModal, StarknetkitConnector } from 'starknetkit'
 // import { Connector } from '@starknet-react/core'
 
 const Sidebar = ({
