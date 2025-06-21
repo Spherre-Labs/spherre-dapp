@@ -1,9 +1,16 @@
+'use client'
 import StepIndicators from '../../components/onboarding/StepIndicators'
 import SphereAccountReview from '../components/SphereAccountReview'
 import MembersThreshold from '../components/MembersThreshold'
 import Nav from '@/components/onboarding/Nav'
+import { useRouter } from 'next/navigation'
 
 export default function ConfirmSetup() {
+  const router = useRouter()
+
+  const handleClick = () => {
+    router.push('/dapp')
+  }
   return (
     <div className="w-full lg:px-[50px] md:px-6 px-4 md:py-[50px] py-4 overflow-x-hidden bg-[#0a0a0a]">
       <Nav />
@@ -34,6 +41,7 @@ export default function ConfirmSetup() {
                 <MembersThreshold />
                 <button
                   type="button"
+                  onClick={handleClick}
                   className="w-full h-[50px] flex justify-center items-center bg-white shadow-[0px_1.08px_2.16px_0px_#1018280A] text-[#101213] font-[500] text-base rounded-[7px]"
                 >
                   Confirm Setup

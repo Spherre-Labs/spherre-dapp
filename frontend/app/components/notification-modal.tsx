@@ -1,82 +1,107 @@
 'use client'
 import { useState, useEffect } from 'react'
 import { CheckCheck } from 'lucide-react'
-import { Avatar } from '@/components/ui/avatar'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import Image from 'next/image'
+import type { StaticImageData } from 'next/image'
+import GlennAvatar from '@/public/Images/reviewers1.png'
+import LoisAvatar from '@/public/Images/reviewers2.png'
 
+// Defines the structure for a single notification item.
 interface Notification {
-  id: string
-  avatar?: string
-  title: string
-  description: string
-  timestamp: string
-  threshold: string
-  read: boolean
-  hasDetails?: boolean
+  id: string // Unique identifier for the notification.
+  avatar?: StaticImageData // Optional URL for the user's avatar image.
+  title: string // Main title of the notification.
+  description: string // Detailed description of the event.
+  timestamp: string // Time when the notification was generated (e.g., "11 hours ago").
+  threshold: string // The required threshold for the transaction (e.g., "Threshold 3/5").
+  read: boolean // Indicates if the notification has been read.
+  hasDetails?: boolean // Optional flag to show a "View Details" button.
   proposedBy?: {
+    // Optional details about who proposed the transaction.
     name: string
   }
 }
 
+// Default notifications data to be used if none are found in localStorage.
+const defaultNotifications: Notification[] = [
+  {
+    id: '1',
+    avatar: GlennAvatar,
+    title: 'Glenn Quagmire',
+    description: 'Approved your 30 STRK withdrawer funds from Backstage Boys',
+    timestamp: '11 hours ago',
+    threshold: 'Threshold 3/5',
+    read: false,
+    proposedBy: {
+      name: 'Peter Griffin',
+    },
+  },
+  {
+    id: '2',
+    title: 'Your withdraw transaction has been approved and executed',
+    description:
+      'Your 100 STRK withdraw transaction has been approved and executed by the Backstage Boys members',
+    timestamp: '11 hours ago',
+    threshold: 'Threshold 5/5',
+    read: false,
+  },
+  {
+    id: '3',
+    avatar: LoisAvatar,
+    title: 'Lois Griffin',
+    description: 'proposed for 25 STRK from Backstage Boys',
+    timestamp: '11 hours ago',
+    threshold: 'Threshold 1/5',
+    read: true,
+    hasDetails: true,
+  },
+]
+
+/**
+ * Renders a modal displaying a list of notifications.
+ * It loads notifications from localStorage or uses a default set.
+ * Users can mark all notifications as read.
+ */
 export default function NotificationModal() {
-  const [notifications, setNotifications] = useState<Notification[]>([])
+  // Initialize with default data to prevent hydration mismatch.
+  const [notifications, setNotifications] =
+    useState<Notification[]>(defaultNotifications)
 
-  // Initialize notifications from localStorage or use default data
+  // After mount on the client, synchronize the read state from localStorage.
   useEffect(() => {
-    const savedNotifications = localStorage.getItem('spherre-notifications')
-    if (savedNotifications) {
-      setNotifications(JSON.parse(savedNotifications))
-    } else {
-      setNotifications([
-        {
-          id: '1',
-          avatar: '/placeholder.svg?height=40&width=40',
-          title: 'Glenn Quagmire',
-          description:
-            'Approved your 30 STRK withdrawer funds from Backstage Boys',
-          timestamp: '11 hours ago',
-          threshold: 'Threshold 3/5',
-          read: false,
-          proposedBy: {
-            name: 'Peter Griffin',
-          },
-        },
-        {
-          id: '2',
-          title: 'Your withdraw transaction has been approved and executed',
-          description:
-            'Your 100 STRK withdraw transaction has been approved and executed by the Backstage Boys members',
-          timestamp: '11 hours ago',
-          threshold: 'Threshold 5/5',
-          read: false,
-        },
-        {
-          id: '3',
-          avatar: '/placeholder.svg?height=40&width=40',
-          title: 'Lois Griffin',
-          description: 'proposed for 25 STRK from Backstage Boys',
-          timestamp: '11 hours ago',
-          threshold: 'Threshold 1/5',
-          read: true,
-          hasDetails: true,
-        },
-      ])
-    }
-  }, [])
+    const saved = localStorage.getItem('spherre-notifications')
+    if (saved) {
+      try {
+        const readStatuses = JSON.parse(saved) as {
+          id: string
+          read: boolean
+        }[]
+        const readStatusMap = new Map(readStatuses.map((n) => [n.id, n.read]))
 
-  // Save notifications to localStorage whenever they change
-  useEffect(() => {
-    if (notifications.length > 0) {
-      localStorage.setItem(
-        'spherre-notifications',
-        JSON.stringify(notifications),
-      )
+        setNotifications((prev) =>
+          prev.map((n) => ({
+            ...n,
+            read: readStatusMap.get(n.id) ?? n.read,
+          })),
+        )
+      } catch {
+        // If localStorage is corrupt, we'll just use the defaults.
+        console.error('Could not parse notifications from localStorage.')
+      }
     }
+  }, []) // Empty dependency array ensures this runs only once on the client.
+
+  // Persist the 'read' state to localStorage whenever notifications change.
+  useEffect(() => {
+    const toSave = notifications.map(({ id, read }) => ({ id, read }))
+    localStorage.setItem('spherre-notifications', JSON.stringify(toSave))
   }, [notifications])
 
-  // Mark all notifications as read
+  /**
+   * Marks all notifications as read by updating their `read` status.
+   */
   const markAllAsRead = () => {
     const updatedNotifications = notifications.map((notification) => ({
       ...notification,
@@ -85,13 +110,14 @@ export default function NotificationModal() {
     setNotifications(updatedNotifications)
   }
 
-  // Count unread notifications
+  // Calculate the number of unread notifications.
   const unreadCount = notifications.filter(
     (notification) => !notification.read,
   ).length
 
   return (
     <Card className="w-full max-w-[530px] bg-[#1C1D1F] text-white border-4 border-[#292929] shadow-xl">
+      {/* Modal Header */}
       <div className="flex justify-between items-center p-4">
         <h2 className="text-xl font-bold">Notifications</h2>
         <Button
@@ -103,6 +129,8 @@ export default function NotificationModal() {
           <span className="hidden md:inline-block">Mark all as read</span>
         </Button>
       </div>
+
+      {/* Notifications List */}
       <div className="max-h-[400px] overflow-y-auto notification-scrollbar">
         {notifications.map((notification) => (
           <div
@@ -110,32 +138,39 @@ export default function NotificationModal() {
             className="p-4 border-b border-zinc-800 hover:bg-zinc-800/50 transition-colors"
           >
             <div className="flex gap-3">
+              {/* Unread indicator */}
               {!notification.read && (
                 <div className="mt-2 h-2 w-2 rounded-full bg-purple-500 flex-shrink-0" />
               )}
               {notification.avatar && (
                 <Avatar className="h-8 w-8 rounded-full">
-                  <Image
-                    src={notification.avatar || '/placeholder.svg'}
+                  <AvatarImage
+                    src={notification.avatar.src}
                     alt={notification.title}
-                    width={40}
-                    height={40}
                   />
+                  <AvatarFallback>
+                    {notification.title.charAt(0)}
+                  </AvatarFallback>
                 </Avatar>
               )}
               <div className="flex-1">
                 <div className="flex flex-col">
+                  {/* Notification Content */}
                   <div className="text-sm">
                     <span className="font-medium">{notification.title}</span>{' '}
                     <span className="text-zinc-400">
                       {notification.description}
                     </span>
                   </div>
+
+                  {/* Notification Metadata */}
                   <div className="flex items-center text-xs text-zinc-500 mt-1">
                     <span>{notification.timestamp}</span>
                     <span className="mx-1">•</span>
                     <span>{notification.threshold}</span>
                   </div>
+
+                  {/* Proposed By Information */}
                   {notification.proposedBy && (
                     <div className="flex items-center gap-2 mt-2 text-xs text-zinc-400">
                       <span className="flex items-center gap-1">
@@ -161,6 +196,8 @@ export default function NotificationModal() {
                       </span>
                     </div>
                   )}
+
+                  {/* Transaction Details Button */}
                   {notification.hasDetails && (
                     <button className="text-xs text-white bg-zinc-800 hover:bg-zinc-700 px-3 py-1 rounded mt-2 w-fit transition-colors">
                       View Transaction Details

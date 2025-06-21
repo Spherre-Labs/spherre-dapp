@@ -28,24 +28,40 @@ export default function DappLayout({ children }: DappLayoutProps) {
   // Define navigation items
   const navItems: NavItem[] = [
     { name: 'Dashboard', icon: Dashboard, route: '/dapp/' },
-    { name: 'Trade', icon: Trade /*, route: '/dapp/trade'*/ },
+    { name: 'Trade', icon: Trade, route: '/dapp/trade', comingSoon: true },
     { name: 'Members', icon: Members, route: '/dapp/members' }, // Using Trade icon temporarily for Members
     {
       name: 'Transactions',
       icon: Transactions,
       route: '/dapp/transactions',
     },
-    { name: 'Stake', icon: Stake, comingSoon: true /*, route: '/dapp/stake'*/ },
-    { name: 'Treasury', icon: Treasury /*, route: '/dapp/treasury'*/ },
+    { name: 'Stake', icon: Stake, comingSoon: true, route: '/dapp/stake' },
+    {
+      name: 'Smart Will',
+      icon: Stake,
+      comingSoon: true,
+      route: '/dapp/smart-will',
+    },
+    {
+      name: 'Treasury',
+      icon: Treasury,
+      route: '/dapp/treasury',
+      comingSoon: true,
+    },
     {
       name: 'Payments',
       icon: Payments,
-      comingSoon: true /*,
-            route: '/dapp/payments',*/,
+      comingSoon: true,
+      route: '/dapp/payments',
     },
-    { name: 'Apps', icon: Apps, comingSoon: true /*, route: '/dapp/apps'*/ },
+    { name: 'Apps', icon: Apps, comingSoon: true, route: '/dapp/apps' },
     { name: 'Settings', icon: Settings, route: '/dapp/settings' },
-    { name: 'Support', icon: Support /*, route: '/dapp/support'*/ },
+    {
+      name: 'Support',
+      icon: Support,
+      comingSoon: true,
+      route: '/dapp/support',
+    },
   ]
   // Listen for sidebar expansion state changes
   useEffect(() => {

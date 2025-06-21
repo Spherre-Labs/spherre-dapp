@@ -89,7 +89,7 @@ const Navbar: React.FC<NavbarProps> = ({ title }) => {
         </button> */}
         {!address ? (
           <button
-            className="bg-[#6F2FCE] text-white font-semibold rounded-full px-6 py-2 transition hover:bg-[#7d5fff]"
+            className="bg-[#6F2FCE] text-white rounded-lg px-6 py-2 transition hover:bg-[#7d5fff]"
             onClick={handleConnectWallet}
           >
             Connect Wallet
