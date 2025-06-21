@@ -1,7 +1,11 @@
 'use client'
 import { useState, useEffect } from 'react'
 import { CheckCheck } from 'lucide-react'
-import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar'
+import {
+  Avatar,
+  AvatarFallback,
+  // AvatarImage,
+} from '@/components/ui/avatar'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import type { StaticImageData } from 'next/image'
@@ -139,10 +143,6 @@ export default function NotificationModal() {
               )}
               {notification.avatar && (
                 <Avatar className="h-8 w-8 rounded-full">
-                  <AvatarImage
-                    src={notification.avatar.src}
-                    alt={notification.title}
-                  />
                   <AvatarFallback>
                     {notification.title.charAt(0)}
                   </AvatarFallback>

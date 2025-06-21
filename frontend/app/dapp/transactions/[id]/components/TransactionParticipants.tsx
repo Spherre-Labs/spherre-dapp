@@ -1,7 +1,7 @@
 'use client'
 import React from 'react'
 import Image from 'next/image'
-import { CheckCircle, Copy, XCircle } from 'lucide-react'
+import { CheckCircle, Copy } from 'lucide-react'
 import { Transaction, Approval } from '@/app/dapp/transactions/data'
 
 const TimelineStep = ({
@@ -84,7 +84,6 @@ export const TransactionDetailsBody = ({
   transaction: Transaction
 }) => {
   const isExecuted = transaction.status === 'Executed'
-  const isPending = transaction.status === 'Pending'
   const isRejected = transaction.status === 'Rejected'
 
   const detailItem = (label: string, value: React.ReactNode) => (
