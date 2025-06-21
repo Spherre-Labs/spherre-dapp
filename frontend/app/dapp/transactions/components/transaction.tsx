@@ -7,22 +7,11 @@ import limit from '../../../../public/Images/limit.png'
 import swap from '../../../../public/Images/swap.png'
 import withdraw from '../../../../public/Images/withdraw.png'
 import strk from '../../../../public/Images/strk.png'
-
-export interface Transaction {
-  id: number
-  date: string
-  type: 'withdraw' | 'swap' | 'limitSwap'
-  amount: string
-  toAddress: string
-  time: string
-  status: 'Pending' | 'Executed' | 'Rejected'
-  initiator?: string
-  dateInitiated?: string
-  account?: string
-}
+import Link from 'next/link'
+import { Transaction as TransactionType } from '../data'
 
 interface TransactionProps {
-  transaction: Transaction
+  transaction: TransactionType
   isExpanded: boolean
   onToggle: () => void
 }
@@ -84,7 +73,7 @@ export default function Transaction({
           </div>
 
           <div className="text-gray-400 truncate">
-            Initiated: {transaction.initiator}
+            Initiated: {transaction.initiator.name}
           </div>
 
           <div className="flex items-center justify-end space-x-4">
@@ -127,7 +116,7 @@ export default function Transaction({
       >
         <div className="flex flex-col md:flex-row">
           {/* Left: Transaction Progress */}
-          <div className="md:w-1/2 p-4 border-r border-gray-700">
+          <div className="md:w-1/2 p-4 border-r border-gray-700 flex flex-col">
             <h3 className="text-white font-medium mb-4">
               Transaction Progress
             </h3>
@@ -171,59 +160,11 @@ export default function Transaction({
             </div>
             {/* Ends here */}
 
-            <div className="flex mb-2 mt-2">
-              <div className="flex">
-                <div className="flex flex-col items-center mr-4">
-                  <div className="w-2 h-2 bg-white rounded-full flex items-center justify-center mb-1">
-                    <svg
-                      className="w-5 h-5 text-white"
-                      viewBox="0 0 20 20"
-                      fill="currentColor"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                  </div>
-                  <div className="h-full w-0.5 bg-gray-600"></div>
-                </div>
-                <div>
-                  <p className="text-white">Initiated Transaction</p>
-                  <p className="text-gray-400 text-sm">
-                    {transaction.dateInitiated}
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <div className="flex mb-2 mt-2">
-              <div className="flex">
-                <div className="flex flex-col items-center mr-4">
-                  <div
-                    className={`w-2 h-2 bg-white ${transaction.status} rounded-full flex items-center justify-center mb-1`}
-                  >
-                    {transaction.status === 'Pending'}
-                  </div>
-                  <div className="h-full w-0.5 bg-gray-600"></div>
-                </div>
-                <div>
-                  <p className="text-white">Pending</p>
-                  <div className="flex items-center text-gray-400 text-sm">
-                    <p>Threshold: 1/5 approved</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="flex mb-2 mt-2">
-              <div className="flex">
-                <div className="flex flex-col items-center mr-4">
-                  <div
-                    className={`w-2 h-2 border border-gray-500 ${transaction.status === 'Executed'} rounded-full flex items-center justify-center mb-1`}
-                  >
-                    {transaction.status === 'Executed' ? (
+            <div className="flex-grow">
+              <div className="flex mb-2 mt-2">
+                <div className="flex">
+                  <div className="flex flex-col items-center mr-4">
+                    <div className="w-2 h-2 bg-white rounded-full flex items-center justify-center mb-1">
                       <svg
                         className="w-5 h-5 text-white"
                         viewBox="0 0 20 20"
@@ -235,86 +176,125 @@ export default function Transaction({
                           clipRule="evenodd"
                         />
                       </svg>
-                    ) : null}
+                    </div>
+                    <div className="h-full w-0.5 bg-gray-600"></div>
+                  </div>
+                  <div>
+                    <p className="text-white">Initiated Transaction</p>
+                    <p className="text-gray-400 text-sm">
+                      {transaction.dateInitiated}
+                    </p>
                   </div>
                 </div>
-                <div>
-                  <p
-                    className={
-                      transaction.status === 'Executed'
-                        ? 'text-white'
-                        : 'text-gray-400'
-                    }
-                  >
-                    Executed
-                  </p>
-                  <div className="flex items-center text-gray-400 text-sm">
-                    <p>--------------------</p>
+              </div>
+
+              <div className="flex mb-2 mt-2">
+                <div className="flex">
+                  <div className="flex flex-col items-center mr-4">
+                    <div
+                      className={`w-2 h-2 bg-white ${transaction.status} rounded-full flex items-center justify-center mb-1`}
+                    >
+                      {transaction.status === 'Pending'}
+                    </div>
+                    <div className="h-full w-0.5 bg-gray-600"></div>
+                  </div>
+                  <div>
+                    <p className="text-white">Pending</p>
+                    <div className="flex items-center text-gray-400 text-sm">
+                      <p>Threshold: 1/5 approved</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex mb-2 mt-2">
+                <div className="flex">
+                  <div className="flex flex-col items-center mr-4">
+                    <div
+                      className={`w-2 h-2 border border-gray-500 ${transaction.status === 'Executed'} rounded-full flex items-center justify-center mb-1`}
+                    >
+                      {transaction.status === 'Executed' ? (
+                        <svg
+                          className="w-5 h-5 text-white"
+                          viewBox="0 0 20 20"
+                          fill="currentColor"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                          />
+                        </svg>
+                      ) : null}
+                    </div>
+                  </div>
+                  <div>
+                    <p
+                      className={
+                        transaction.status === 'Executed'
+                          ? 'text-white'
+                          : 'text-gray-400'
+                      }
+                    >
+                      Executed
+                    </p>
                   </div>
                 </div>
               </div>
             </div>
-            {transaction.status === 'Executed' && (
-              <button className="bg-[#6F2FCE] hover:bg-purple-700 text-white px-6 py-2 rounded-md transition duration-200 w-full mt-4">
-                Download CSV
-              </button>
-            )}
 
-            {transaction.status === 'Pending' && (
-              <div className="flex space-x-3 mt-6">
-                <button className="bg-[#6F2FCE] hover:bg-purple-700 text-white px-6 py-2 rounded-md transition duration-200 w-1/2">
-                  Approve
+            {/* Action Buttons */}
+            <div className="mt-auto pt-4">
+              {transaction.status === 'Pending' && (
+                <div className="flex space-x-3">
+                  <button className="bg-[#6F2FCE] hover:bg-purple-700 text-white px-6 py-2 rounded-md transition duration-200 w-1/2">
+                    Approve
+                  </button>
+                  <button className="bg-[#1C1D1F] hover:bg-black text-white px-6 py-2 rounded-md transition duration-200 w-1/2">
+                    Reject
+                  </button>
+                </div>
+              )}
+              {(transaction.status === 'Executed' ||
+                transaction.status === 'Rejected') && (
+                <button className="bg-[#6F2FCE] hover:bg-purple-700 text-white px-6 py-2 rounded-md transition duration-200 w-full">
+                  Download CSV
                 </button>
-                <button className="bg-[#1C1D1F] hover:bg-black text-white px-6 py-2 rounded-md transition duration-200 w-1/2">
-                  Reject
-                </button>
-              </div>
-            )}
+              )}
+            </div>
           </div>
 
           {/* Right: Transaction Details */}
           <div className="md:w-1/2 p-4 flex flex-col">
             <h3 className="text-white font-medium mb-4">Transaction Details</h3>
-
-            <div className="space-y-3">
-              <div className="flex justify-between items-center">
-                <span className="text-gray-400">Initiator</span>
-                <div className="flex gap-3 items-center">
-                  <Image
-                    src={Reviewer1}
-                    width={30}
-                    height={20}
-                    alt="reviewer"
-                    className=""
-                  />
-                  <span className="text-white">{transaction.initiator}</span>
-                </div>
+            <div className="text-gray-400 text-sm space-y-2 flex-grow">
+              <div className="flex justify-between">
+                <span>Account:</span>
+                <span className="text-white">{transaction.account.name}</span>
               </div>
-
-              <div className="flex justify-between items-center">
-                <span className="text-gray-400">Date initiated</span>
+              <div className="flex justify-between">
+                <span>Initiator:</span>
+                <span className="text-white">{transaction.initiator.name}</span>
+              </div>
+              <div className="flex justify-between">
+                <span>Date initiated:</span>
                 <span className="text-white">{transaction.dateInitiated}</span>
               </div>
-
-              <div className="flex justify-between items-center">
-                <span className="text-gray-400">Account</span>
-                <div className="flex items-center">
-                  <Image
-                    src={Reviewer2}
-                    width={30}
-                    height={20}
-                    alt="reviewer"
-                    className=""
-                  />
-                  <span className="text-white">{transaction.account}</span>
-                </div>
+              <div className="flex justify-between">
+                <span>Transaction ID:</span>
+                <span className="text-white">{transaction.transactionId}</span>
+              </div>
+              <div className="flex justify-between">
+                <span>Transaction Link:</span>
+                <span className="text-white">
+                  {transaction.transactionLink}
+                </span>
               </div>
             </div>
-
-            <div className="flex-grow"></div>
-            <button className="w-full bg-[#1C1D1F] hover:bg-black text-gray-300 py-2 rounded-md mt-6 transition duration-200">
-              See Transaction Details
-            </button>
+            <Link href={`/dapp/transactions/${transaction.id}`}>
+              <button className="mt-4 w-full bg-[#3a3a3a] text-white py-2 rounded-lg hover:bg-[#4a4a4a] transition-colors">
+                See transaction details
+              </button>
+            </Link>
           </div>
         </div>
       </div>

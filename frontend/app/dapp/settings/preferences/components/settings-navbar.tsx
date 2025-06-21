@@ -11,7 +11,6 @@ export default function SettingsNavbar() {
     { name: 'Wallet & Account', href: '/dapp/settings/wallet' },
     { name: 'Preferences', href: '/dapp/settings/preferences' },
     { name: 'Security', href: '/dapp/settings/security' },
-    { name: 'SmartWill', href: '/dapp/settings/smartwill' },
     { name: 'Smart Lock', href: '/dapp/settings/smart-lock' },
   ]
 

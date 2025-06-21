@@ -115,6 +115,9 @@ const StepTwo = () => {
     (addr, index) => memberAddresses.indexOf(addr) !== index,
   )
 
+  const percentage =
+    members.length > 1 ? ((approvals - 1) / (members.length - 1)) * 100 : 100
+
   const handleSubmitStepTwo = async (data: StepTwoData) => {
     setMembers(data.members.map((m) => m.address))
     setApprovals(data.approvals)
@@ -235,11 +238,7 @@ const StepTwo = () => {
                 step={1}
                 value={approvals}
                 onChange={handleApprovalsChange}
-                className="w-full appearance-none h-2 rounded-lg outline-none cursor-pointer transition-all"
-                style={{
-                  background: 'white',
-                  accentColor: '#FFFFFF', // thumb color
-                }}
+                className="w-full appearance-none h-2 bg-[#292929] rounded-lg outline-none cursor-pointer transition-all"
               />
               <div className="flex items-center justify-between px-1">
                 <span className="text-sm text-white">1</span>
@@ -257,19 +256,73 @@ const StepTwo = () => {
             </button>
 
             <style jsx>{`
+              input[type='range'] {
+                background: linear-gradient(
+                  to right,
+                  #6f2fcd 0%,
+                  #6f2fcd ${percentage}%,
+                  #292929 ${percentage}%,
+                  #292929 100%
+                );
+              }
+
+              input[type='range']::-webkit-slider-thumb {
+                appearance: none;
+                margin-top: -6px; /* (8px - 20px) / 2 */
+                height: 20px;
+                width: 20px;
+                border-radius: 50%;
+                background: white;
+                cursor: pointer;
+                border: 3px solid #6f2fcd;
+              }
+
+              input[type='range']::-moz-range-thumb {
+                height: 20px;
+                width: 20px;
+                border-radius: 50%;
+                background: white;
+                cursor: pointer;
+                border: 3px solid #6f2fcd;
+              }
+
+              input[type='range']::-ms-thumb {
+                margin-top: 0;
+                height: 20px;
+                width: 20px;
+                border-radius: 50%;
+                background: white;
+                cursor: pointer;
+                border: 3px solid #6f2fcd;
+              }
+
               input[type='range']::-webkit-slider-runnable-track {
-                background: white;
                 height: 8px;
                 border-radius: 4px;
+                border: none;
               }
+
               input[type='range']::-moz-range-track {
-                background: white;
                 height: 8px;
                 border-radius: 4px;
+                border: none;
               }
-              input[type='range']::-ms-fill-lower,
+
+              input[type='range']::-ms-track {
+                height: 8px;
+                border-radius: 4px;
+                border: none;
+                background: transparent;
+                color: transparent;
+              }
+
+              input[type='range']::-ms-fill-lower {
+                background: #6f2fcd;
+                border-radius: 4px;
+              }
+
               input[type='range']::-ms-fill-upper {
-                background: white;
+                background: #292929;
                 border-radius: 4px;
               }
             `}</style>
