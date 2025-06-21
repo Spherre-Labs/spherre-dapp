@@ -1,15 +1,12 @@
 'use client'
 import { useState, useEffect } from 'react'
 import { CheckCheck } from 'lucide-react'
-import {
-  Avatar,
-  AvatarFallback,
-  // AvatarImage,
-} from '@/components/ui/avatar'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import type { StaticImageData } from 'next/image'
-import ProfileImage from '@/public/Images/Profile.png'
+import GlennAvatar from '@/public/Images/reviewers1.png'
+import LoisAvatar from '@/public/Images/reviewers2.png'
 
 // Defines the structure for a single notification item.
 interface Notification {
@@ -31,7 +28,7 @@ interface Notification {
 const defaultNotifications: Notification[] = [
   {
     id: '1',
-    avatar: ProfileImage,
+    avatar: GlennAvatar,
     title: 'Glenn Quagmire',
     description: 'Approved your 30 STRK withdrawer funds from Backstage Boys',
     timestamp: '11 hours ago',
@@ -52,7 +49,7 @@ const defaultNotifications: Notification[] = [
   },
   {
     id: '3',
-    avatar: ProfileImage,
+    avatar: LoisAvatar,
     title: 'Lois Griffin',
     description: 'proposed for 25 STRK from Backstage Boys',
     timestamp: '11 hours ago',
@@ -68,34 +65,38 @@ const defaultNotifications: Notification[] = [
  * Users can mark all notifications as read.
  */
 export default function NotificationModal() {
-  const [notifications, setNotifications] = useState<Notification[]>([])
+  // Initialize with default data to prevent hydration mismatch.
+  const [notifications, setNotifications] =
+    useState<Notification[]>(defaultNotifications)
 
-  // On component mount, load notifications from localStorage or use the default set.
+  // After mount on the client, synchronize the read state from localStorage.
   useEffect(() => {
-    const savedNotifications = localStorage.getItem('spherre-notifications')
-    // Note: Statically imported images won't be serialized in localStorage.
-    // This setup will always show default avatars on subsequent visits.
-    // For full persistence, image paths would need to be stored and resolved.
-    if (savedNotifications) {
-      // For simplicity, we are re-setting to default notifications with images.
-      setNotifications(defaultNotifications)
-    } else {
-      setNotifications(defaultNotifications)
-    }
-  }, [])
+    const saved = localStorage.getItem('spherre-notifications')
+    if (saved) {
+      try {
+        const readStatuses = JSON.parse(saved) as {
+          id: string
+          read: boolean
+        }[]
+        const readStatusMap = new Map(readStatuses.map((n) => [n.id, n.read]))
 
-  // Persist notifications to localStorage whenever the notifications state changes.
-  useEffect(() => {
-    if (notifications.length > 0) {
-      // Filter out image objects before saving to avoid serialization issues.
-      const notificationsToSave = notifications.map(
-        ({ avatar, ...rest }) => rest,
-      )
-      localStorage.setItem(
-        'spherre-notifications',
-        JSON.stringify(notificationsToSave),
-      )
+        setNotifications((prev) =>
+          prev.map((n) => ({
+            ...n,
+            read: readStatusMap.get(n.id) ?? n.read,
+          })),
+        )
+      } catch {
+        // If localStorage is corrupt, we'll just use the defaults.
+        console.error('Could not parse notifications from localStorage.')
+      }
     }
+  }, []) // Empty dependency array ensures this runs only once on the client.
+
+  // Persist the 'read' state to localStorage whenever notifications change.
+  useEffect(() => {
+    const toSave = notifications.map(({ id, read }) => ({ id, read }))
+    localStorage.setItem('spherre-notifications', JSON.stringify(toSave))
   }, [notifications])
 
   /**
@@ -143,6 +144,10 @@ export default function NotificationModal() {
               )}
               {notification.avatar && (
                 <Avatar className="h-8 w-8 rounded-full">
+                  <AvatarImage
+                    src={notification.avatar.src}
+                    alt={notification.title}
+                  />
                   <AvatarFallback>
                     {notification.title.charAt(0)}
                   </AvatarFallback>
