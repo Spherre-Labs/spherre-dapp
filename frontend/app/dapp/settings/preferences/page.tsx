@@ -3,17 +3,14 @@
 import { useState, useEffect } from 'react'
 import ThemeCard from './components/theme-card'
 import ToggleSwitch from './components/toggle-switch'
-import Toast from './components/toast'
 import BrowserPreview from './components/browser-preview'
 import { Monitor, Moon, Sun } from 'lucide-react'
+import SignMessageModal from '../../../components/modals/SignMessageModal'
+import Loader from '../../../components/modals/Loader'
+import SuccessModal from '../../../components/modals/SuccessModal'
 
 type Theme = 'dark' | 'light' | 'system'
-
-interface ToastState {
-  message: string
-  type: 'success' | 'error'
-  isVisible: boolean
-}
+type ToggleType = 'email' | 'browser' | null
 
 const applyTheme = (theme: Theme) => {
   const root = document.documentElement
@@ -45,13 +42,15 @@ const applyTheme = (theme: Theme) => {
 
 export default function PreferencesPage() {
   const [selectedTheme, setSelectedTheme] = useState<Theme>('dark')
-  const [emailNotifications, setEmailNotifications] = useState(true)
+  const [emailNotifications, setEmailNotifications] = useState(false)
   const [browserNotifications, setBrowserNotifications] = useState(false)
-  const [toast, setToast] = useState<ToastState>({
-    message: '',
-    type: 'success',
-    isVisible: false,
-  })
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
+  const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false)
+  const [successMessage, setSuccessMessage] = useState('')
+  const [activeToggle, setActiveToggle] = useState<ToggleType>(null)
+  const [modalTitle, setModalTitle] = useState('')
+  const [modalDescription, setModalDescription] = useState('')
 
   // Load preferences from localStorage on mount
   useEffect(() => {
@@ -67,66 +66,67 @@ export default function PreferencesPage() {
     if (savedBrowser) setBrowserNotifications(savedBrowser === 'true')
   }, []) // Empty dependency array since applyTheme is defined outside component
 
-  const showToast = (message: string, type: 'success' | 'error') => {
-    setToast({ message, type, isVisible: true })
-  }
-
-  const hideToast = () => {
-    setToast((prev) => ({ ...prev, isVisible: false }))
-  }
-
   const handleThemeChange = (theme: Theme) => {
     setSelectedTheme(theme)
     localStorage.setItem('spherre-theme', theme)
     applyTheme(theme)
-    showToast(`Theme changed to ${theme} mode`, 'success')
   }
 
-  const handleEmailToggle = (enabled: boolean) => {
-    setEmailNotifications(enabled)
-    localStorage.setItem('spherre-email-notifications', enabled.toString())
+  const handleToggleClick = (type: ToggleType) => {
+    setActiveToggle(type)
+    const isEnabling =
+      type === 'email' ? !emailNotifications : !browserNotifications
 
-    // Simulate API call with random success/failure
-    const success = Math.random() > 0.1 // 90% success rate
-
-    if (success) {
-      showToast(
-        enabled
-          ? 'Email notifications enabled'
-          : 'Email notifications disabled',
-        'success',
-      )
+    if (isEnabling) {
+      if (type === 'email') {
+        setModalTitle('Enable Email Notifications')
+        setModalDescription(
+          'Please provide your email address and sign the message to enable email notifications.',
+        )
+      } else {
+        setModalTitle('Enable Browser Notifications')
+        setModalDescription(
+          'Please sign the message to enable browser notifications.',
+        )
+      }
+      setIsModalOpen(true)
     } else {
-      showToast('Failed to update email notification preference', 'error')
-      // Revert the change on failure
-      setEmailNotifications(!enabled)
-      localStorage.setItem('spherre-email-notifications', (!enabled).toString())
+      // If disabling, do it directly without a modal
+      if (type === 'email') {
+        setEmailNotifications(false)
+        localStorage.setItem('spherre-email-notifications', 'false')
+      } else {
+        setBrowserNotifications(false)
+        localStorage.setItem('spherre-browser-notifications', 'false')
+      }
     }
   }
 
-  const handleBrowserToggle = (enabled: boolean) => {
-    setBrowserNotifications(enabled)
-    localStorage.setItem('spherre-browser-notifications', enabled.toString())
+  const handleSignMessage = (email: string) => {
+    console.log(`Signing message for ${activeToggle} with email:`, email)
+    setIsModalOpen(false)
+    setIsLoading(true)
 
-    // Simulate API call with random success/failure
-    const success = Math.random() > 0.1 // 90% success rate
+    setTimeout(() => {
+      setIsLoading(false)
+      if (activeToggle === 'email') {
+        setEmailNotifications(true)
+        localStorage.setItem('spherre-email-notifications', 'true')
+        setSuccessMessage('Email notifications have been enabled successfully.')
+      } else if (activeToggle === 'browser') {
+        setBrowserNotifications(true)
+        localStorage.setItem('spherre-browser-notifications', 'true')
+        setSuccessMessage(
+          'Browser notifications have been enabled successfully.',
+        )
+      }
+      setIsSuccessModalOpen(true)
+    }, 3000)
+  }
 
-    if (success) {
-      showToast(
-        enabled
-          ? 'Browser notifications enabled'
-          : 'Browser notifications disabled',
-        'success',
-      )
-    } else {
-      showToast('Failed to update browser notification preference', 'error')
-      // Revert the change on failure
-      setBrowserNotifications(!enabled)
-      localStorage.setItem(
-        'spherre-browser-notifications',
-        (!enabled).toString(),
-      )
-    }
+  const handleCloseSuccessModal = () => {
+    setIsSuccessModalOpen(false)
+    setActiveToggle(null)
   }
 
   return (
@@ -193,7 +193,7 @@ export default function PreferencesPage() {
           </div>
           <ToggleSwitch
             enabled={emailNotifications}
-            onChange={handleEmailToggle}
+            onChange={() => handleToggleClick('email')}
           />
         </div>
       </div>
@@ -212,17 +212,25 @@ export default function PreferencesPage() {
           </div>
           <ToggleSwitch
             enabled={browserNotifications}
-            onChange={handleBrowserToggle}
+            onChange={() => handleToggleClick('browser')}
           />
         </div>
       </div>
 
-      {/* Toast Component */}
-      <Toast
-        message={toast.message}
-        type={toast.type}
-        isVisible={toast.isVisible}
-        onClose={hideToast}
+      <SignMessageModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSign={handleSignMessage}
+        title={modalTitle}
+        description={modalDescription}
+      />
+
+      {isLoading && <Loader />}
+
+      <SuccessModal
+        isOpen={isSuccessModalOpen}
+        onClose={handleCloseSuccessModal}
+        message={successMessage}
       />
     </div>
   )

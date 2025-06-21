@@ -28,7 +28,7 @@ export default function TransactionPage() {
 
   return (
     <div className="">
-      <div className="m-6 p-10 bg-[#1C1D1F] rounded-xl">
+      <div className="p-10 bg-[#1C1D1F] rounded-xl">
         {Object.entries(groupedTransactions).map(([date, txns]) => (
           <div key={date} className="mb-6">
             <h2 className="text-gray-400 text-sm mb-2">{date}</h2>

@@ -1,13 +1,44 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
+import SignMessageModal from '../../components/modals/SignMessageModal'
+import Loader from '../../components/modals/Loader'
+import SuccessModal from '../../components/modals/SuccessModal'
 
 const SecurityContent = () => {
-  const [privacyOn, setPrivacyOn] = useState(true)
-  const [showSuccess, setShowSuccess] = useState(false)
+  const [privacyOn, setPrivacyOn] = useState(false)
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
+  const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false)
+
+  useEffect(() => {
+    const savedPrivacy = localStorage.getItem('spherre-privacy')
+    if (savedPrivacy) {
+      setPrivacyOn(savedPrivacy === 'true')
+    }
+  }, [])
 
   const handleToggle = () => {
-    setPrivacyOn((v) => !v)
-    setShowSuccess(true)
-    setTimeout(() => setShowSuccess(false), 2000)
+    if (!privacyOn) {
+      setIsModalOpen(true)
+    } else {
+      setPrivacyOn(false)
+      localStorage.setItem('spherre-privacy', 'false')
+    }
+  }
+
+  const handleSignMessage = (email: string) => {
+    console.log('Signing message with email:', email)
+    setIsModalOpen(false)
+    setIsLoading(true)
+    setTimeout(() => {
+      setIsLoading(false)
+      setPrivacyOn(true)
+      localStorage.setItem('spherre-privacy', 'true')
+      setIsSuccessModalOpen(true)
+    }, 3000)
+  }
+
+  const handleCloseSuccessModal = () => {
+    setIsSuccessModalOpen(false)
   }
 
   return (
@@ -48,12 +79,21 @@ const SecurityContent = () => {
         </div>
       </div>
 
-      {/* Success Message */}
-      {showSuccess && (
-        <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2 bg-[#f3e8ff] border border-[#a259ff] text-[#a259ff] px-6 py-3 rounded-lg shadow-lg font-semibold z-50">
-          Privacy setting updated successfully!
-        </div>
-      )}
+      <SignMessageModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSign={handleSignMessage}
+        title="Sign Message"
+        description="Please provide your email address and sign the message to add it."
+      />
+
+      {isLoading && <Loader />}
+
+      <SuccessModal
+        isOpen={isSuccessModalOpen}
+        onClose={handleCloseSuccessModal}
+        message="Your privacy settings have been updated successfully."
+      />
     </div>
   )
 }
