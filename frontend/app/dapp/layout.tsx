@@ -86,15 +86,17 @@ export default function DappLayout({ children }: DappLayoutProps) {
   const pathname = usePathname()
   const selectedPage = getSelectedPage(pathname)
   return (
-    <div className="flex h-screen">
+    <div className="bg-black">
       <Sidebar navItems={navItems} selectedPage={selectedPage} />
       <div
-        className={`flex-1 flex flex-col transition-all duration-300 ${
+        className={`transition-all duration-300 ${
           sidebarExpanded ? 'ml-64' : 'ml-16'
         }`}
       >
-        <Navbar title={selectedPage} />
-        <main className="flex-1 overflow-auto">{children}</main>
+        <div className="flex flex-col min-h-screen">
+          <Navbar title={selectedPage} />
+          <main className="flex-1 p-8">{children}</main>
+        </div>
       </div>
     </div>
   )

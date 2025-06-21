@@ -7,8 +7,8 @@ export default function SettingsLayout({
   children: React.ReactNode
 }) {
   return (
-    <div className="min-h-screen bg-gray-950 text-white w-full font-sans">
-      <div className="mx-auto px-7 w-full py-8 flex flex-col space-y-8 items-start">
+    <div className="w-full font-sans">
+      <div className="w-full flex flex-col space-y-8 items-start">
         <SettingsNavbar />
         {children}
       </div>

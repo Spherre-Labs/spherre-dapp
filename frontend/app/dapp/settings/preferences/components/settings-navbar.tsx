@@ -25,8 +25,8 @@ export default function SettingsNavbar() {
             href={tab.href}
             className={`relative px-4 py-1 text-sm font-bold transition-all duration-200 ease-in-out group rounded-md ${
               isActive(tab.href)
-                ? 'text-white bg-white/20'
-                : 'text-gray-400 hover:text-gray-200 hover:bg-gray-400/10 bg-transparent'
+                ? 'text-white bg-[#a259ff]'
+                : 'text-gray-400 hover:text-gray-200 hover:bg-[#7d5fff] bg-transparent'
             }`}
           >
             {tab.name}
