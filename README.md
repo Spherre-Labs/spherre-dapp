@@ -416,10 +416,6 @@ docker-compose -f docker-compose.prod.yml up -d
 - **TypeScript**: Strict mode enabled
 - **Python**: Type hints encouraged
 
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
 ## 🆘 Support
 
 - **Documentation**: Check the code comments and inline documentation
