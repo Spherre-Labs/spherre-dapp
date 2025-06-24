@@ -104,38 +104,37 @@ export default function Tabs() {
       </div>
 
       {activeTab === 'Tokens' && (
-        <div className="my-2 px-8 py-4 rounded-lg">
-          <div className="w-full">
-            <div className="grid grid-cols-5 text-sm text-[#8E9BAE] pb-2">
-              <div>Coin</div>
-              <div>Price</div>
-              <div>Balance</div>
-              <div>Value</div>
-              <div>Size</div>
+        <div className="my-2 px-2 sm:px-4 md:px-8 py-2 sm:py-4 rounded-lg overflow-x-auto">
+          <div className="min-w-[600px]">
+            <div className="flex text-xs sm:text-sm text-[#8E9BAE] font-semibold mb-1 gap-6">
+              <div className="w-1/5">Coin</div>
+              <div className="w-1/5">Price</div>
+              <div className="w-1/5">Balance</div>
+              <div className="w-1/5">Value</div>
+              <div className="w-1/5">Size</div>
             </div>
-
             {tokens.map((token, index) => (
-              <div key={index} className="grid grid-cols-5 py-4">
-                <div className="flex items-center gap-1">
+              <div key={index} className="flex items-center gap-6 rounded-lg px-3 py-3">
+                <div className="flex items-center gap-1 w-1/5">
                   <Image
                     src={strk}
-                    width={20}
-                    height={20}
+                    width={18}
+                    height={18}
                     alt="starknet token icon"
                   />
                   <span>{token.coin}</span>
                 </div>
-                <div>{token.price}</div>
-                <div>{token.balance}</div>
-                <div>{token.value}</div>
-                <div>
+                <div className="w-1/5">{token.price}</div>
+                <div className="w-1/5">{token.balance}</div>
+                <div className="w-1/5">{token.value}</div>
+                <div className="w-1/5 flex flex-col items-end">
                   <div className="relative w-full h-1 bg-[#292929] rounded-full">
                     <div
                       className="absolute top-0 left-0 h-1 bg-white rounded-full"
                       style={{ width: token.size }}
                     ></div>
                   </div>
-                  <div className="text-xs mt-1 text-right">{token.size}</div>
+                  <div className="text-[10px] sm:text-xs mt-1 text-right">{token.size}</div>
                 </div>
               </div>
             ))}
@@ -149,7 +148,7 @@ export default function Tabs() {
             {nfts.map((nft) => (
               <div
                 key={nft.id}
-                className="rounded-lg overflow-hidden bg-gray-800"
+                className="rounded-lg overflow-hidden bg-gray-800 border-2"
               >
                 <div className="aspect-square relative">
                   <Image
