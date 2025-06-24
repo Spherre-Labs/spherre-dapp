@@ -16,6 +16,7 @@ import {
 import { Line } from 'react-chartjs-2'
 import 'chartjs-adapter-moment'
 import moment from 'moment'
+// import { useMediaQuery } from 'react-responsive'
 
 // Register ChartJS components
 ChartJS.register(
@@ -424,32 +425,29 @@ const AmountAnalysisChart: React.FC<AmountAnalysisChartProps> = ({
     'ALL',
   ]
 
+  // Responsive: detect mobile
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 640
+
+  // Calculate min-width for chart area based on data points (for scroll)
+  const minChartWidth = chartData.labels && chartData.labels.length > 0 && isMobile
+    ? Math.max(320, chartData.labels.length * 60) // 60px per point, min 320px
+    : '100%'
+
   return (
     <div className="bg-[#1C1D1F] rounded-lg p-6 w-full">
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-xl font-semibold text-white">Price Analysis</h2>
-        <div
-          style={{
-            display: 'flex',
-            gap: '10px',
-            backgroundColor: '#272729',
-            padding: '4px',
-            borderRadius: '7.1px',
-          }}
-        >
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6 gap-2 sm:gap-0">
+        <div className="flex items-center gap-2">
+          <h2 className="text-xl font-semibold text-white">Price Analysis</h2>
+        </div>
+        {/* Desktop: Range buttons */}
+        <div className="hidden sm:flex" style={{
+          display: 'flex',
+          gap: '10px',
+          backgroundColor: '#272729',
+          padding: '4px',
+          borderRadius: '7.1px',
+        }}>
           {dateRangeOptions.map((range) => (
-            /*    <button
-                              key={range}
-                              onClick={() => handleDateRangeChange(range)}
-                              className={`px-3 py-1 rounded-md text-sm font-medium transition-all duration-300 ${
-                                dateRange === range
-                                  ? 'bg-[#6F2FCE] text-white'
-                                  : 'bg-[#2D2F34] text-gray-300 hover:bg-[#3D3F44]'
-                              }`}
-                              type="button"
-                            >
-                              {range}
-                            </button>*/
             <button
               key={range}
               onClick={() => handleDateRangeChange(range)}
@@ -469,9 +467,7 @@ const AmountAnalysisChart: React.FC<AmountAnalysisChartProps> = ({
             </button>
           ))}
         </div>
-
-        {/* Year Dropdown - Disabled when ALL is selected */}
-        <div className="relative">
+        <div className="relative ml-2">
           <select
             value={selectedYear}
             onChange={handleYearChange}
@@ -482,7 +478,7 @@ const AmountAnalysisChart: React.FC<AmountAnalysisChartProps> = ({
                 : 'cursor-pointer'
             }`}
             style={{
-              color: dateRange !== 'ALL' ? '#6F2FCE' : '#9CA3AF', // Purple color for selected year when not disabled
+              color: dateRange !== 'ALL' ? '#6F2FCE' : '#9CA3AF',
             }}
           >
             {availableYears.map((year) => (
@@ -498,7 +494,7 @@ const AmountAnalysisChart: React.FC<AmountAnalysisChartProps> = ({
               </option>
             ))}
           </select>
-          <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-400">
+          <div className="pointer-events-none absolute inset-y-0 right-[75%] flex items-center px-2 text-gray-400">
             <svg
               className="h-4 w-4 fill-current"
               xmlns="http://www.w3.org/2000/svg"
@@ -509,8 +505,10 @@ const AmountAnalysisChart: React.FC<AmountAnalysisChartProps> = ({
           </div>
         </div>
       </div>
-      <div className="h-[320px] w-full">
-        <Line data={chartData} options={chartOptions} />
+      <div className="w-full overflow-x-auto" style={{overflowY: 'hidden'}}>
+        <div className="h-[320px]" style={{ minWidth: isMobile ? minChartWidth : '100%' }}>
+          <Line data={chartData} options={chartOptions} />
+        </div>
       </div>
     </div>
   )
