@@ -20,7 +20,7 @@ const AddMemberModal: React.FC<AddMemberModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60 backdrop-blur-sm">
-      <div className="bg-[#18191d] rounded-xl p-8 w-[600px] relative shadow-lg">
+      <div className="bg-[#18191d] rounded-xl p-4 sm:p-8 w-full max-w-[95vw] sm:max-w-[500px] md:max-w-[600px] relative shadow-lg">
         {/* Close button */}
         <button
           className="absolute top-5 right-5 text-[#8E9BAE] text-2xl font-bold hover:text-white"
@@ -49,40 +49,44 @@ const AddMemberModal: React.FC<AddMemberModalProps> = ({
         <div className="mb-8">
           <label className="block text-white mb-2">Assign Roles</label>
           <div className="flex gap-4">
-            {roles.map((r) => (
-              <label
-                key={r}
-                className={`flex items-center gap-2 px-4 py-2 rounded-lg border transition-colors cursor-pointer
-                  ${
-                    role === r
-                      ? 'border-[#a259ff] bg-[#23242a] text-white'
-                      : 'border-[#23242a] bg-transparent text-[#8E9BAE]'
-                  }
-                `}
-              >
-                <input
-                  type="radio"
-                  name="role"
-                  value={r}
-                  checked={role === r}
-                  onChange={() => setRole(r)}
-                  className="accent-[#a259ff]"
-                />
-                {r}
-              </label>
-            ))}
+            {roles.map((r) => {
+              let borderColor = ''
+              if (role === r) {
+                if (r === 'Voter') borderColor = 'border-[#FF7BE9]';
+                else if (r === 'Executer') borderColor = 'border-[#19B360]';
+                else if (r === 'Proposer') borderColor = 'border-[#FF8A25]';
+              } else {
+                borderColor = 'border-[#23242a]';
+              }
+              return (
+                <label
+                  key={r}
+                  className={`flex items-center gap-2 px-4 py-2 rounded-lg border transition-colors cursor-pointer bg-transparent text-sm font-medium ${borderColor} ${role === r ? 'text-white bg-[#23242a]' : 'text-[#8E9BAE] bg-transparent'}`}
+                >
+                  <input
+                    type="radio"
+                    name="role"
+                    value={r}
+                    checked={role === r}
+                    onChange={() => setRole(r)}
+                    className="accent-[#a259ff]"
+                  />
+                  {r}
+                </label>
+              )
+            })}
           </div>
         </div>
         {/* Action Buttons */}
-        <div className="flex gap-4 mt-8">
+        <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 mt-8">
           <button
-            className="flex-1 bg-[#23242a] text-white py-3 rounded-lg font-semibold text-lg hover:bg-[#23242a] transition"
+            className="w-full sm:flex-1 bg-[#272729] text-white text-sm sm:text-base font-medium py-2 sm:py-3 rounded-[8px] sm:rounded-lg hover:bg-[#6F2FCE] transition-colors"
             onClick={onClose}
           >
             Cancel
           </button>
           <button
-            className="flex-1 bg-[#a259ff] text-white py-3 rounded-lg font-semibold text-lg hover:bg-[#7c3aed]"
+            className="w-full sm:flex-1 bg-[#272729] text-white text-sm sm:text-base font-medium py-2 sm:py-3 rounded-[8px] sm:rounded-lg hover:bg-[#6F2FCE] transition-colors"
             disabled={!wallet || !role}
             onClick={() => {
               onPropose(wallet, role)
