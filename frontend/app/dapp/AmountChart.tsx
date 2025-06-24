@@ -429,9 +429,10 @@ const AmountAnalysisChart: React.FC<AmountAnalysisChartProps> = ({
   const isMobile = typeof window !== 'undefined' && window.innerWidth < 640
 
   // Calculate min-width for chart area based on data points (for scroll)
-  const minChartWidth = chartData.labels && chartData.labels.length > 0 && isMobile
-    ? Math.max(320, chartData.labels.length * 60) // 60px per point, min 320px
-    : '100%'
+  const minChartWidth =
+    chartData.labels && chartData.labels.length > 0 && isMobile
+      ? Math.max(320, chartData.labels.length * 60) // 60px per point, min 320px
+      : '100%'
 
   return (
     <div className="bg-[#1C1D1F] rounded-lg p-6 w-full">
@@ -440,13 +441,16 @@ const AmountAnalysisChart: React.FC<AmountAnalysisChartProps> = ({
           <h2 className="text-xl font-semibold text-white">Price Analysis</h2>
         </div>
         {/* Desktop: Range buttons */}
-        <div className="hidden sm:flex" style={{
-          display: 'flex',
-          gap: '10px',
-          backgroundColor: '#272729',
-          padding: '4px',
-          borderRadius: '7.1px',
-        }}>
+        <div
+          className="hidden sm:flex"
+          style={{
+            display: 'flex',
+            gap: '10px',
+            backgroundColor: '#272729',
+            padding: '4px',
+            borderRadius: '7.1px',
+          }}
+        >
           {dateRangeOptions.map((range) => (
             <button
               key={range}
@@ -505,8 +509,11 @@ const AmountAnalysisChart: React.FC<AmountAnalysisChartProps> = ({
           </div>
         </div>
       </div>
-      <div className="w-full overflow-x-auto" style={{overflowY: 'hidden'}}>
-        <div className="h-[320px]" style={{ minWidth: isMobile ? minChartWidth : '100%' }}>
+      <div className="w-full overflow-x-auto" style={{ overflowY: 'hidden' }}>
+        <div
+          className="h-[320px]"
+          style={{ minWidth: isMobile ? minChartWidth : '100%' }}
+        >
           <Line data={chartData} options={chartOptions} />
         </div>
       </div>

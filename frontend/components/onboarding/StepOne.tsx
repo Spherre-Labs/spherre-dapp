@@ -82,7 +82,9 @@ const StepOne = () => {
       {/* form */}
       <div className="rounded-[10px] bg-[#1C1D1F] w-full overflow-hidden mt-4 mx-4">
         <div className="bg-[#272729] py-4 sm:py-[18px] px-4 sm:px-[26px] w-full h-[50px] sm:h-[62px] flex items-center">
-          <h4 className="text-white font-[700] text-lg sm:text-xl">Create Account</h4>
+          <h4 className="text-white font-[700] text-lg sm:text-xl">
+            Create Account
+          </h4>
         </div>
 
         {/* Inputs */}

@@ -53,12 +53,19 @@ const AddMemberModal: React.FC<AddMemberModalProps> = ({
               let borderColor = ''
               let accentColor = ''
               if (role === r) {
-                if (r === 'Voter') { borderColor = 'border-[#FF7BE9]'; accentColor = 'accent-[#FF7BE9]'; }
-                else if (r === 'Executer') { borderColor = 'border-[#19B360]'; accentColor = 'accent-[#19B360]'; }
-                else if (r === 'Proposer') { borderColor = 'border-[#FF8A25]'; accentColor = 'accent-[#FF8A25]'; }
+                if (r === 'Voter') {
+                  borderColor = 'border-[#FF7BE9]'
+                  accentColor = 'accent-[#FF7BE9]'
+                } else if (r === 'Executer') {
+                  borderColor = 'border-[#19B360]'
+                  accentColor = 'accent-[#19B360]'
+                } else if (r === 'Proposer') {
+                  borderColor = 'border-[#FF8A25]'
+                  accentColor = 'accent-[#FF8A25]'
+                }
               } else {
-                borderColor = 'border-[#23242a]';
-                accentColor = 'accent-[#a259ff]';
+                borderColor = 'border-[#23242a]'
+                accentColor = 'accent-[#a259ff]'
               }
               return (
                 <label

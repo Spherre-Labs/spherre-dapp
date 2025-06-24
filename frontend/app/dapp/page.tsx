@@ -54,7 +54,9 @@ export default function DashboardPage() {
                 alt="Wallet Icon"
               />
             </div>
-            <h2 className="text-2xl sm:text-3xl lg:text-[45px] text-white font-semibold">$250.35</h2>
+            <h2 className="text-2xl sm:text-3xl lg:text-[45px] text-white font-semibold">
+              $250.35
+            </h2>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-x-3">
             <Button
@@ -83,7 +85,9 @@ export default function DashboardPage() {
               />
               <p className="text-[#8E9BAE] text-sm sm:text-base">Members</p>
             </div>
-            <h3 className="text-2xl sm:text-3xl lg:text-[45px] text-white font-semibold">5</h3>
+            <h3 className="text-2xl sm:text-3xl lg:text-[45px] text-white font-semibold">
+              5
+            </h3>
           </div>
           <div className="bg-[#272729] rounded-[10px] py-4 sm:py-6 lg:py-[25px] px-3 sm:px-6 lg:px-[28px] flex items-center justify-between w-full">
             <div className="flex flex-col justify-between h-full gap-y-2">
@@ -103,7 +107,9 @@ export default function DashboardPage() {
                 />
               </div>
             </div>
-            <h3 className="text-2xl sm:text-3xl lg:text-[45px] text-white font-semibold">3/5</h3>
+            <h3 className="text-2xl sm:text-3xl lg:text-[45px] text-white font-semibold">
+              3/5
+            </h3>
           </div>
         </div>
       </div>

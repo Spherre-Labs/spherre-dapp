@@ -63,7 +63,13 @@ export default function Transaction({
           <div className="text-gray-400 flex items-center text-sm sm:text-base">
             Amount:
             <span className="inline-flex items-center ml-1">
-              <Image src={strk} width={16} height={16} className="sm:w-5 sm:h-5" alt="strk" />
+              <Image
+                src={strk}
+                width={16}
+                height={16}
+                className="sm:w-5 sm:h-5"
+                alt="strk"
+              />
               <span className="truncate">{transaction.amount}</span>
             </span>
           </div>
@@ -77,7 +83,9 @@ export default function Transaction({
           </div>
 
           <div className="flex items-center justify-end space-x-2 sm:space-x-4">
-            <span className="text-gray-400 text-xs sm:text-sm">{transaction.time}</span>
+            <span className="text-gray-400 text-xs sm:text-sm">
+              {transaction.time}
+            </span>
             <span
               className={`text-xs sm:text-sm ${
                 transaction.status === 'Pending'
@@ -180,7 +188,9 @@ export default function Transaction({
                     <div className="h-full w-0.5 bg-gray-600"></div>
                   </div>
                   <div>
-                    <p className="text-white text-sm sm:text-base">Initiated Transaction</p>
+                    <p className="text-white text-sm sm:text-base">
+                      Initiated Transaction
+                    </p>
                     <p className="text-gray-400 text-xs sm:text-sm">
                       {transaction.dateInitiated}
                     </p>
@@ -265,23 +275,33 @@ export default function Transaction({
 
           {/* Right: Transaction Details */}
           <div className="lg:w-1/2 p-3 sm:p-4 flex flex-col">
-            <h3 className="text-white font-medium mb-3 sm:mb-4 text-sm sm:text-base">Transaction Details</h3>
+            <h3 className="text-white font-medium mb-3 sm:mb-4 text-sm sm:text-base">
+              Transaction Details
+            </h3>
             <div className="text-gray-400 text-xs sm:text-sm space-y-2 flex-grow">
               <div className="flex justify-between">
                 <span>Account:</span>
-                <span className="text-white truncate">{transaction.account.name}</span>
+                <span className="text-white truncate">
+                  {transaction.account.name}
+                </span>
               </div>
               <div className="flex justify-between">
                 <span>Initiator:</span>
-                <span className="text-white truncate">{transaction.initiator.name}</span>
+                <span className="text-white truncate">
+                  {transaction.initiator.name}
+                </span>
               </div>
               <div className="flex justify-between">
                 <span>Date initiated:</span>
-                <span className="text-white truncate">{transaction.dateInitiated}</span>
+                <span className="text-white truncate">
+                  {transaction.dateInitiated}
+                </span>
               </div>
               <div className="flex justify-between">
                 <span>Transaction ID:</span>
-                <span className="text-white truncate">{transaction.transactionId}</span>
+                <span className="text-white truncate">
+                  {transaction.transactionId}
+                </span>
               </div>
               <div className="flex justify-between">
                 <span>Transaction Link:</span>

@@ -64,7 +64,11 @@ const defaultNotifications: Notification[] = [
  * It loads notifications from localStorage or uses a default set.
  * Users can mark all notifications as read.
  */
-export default function NotificationModal({ onClose }: { onClose?: () => void }) {
+export default function NotificationModal({
+  onClose,
+}: {
+  onClose?: () => void
+}) {
   // Initialize with default data to prevent hydration mismatch.
   const [notifications, setNotifications] =
     useState<Notification[]>(defaultNotifications)
@@ -126,7 +130,7 @@ export default function NotificationModal({ onClose }: { onClose?: () => void })
         {/* Modal Header */}
         <div className="flex justify-between items-center p-3 sm:p-4 relative">
           <h2 className="text-lg sm:text-xl font-bold">Notifications</h2>
-          <div className='flex items-center gap-3'>
+          <div className="flex items-center gap-3">
             <Button
               className="bg-[#272729] text-zinc-400 hover:text-white flex items-center gap-2 px-2 sm:px-3 py-1 sm:py-2 text-xs sm:text-sm"
               onClick={markAllAsRead}

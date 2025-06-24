@@ -129,9 +129,9 @@ export default function WithdrawalModal({
             id="withdrawal-modal-title"
             variant="h4"
             component="h2"
-            sx={{ 
-              color: 'white', 
-              fontWeight: 'bold', 
+            sx={{
+              color: 'white',
+              fontWeight: 'bold',
               fontSize: { xs: 24, sm: 28, md: 36 },
               lineHeight: 1.2,
             }}
@@ -139,10 +139,10 @@ export default function WithdrawalModal({
             Withdraw
           </Typography>
 
-          <Typography 
-            variant="subtitle1" 
-            sx={{ 
-              color: 'gray', 
+          <Typography
+            variant="subtitle1"
+            sx={{
+              color: 'gray',
               mt: 1.5,
               fontSize: { xs: 14, sm: 16 },
               px: 1,
@@ -159,18 +159,18 @@ export default function WithdrawalModal({
             </Box>
             <Box sx={{ minWidth: 0, flex: 1 }}>
               <Typography
-                sx={{ 
-                  color: 'white', 
-                  fontWeight: 'medium', 
+                sx={{
+                  color: 'white',
+                  fontWeight: 'medium',
                   mb: 0.5,
                   fontSize: { xs: 14, sm: 16 },
                 }}
               >
                 Send to a Wallet
               </Typography>
-              <Typography 
-                variant="body2" 
-                sx={{ 
+              <Typography
+                variant="body2"
+                sx={{
                   color: 'gray',
                   fontSize: { xs: 12, sm: 14 },
                 }}
@@ -186,18 +186,18 @@ export default function WithdrawalModal({
             </Box>
             <Box sx={{ minWidth: 0, flex: 1 }}>
               <Typography
-                sx={{ 
-                  color: 'white', 
-                  fontWeight: 'medium', 
+                sx={{
+                  color: 'white',
+                  fontWeight: 'medium',
                   mb: 0.5,
                   fontSize: { xs: 14, sm: 16 },
                 }}
               >
                 Send Via Email
               </Typography>
-              <Typography 
-                variant="body2" 
-                sx={{ 
+              <Typography
+                variant="body2"
+                sx={{
                   color: 'gray',
                   fontSize: { xs: 12, sm: 14 },
                 }}
@@ -213,18 +213,18 @@ export default function WithdrawalModal({
             </Box>
             <Box sx={{ minWidth: 0, flex: 1 }}>
               <Typography
-                sx={{ 
-                  color: 'white', 
-                  fontWeight: 'medium', 
+                sx={{
+                  color: 'white',
+                  fontWeight: 'medium',
                   mb: 0.5,
                   fontSize: { xs: 14, sm: 16 },
                 }}
               >
                 Send QR Code
               </Typography>
-              <Typography 
-                variant="body2" 
-                sx={{ 
+              <Typography
+                variant="body2"
+                sx={{
                   color: 'gray',
                   fontSize: { xs: 12, sm: 14 },
                 }}

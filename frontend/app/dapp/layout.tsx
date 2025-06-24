@@ -70,10 +70,10 @@ export default function DappLayout({ children }: DappLayoutProps) {
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 768)
     }
-    
+
     checkMobile()
     window.addEventListener('resize', checkMobile)
-    
+
     return () => window.removeEventListener('resize', checkMobile)
   }, [])
 
@@ -107,35 +107,29 @@ export default function DappLayout({ children }: DappLayoutProps) {
 
   const pathname = usePathname()
   const selectedPage = getSelectedPage(pathname)
-  
+
   return (
     <div className="bg-black min-h-screen overflow-x-hidden">
-      <Sidebar 
-        navItems={navItems} 
-        selectedPage={selectedPage} 
+      <Sidebar
+        navItems={navItems}
+        selectedPage={selectedPage}
         isMobile={isMobile}
         sidebarExpanded={sidebarExpanded}
         setSidebarExpanded={setSidebarExpanded}
       />
       <div
         className={`transition-all duration-300 ${
-          isMobile 
-            ? 'ml-0' 
-            : sidebarExpanded 
-              ? 'ml-64' 
-              : 'ml-16'
+          isMobile ? 'ml-0' : sidebarExpanded ? 'ml-64' : 'ml-16'
         }`}
       >
         <div className="flex flex-col min-h-screen">
-          <Navbar 
-            title={selectedPage} 
+          <Navbar
+            title={selectedPage}
             isMobile={isMobile}
             setSidebarExpanded={setSidebarExpanded}
           />
           <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-x-hidden">
-            <div className="max-w-full">
-              {children}
-            </div>
+            <div className="max-w-full">{children}</div>
           </main>
         </div>
       </div>

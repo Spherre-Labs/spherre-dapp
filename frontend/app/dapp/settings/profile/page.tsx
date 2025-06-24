@@ -63,9 +63,14 @@ const ProfileContent = () => {
       {!email && (
         <div className="bg-[#1C1D1F] p-3 sm:p-4 rounded-lg flex flex-col sm:flex-row sm:items-center justify-between mb-6 sm:mb-8 gap-3">
           <div className="flex items-start sm:items-center">
-            <Info size={20} className="text-gray-400 mr-3 sm:mr-4 flex-shrink-0 mt-0.5 sm:mt-0" />
+            <Info
+              size={20}
+              className="text-gray-400 mr-3 sm:mr-4 flex-shrink-0 mt-0.5 sm:mt-0"
+            />
             <div>
-              <h3 className="text-white font-semibold text-sm sm:text-base">Add Email Address</h3>
+              <h3 className="text-white font-semibold text-sm sm:text-base">
+                Add Email Address
+              </h3>
               <p className="text-gray-400 text-xs sm:text-sm mt-1">
                 This email will be used to notify you on the account multisig
                 transactions.{' '}
@@ -97,7 +102,9 @@ const ProfileContent = () => {
 
       {/* Display Name */}
       <div className="mb-4 sm:mb-6">
-        <label className="block text-white mb-2 text-sm sm:text-base">Display Name</label>
+        <label className="block text-white mb-2 text-sm sm:text-base">
+          Display Name
+        </label>
         <div className="w-full bg-[#23242a] text-[#8E9BAE] rounded-lg px-3 sm:px-4 py-4 sm:py-6 text-sm sm:text-base">
           {displayName || 'No display name set'}
         </div>
@@ -106,18 +113,24 @@ const ProfileContent = () => {
       {/* Wallet Information */}
       <div className="flex flex-col gap-3 sm:gap-4 mb-6 sm:mb-8">
         <div className="flex-1">
-          <label className="block text-white mb-2 text-sm sm:text-base">Linked Wallet</label>
+          <label className="block text-white mb-2 text-sm sm:text-base">
+            Linked Wallet
+          </label>
           <div className="flex items-center bg-[#23242a] rounded-lg px-3 sm:px-4 py-2 sm:py-3">
             <Image
               src={argent_wallet}
               alt="Argent Wallet"
               className="w-5 h-5 sm:w-6 sm:h-6 mr-3"
             />
-            <span className="text-[#8E9BAE] text-sm sm:text-base">Argent Wallet</span>
+            <span className="text-[#8E9BAE] text-sm sm:text-base">
+              Argent Wallet
+            </span>
           </div>
         </div>
         <div className="flex-1">
-          <label className="block text-white mb-2 text-sm sm:text-base">Wallet ID</label>
+          <label className="block text-white mb-2 text-sm sm:text-base">
+            Wallet ID
+          </label>
           <div className="w-full bg-[#23242a] text-[#8E9BAE] rounded-lg px-3 sm:px-4 py-2 sm:py-3 text-sm sm:text-base">
             {walletId}
           </div>
@@ -126,7 +139,9 @@ const ProfileContent = () => {
 
       {/* Email Address Display */}
       <div className="mb-2">
-        <label className="block text-white mb-2 text-sm sm:text-base">Email Address</label>
+        <label className="block text-white mb-2 text-sm sm:text-base">
+          Email Address
+        </label>
         <div className="flex items-center bg-[#23242a] rounded-lg px-3 sm:px-4 py-4 sm:py-6">
           <span className="flex-1 text-white text-sm sm:text-base">
             {email || 'No email address added'}

@@ -52,7 +52,9 @@ export default function MultisigWalletUI() {
                     <h2 className="text-base sm:text-xl font-semibold text-white">
                       Backstage Boys
                     </h2>
-                    <p className="text-emerald-100 text-xs sm:text-sm">G252...62Ievw</p>
+                    <p className="text-emerald-100 text-xs sm:text-sm">
+                      G252...62Ievw
+                    </p>
                   </div>
                 </div>
 
@@ -63,7 +65,9 @@ export default function MultisigWalletUI() {
                     height={20}
                     alt="profile"
                   />
-                  <span className="text-black text-xs sm:text-sm font-medium">STRK</span>
+                  <span className="text-black text-xs sm:text-sm font-medium">
+                    STRK
+                  </span>
                   <svg
                     className="w-4 h-4 ml-1 text-black"
                     fill="none"
@@ -101,7 +105,9 @@ export default function MultisigWalletUI() {
                   <p className="text-emerald-100 text-xs sm:text-sm mb-1">
                     Available Balance
                   </p>
-                  <p className="text-white text-3xl sm:text-5xl font-bold">$250.00</p>
+                  <p className="text-white text-3xl sm:text-5xl font-bold">
+                    $250.00
+                  </p>
                 </div>
               </div>
             </div>
@@ -165,12 +171,16 @@ export default function MultisigWalletUI() {
                     alt="threshold"
                   />
                   <div className="flex items-center space-x-2">
-                    <p className="text-gray-400 text-xs sm:text-sm">Threshold</p>
+                    <p className="text-gray-400 text-xs sm:text-sm">
+                      Threshold
+                    </p>
                     <HelpCircle className="w-4 h-4 text-gray-500" />
                   </div>
                 </div>
                 <div className="text-right">
-                  <p className="text-2xl sm:text-5xl font-bold text-white">3/5</p>
+                  <p className="text-2xl sm:text-5xl font-bold text-white">
+                    3/5
+                  </p>
                 </div>
               </div>
 
@@ -215,7 +225,9 @@ export default function MultisigWalletUI() {
               <div className="bg-[#272729] rounded-xl p-3 sm:p-6 text-center flex items-center justify-between">
                 <div className="flex flex-col items-start gap-8">
                   <Image src={group} width={30} height={30} alt="group" />
-                  <div className="text-gray-400 text-xs sm:text-sm">Members</div>
+                  <div className="text-gray-400 text-xs sm:text-sm">
+                    Members
+                  </div>
                 </div>
                 <div className="text-4xl font-bold text-white mb-2">
                   {totalMembers}
@@ -226,7 +238,9 @@ export default function MultisigWalletUI() {
               <div className="bg-[#272729] gap-12 rounded-xl p-3 sm:p-6 text-center flex items-center justify-between">
                 <div className="flex flex-col items-start gap-8">
                   <Image src={group} width={30} height={30} alt="group" />
-                  <div className="text-gray-400 text-xs sm:text-sm">Threshold</div>
+                  <div className="text-gray-400 text-xs sm:text-sm">
+                    Threshold
+                  </div>
                 </div>
                 <div className="text-4xl font-bold text-white mb-2">
                   {threshold}/{totalMembers}

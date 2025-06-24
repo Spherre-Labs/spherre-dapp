@@ -17,7 +17,11 @@ interface NavbarProps {
   setSidebarExpanded: (expanded: boolean) => void
 }
 
-const Navbar: React.FC<NavbarProps> = ({ title, isMobile, setSidebarExpanded }) => {
+const Navbar: React.FC<NavbarProps> = ({
+  title,
+  isMobile,
+  setSidebarExpanded,
+}) => {
   const [isNotificationOpen, setIsNotificationOpen] = useState(false)
   const notificationRef = useRef<HTMLDivElement>(null)
   // const { theme, setTheme } = useTheme()
@@ -70,12 +74,15 @@ const Navbar: React.FC<NavbarProps> = ({ title, isMobile, setSidebarExpanded }) 
             <Menu size={20} className="text-white" />
           </button>
         )}
-        
-        <Link href="/" className="text-white font-bold text-lg lg:text-xl truncate">
+
+        <Link
+          href="/"
+          className="text-white font-bold text-lg lg:text-xl truncate"
+        >
           {title}
         </Link>
       </div>
-      
+
       <div className="flex items-center gap-2 lg:gap-4">
         <div className="relative" ref={notificationRef}>
           <div className="w-[20px] h-[20px] hover:opacity-80 transition-opacity cursor-pointer">

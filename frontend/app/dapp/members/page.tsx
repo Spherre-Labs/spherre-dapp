@@ -215,7 +215,9 @@ const Members = () => {
   }
 
   return (
-    <div className={`${nunito.className} bg-black min-h-screen p-3 sm:p-4 lg:p-5 py-6 sm:py-8 lg:py-10 overflow-x-hidden`}>
+    <div
+      className={`${nunito.className} bg-black min-h-screen p-3 sm:p-4 lg:p-5 py-6 sm:py-8 lg:py-10 overflow-x-hidden`}
+    >
       <div className="flex flex-col sm:flex-row text-white justify-between border-b-2 relative border-[#292929] gap-4">
         <div className="flex items-center flex-wrap">
           <p
@@ -233,7 +235,7 @@ const Members = () => {
         </div>
 
         <button
-          className="rounded-[7px] bg-[#6F2FCE] gap-2 sm:gap-[10px] text-xs sm:text-sm lg:text-[14px] font-medium w-full sm:w-auto h-[40px] sm:h-[45px] flex items-center justify-center"
+          className="rounded-[7px] bg-[#6F2FCE] gap-2 sm:gap-[10px] text-xs sm:text-sm lg:text-[14px] font-medium w-full sm:w-auto h-[40px] sm:h-[45px] flex items-center justify-center p-3 mt-[-10px]"
           onClick={() => setIsAddMemberModalOpen(true)}
         >
           <Image

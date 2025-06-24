@@ -114,7 +114,10 @@ export default function Tabs() {
               <div className="w-1/5">Size</div>
             </div>
             {tokens.map((token, index) => (
-              <div key={index} className="flex items-center gap-6 rounded-lg px-3 py-3">
+              <div
+                key={index}
+                className="flex items-center gap-6 rounded-lg px-3 py-3"
+              >
                 <div className="flex items-center gap-1 w-1/5">
                   <Image
                     src={strk}
@@ -134,7 +137,9 @@ export default function Tabs() {
                       style={{ width: token.size }}
                     ></div>
                   </div>
-                  <div className="text-[10px] sm:text-xs mt-1 text-right">{token.size}</div>
+                  <div className="text-[10px] sm:text-xs mt-1 text-right">
+                    {token.size}
+                  </div>
                 </div>
               </div>
             ))}

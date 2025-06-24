@@ -129,12 +129,12 @@ const Sidebar = ({
     <>
       {/* Mobile overlay */}
       {isMobile && isExpanded && (
-        <div 
+        <div
           className="fixed inset-0 bg-black bg-opacity-50 z-20 lg:hidden"
           onClick={() => setSidebarExpanded(false)}
         />
       )}
-      
+
       <aside
         id="sidebar"
         className={`fixed top-0 left-0 h-screen bg-gradient-to-b from-[#1c1d1f] to-[#181a1c] text-white border-r-[1px] border-gray-600 sidebar-transition z-30 ${
@@ -142,8 +142,8 @@ const Sidebar = ({
             ? `w-64 transform transition-transform duration-300 ${
                 isExpanded ? 'translate-x-0' : '-translate-x-full'
               }`
-            : isExpanded 
-              ? 'w-64' 
+            : isExpanded
+              ? 'w-64'
               : 'w-16'
         }`}
         onMouseEnter={() => !isMobile && setExpanded(true)}

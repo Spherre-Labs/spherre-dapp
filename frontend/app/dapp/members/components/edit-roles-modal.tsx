@@ -84,14 +84,18 @@ const EditMemberRolesModal: React.FC<EditMemberRolesModalProps> = ({
               className="rounded-full sm:w-[90px] sm:h-[90px]"
             />
           </div>
-          <div className="text-lg sm:text-2xl text-white font-semibold">{member.name}</div>
+          <div className="text-lg sm:text-2xl text-white font-semibold">
+            {member.name}
+          </div>
         </div>
         {/* Address */}
         <div className="w-full bg-[#23242a] text-[#8E9BAE] rounded-lg px-3 sm:px-4 py-2 sm:py-3 text-center mb-4 sm:mb-6 break-all text-xs sm:text-base">
           {member.fullAddress}
         </div>
         {/* Assign Roles */}
-        <label className="block text-white mb-2 text-sm sm:text-base">Assign Roles</label>
+        <label className="block text-white mb-2 text-sm sm:text-base">
+          Assign Roles
+        </label>
         <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 mb-2">
           {roleOptions.map((role) => {
             const checked = selectedRoles.includes(role.name)
