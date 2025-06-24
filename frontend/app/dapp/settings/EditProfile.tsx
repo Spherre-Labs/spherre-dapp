@@ -17,8 +17,8 @@ export default function EditProfile({ onCancel }: EditProfileProps) {
 
   // Image sources - make sure these paths exist in your public folder
   const profile_image = '/images/placeholder-profile.jpg'
-  const capture_icon = '/icons/camera-icon.svg'
-  const argent_wallet = '/icons/argent-wallet-icon.svg'
+  // const capture_icon = '/icons/camera-icon.svg'
+  // const argent_wallet = '/icons/argent-wallet-icon.svg'
 
   const walletName = 'Argent Wallet'
   const walletId = '352By...wtuya'
