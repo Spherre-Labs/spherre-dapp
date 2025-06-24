@@ -1,61 +1,53 @@
 import React, { useState } from 'react'
-import { X } from 'lucide-react'
 
 interface AddEmailModalProps {
-  isOpen: boolean
+  open: boolean
   onClose: () => void
-  onSave: (email: string) => void
+  onSign: (email: string) => void
 }
 
 const AddEmailModal: React.FC<AddEmailModalProps> = ({
-  isOpen,
+  open,
   onClose,
-  onSave,
+  onSign,
 }) => {
   const [email, setEmail] = useState('')
 
-  if (!isOpen) return null
-
-  const handleSave = () => {
-    onSave(email)
-    onClose()
-  }
+  if (!open) return null
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 backdrop-blur">
-      <div className="bg-[#1C1D1F] p-8 rounded-lg shadow-lg w-full max-w-md relative">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60">
+      <div className="bg-[#232325] rounded-xl p-8 w-full max-w-md relative shadow-lg">
         <button
+          className="absolute top-4 right-4 text-gray-400 hover:text-white text-2xl"
           onClick={onClose}
-          className="absolute top-4 right-4 text-gray-400 hover:text-white"
         >
-          <X size={24} />
+          &times;
         </button>
-        <h2 className="text-2xl font-bold text-white mb-2">
-          Edit Email Address
+        <h2 className="text-2xl font-bold text-white mb-2 text-center">
+          Add Email Address
         </h2>
-        <p className="text-gray-400 mb-6">
+        <p className="text-[#8E9BAE] text-center mb-6">
           Please provide your email address and sign the message to add it.
         </p>
-        <div className="mb-6">
-          <label className="block text-white mb-2">Email Address</label>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="w-full bg-[#23242a] text-white rounded-lg px-4 py-3"
-            placeholder="johndoe@gmail.com"
-          />
-        </div>
+        <label className="block text-white mb-2">Email Address</label>
+        <input
+          type="email"
+          className="w-full mb-6 px-4 py-3 rounded-lg bg-[#29292A] text-white border-gray-700 focus:outline-none"
+          placeholder="johndoe@gmail.com"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
         <div className="flex gap-4">
           <button
+            className="flex-1 bg-[#272729] text-white rounded-[7px] px-6 py-3 font-semibold transition"
             onClick={onClose}
-            className="flex-1 bg-gray-700 text-white px-6 py-3 rounded-lg"
           >
             Close
           </button>
           <button
-            onClick={handleSave}
-            className="flex-1 bg-[#6F2FCE] text-white px-6 py-3 rounded-lg"
+            className="flex-1 bg-[#6F2FCE] hover:bg-[#7d5fff] text-white rounded-[7px] px-6 py-3 font-semibold transition"
+            onClick={() => onSign(email)}
           >
             Sign Message
           </button>

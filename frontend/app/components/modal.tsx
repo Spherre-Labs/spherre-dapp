@@ -14,7 +14,9 @@ const style = {
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
-  width: 583,
+  width: '90%',
+  maxWidth: 583,
+  minWidth: 320,
   bgcolor: '#1e1e1e',
   boxShadow: 24,
   borderRadius: '12px',
@@ -23,18 +25,21 @@ const style = {
   alignItems: 'center',
   p: 0,
   zIndex: 1300,
+  maxHeight: '90vh',
+  overflow: 'auto',
 }
 
 const headerStyle = {
   width: '100%',
   textAlign: 'center',
-  pt: 4,
+  pt: 3,
   pb: 2,
+  px: 2,
 }
 
 const optionsContainerStyle = {
   width: '100%',
-  padding: '0 30px 30px 30px',
+  padding: '0 20px 20px 20px',
   display: 'flex',
   flexDirection: 'column',
   gap: 2,
@@ -44,7 +49,7 @@ const optionStyle = {
   width: '100%',
   bgcolor: '#272727',
   borderRadius: '8px',
-  p: 3,
+  p: 2,
   cursor: 'pointer',
   display: 'flex',
   alignItems: 'center',
@@ -55,16 +60,17 @@ const optionStyle = {
 
 const iconStyle = {
   color: 'white',
-  fontSize: 24,
-  mr: 3,
+  fontSize: 20,
+  mr: 2,
 }
 
 const iconContainerStyle = {
-  width: 30,
-  height: 30,
+  width: 24,
+  height: 24,
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
+  flexShrink: 0,
 }
 
 // Custom backdrop style with blur effect
@@ -123,12 +129,25 @@ export default function WithdrawalModal({
             id="withdrawal-modal-title"
             variant="h4"
             component="h2"
-            sx={{ color: 'white', fontWeight: 'bold', fontSize: 36 }}
+            sx={{
+              color: 'white',
+              fontWeight: 'bold',
+              fontSize: { xs: 24, sm: 28, md: 36 },
+              lineHeight: 1.2,
+            }}
           >
             Withdraw
           </Typography>
 
-          <Typography variant="subtitle1" sx={{ color: 'gray', mt: 1.5 }}>
+          <Typography
+            variant="subtitle1"
+            sx={{
+              color: 'gray',
+              mt: 1.5,
+              fontSize: { xs: 14, sm: 16 },
+              px: 1,
+            }}
+          >
             Choose a preferred withdrawal process
           </Typography>
         </Box>
@@ -138,13 +157,24 @@ export default function WithdrawalModal({
             <Box sx={iconContainerStyle}>
               <AccountBalanceWalletOutlinedIcon sx={iconStyle} />
             </Box>
-            <Box>
+            <Box sx={{ minWidth: 0, flex: 1 }}>
               <Typography
-                sx={{ color: 'white', fontWeight: 'medium', mb: 0.5 }}
+                sx={{
+                  color: 'white',
+                  fontWeight: 'medium',
+                  mb: 0.5,
+                  fontSize: { xs: 14, sm: 16 },
+                }}
               >
                 Send to a Wallet
               </Typography>
-              <Typography variant="body2" sx={{ color: 'gray' }}>
+              <Typography
+                variant="body2"
+                sx={{
+                  color: 'gray',
+                  fontSize: { xs: 12, sm: 14 },
+                }}
+              >
                 Send to an external wallet address.
               </Typography>
             </Box>
@@ -154,13 +184,24 @@ export default function WithdrawalModal({
             <Box sx={iconContainerStyle}>
               <EmailOutlinedIcon sx={iconStyle} />
             </Box>
-            <Box>
+            <Box sx={{ minWidth: 0, flex: 1 }}>
               <Typography
-                sx={{ color: 'white', fontWeight: 'medium', mb: 0.5 }}
+                sx={{
+                  color: 'white',
+                  fontWeight: 'medium',
+                  mb: 0.5,
+                  fontSize: { xs: 14, sm: 16 },
+                }}
               >
                 Send Via Email
               </Typography>
-              <Typography variant="body2" sx={{ color: 'gray' }}>
+              <Typography
+                variant="body2"
+                sx={{
+                  color: 'gray',
+                  fontSize: { xs: 12, sm: 14 },
+                }}
+              >
                 Send tokens and funds via email.
               </Typography>
             </Box>
@@ -170,13 +211,24 @@ export default function WithdrawalModal({
             <Box sx={iconContainerStyle}>
               <QrCodeScannerOutlinedIcon sx={iconStyle} />
             </Box>
-            <Box>
+            <Box sx={{ minWidth: 0, flex: 1 }}>
               <Typography
-                sx={{ color: 'white', fontWeight: 'medium', mb: 0.5 }}
+                sx={{
+                  color: 'white',
+                  fontWeight: 'medium',
+                  mb: 0.5,
+                  fontSize: { xs: 14, sm: 16 },
+                }}
               >
                 Send QR Code
               </Typography>
-              <Typography variant="body2" sx={{ color: 'gray' }}>
+              <Typography
+                variant="body2"
+                sx={{
+                  color: 'gray',
+                  fontSize: { xs: 12, sm: 14 },
+                }}
+              >
                 Send to an external wallet address by scanning QR code.
               </Typography>
             </Box>

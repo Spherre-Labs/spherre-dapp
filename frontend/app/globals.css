@@ -22,6 +22,124 @@ body {
   color: var(--foreground);
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
+  overflow-x: hidden;
+}
+
+/* Responsive container */
+.container-responsive {
+  width: 100%;
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+@media (min-width: 640px) {
+  .container-responsive {
+    padding: 0 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .container-responsive {
+    padding: 0 2rem;
+  }
+}
+
+/* Prevent horizontal overflow */
+* {
+  box-sizing: border-box;
+}
+
+/* Responsive text utilities */
+.text-responsive-xs {
+  font-size: 0.75rem;
+  line-height: 1rem;
+}
+
+.text-responsive-sm {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+.text-responsive-base {
+  font-size: 1rem;
+  line-height: 1.5rem;
+}
+
+.text-responsive-lg {
+  font-size: 1.125rem;
+  line-height: 1.75rem;
+}
+
+.text-responsive-xl {
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+}
+
+@media (min-width: 640px) {
+  .text-responsive-xs {
+    font-size: 0.875rem;
+  }
+
+  .text-responsive-sm {
+    font-size: 1rem;
+  }
+
+  .text-responsive-base {
+    font-size: 1.125rem;
+  }
+
+  .text-responsive-lg {
+    font-size: 1.25rem;
+  }
+
+  .text-responsive-xl {
+    font-size: 1.5rem;
+  }
+}
+
+/* Responsive spacing */
+.space-responsive {
+  gap: 0.5rem;
+}
+
+@media (min-width: 640px) {
+  .space-responsive {
+    gap: 1rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .space-responsive {
+    gap: 1.5rem;
+  }
+}
+
+/* Mobile-first responsive grid */
+.grid-responsive {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+@media (min-width: 640px) {
+  .grid-responsive {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .grid-responsive {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  .grid-responsive {
+    grid-template-columns: repeat(4, 1fr);
+  }
 }
 
 .bg-wallet {
@@ -200,6 +318,13 @@ body {
   opacity: 0;
   transition: opacity 0.3s;
   white-space: nowrap;
+  font-size: 0.75rem;
+}
+
+@media (min-width: 640px) {
+  .sidebar-tooltip .tooltip-text {
+    font-size: 0.875rem;
+  }
 }
 
 .sidebar-tooltip:hover .tooltip-text {
@@ -292,6 +417,43 @@ body {
 
   .sidebar-mobile.hidden {
     transform: translateX(-100%);
+  }
+
+  /* Mobile-specific responsive adjustments */
+  .mobile-text-sm {
+    font-size: 0.75rem;
+  }
+
+  .mobile-text-base {
+    font-size: 0.875rem;
+  }
+
+  .mobile-text-lg {
+    font-size: 1rem;
+  }
+
+  .mobile-p-2 {
+    padding: 0.5rem;
+  }
+
+  .mobile-p-3 {
+    padding: 0.75rem;
+  }
+
+  .mobile-p-4 {
+    padding: 1rem;
+  }
+
+  .mobile-gap-2 {
+    gap: 0.5rem;
+  }
+
+  .mobile-gap-3 {
+    gap: 0.75rem;
+  }
+
+  .mobile-gap-4 {
+    gap: 1rem;
   }
 }
 
@@ -399,4 +561,97 @@ body {
 }
 .notification-scrollbar::-webkit-scrollbar-thumb:active {
   background-color: #374151;
+}
+
+/* Responsive utilities for common patterns */
+.responsive-container {
+  width: 100%;
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+@media (min-width: 640px) {
+  .responsive-container {
+    padding: 0 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .responsive-container {
+    padding: 0 2rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  .responsive-container {
+    padding: 0 2.5rem;
+  }
+}
+
+/* Ensure no horizontal scroll on mobile */
+html,
+body {
+  overflow-x: hidden;
+  width: 100%;
+}
+
+/* Responsive image handling */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Responsive table handling */
+table {
+  width: 100%;
+  overflow-x: auto;
+  display: block;
+}
+
+@media (min-width: 768px) {
+  table {
+    display: table;
+  }
+}
+
+/* Responsive form elements */
+input,
+textarea,
+select {
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* Responsive button sizing */
+.btn-responsive {
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+}
+
+@media (min-width: 640px) {
+  .btn-responsive {
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+  }
+}
+
+/* Responsive card layouts */
+.card-responsive {
+  padding: 1rem;
+  margin: 0.5rem;
+}
+
+@media (min-width: 640px) {
+  .card-responsive {
+    padding: 1.5rem;
+    margin: 1rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .card-responsive {
+    padding: 2rem;
+    margin: 1.5rem;
+  }
 }

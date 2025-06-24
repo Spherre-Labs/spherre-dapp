@@ -24,6 +24,7 @@ interface DappLayoutProps {
 export default function DappLayout({ children }: DappLayoutProps) {
   // State to track sidebar expansion
   const [sidebarExpanded, setSidebarExpanded] = useState(false)
+  const [isMobile, setIsMobile] = useState(false)
 
   // Define navigation items
   const navItems: NavItem[] = [
@@ -63,39 +64,73 @@ export default function DappLayout({ children }: DappLayoutProps) {
       route: '/dapp/support',
     },
   ]
+
+  // Check for mobile screen size
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768)
+    }
+
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
+
   // Listen for sidebar expansion state changes
   useEffect(() => {
     const sidebar = document.getElementById('sidebar')
 
-    const handleSidebarHover = () => setSidebarExpanded(true)
-    const handleSidebarLeave = () => setSidebarExpanded(false)
+    const handleSidebarHover = () => {
+      if (!isMobile) {
+        setSidebarExpanded(true)
+      }
+    }
+    const handleSidebarLeave = () => {
+      if (!isMobile) {
+        setSidebarExpanded(false)
+      }
+    }
 
-    if (sidebar) {
+    if (sidebar && !isMobile) {
       sidebar.addEventListener('mouseenter', handleSidebarHover)
       sidebar.addEventListener('mouseleave', handleSidebarLeave)
     }
 
     return () => {
-      if (sidebar) {
+      if (sidebar && !isMobile) {
         sidebar.removeEventListener('mouseenter', handleSidebarHover)
         sidebar.removeEventListener('mouseleave', handleSidebarLeave)
       }
     }
-  }, [])
+  }, [isMobile])
 
   const pathname = usePathname()
   const selectedPage = getSelectedPage(pathname)
+
   return (
-    <div className="bg-black">
-      <Sidebar navItems={navItems} selectedPage={selectedPage} />
+    <div className="bg-black min-h-screen overflow-x-hidden">
+      <Sidebar
+        navItems={navItems}
+        selectedPage={selectedPage}
+        isMobile={isMobile}
+        sidebarExpanded={sidebarExpanded}
+        setSidebarExpanded={setSidebarExpanded}
+      />
       <div
         className={`transition-all duration-300 ${
-          sidebarExpanded ? 'ml-64' : 'ml-16'
+          isMobile ? 'ml-0' : sidebarExpanded ? 'ml-64' : 'ml-16'
         }`}
       >
         <div className="flex flex-col min-h-screen">
-          <Navbar title={selectedPage} />
-          <main className="flex-1 p-8">{children}</main>
+          <Navbar
+            title={selectedPage}
+            isMobile={isMobile}
+            setSidebarExpanded={setSidebarExpanded}
+          />
+          <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-x-hidden">
+            <div className="max-w-full">{children}</div>
+          </main>
         </div>
       </div>
     </div>
