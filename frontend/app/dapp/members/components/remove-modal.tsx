@@ -126,6 +126,7 @@ const RemoveMemberModal: React.FC<RemoveMemberModalProps> = ({
           <div className="flex gap-2 sm:gap-3 flex-wrap">
             {member.roles.map((role) => (
               <div
+                key={role}
                 className={`flex items-center justify-center text-xs sm:text-[14px] px-2 sm:px-4 py-1 sm:py-2 border-[1px] rounded-full font-medium ${roleColors[role as keyof typeof roleColors]}`}
               >
                 {role}
