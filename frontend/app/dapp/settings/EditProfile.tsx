@@ -1,187 +1,237 @@
 'use client'
+
+import React, { useState } from 'react'
 import Image from 'next/image'
-import React, { useState, useEffect } from 'react'
-import profile_image from '@/public/Images/profile2.png'
-import capture_icon from '@/public/Images/capture.png'
-import argent_wallet from '@/public/Images/argent_logo.png'
 import { useRouter } from 'next/navigation'
 
-const validateDisplayName = (name: string) => name.trim().length >= 3
-const validateEmail = (email: string) =>
-  email.includes('@') && email.includes('.')
+interface EditProfileProps {
+  onCancel?: () => void
+}
 
-const EditProfileContent = () => {
-  const router = useRouter()
+export default function EditProfile({ onCancel }: EditProfileProps) {
   const [displayName, setDisplayName] = useState('')
-  const [email, setEmail] = useState('')
+  const [email, setEmail] = useState('jacklovermacazie@gmail.com')
   const [editingEmail, setEditingEmail] = useState(false)
-  const [walletId] = useState('352By...wtuya')
-  const [showSuccess, setShowSuccess] = useState(false)
 
-  // Load existing profile data from sessionStorage on mount
-  useEffect(() => {
-    const savedData = sessionStorage.getItem('profileData')
-    if (savedData) {
-      const profileData = JSON.parse(savedData)
-      if (profileData.displayName) setDisplayName(profileData.displayName)
-      if (profileData.email) setEmail(profileData.email)
-    }
-  }, [])
+  const router = useRouter()
 
-  const isDisplayNameValid = validateDisplayName(displayName)
-  const isEmailValid = validateEmail(email)
-  const isFormValid = isDisplayNameValid && isEmailValid
+  // Image sources - make sure these paths exist in your public folder
+  const profile_image = '/images/placeholder-profile.jpg'
+  const capture_icon = '/icons/camera-icon.svg'
+  const argent_wallet = '/icons/argent-wallet-icon.svg'
+
+  const walletName = 'Argent Wallet'
+  const walletId = '352By...wtuya'
+
+  // Validation logic
+  const isDisplayNameValid = displayName.length >= 3 || displayName.length === 0
+  const isEmailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
+  const isFormValid = displayName.length >= 3 && isEmailValid
 
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault()
-    if (!isFormValid) return
+    if (isFormValid) {
+      // Handle save logic here
+      console.log('Saving profile...', { displayName, email })
 
-    // Save updated profile to sessionStorage
-    sessionStorage.setItem(
-      'profileData',
-      JSON.stringify({ displayName, email }),
-    )
+      // Show success message or handle response
+      alert('Profile saved successfully!')
 
-    setShowSuccess(true)
-    setTimeout(() => {
-      setShowSuccess(false)
-      // Redirect to profile page after showing success
-      router.push('/dapp/settings/profile')
-    }, 1200)
+      if (onCancel) {
+        onCancel()
+      }
+    }
   }
 
   const handleEmailEdit = () => {
-    setEditingEmail((e) => !e)
+    if (editingEmail) {
+      // Save email logic
+      if (isEmailValid) {
+        setEditingEmail(false)
+        console.log('Email saved:', email)
+      } else {
+        alert('Please enter a valid email address')
+      }
+    } else {
+      setEditingEmail(true)
+    }
+  }
+
+  const handleCancel = () => {
+    // Reset form to original state
+    setDisplayName('')
+    setEmail('jacklovermacazie@gmail.com')
+    setEditingEmail(false)
+
+    if (onCancel) {
+      onCancel()
+    } else {
+      router.push('/dapp/settings/profile')
+    }
   }
 
   return (
-    <form className="w-full px-0" onSubmit={handleSave} autoComplete="off">
-      {/* Avatar and camera icon */}
-      <div className="flex items-center mb-8">
-        <div className="relative w-[100px] h-[100px] group">
-          <Image
-            src={profile_image}
-            alt="Profile"
-            className="w-full h-full rounded-full object-cover bg-[#23242a] transition-opacity duration-200 group-hover:opacity-60"
-          />
-          <button
-            className="absolute bottom-6 right-7 border-2 border-white rounded-full p-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
-            tabIndex={-1}
-            type="button"
-          >
-            <Image src={capture_icon} alt="Edit" className="w-6 h-6" />
-          </button>
+    <div className="w-full max-w-2xl mx-auto bg-[#1a1b23] min-h-screen p-6">
+      <form className="w-full" onSubmit={handleSave} autoComplete="off">
+        {/* Header */}
+        <div className="mb-8">
+          <h1 className="text-2xl font-bold text-white mb-2">Edit Profile</h1>
+          <p className="text-[#8E9BAE]">Update your profile information</p>
         </div>
-      </div>
 
-      {/* Display Name */}
-      <div className="mb-6">
-        <label className="block text-white mb-2">Display Name</label>
-        <input
-          type="text"
-          className={`w-full bg-[#23242a] text-[#8E9BAE] rounded-lg px-4 py-3 outline-none border ${
-            isDisplayNameValid ? 'border-none' : 'border-red-500'
-          }`}
-          placeholder="Enter your display name"
-          value={displayName}
-          onChange={(e) => setDisplayName(e.target.value)}
-        />
-        {!isDisplayNameValid && (
-          <span className="text-red-500 text-sm">
-            Display name must be at least 3 characters.
-          </span>
-        )}
-      </div>
-
-      {/* Linked Wallet and Wallet ID */}
-      <div className="flex flex-col md:flex-row gap-4 mb-8">
-        <div className="flex-1">
-          <label className="block text-white mb-2">Linked Wallet</label>
-          <div className="flex items-center bg-[#23242a] rounded-lg px-4 py-3">
-            <Image
-              src={argent_wallet}
-              alt="Argent Wallet"
-              className="w-6 h-6 mr-3"
-            />
-            <span className="text-[#8E9BAE]">Argent Wallet</span>
+        {/* Avatar and camera icon */}
+        <div className="flex items-center mb-8">
+          <div className="relative w-[100px] h-[100px] group">
+            <div className="w-full h-full rounded-full bg-[#23242a] overflow-hidden">
+              <Image
+                src={profile_image}
+                alt="Profile"
+                width={100}
+                height={100}
+                className="w-full h-full object-cover transition-opacity duration-200 group-hover:opacity-60"
+                onError={(e) => {
+                  // Fallback if image doesn't exist
+                  const target = e.target as HTMLImageElement
+                  target.style.display = 'none'
+                }}
+              />
+            </div>
+            <button
+              className="absolute bottom-2 right-2 bg-[#a259ff] border-2 border-white rounded-full p-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 hover:bg-[#7c3aed]"
+              tabIndex={-1}
+              type="button"
+              onClick={() => console.log('Open image picker')}
+            >
+              <svg
+                className="w-4 h-4 text-white"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"
+                />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"
+                />
+              </svg>
+            </button>
           </div>
         </div>
-        <div className="flex-1">
-          <label className="block text-white mb-2">Wallet ID</label>
+
+        {/* Display Name */}
+        <div className="mb-6">
+          <label className="block text-white mb-2 font-medium">
+            Display Name
+          </label>
           <input
             type="text"
-            className="w-full bg-[#23242a] text-[#8E9BAE] rounded-lg px-4 py-3 outline-none border-none"
-            value={walletId}
-            disabled
+            className={`w-full bg-[#23242a] text-white placeholder-[#8E9BAE] rounded-lg px-4 py-3 outline-none transition-colors focus:ring-2 focus:ring-[#a259ff] ${
+              !isDisplayNameValid && displayName.length > 0
+                ? 'border border-red-500'
+                : 'border border-transparent'
+            }`}
+            placeholder="Enter your display name"
+            value={displayName}
+            onChange={(e) => setDisplayName(e.target.value)}
           />
+          {!isDisplayNameValid && displayName.length > 0 && (
+            <span className="text-red-500 text-sm mt-1 block">
+              Display name must be at least 3 characters.
+            </span>
+          )}
         </div>
-      </div>
 
-      {/* Email Address */}
-      <div className="mb-2">
-        <label className="block text-white mb-2">Email Address</label>
-        <div
-          className={`flex items-center bg-[#23242a] rounded-lg px-4 py-3 ${
-            isEmailValid ? '' : 'border border-red-500'
-          }`}
-        >
-          <input
-            type="email"
-            className="flex-1 bg-transparent text-white outline-none border-none"
-            value={email}
-            disabled={!editingEmail}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-          <button
-            className="ml-4 bg-white text-black px-4 py-2 rounded"
-            type="button"
-            onClick={handleEmailEdit}
+        {/* Linked Wallet and Wallet ID */}
+        <div className="flex flex-col md:flex-row gap-4 mb-8">
+          <div className="flex-1">
+            <label className="block text-white mb-2 font-medium">
+              Linked Wallet
+            </label>
+            <div className="flex items-center bg-[#23242a] rounded-lg px-4 py-3 border border-transparent">
+              <div className="w-6 h-6 bg-orange-500 rounded-full mr-3 flex items-center justify-center">
+                <span className="text-white text-xs font-bold">A</span>
+              </div>
+              <span className="text-[#8E9BAE]">{walletName}</span>
+            </div>
+          </div>
+          <div className="flex-1">
+            <label className="block text-white mb-2 font-medium">
+              Wallet ID
+            </label>
+            <input
+              type="text"
+              className="w-full bg-[#23242a] text-[#8E9BAE] rounded-lg px-4 py-3 outline-none border border-transparent cursor-not-allowed"
+              value={walletId}
+              disabled
+              readOnly
+            />
+          </div>
+        </div>
+
+        {/* Email Address */}
+        <div className="mb-8">
+          <label className="block text-white mb-2 font-medium">
+            Email Address
+          </label>
+          <div
+            className={`flex items-center bg-[#23242a] rounded-lg px-4 py-3 transition-colors ${
+              editingEmail ? 'ring-2 ring-[#a259ff]' : ''
+            } ${!isEmailValid && editingEmail ? 'border border-red-500' : 'border border-transparent'}`}
           >
-            {editingEmail ? 'Save Email' : 'Edit Email Address'}
+            <input
+              type="email"
+              className="flex-1 bg-transparent text-white outline-none placeholder-[#8E9BAE]"
+              value={email}
+              disabled={!editingEmail}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Enter your email address"
+            />
+            <button
+              className="bg-white text-black rounded-lg px-4 py-2 font-medium ml-4 hover:bg-gray-100 transition-colors text-sm"
+              type="button"
+              onClick={handleEmailEdit}
+            >
+              {editingEmail ? 'Save' : 'Edit'}
+            </button>
+          </div>
+          {!isEmailValid && editingEmail && (
+            <span className="text-red-500 text-sm mt-1 block">
+              Please enter a valid email address.
+            </span>
+          )}
+          <p className="text-[#8E9BAE] text-sm mt-2">
+            This email will be used to notify you about multisig transactions.{' '}
+            <a href="#" className="text-[#a259ff] hover:underline">
+              Learn More
+            </a>
+          </p>
+        </div>
+
+        {/* Save/Cancel Buttons */}
+        <div className="flex flex-col sm:flex-row gap-4 mt-8">
+          <button
+            className="bg-[#a259ff] text-white px-8 py-3 rounded-lg font-semibold hover:bg-[#7c3aed] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex-1 sm:flex-initial"
+            type="submit"
+            disabled={!isFormValid}
+          >
+            Save Changes
+          </button>
+          <button
+            className="bg-[#23242a] text-white px-8 py-3 rounded-lg font-semibold hover:bg-[#2a2b32] transition-colors flex-1 sm:flex-initial"
+            type="button"
+            onClick={handleCancel}
+          >
+            Cancel
           </button>
         </div>
-        {!isEmailValid && (
-          <span className="text-red-500 text-sm">
-            Enter a valid email address.
-          </span>
-        )}
-      </div>
-      <p className="text-[#8E9BAE] text-sm mt-4">
-        This email will be used to notify you on the account multisig
-        transactions{' '}
-        <a href="#" className="text-[#a259ff]">
-          <em>Learn More</em>
-        </a>
-      </p>
-
-      {/* Save/Cancel Buttons */}
-      <div className="flex gap-4 mt-8">
-        <button
-          className="bg-[#a259ff] text-white px-8 py-3 rounded-lg font-semibold text-lg hover:bg-[#7c3aed] transition disabled:opacity-50"
-          type="submit"
-          disabled={!isFormValid}
-        >
-          Save Changes
-        </button>
-        <button
-          className="bg-[#23242a] text-white px-8 py-3 rounded-lg font-semibold text-lg hover:bg-[#23242a]/80 transition"
-          type="button"
-          onClick={() => router.push('/dapp/settings/profile')}
-        >
-          Cancel
-        </button>
-      </div>
-
-      {/* Success Message */}
-      {showSuccess && (
-        <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-[#f3e8ff] border border-[#6F2FCE] text-white px-6 py-3 rounded-lg shadow-lg font-semibold z-50">
-          Profile updated successfully!
-        </div>
-      )}
-    </form>
+      </form>
+    </div>
   )
-}
-
-export default function Page() {
-  return <EditProfileContent />
 }
