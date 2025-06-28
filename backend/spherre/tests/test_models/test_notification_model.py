@@ -2,7 +2,6 @@ from unittest import TestCase
 
 from spherre.app import create_app
 from spherre.app.extensions import db
-from spherre.app.models import Notification, NotificationType
 
 
 class TestNotificationModel(TestCase):
