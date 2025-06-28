@@ -17,10 +17,10 @@ class TestTransactionModel(TestCase):
         db.drop_all()
         self.ctx.pop()
 
-    def test_create_transaction_model():
+    def test_create_transaction_model(self):
         # TODO: write test case for creating transactions
         pass
 
-    def test_update_transaction_model():
+    def test_update_transaction_model(self):
         # TODO: write test case for updating transactions
         pass

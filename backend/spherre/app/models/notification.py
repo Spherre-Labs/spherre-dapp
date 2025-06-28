@@ -22,7 +22,7 @@ notification_readers = db.Table(
     "notification_readers",
     db.Column(
         "notification_id",
-        db.Integer,
+        db.String,
         db.ForeignKey("notifications.id"),
         primary_key=True,
     ),

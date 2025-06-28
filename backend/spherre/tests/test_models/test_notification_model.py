@@ -17,10 +17,10 @@ class TestNotificationModel(TestCase):
         db.drop_all()
         self.ctx.pop()
 
-    def test_create_notification_model():
+    def test_create_notification_model(self):
         # TODO: write test case for creating notifications
         pass
 
-    def test_update_notification_model():
+    def test_update_notification_model(self):
         # TODO: write test case for updating notifications
         pass
