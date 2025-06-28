@@ -16,6 +16,9 @@ class Account(ModelMixin, db.Model):
     is_private = db.Column(db.Boolean, default=True)
     threshold = db.Column(db.Integer)
     members = db.relationship("Member", secondary=account_members, backref="accounts")
+    transactions = db.relationship(
+        "Transaction", backref="account", lazy=True, cascade="all, delete-orphan"
+    )
 
     def __repr__(self):
         return f"<Account {self.name} >"
