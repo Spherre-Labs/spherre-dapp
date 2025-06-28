@@ -1,6 +1,6 @@
 import enum
 
-from sqlalchemy import Enum
+from sqlalchemy import JSON, Enum
 
 from spherre.app.extensions import db
 from spherre.app.models.base import ModelMixin
@@ -81,4 +81,4 @@ class Transaction(ModelMixin, db.Model):
     )
     date_created = db.Column(db.DateTime, default=db.func.current_timestamp())
     date_executed = db.Column(db.DateTime, nullable=True)
-    data = db.Column(db.JSON, nullable=True)
+    data = db.Column(JSON, nullable=True)
