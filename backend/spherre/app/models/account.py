@@ -1,17 +1,11 @@
 from spherre.app.extensions import db
 from spherre.app.models.base import ModelMixin
 
-
-
-
 account_members = db.Table(
     "account_members",
     db.Column("account_id", db.String, db.ForeignKey("accounts.id"), primary_key=True),
     db.Column("member_id", db.String, db.ForeignKey("members.id"), primary_key=True),
 )
-
-
-
 
 
 class Account(ModelMixin, db.Model):

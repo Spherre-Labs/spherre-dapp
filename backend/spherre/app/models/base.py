@@ -3,9 +3,11 @@ from datetime import datetime
 
 from spherre.app.extensions import db
 
+
 def generate_uuid():
     """Generate UUID4 as string"""
     return str(uuid.uuid4())
+
 
 class ModelMixin:
     id = db.Column(db.String(36), primary_key=True, default=generate_uuid)
