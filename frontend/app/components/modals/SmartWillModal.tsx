@@ -2,6 +2,7 @@
 
 import { X } from 'lucide-react'
 import Image from 'next/image'
+import { useEffect } from 'react'
 
 interface SmartWillModalProps {
   setIsModalOpen: (isOpen: boolean) => void
@@ -10,12 +11,29 @@ interface SmartWillModalProps {
 export default function SmartWillModal({
   setIsModalOpen,
 }: SmartWillModalProps) {
+  useEffect(() => {
+    const handleEsc = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setIsModalOpen(false)
+      }
+    }
+
+    window.addEventListener('keydown', handleEsc)
+    return () => window.removeEventListener('keydown', handleEsc)
+  }, [setIsModalOpen])
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm px-4">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm px-4"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="modal-title"
+    >
       <div className="relative bg-[#1C1D1F] border border-[#292929] rounded-lg shadow-lg w-full max-w-xl px-4 sm:px-6 md:px-8 py-8">
         <button
           className="absolute top-4 right-4 z-10 p-1 rounded-full bg-gray-800/50 hover:bg-gray-800/70"
           onClick={() => setIsModalOpen(false)}
+          aria-label="Close modal"
         >
           <X className="w-5 h-5 text-[#8E9BAE]" />
         </button>
@@ -73,7 +91,10 @@ export default function SmartWillModal({
         </div>
 
         <div className="mt-16 text-center">
-          <h2 className="text-xl sm:text-2xl font-bold text-white mb-2">
+          <h2
+            id="modal-title"
+            className="text-xl sm:text-2xl font-bold text-white mb-2"
+          >
             SmartWill
           </h2>
           <p className="max-sm:text-xs text-sm text-gray-400 mb-4">
