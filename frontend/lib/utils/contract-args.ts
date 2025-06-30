@@ -1,5 +1,5 @@
-import { isValidStarknetAddress } from "./validation"
-import type { U256, PermissionEnum } from "../contracts/types"
+import { isValidStarknetAddress } from './validation'
+import type { U256, PermissionEnum } from '../contracts/types'
 
 // Type for resolver functions - accepts unknown and returns any type
 type ResolverFunction<T = unknown> = (value: unknown) => T
@@ -21,7 +21,7 @@ export class ContractArgsResolver {
    */
   static resolveAddressArray(addresses: string[]): string[] {
     if (!Array.isArray(addresses) || addresses.length === 0) {
-      throw new Error("Address array cannot be empty")
+      throw new Error('Address array cannot be empty')
     }
 
     return addresses.map((addr, index) => {
@@ -38,11 +38,13 @@ export class ContractArgsResolver {
    */
   static resolveThreshold(threshold: number, memberCount: number): bigint {
     if (!Number.isInteger(threshold) || threshold < 1) {
-      throw new Error("Threshold must be a positive integer")
+      throw new Error('Threshold must be a positive integer')
     }
 
     if (threshold > memberCount) {
-      throw new Error(`Threshold (${threshold}) cannot exceed member count (${memberCount})`)
+      throw new Error(
+        `Threshold (${threshold}) cannot exceed member count (${memberCount})`,
+      )
     }
 
     return BigInt(threshold)
@@ -52,11 +54,11 @@ export class ContractArgsResolver {
    * Validates and formats U256 value
    */
   static resolveU256(value: U256): bigint {
-    if (typeof value === "bigint") {
+    if (typeof value === 'bigint') {
       return value
     }
 
-    if (typeof value === "string") {
+    if (typeof value === 'string') {
       try {
         return BigInt(value)
       } catch {
@@ -64,7 +66,7 @@ export class ContractArgsResolver {
       }
     }
 
-    if (typeof value === "number") {
+    if (typeof value === 'number') {
       if (!Number.isInteger(value) || value < 0) {
         throw new Error(`Invalid U256 number: ${value}`)
       }
@@ -79,12 +81,12 @@ export class ContractArgsResolver {
    */
   static resolvePermissionMask(permissions: PermissionEnum[]): number {
     if (!Array.isArray(permissions)) {
-      throw new Error("Permissions must be an array")
+      throw new Error('Permissions must be an array')
     }
 
     let mask = 0
     for (const permission of permissions) {
-      if (typeof permission !== "number" || permission < 0 || permission > 2) {
+      if (typeof permission !== 'number' || permission < 0 || permission > 2) {
         throw new Error(`Invalid permission: ${permission}`)
       }
       mask |= 1 << permission
@@ -97,8 +99,8 @@ export class ContractArgsResolver {
    * Validates and formats ByteArray (string)
    */
   static resolveByteArray(value: string): string {
-    if (typeof value !== "string") {
-      throw new Error("ByteArray must be a string")
+    if (typeof value !== 'string') {
+      throw new Error('ByteArray must be a string')
     }
     return value
   }
@@ -106,10 +108,15 @@ export class ContractArgsResolver {
   /**
    * Generic argument resolver with type checking
    */
-  static resolveArgs<T extends Record<string, unknown>>(args: T, schema: Record<keyof T, ResolverFunction>): T {
+  static resolveArgs<T extends Record<string, unknown>>(
+    args: T,
+    schema: Record<keyof T, ResolverFunction>,
+  ): T {
     const resolved = {} as T
 
-    for (const [key, resolver] of Object.entries(schema) as Array<[keyof T, ResolverFunction]>) {
+    for (const [key, resolver] of Object.entries(schema) as Array<
+      [keyof T, ResolverFunction]
+    >) {
       if (!(key in args)) {
         throw new Error(`Missing required argument: ${String(key)}`)
       }
@@ -118,7 +125,7 @@ export class ContractArgsResolver {
         resolved[key] = resolver(args[key]) as T[keyof T]
       } catch (error) {
         throw new Error(
-          `Invalid argument '${String(key)}': ${error instanceof Error ? error.message : "Unknown error"}`,
+          `Invalid argument '${String(key)}': ${error instanceof Error ? error.message : 'Unknown error'}`,
         )
       }
     }
@@ -138,47 +145,76 @@ export const SpherreArgsResolvers = {
     threshold: number
   }) => {
     return ContractArgsResolver.resolveArgs(args, {
-      owner: (value: unknown) => ContractArgsResolver.resolveAddress(value as string),
-      name: (value: unknown) => ContractArgsResolver.resolveByteArray(value as string),
-      description: (value: unknown) => ContractArgsResolver.resolveByteArray(value as string),
-      members: (value: unknown) => ContractArgsResolver.resolveAddressArray(value as string[]),
-      threshold: (value: unknown) => ContractArgsResolver.resolveThreshold(value as number, args.members.length),
+      owner: (value: unknown) =>
+        ContractArgsResolver.resolveAddress(value as string),
+      name: (value: unknown) =>
+        ContractArgsResolver.resolveByteArray(value as string),
+      description: (value: unknown) =>
+        ContractArgsResolver.resolveByteArray(value as string),
+      members: (value: unknown) =>
+        ContractArgsResolver.resolveAddressArray(value as string[]),
+      threshold: (value: unknown) =>
+        ContractArgsResolver.resolveThreshold(
+          value as number,
+          args.members.length,
+        ),
     })
   },
 
   isDeployedAccount: (args: { account: string }) => {
     return ContractArgsResolver.resolveArgs(args, {
-      account: (value: unknown) => ContractArgsResolver.resolveAddress(value as string),
+      account: (value: unknown) =>
+        ContractArgsResolver.resolveAddress(value as string),
     })
   },
 
   // Account contract functions
-  proposeMemberAdd: (args: { member: string; permissions: PermissionEnum[] }) => {
+  proposeMemberAdd: (args: {
+    member: string
+    permissions: PermissionEnum[]
+  }) => {
     return ContractArgsResolver.resolveArgs(args, {
-      member: (value: unknown) => ContractArgsResolver.resolveAddress(value as string),
-      permissions: (value: unknown) => ContractArgsResolver.resolvePermissionMask(value as PermissionEnum[]),
+      member: (value: unknown) =>
+        ContractArgsResolver.resolveAddress(value as string),
+      permissions: (value: unknown) =>
+        ContractArgsResolver.resolvePermissionMask(value as PermissionEnum[]),
     })
   },
 
   proposeMemberRemove: (args: { member_address: string }) => {
     return ContractArgsResolver.resolveArgs(args, {
-      member_address: (value: unknown) => ContractArgsResolver.resolveAddress(value as string),
+      member_address: (value: unknown) =>
+        ContractArgsResolver.resolveAddress(value as string),
     })
   },
 
-  proposeTokenTransaction: (args: { token: string; amount: U256; recipient: string }) => {
+  proposeTokenTransaction: (args: {
+    token: string
+    amount: U256
+    recipient: string
+  }) => {
     return ContractArgsResolver.resolveArgs(args, {
-      token: (value: unknown) => ContractArgsResolver.resolveAddress(value as string),
-      amount: (value: unknown) => ContractArgsResolver.resolveU256(value as U256),
-      recipient: (value: unknown) => ContractArgsResolver.resolveAddress(value as string),
+      token: (value: unknown) =>
+        ContractArgsResolver.resolveAddress(value as string),
+      amount: (value: unknown) =>
+        ContractArgsResolver.resolveU256(value as U256),
+      recipient: (value: unknown) =>
+        ContractArgsResolver.resolveAddress(value as string),
     })
   },
 
-  proposeNFTTransaction: (args: { nft_contract: string; token_id: U256; recipient: string }) => {
+  proposeNFTTransaction: (args: {
+    nft_contract: string
+    token_id: U256
+    recipient: string
+  }) => {
     return ContractArgsResolver.resolveArgs(args, {
-      nft_contract: (value: unknown) => ContractArgsResolver.resolveAddress(value as string),
-      token_id: (value: unknown) => ContractArgsResolver.resolveU256(value as U256),
-      recipient: (value: unknown) => ContractArgsResolver.resolveAddress(value as string),
+      nft_contract: (value: unknown) =>
+        ContractArgsResolver.resolveAddress(value as string),
+      token_id: (value: unknown) =>
+        ContractArgsResolver.resolveU256(value as U256),
+      recipient: (value: unknown) =>
+        ContractArgsResolver.resolveAddress(value as string),
     })
   },
 
@@ -187,7 +223,7 @@ export const SpherreArgsResolvers = {
       new_threshold: (value: unknown) => {
         const thresholdNum = value as number
         if (!Number.isInteger(thresholdNum) || thresholdNum < 1) {
-          throw new Error("Threshold must be a positive integer")
+          throw new Error('Threshold must be a positive integer')
         }
         return BigInt(thresholdNum)
       },
@@ -196,31 +232,36 @@ export const SpherreArgsResolvers = {
 
   approveTransaction: (args: { tx_id: U256 }) => {
     return ContractArgsResolver.resolveArgs(args, {
-      tx_id: (value: unknown) => ContractArgsResolver.resolveU256(value as U256),
+      tx_id: (value: unknown) =>
+        ContractArgsResolver.resolveU256(value as U256),
     })
   },
 
   rejectTransaction: (args: { tx_id: U256 }) => {
     return ContractArgsResolver.resolveArgs(args, {
-      tx_id: (value: unknown) => ContractArgsResolver.resolveU256(value as U256),
+      tx_id: (value: unknown) =>
+        ContractArgsResolver.resolveU256(value as U256),
     })
   },
 
   executeTransaction: (args: { transaction_id: U256 }) => {
     return ContractArgsResolver.resolveArgs(args, {
-      transaction_id: (value: unknown) => ContractArgsResolver.resolveU256(value as U256),
+      transaction_id: (value: unknown) =>
+        ContractArgsResolver.resolveU256(value as U256),
     })
   },
 
   isMember: (args: { address: string }) => {
     return ContractArgsResolver.resolveArgs(args, {
-      address: (value: unknown) => ContractArgsResolver.resolveAddress(value as string),
+      address: (value: unknown) =>
+        ContractArgsResolver.resolveAddress(value as string),
     })
   },
 
   getTransaction: (args: { transaction_id: U256 }) => {
     return ContractArgsResolver.resolveArgs(args, {
-      transaction_id: (value: unknown) => ContractArgsResolver.resolveU256(value as U256),
+      transaction_id: (value: unknown) =>
+        ContractArgsResolver.resolveU256(value as U256),
     })
   },
 }

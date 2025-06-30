@@ -1,4 +1,4 @@
-import { apiClient, ApiUtils } from "./client"
+import { apiClient, ApiUtils } from './client'
 
 // Types for API responses
 export interface User {
@@ -29,7 +29,7 @@ export interface Transaction {
   data: string
   nonce: number
   signatures: string[]
-  status: "pending" | "executed" | "failed"
+  status: 'pending' | 'executed' | 'failed'
   createdAt: string
   executedAt?: string
 }
@@ -40,24 +40,39 @@ export interface Transaction {
 export const SpherreApi = {
   // User management
   async getUser(address: string): Promise<User> {
-    return ApiUtils.handleResponse(() => apiClient.get(`/users/${address}`), "Failed to fetch user")
+    return ApiUtils.handleResponse(
+      () => apiClient.get(`/users/${address}`),
+      'Failed to fetch user',
+    )
   },
 
   async createUser(userData: Partial<User>): Promise<User> {
-    return ApiUtils.handleResponse(() => apiClient.post("/users", userData), "Failed to create user")
+    return ApiUtils.handleResponse(
+      () => apiClient.post('/users', userData),
+      'Failed to create user',
+    )
   },
 
   async updateUser(address: string, userData: Partial<User>): Promise<User> {
-    return ApiUtils.handleResponse(() => apiClient.put(`/users/${address}`, userData), "Failed to update user")
+    return ApiUtils.handleResponse(
+      () => apiClient.put(`/users/${address}`, userData),
+      'Failed to update user',
+    )
   },
 
   // Multisig account management
   async getAccounts(userAddress: string): Promise<MultisigAccount[]> {
-    return ApiUtils.handleResponse(() => apiClient.get(`/accounts?user=${userAddress}`), "Failed to fetch accounts")
+    return ApiUtils.handleResponse(
+      () => apiClient.get(`/accounts?user=${userAddress}`),
+      'Failed to fetch accounts',
+    )
   },
 
   async getAccount(accountId: string): Promise<MultisigAccount> {
-    return ApiUtils.handleResponse(() => apiClient.get(`/accounts/${accountId}`), "Failed to fetch account")
+    return ApiUtils.handleResponse(
+      () => apiClient.get(`/accounts/${accountId}`),
+      'Failed to fetch account',
+    )
   },
 
   async createAccount(accountData: {
@@ -66,13 +81,19 @@ export const SpherreApi = {
     threshold: number
     contractAddress: string
   }): Promise<MultisigAccount> {
-    return ApiUtils.handleResponse(() => apiClient.post("/accounts", accountData), "Failed to create account")
+    return ApiUtils.handleResponse(
+      () => apiClient.post('/accounts', accountData),
+      'Failed to create account',
+    )
   },
 
-  async updateAccount(accountId: string, accountData: Partial<MultisigAccount>): Promise<MultisigAccount> {
+  async updateAccount(
+    accountId: string,
+    accountData: Partial<MultisigAccount>,
+  ): Promise<MultisigAccount> {
     return ApiUtils.handleResponse(
       () => apiClient.put(`/accounts/${accountId}`, accountData),
-      "Failed to update account",
+      'Failed to update account',
     )
   },
 
@@ -80,12 +101,15 @@ export const SpherreApi = {
   async getTransactions(accountId: string): Promise<Transaction[]> {
     return ApiUtils.handleResponse(
       () => apiClient.get(`/accounts/${accountId}/transactions`),
-      "Failed to fetch transactions",
+      'Failed to fetch transactions',
     )
   },
 
   async getTransaction(transactionId: string): Promise<Transaction> {
-    return ApiUtils.handleResponse(() => apiClient.get(`/transactions/${transactionId}`), "Failed to fetch transaction")
+    return ApiUtils.handleResponse(
+      () => apiClient.get(`/transactions/${transactionId}`),
+      'Failed to fetch transaction',
+    )
   },
 
   async createTransaction(transactionData: {
@@ -95,22 +119,26 @@ export const SpherreApi = {
     data?: string
   }): Promise<Transaction> {
     return ApiUtils.handleResponse(
-      () => apiClient.post("/transactions", transactionData),
-      "Failed to create transaction",
+      () => apiClient.post('/transactions', transactionData),
+      'Failed to create transaction',
     )
   },
 
-  async signTransaction(transactionId: string, signature: string): Promise<Transaction> {
+  async signTransaction(
+    transactionId: string,
+    signature: string,
+  ): Promise<Transaction> {
     return ApiUtils.handleResponse(
-      () => apiClient.post(`/transactions/${transactionId}/sign`, { signature }),
-      "Failed to sign transaction",
+      () =>
+        apiClient.post(`/transactions/${transactionId}/sign`, { signature }),
+      'Failed to sign transaction',
     )
   },
 
   async executeTransaction(transactionId: string): Promise<Transaction> {
     return ApiUtils.handleResponse(
       () => apiClient.post(`/transactions/${transactionId}/execute`),
-      "Failed to execute transaction",
+      'Failed to execute transaction',
     )
   },
 
@@ -121,6 +149,9 @@ export const SpherreApi = {
     totalValue: string
     memberCount: number
   }> {
-    return ApiUtils.handleResponse(() => apiClient.get(`/accounts/${accountId}/stats`), "Failed to fetch account stats")
+    return ApiUtils.handleResponse(
+      () => apiClient.get(`/accounts/${accountId}/stats`),
+      'Failed to fetch account stats',
+    )
   },
 }

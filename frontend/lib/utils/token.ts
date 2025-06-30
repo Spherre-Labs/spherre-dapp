@@ -1,4 +1,4 @@
-import type { TokenInfo } from "../contracts/types"
+import type { TokenInfo } from '../contracts/types'
 
 /**
  * Token value conversion utilities
@@ -8,7 +8,7 @@ export class TokenUtils {
    * Convert from wei to human readable format
    */
   static fromWei(value: bigint | string, decimals = 18): string {
-    const bigIntValue = typeof value === "string" ? BigInt(value) : value
+    const bigIntValue = typeof value === 'string' ? BigInt(value) : value
     const divisor = BigInt(10 ** decimals)
     const quotient = bigIntValue / divisor
     const remainder = bigIntValue % divisor
@@ -17,8 +17,8 @@ export class TokenUtils {
       return quotient.toString()
     }
 
-    const remainderStr = remainder.toString().padStart(decimals, "0")
-    const trimmedRemainder = remainderStr.replace(/0+$/, "")
+    const remainderStr = remainder.toString().padStart(decimals, '0')
+    const trimmedRemainder = remainderStr.replace(/0+$/, '')
 
     return `${quotient}.${trimmedRemainder}`
   }
@@ -28,13 +28,13 @@ export class TokenUtils {
    */
   static toWei(value: string | number, decimals = 18): bigint {
     const stringValue = value.toString()
-    const [whole, decimal = ""] = stringValue.split(".")
+    const [whole, decimal = ''] = stringValue.split('.')
 
     if (decimal.length > decimals) {
       throw new Error(`Too many decimal places. Maximum ${decimals} allowed.`)
     }
 
-    const paddedDecimal = decimal.padEnd(decimals, "0")
+    const paddedDecimal = decimal.padEnd(decimals, '0')
     return BigInt(whole + paddedDecimal)
   }
 
@@ -54,8 +54,8 @@ export class TokenUtils {
     let formatted = this.fromWei(amount, token.decimals)
 
     // Limit decimal places
-    if (formatted.includes(".")) {
-      const [whole, decimal] = formatted.split(".")
+    if (formatted.includes('.')) {
+      const [whole, decimal] = formatted.split('.')
       if (decimal.length > maxDecimals) {
         formatted = `${whole}.${decimal.slice(0, maxDecimals)}`
       }
@@ -71,7 +71,7 @@ export class TokenUtils {
     const trimmed = input.trim()
 
     if (!trimmed || isNaN(Number(trimmed))) {
-      throw new Error("Invalid token amount")
+      throw new Error('Invalid token amount')
     }
 
     return this.toWei(trimmed, decimals)
@@ -111,21 +111,24 @@ export class TokenUtils {
 // Common token configurations for StarkNet
 export const COMMON_TOKENS: Record<string, TokenInfo> = {
   ETH: {
-    address: "0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7",
-    name: "Ether",
-    symbol: "ETH",
+    address:
+      '0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7',
+    name: 'Ether',
+    symbol: 'ETH',
     decimals: 18,
   },
   STRK: {
-    address: "0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d",
-    name: "StarkNet Token",
-    symbol: "STRK",
+    address:
+      '0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d',
+    name: 'StarkNet Token',
+    symbol: 'STRK',
     decimals: 18,
   },
   USDC: {
-    address: "0x053c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8",
-    name: "USD Coin",
-    symbol: "USDC",
+    address:
+      '0x053c91253bc9682c04929ca02ed00b3e423f6710d2ee7e0d5ebb06f3ecf368a8',
+    name: 'USD Coin',
+    symbol: 'USDC',
     decimals: 6,
   },
 }

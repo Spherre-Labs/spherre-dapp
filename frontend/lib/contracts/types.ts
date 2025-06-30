@@ -1,4 +1,4 @@
-import type { Abi, InvokeFunctionResponse } from "starknet"
+import type { Abi, InvokeFunctionResponse } from 'starknet'
 
 // Base contract configuration
 export interface ContractConfig {
@@ -10,7 +10,7 @@ export interface ContractConfig {
 export type ContractFunctionArgs = Record<string, unknown>
 
 // Transaction status types
-export type TransactionStatus = "pending" | "success" | "failed" | "rejected"
+export type TransactionStatus = 'pending' | 'success' | 'failed' | 'rejected'
 
 // Contract read result - using generic with unknown default
 export interface ContractReadResult<T = unknown> {

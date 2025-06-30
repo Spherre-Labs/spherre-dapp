@@ -10,7 +10,10 @@ export function validateContractAddress(address: string): void {
   }
 }
 
-export function validatePositiveInteger(value: number, fieldName: string): void {
+export function validatePositiveInteger(
+  value: number,
+  fieldName: string,
+): void {
   if (!Number.isInteger(value) || value <= 0) {
     throw new Error(`${fieldName} must be a positive integer`)
   }
@@ -25,6 +28,6 @@ export function validateArrayNotEmpty<T>(array: T[], fieldName: string): void {
 export function validateUniqueAddresses(addresses: string[]): void {
   const uniqueAddresses = new Set(addresses.map((addr) => addr.toLowerCase()))
   if (uniqueAddresses.size !== addresses.length) {
-    throw new Error("All addresses must be unique")
+    throw new Error('All addresses must be unique')
   }
 }

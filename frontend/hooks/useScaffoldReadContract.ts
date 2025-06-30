@@ -1,8 +1,12 @@
-"use client"
+'use client'
 
-import { useReadContract } from "@starknet-react/core"
-import type { ContractConfig, ContractReadResult, ContractFunctionArgs } from "@/lib/contracts/types"
-import { useMemo, useCallback } from "react"
+import { useReadContract } from '@starknet-react/core'
+import type {
+  ContractConfig,
+  ContractReadResult,
+  ContractFunctionArgs,
+} from '@/lib/contracts/types'
+import { useMemo, useCallback } from 'react'
 
 interface UseScaffoldReadContractProps {
   contractConfig: ContractConfig
@@ -10,7 +14,7 @@ interface UseScaffoldReadContractProps {
   args?: ContractFunctionArgs
   enabled?: boolean
   watch?: boolean
-  blockIdentifier?: "latest" | "pending"
+  blockIdentifier?: 'latest' | 'pending'
 }
 
 /**
@@ -22,7 +26,7 @@ export function useScaffoldReadContract<T = any>({
   args = {},
   enabled = true,
   watch = false,
-  blockIdentifier = "latest",
+  blockIdentifier = 'latest',
 }: UseScaffoldReadContractProps): ContractReadResult<T> {
   // Convert args object to array format expected by starknet-react
   const calldata = useMemo(() => {
@@ -32,7 +36,11 @@ export function useScaffoldReadContract<T = any>({
 
   // Validate contract address
   const isValidAddress = useMemo(() => {
-    return contractConfig.address && contractConfig.address !== "0x0" && contractConfig.address.length > 10
+    return (
+      contractConfig.address &&
+      contractConfig.address !== '0x0' &&
+      contractConfig.address.length > 10
+    )
   }, [contractConfig.address])
 
   const { data, error, isLoading, refetch } = useReadContract({
@@ -60,22 +68,35 @@ export function useScaffoldReadContract<T = any>({
 
     const errorMessage = error.message || error.toString()
 
-    if (errorMessage.includes("NetworkError") || errorMessage.includes("fetch")) {
+    if (
+      errorMessage.includes('NetworkError') ||
+      errorMessage.includes('fetch')
+    ) {
       return new Error(
-        "Network error: Unable to connect to StarkNet. Please check your internet connection and try again.",
+        'Network error: Unable to connect to StarkNet. Please check your internet connection and try again.',
       )
     }
 
-    if (errorMessage.includes("Contract not found") || errorMessage.includes("CLASS_HASH_NOT_FOUND")) {
-      return new Error("Contract not found: The contract address may be invalid or not deployed on this network.")
+    if (
+      errorMessage.includes('Contract not found') ||
+      errorMessage.includes('CLASS_HASH_NOT_FOUND')
+    ) {
+      return new Error(
+        'Contract not found: The contract address may be invalid or not deployed on this network.',
+      )
     }
 
-    if (errorMessage.includes("Entry point") || errorMessage.includes("ENTRY_POINT_NOT_FOUND")) {
-      return new Error(`Function '${functionName}' not found in contract. Please check the function name.`)
+    if (
+      errorMessage.includes('Entry point') ||
+      errorMessage.includes('ENTRY_POINT_NOT_FOUND')
+    ) {
+      return new Error(
+        `Function '${functionName}' not found in contract. Please check the function name.`,
+      )
     }
 
     if (!isValidAddress) {
-      return new Error("Invalid contract address provided.")
+      return new Error('Invalid contract address provided.')
     }
 
     return error as Error
