@@ -98,7 +98,7 @@ class NotificationService:
 
         return query.order_by(Notification.created_at.desc()).all()
 
-    @classmethod         
+    @classmethod
     # -- 5. Get Notification by ID --
     def get_notification_by_id(cls, notification_id: str) -> Optional[Notification]:
         """

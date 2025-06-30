@@ -52,7 +52,7 @@ class TestNotificationService(TestCase):
             account_id=account.id,
             notification_type=NotificationType.ACCOUNT_UPDATE,
             title="Test Title",
-            message="Hello world"
+            message="Hello world",
         )
         notification.save()
 
