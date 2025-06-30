@@ -6,14 +6,14 @@ export interface ContractConfig {
   abi: Abi
 }
 
-// Generic contract function arguments
-export type ContractFunctionArgs = Record<string, any>
+// Generic contract function arguments - using unknown instead of any
+export type ContractFunctionArgs = Record<string, unknown>
 
 // Transaction status types
 export type TransactionStatus = "pending" | "success" | "failed" | "rejected"
 
-// Contract read result
-export interface ContractReadResult<T = any> {
+// Contract read result - using generic with unknown default
+export interface ContractReadResult<T = unknown> {
   data: T | undefined
   error: Error | null
   isLoading: boolean
@@ -30,9 +30,9 @@ export interface ContractWriteResult {
   reset: () => void
 }
 
-// Transaction receipt result
+// Transaction receipt result - using unknown for data
 export interface TransactionReceiptResult {
-  data: any
+  data: unknown
   error: Error | null
   isLoading: boolean
   status: TransactionStatus

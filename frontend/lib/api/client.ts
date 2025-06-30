@@ -2,7 +2,10 @@
  * Backend API client utilities
  */
 
-interface ApiResponse<T = any> {
+// Generic type for unknown data
+type UnknownData = Record<string, unknown> | unknown[] | string | number | boolean | null
+
+interface ApiResponse<T = UnknownData> {
   data?: T
   error?: string
   message?: string
@@ -12,7 +15,7 @@ interface ApiResponse<T = any> {
 interface ApiRequestOptions {
   method?: "GET" | "POST" | "PUT" | "DELETE" | "PATCH"
   headers?: Record<string, string>
-  body?: any
+  body?: UnknownData
   timeout?: number
 }
 
@@ -44,9 +47,8 @@ class ApiClient {
   /**
    * Make API request with error handling
    */
-  async request<T = any>(endpoint: string, options: ApiRequestOptions = {}): Promise<ApiResponse<T>> {
+  async request<T = UnknownData>(endpoint: string, options: ApiRequestOptions = {}): Promise<ApiResponse<T>> {
     const { method = "GET", headers = {}, body, timeout = 10000 } = options
-
     const url = `${this.baseUrl}${endpoint.startsWith("/") ? endpoint : `/${endpoint}`}`
 
     const controller = new AbortController()
@@ -64,8 +66,7 @@ class ApiClient {
       })
 
       clearTimeout(timeoutId)
-
-      const responseData = await response.json()
+      const responseData = (await response.json()) as { data?: T; error?: string; message?: string }
 
       if (!response.ok) {
         return {
@@ -76,7 +77,7 @@ class ApiClient {
 
       return {
         success: true,
-        data: responseData.data || responseData,
+        data: responseData.data || (responseData as T),
         message: responseData.message,
       }
     } catch (error) {
@@ -89,6 +90,7 @@ class ApiClient {
             error: "Request timeout",
           }
         }
+
         return {
           success: false,
           error: error.message,
@@ -105,35 +107,35 @@ class ApiClient {
   /**
    * GET request
    */
-  async get<T = any>(endpoint: string, headers?: Record<string, string>): Promise<ApiResponse<T>> {
+  async get<T = UnknownData>(endpoint: string, headers?: Record<string, string>): Promise<ApiResponse<T>> {
     return this.request<T>(endpoint, { method: "GET", headers })
   }
 
   /**
    * POST request
    */
-  async post<T = any>(endpoint: string, body?: any, headers?: Record<string, string>): Promise<ApiResponse<T>> {
+  async post<T = UnknownData>(endpoint: string, body?: UnknownData, headers?: Record<string, string>): Promise<ApiResponse<T>> {
     return this.request<T>(endpoint, { method: "POST", body, headers })
   }
 
   /**
    * PUT request
    */
-  async put<T = any>(endpoint: string, body?: any, headers?: Record<string, string>): Promise<ApiResponse<T>> {
+  async put<T = UnknownData>(endpoint: string, body?: UnknownData, headers?: Record<string, string>): Promise<ApiResponse<T>> {
     return this.request<T>(endpoint, { method: "PUT", body, headers })
   }
 
   /**
    * DELETE request
    */
-  async delete<T = any>(endpoint: string, headers?: Record<string, string>): Promise<ApiResponse<T>> {
+  async delete<T = UnknownData>(endpoint: string, headers?: Record<string, string>): Promise<ApiResponse<T>> {
     return this.request<T>(endpoint, { method: "DELETE", headers })
   }
 
   /**
    * PATCH request
    */
-  async patch<T = any>(endpoint: string, body?: any, headers?: Record<string, string>): Promise<ApiResponse<T>> {
+  async patch<T = UnknownData>(endpoint: string, body?: UnknownData, headers?: Record<string, string>): Promise<ApiResponse<T>> {
     return this.request<T>(endpoint, { method: "PATCH", body, headers })
   }
 }
@@ -175,9 +177,11 @@ export const ApiUtils = {
     for (let attempt = 0; attempt <= maxRetries; attempt++) {
       try {
         const response = await apiCall()
+
         if (response.success) {
           return response
         }
+
         lastError = new Error(response.error || "API request failed")
       } catch (error) {
         lastError = error instanceof Error ? error : new Error("Unknown error")
