@@ -16,10 +16,7 @@ export function SmartEmpty() {
             spending.
           </p>
         </div>
-        <Button className="font-bold text-base h-[50px] rounded-md">
-          <Plus />
-          Create New Smart Lock Plan
-        </Button>
+        <ButtonSmart />
       </div>
 
       <div className="flex flex-col mx-auto max-w-[516px] mt-[156px] text-center">
@@ -30,16 +27,21 @@ export function SmartEmpty() {
         />
         <h3 className="font-bold text-3xl">There are no Smart Lock Plans</h3>
         <div className="max-w-[390px] mx-auto mt-5">
-          <p className="text-sm text-ash">
+          <p className="text-sm text-ash mb-5">
             Get started by creating your first smart lock plan by clicking the
             “create new” button below.
           </p>
-          <Button className="font-bold text-base h-[50px] rounded-md mt-5">
-            <Plus />
-            Create New Smart Lock Plan
-          </Button>
+
+          <ButtonSmart />
         </div>
       </div>
     </div>
   )
 }
+
+const ButtonSmart = ({ onClick }: { onClick?: () => void }) => (
+  <Button className="font-bold text-base h-[50px] rounded-md" onClick={onClick}>
+    <Plus />
+    Create New Smart Lock Plan{' '}
+  </Button>
+)
