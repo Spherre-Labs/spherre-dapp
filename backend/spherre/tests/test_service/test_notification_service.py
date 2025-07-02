@@ -72,10 +72,10 @@ class TestNotificationService(TestCase):
         self.assertIn(self.member, notification.read_by)
 
     def test_list_notifications_all(self):
-        n1 = self.service.create_notification(
+        self.service.create_notification(
             self.account_id, NotificationType.TOKEN_TRANSFER, "Transfer 1", "Sent"
         )
-        n2 = self.service.create_notification(
+        self.service.create_notification(
             self.account_id,
             NotificationType.TOKEN_TRANSFER,
             "Transfer 2",
