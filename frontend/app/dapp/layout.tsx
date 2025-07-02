@@ -14,6 +14,7 @@ import Payments from '@/public/Images/Payments.png'
 import Apps from '@/public/Images/Apps.png'
 import Settings from '@/public/Images/Settings.png'
 import Support from '@/public/Images/Support.png'
+import SmartLock from '@/public/Images/Smart-lock.png'
 import { getSelectedPage, NavItem } from '@/app/dapp/navigation'
 import { usePathname } from 'next/navigation'
 
@@ -47,6 +48,12 @@ export default function DappLayout({ children }: DappLayoutProps) {
       name: 'Treasury',
       icon: Treasury,
       route: '/dapp/treasury',
+      comingSoon: true,
+    },
+    {
+      name: 'Smart Lock',
+      icon: SmartLock,
+      route: '/dapp/smart',
       comingSoon: true,
     },
     {
