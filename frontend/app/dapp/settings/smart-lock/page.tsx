@@ -1,8 +1,8 @@
-"use client"
+'use client'
 
-import { useState } from "react"
-import { Plus } from "lucide-react"
-import CreateSmartLockPlanModal from "@/app/components/modals/CreateSmartLockPlanModal"
+import { useState } from 'react'
+import { Plus } from 'lucide-react'
+import CreateSmartLockPlanModal from '@/app/components/modals/CreateSmartLockPlanModal'
 
 interface SmartLockPlan {
   id: string
@@ -10,7 +10,7 @@ interface SmartLockPlan {
   token: string
   amount: string
   duration: string
-  status: "active" | "expired" | "pending"
+  status: 'active' | 'expired' | 'pending'
   createdAt: string
 }
 
@@ -23,7 +23,7 @@ export default function SmartLockPage() {
     setIsLoading(true)
     try {
       // TODO: Integrate with smart contract backend
-      console.log("Creating smart lock plan:", planData)
+      console.log('Creating smart lock plan:', planData)
 
       // Simulate API call
       await new Promise((resolve) => setTimeout(resolve, 2000))
@@ -35,17 +35,17 @@ export default function SmartLockPage() {
         token: planData.token,
         amount: planData.amount,
         duration: `${planData.duration} ${planData.durationType}`,
-        status: "pending",
+        status: 'pending',
         createdAt: new Date().toISOString(),
       }
 
       setPlans((prev) => [newPlan, ...prev])
 
       // TODO: Replace with actual smart contract transaction
-      alert("Smart Lock Plan created successfully! Transaction proposed.")
+      alert('Smart Lock Plan created successfully! Transaction proposed.')
     } catch (error) {
-      console.error("Error creating smart lock plan:", error)
-      alert("Failed to create smart lock plan. Please try again.")
+      console.error('Error creating smart lock plan:', error)
+      alert('Failed to create smart lock plan. Please try again.')
     } finally {
       setIsLoading(false)
     }
@@ -57,7 +57,9 @@ export default function SmartLockPage() {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold text-white mb-3">Smart Lock</h1>
-            <p className="text-gray-400">Manage your smart lock plans and security access settings.</p>
+            <p className="text-gray-400">
+              Manage your smart lock plans and security access settings.
+            </p>
           </div>
           <button
             onClick={() => setIsModalOpen(true)}
@@ -72,9 +74,12 @@ export default function SmartLockPage() {
         <div className="space-y-4">
           {plans.length === 0 ? (
             <div className="bg-[#1C1C1E] border border-[#2C2C2E] rounded-lg p-8 text-center">
-              <h2 className="text-xl font-semibold text-white mb-2">No Smart Lock Plans</h2>
+              <h2 className="text-xl font-semibold text-white mb-2">
+                No Smart Lock Plans
+              </h2>
               <p className="text-gray-400 mb-4">
-                Create your first smart lock plan to secure your assets with time-based restrictions.
+                Create your first smart lock plan to secure your assets with
+                time-based restrictions.
               </p>
               <button
                 onClick={() => setIsModalOpen(true)}
@@ -86,19 +91,25 @@ export default function SmartLockPage() {
           ) : (
             <div className="grid gap-4">
               {plans.map((plan) => (
-                <div key={plan.id} className="bg-[#1C1C1E] border border-[#2C2C2E] rounded-lg p-6">
+                <div
+                  key={plan.id}
+                  className="bg-[#1C1C1E] border border-[#2C2C2E] rounded-lg p-6"
+                >
                   <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-lg font-semibold text-white">{plan.name}</h3>
+                    <h3 className="text-lg font-semibold text-white">
+                      {plan.name}
+                    </h3>
                     <span
                       className={`px-3 py-1 rounded-full text-xs font-medium ${
-                        plan.status === "active"
-                          ? "bg-green-500/20 text-green-400"
-                          : plan.status === "pending"
-                            ? "bg-yellow-500/20 text-yellow-400"
-                            : "bg-red-500/20 text-red-400"
+                        plan.status === 'active'
+                          ? 'bg-green-500/20 text-green-400'
+                          : plan.status === 'pending'
+                            ? 'bg-yellow-500/20 text-yellow-400'
+                            : 'bg-red-500/20 text-red-400'
                       }`}
                     >
-                      {plan.status.charAt(0).toUpperCase() + plan.status.slice(1)}
+                      {plan.status.charAt(0).toUpperCase() +
+                        plan.status.slice(1)}
                     </span>
                   </div>
                   <div className="grid grid-cols-2 gap-4 text-sm">
@@ -116,7 +127,9 @@ export default function SmartLockPage() {
                     </div>
                     <div>
                       <span className="text-gray-400">Created:</span>
-                      <span className="text-white ml-2">{new Date(plan.createdAt).toLocaleDateString()}</span>
+                      <span className="text-white ml-2">
+                        {new Date(plan.createdAt).toLocaleDateString()}
+                      </span>
                     </div>
                   </div>
                 </div>
