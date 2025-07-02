@@ -44,6 +44,4 @@ class Notification(ModelMixin, db.Model):
     notification_type = db.Column(Enum(NotificationType), nullable=False)
     title = db.Column(db.String, nullable=True)
     message = db.Column(db.String, nullable=False)
-    read_by = db.relationship(
-        "Member", secondary=notification_readers
-    )
+    read_by = db.relationship("Member", secondary=notification_readers)
