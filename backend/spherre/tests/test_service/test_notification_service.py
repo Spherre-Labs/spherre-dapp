@@ -29,7 +29,6 @@ class TestNotificationService(TestCase):
 
     def test_create_notification(self):
         notification = self.service.create_notification(
-            db,
             account_id=self.account_id,
             notification_type=NotificationType.ACCOUNT_UPDATE,
             title="Test Notification",
@@ -41,8 +40,8 @@ class TestNotificationService(TestCase):
     def test_send_notification_to_members(self):
         # Setup account, members, notification
         account = Account(name="TestAccount")
-        member1 = Member(email="user1@example.com")
-        member2 = Member(email=None)
+        member1 = Member(id=str(uuid4()), email="user1@example.com")
+        member2 = Member(id=str(uuid4()), email=None)
         account.members = [member1, member2]
 
         db.session.add_all([account, member1, member2])
@@ -60,42 +59,38 @@ class TestNotificationService(TestCase):
 
     def test_mark_notification_as_read(self):
         notification = self.service.create_notification(
-            db,
             account_id=self.account_id,
             notification_type=NotificationType.NFT_TRANSFER,
             title="NFT Update",
             message="You sent an NFT.",
         )
 
-        self.service.mark_notification_as_read(db, notification.id, self.member.id)
+        self.service.mark_notification_as_read(notification.id, self.member.id)
         db.session.refresh(notification)
         self.assertIn(self.member, notification.read_by)
 
     def test_list_notifications_all(self):
         n1 = self.service.create_notification(
-            db, self.account_id, NotificationType.TOKEN_TRANSFER, "Transfer 1", "Sent"
+            self.account_id, NotificationType.TOKEN_TRANSFER, "Transfer 1", "Sent"
         )
         n2 = self.service.create_notification(
-            db,
             self.account_id,
             NotificationType.TOKEN_TRANSFER,
             "Transfer 2",
             "Received",
         )
 
-        notifications = self.service.list_notifications_by_account(db, self.account_id)
+        notifications = self.service.list_notifications_by_account(self.account_id)
         self.assertEqual(len(notifications), 2)
 
     def test_list_notifications_unread_only(self):
         n1 = self.service.create_notification(
-            db,
             self.account_id,
             NotificationType.MEMBER_UPDATE,
             "Updated 1",
             "Some info",
         )
         n2 = self.service.create_notification(
-            db,
             self.account_id,
             NotificationType.MEMBER_UPDATE,
             "Updated 2",
@@ -103,22 +98,21 @@ class TestNotificationService(TestCase):
         )
 
         # Mark n1 as read
-        self.service.mark_notification_as_read(db, n1.id, self.member.id)
+        self.service.mark_notification_as_read(n1.id, self.member.id)
 
         unread = self.service.list_notifications_by_account(
-            db, self.account_id, unread_only=True, member_id=self.member.id
+            self.account_id, unread_only=True, member_id=self.member.id
         )
         self.assertEqual(len(unread), 1)
         self.assertEqual(unread[0].id, n2.id)
 
     def test_get_notification_by_id(self):
         notification = self.service.create_notification(
-            db,
             account_id=self.account_id,
             notification_type=NotificationType.ACCOUNT_UPDATE,
             title="Welcome",
             message="Thanks for joining!",
         )
-        fetched = self.service.get_notification_by_id(db, notification.id)
+        fetched = self.service.get_notification_by_id(notification.id)
         self.assertIsNotNone(fetched)
         self.assertEqual(fetched.title, "Welcome")

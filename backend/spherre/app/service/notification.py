@@ -67,15 +67,15 @@ class NotificationService:
         """
         Mark a notification as read by a member.
         """
-        notification = db.query(Notification).filter_by(id=notification_id).first()
-        member = db.query(Member).filter_by(id=member_id).first()
+        notification = db.session.query(Notification).filter_by(id=notification_id).first()
+        member = db.session.query(Member).filter_by(id=member_id).first()
 
         if not notification or not member:
             raise ValueError("Notification or Member not found")
 
         if member not in notification.read_by:
             notification.read_by.append(member)
-            db.commit()
+            db.session.commit()
 
     @classmethod
     # -- 4. List Notifications by Account --
@@ -88,12 +88,13 @@ class NotificationService:
         """
         Retrieve all notifications for an account, optionally filter by unread status.
         """
-        query = db.query(Notification).filter_by(account_id=account_id)
+        query = db.session.query(Notification).filter_by(account_id=account_id)
 
-        if unread_only:
-            query = query.filter(~Notification.read_by.any())
-
-        if member_id:
+        if unread_only and member_id:
+            # Filter for notifications NOT read by the specific member
+            query = query.filter(~Notification.read_by.any(Member.id == member_id))
+        elif member_id:
+            # Filter for notifications read by the specific member
             query = query.filter(Notification.read_by.any(Member.id == member_id))
 
         return query.order_by(Notification.created_at.desc()).all()
@@ -104,4 +105,4 @@ class NotificationService:
         """
         Retrieve a single notification by its ID.
         """
-        return db.query(Notification).filter_by(id=notification_id).first()
+        return db.session.query(Notification).filter_by(id=notification_id).first()
