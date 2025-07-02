@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from unittest import TestCase
 
 from spherre.app import create_app
@@ -31,7 +31,7 @@ class TestTransactionService(TestCase):
         db.session.commit()
         
         # Current timestamp for testing
-        self.current_time = int(datetime.now().timestamp())
+        self.current_time = datetime.now()
 
     def tearDown(self):
         db.session.remove()
@@ -157,7 +157,7 @@ class TestTransactionService(TestCase):
             transaction_id=1,
             account=self.account,
             executor=self.member2,
-            date_executed=self.current_time + 100,  # Some time later
+            date_executed=self.current_time + timedelta(seconds=100),  # Some time later
             status=TransactionStatus.EXECUTED
         )
         
@@ -190,7 +190,7 @@ class TestTransactionService(TestCase):
                 transaction_id=2,
                 account=self.account,
                 executor=self.member2,
-                date_executed=self.current_time + 100,
+                date_executed=self.current_time + timedelta(seconds = 100),
                 status=TransactionStatus.EXECUTED
             )
             
@@ -294,7 +294,7 @@ class TestTransactionService(TestCase):
             status=TransactionStatus.INITIATED,
             type=TransactionType.TOKEN_SEND,
             proposer=self.member1,
-            date_proposed=self.current_time - 300  # Older
+            date_proposed=self.current_time -  timedelta(seconds=300)# Older
         )
         
         TransactionService.create_transaction(
@@ -303,7 +303,7 @@ class TestTransactionService(TestCase):
             status=TransactionStatus.APPROVED,
             type=TransactionType.TOKEN_SEND,
             proposer=self.member1,
-            date_proposed=self.current_time - 200
+            date_proposed=self.current_time - timedelta(seconds=200)
         )
         
         TransactionService.create_transaction(
@@ -312,7 +312,7 @@ class TestTransactionService(TestCase):
             status=TransactionStatus.EXECUTED,
             type=TransactionType.MEMBER_ADD,
             proposer=self.member1,
-            date_proposed=self.current_time - 100
+            date_proposed=self.current_time - timedelta(seconds=100)
         )
         
         # Test retrieving all transactions
