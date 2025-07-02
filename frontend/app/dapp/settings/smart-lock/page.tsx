@@ -14,12 +14,20 @@ interface SmartLockPlan {
   createdAt: string
 }
 
+interface CreatePlanData {
+  name: string
+  token: string
+  amount: string
+  duration: string
+  durationType: 'days' | 'weeks' | 'months' | 'years'
+}
+
 export default function SmartLockPage() {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [plans, setPlans] = useState<SmartLockPlan[]>([])
   const [isLoading, setIsLoading] = useState(false)
 
-  const handleCreatePlan = async (planData: any) => {
+  const handleCreatePlan = async (planData: CreatePlanData) => {
     setIsLoading(true)
     try {
       // TODO: Integrate with smart contract backend
@@ -63,16 +71,27 @@ export default function SmartLockPage() {
           </div>
           <button
             onClick={() => setIsModalOpen(true)}
-            className="flex items-center gap-2 bg-[#6F2FCE] hover:bg-[#5B28B8] text-white px-4 py-2 rounded-lg font-medium transition-colors"
+            disabled={isLoading}
+            className="flex items-center gap-2 bg-[#6F2FCE] hover:bg-[#5B28B8] disabled:bg-gray-600 disabled:cursor-not-allowed text-white px-4 py-2 rounded-lg font-medium transition-colors"
           >
             <Plus className="w-4 h-4" />
             Create New Smart Lock Plan
           </button>
         </div>
 
+        {/* Loading State */}
+        {isLoading && (
+          <div className="bg-[#1C1C1E] border border-[#2C2C2E] rounded-lg p-8 text-center">
+            <div className="flex items-center justify-center space-x-2">
+              <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-[#6F2FCE]"></div>
+              <span className="text-white">Creating Smart Lock Plan...</span>
+            </div>
+          </div>
+        )}
+
         {/* Smart Lock Plans List */}
         <div className="space-y-4">
-          {plans.length === 0 ? (
+          {plans.length === 0 && !isLoading ? (
             <div className="bg-[#1C1C1E] border border-[#2C2C2E] rounded-lg p-8 text-center">
               <h2 className="text-xl font-semibold text-white mb-2">
                 No Smart Lock Plans
@@ -83,12 +102,13 @@ export default function SmartLockPage() {
               </p>
               <button
                 onClick={() => setIsModalOpen(true)}
-                className="bg-[#6F2FCE] hover:bg-[#5B28B8] text-white px-6 py-2 rounded-lg font-medium transition-colors"
+                disabled={isLoading}
+                className="bg-[#6F2FCE] hover:bg-[#5B28B8] disabled:bg-gray-600 disabled:cursor-not-allowed text-white px-6 py-2 rounded-lg font-medium transition-colors"
               >
                 Create Smart Lock Plan
               </button>
             </div>
-          ) : (
+          ) : plans.length > 0 ? (
             <div className="grid gap-4">
               {plans.map((plan) => (
                 <div
@@ -135,11 +155,10 @@ export default function SmartLockPage() {
                 </div>
               ))}
             </div>
-          )}
+          ) : null}
         </div>
       </div>
 
-      {/* Create Smart Lock Plan Modal - Outside of space-y-8 container */}
       <CreateSmartLockPlanModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
