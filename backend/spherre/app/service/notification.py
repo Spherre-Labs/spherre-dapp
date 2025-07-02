@@ -1,8 +1,9 @@
 from typing import List, Optional
-from ..models import Notification, NotificationType, Member
-from ..utils.email import mock_send_email
-from ..extensions import db
 from uuid import uuid4
+
+from spherre.app.extensions import db
+from spherre.app.models import Member, Notification, NotificationType
+from spherre.app.utils.email import mock_send_email
 
 
 class NotificationService:
@@ -67,7 +68,9 @@ class NotificationService:
         """
         Mark a notification as read by a member.
         """
-        notification = db.session.query(Notification).filter_by(id=notification_id).first()
+        notification = (
+            db.session.query(Notification).filter_by(id=notification_id).first()
+        )
         member = db.session.query(Member).filter_by(id=member_id).first()
 
         if not notification or not member:

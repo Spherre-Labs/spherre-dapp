@@ -3,7 +3,7 @@ from uuid import uuid4
 
 from spherre.app import create_app
 from spherre.app.extensions import db
-from spherre.app.models import Notification, NotificationType, Member, Account
+from spherre.app.models import Account, Member, Notification, NotificationType
 from spherre.app.service.notification import NotificationService
 
 
@@ -18,7 +18,7 @@ class TestNotificationService(TestCase):
         # Create account and member for testing
         self.service = NotificationService()
         self.account_id = str(uuid4())
-        self.member = Member(id=str(uuid4()), email="test@example.com", name="Tester")
+        self.member = Member(id=str(uuid4()), email="test@example.com", address="0x0123445")
         db.session.add(self.member)
         db.session.commit()
 
@@ -39,9 +39,9 @@ class TestNotificationService(TestCase):
 
     def test_send_notification_to_members(self):
         # Setup account, members, notification
-        account = Account(name="TestAccount")
-        member1 = Member(id=str(uuid4()), email="user1@example.com")
-        member2 = Member(id=str(uuid4()), email=None)
+        account = Account(name="TestAccount", address = "0x123344")
+        member1 = Member(id=str(uuid4()), email="user1@example.com", address= "0x124455")
+        member2 = Member(id=str(uuid4()), email=None, address="0x1674455")
         account.members = [member1, member2]
 
         db.session.add_all([account, member1, member2])
