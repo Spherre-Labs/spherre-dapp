@@ -1,14 +1,14 @@
 'use client'
-import React from 'react'
 
-import { sepolia, mainnet } from '@starknet-react/chains'
+import type React from 'react'
+import { sepolia } from '@starknet-react/chains'
 import {
   StarknetConfig,
-  publicProvider,
   argent,
   braavos,
   useInjectedConnectors,
   voyager,
+  jsonRpcProvider,
 } from '@starknet-react/core'
 
 export function StarknetProvider({ children }: { children: React.ReactNode }) {
@@ -21,12 +21,28 @@ export function StarknetProvider({ children }: { children: React.ReactNode }) {
     order: 'random',
   })
 
+  // FIXED: Force Sepolia testnet only since that's where your contracts are deployed
+  function rpcProvider() {
+    return jsonRpcProvider({
+      rpc: (chain) => {
+        if (chain.id === sepolia.id) {
+          return {
+            nodeUrl: 'https://starknet-sepolia.public.blastapi.io/rpc/v0_7',
+          }
+        }
+        // Don't provide mainnet RPC to force Sepolia usage
+        return null
+      },
+    })
+  }
+
   return (
     <StarknetConfig
-      chains={[mainnet, sepolia]}
-      provider={publicProvider()}
+      chains={[sepolia]}
+      provider={rpcProvider()}
       connectors={connectors}
       explorer={voyager}
+      autoConnect={true}
     >
       {children}
     </StarknetConfig>
