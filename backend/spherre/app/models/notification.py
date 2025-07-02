@@ -38,9 +38,10 @@ class Notification(ModelMixin, db.Model):
     __tablename__ = "notifications"
 
     account_id = db.Column(db.String, db.ForeignKey("accounts.id"), nullable=False)
+    account = db.relationship(
+        "Account", foreign_keys=[account_id], backref="notifications"
+    )
     notification_type = db.Column(Enum(NotificationType), nullable=False)
     title = db.Column(db.String, nullable=True)
     message = db.Column(db.String, nullable=False)
-    read_by = db.relationship(
-        "Member", secondary=notification_readers, back_populates="notifications"
-    )
+    read_by = db.relationship("Member", secondary=notification_readers)
