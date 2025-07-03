@@ -31,7 +31,6 @@ export default function SmartLockPage() {
     setIsLoading(true)
     try {
       // TODO: Integrate with smart contract backend
-      console.log('Creating smart lock plan:', planData)
 
       // Simulate API call
       await new Promise((resolve) => setTimeout(resolve, 2000))
@@ -50,41 +49,51 @@ export default function SmartLockPage() {
       setPlans((prev) => [newPlan, ...prev])
 
       // TODO: Replace with actual smart contract transaction
-      alert('Smart Lock Plan created successfully! Transaction proposed.')
     } catch (error) {
       console.error('Error creating smart lock plan:', error)
-      alert('Failed to create smart lock plan. Please try again.')
+      // Handle error silently or add proper error handling here
     } finally {
       setIsLoading(false)
+      setIsModalOpen(false)
     }
   }
 
   return (
     <>
-      <div className="space-y-8">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold text-white mb-3">Smart Lock</h1>
-            <p className="text-gray-400">
+      <div className="space-y-6 md:space-y-8 p-4 md:p-6 lg:p-8">
+        {/* Header Section */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 sm:gap-0">
+          <div className="flex-1">
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-2 md:mb-3">
+              Smart Lock
+            </h1>
+            <p className="text-sm sm:text-base text-gray-400 leading-relaxed">
               Manage your smart lock plans and security access settings.
             </p>
           </div>
-          <button
-            onClick={() => setIsModalOpen(true)}
-            disabled={isLoading}
-            className="flex items-center gap-2 bg-[#6F2FCE] hover:bg-[#5B28B8] disabled:bg-gray-600 disabled:cursor-not-allowed text-white px-4 py-2 rounded-lg font-medium transition-colors"
-          >
-            <Plus className="w-4 h-4" />
-            Create New Smart Lock Plan
-          </button>
+          <div className="flex-shrink-0">
+            <button
+              onClick={() => setIsModalOpen(true)}
+              disabled={isLoading}
+              className="w-full sm:w-auto flex items-center justify-center gap-2 bg-[#6F2FCE] hover:bg-[#5B28B8] disabled:bg-gray-600 disabled:cursor-not-allowed text-white px-4 py-2.5 sm:py-2 rounded-lg font-medium transition-colors text-sm sm:text-base"
+            >
+              <Plus className="w-4 h-4 flex-shrink-0" />
+              <span className="sm:hidden">Create Plan</span>
+              <span className="hidden sm:inline">
+                Create New Smart Lock Plan
+              </span>
+            </button>
+          </div>
         </div>
 
         {/* Loading State */}
         {isLoading && (
-          <div className="bg-[#1C1C1E] border border-[#2C2C2E] rounded-lg p-8 text-center">
+          <div className="bg-[#1C1C1E] border border-[#2C2C2E] rounded-lg p-6 md:p-8 text-center">
             <div className="flex items-center justify-center space-x-2">
-              <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-[#6F2FCE]"></div>
-              <span className="text-white">Creating Smart Lock Plan...</span>
+              <div className="animate-spin rounded-full h-5 w-5 md:h-6 md:w-6 border-b-2 border-[#6F2FCE]"></div>
+              <span className="text-white text-sm md:text-base">
+                Creating Smart Lock Plan...
+              </span>
             </div>
           </div>
         )}
@@ -92,18 +101,18 @@ export default function SmartLockPage() {
         {/* Smart Lock Plans List */}
         <div className="space-y-4">
           {plans.length === 0 && !isLoading ? (
-            <div className="bg-[#1C1C1E] border border-[#2C2C2E] rounded-lg p-8 text-center">
-              <h2 className="text-xl font-semibold text-white mb-2">
+            <div className="bg-[#1C1C1E] border border-[#2C2C2E] rounded-lg p-6 md:p-8 text-center">
+              <h2 className="text-lg sm:text-xl font-semibold text-white mb-2">
                 No Smart Lock Plans
               </h2>
-              <p className="text-gray-400 mb-4">
+              <p className="text-sm sm:text-base text-gray-400 mb-4 leading-relaxed max-w-md mx-auto">
                 Create your first smart lock plan to secure your assets with
                 time-based restrictions.
               </p>
               <button
                 onClick={() => setIsModalOpen(true)}
                 disabled={isLoading}
-                className="bg-[#6F2FCE] hover:bg-[#5B28B8] disabled:bg-gray-600 disabled:cursor-not-allowed text-white px-6 py-2 rounded-lg font-medium transition-colors"
+                className="w-full sm:w-auto bg-[#6F2FCE] hover:bg-[#5B28B8] disabled:bg-gray-600 disabled:cursor-not-allowed text-white px-6 py-2.5 sm:py-2 rounded-lg font-medium transition-colors text-sm sm:text-base"
               >
                 Create Smart Lock Plan
               </button>
@@ -113,14 +122,15 @@ export default function SmartLockPage() {
               {plans.map((plan) => (
                 <div
                   key={plan.id}
-                  className="bg-[#1C1C1E] border border-[#2C2C2E] rounded-lg p-6"
+                  className="bg-[#1C1C1E] border border-[#2C2C2E] rounded-lg p-4 md:p-6"
                 >
-                  <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-lg font-semibold text-white">
+                  {/* Plan Header */}
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-0 mb-4">
+                    <h3 className="text-base sm:text-lg font-semibold text-white truncate">
                       {plan.name}
                     </h3>
                     <span
-                      className={`px-3 py-1 rounded-full text-xs font-medium ${
+                      className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium self-start sm:self-auto ${
                         plan.status === 'active'
                           ? 'bg-green-500/20 text-green-400'
                           : plan.status === 'pending'
@@ -132,22 +142,30 @@ export default function SmartLockPage() {
                         plan.status.slice(1)}
                     </span>
                   </div>
-                  <div className="grid grid-cols-2 gap-4 text-sm">
-                    <div>
+
+                  {/* Plan Details */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 text-sm">
+                    <div className="flex justify-between sm:block">
                       <span className="text-gray-400">Token:</span>
-                      <span className="text-white ml-2">{plan.token}</span>
+                      <span className="text-white sm:ml-2 font-medium">
+                        {plan.token}
+                      </span>
                     </div>
-                    <div>
+                    <div className="flex justify-between sm:block">
                       <span className="text-gray-400">Amount:</span>
-                      <span className="text-white ml-2">{plan.amount}</span>
+                      <span className="text-white sm:ml-2 font-medium">
+                        {plan.amount}
+                      </span>
                     </div>
-                    <div>
+                    <div className="flex justify-between sm:block">
                       <span className="text-gray-400">Duration:</span>
-                      <span className="text-white ml-2">{plan.duration}</span>
+                      <span className="text-white sm:ml-2 font-medium">
+                        {plan.duration}
+                      </span>
                     </div>
-                    <div>
+                    <div className="flex justify-between sm:block">
                       <span className="text-gray-400">Created:</span>
-                      <span className="text-white ml-2">
+                      <span className="text-white sm:ml-2 font-medium">
                         {new Date(plan.createdAt).toLocaleDateString()}
                       </span>
                     </div>
@@ -159,11 +177,13 @@ export default function SmartLockPage() {
         </div>
       </div>
 
-      <CreateSmartLockPlanModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onSubmit={handleCreatePlan}
-      />
+      <div>
+        <CreateSmartLockPlanModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          onSubmit={handleCreatePlan}
+        />
+      </div>
     </>
   )
 }
