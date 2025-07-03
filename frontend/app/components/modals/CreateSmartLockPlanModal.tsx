@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { X, ChevronDown, Calendar } from 'lucide-react'
 import Image from 'next/image'
 
@@ -69,6 +69,45 @@ export default function CreateSmartLockPlanModal({
   const [customDuration, setCustomDuration] = useState('')
   const [selectedDurationPreset, setSelectedDurationPreset] = useState('5 Days')
 
+  // Close dropdowns when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as HTMLElement
+      if (
+        !target.closest('.token-dropdown') &&
+        !target.closest('.token-dropdown-button')
+      ) {
+        setShowTokenDropdown(false)
+      }
+      if (
+        !target.closest('.duration-dropdown') &&
+        !target.closest('.duration-dropdown-button')
+      ) {
+        setShowDurationDropdown(false)
+      }
+    }
+
+    if (isOpen) {
+      document.addEventListener('mousedown', handleClickOutside)
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [isOpen])
+
+  // Handle escape key
+  useEffect(() => {
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape' && isOpen && !isSubmitting) {
+        onClose()
+      }
+    }
+
+    document.addEventListener('keydown', handleEscape)
+    return () => document.removeEventListener('keydown', handleEscape)
+  }, [isOpen, isSubmitting, onClose])
+
   if (!isOpen) return null
 
   const selectedToken = AVAILABLE_TOKENS.find(
@@ -96,7 +135,8 @@ export default function CreateSmartLockPlanModal({
     return Object.keys(newErrors).length === 0
   }
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
     if (!validateForm()) return
 
     setIsSubmitting(true)
@@ -137,11 +177,28 @@ export default function CreateSmartLockPlanModal({
     setShowDurationDropdown(false)
   }
 
+  const handleBackdropClick = (e: React.MouseEvent) => {
+    if (e.target === e.currentTarget && !isSubmitting) {
+      onClose()
+    }
+  }
+
+  const handleModalContentClick = (e: React.MouseEvent) => {
+    e.stopPropagation()
+  }
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm px-4">
-      <div className="relative bg-[#1C1C1E] border border-[#2C2C2E] rounded-2xl shadow-xl w-full max-w-md md:max-w-xl mx-4">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 m-0"
+      onClick={handleBackdropClick}
+      style={{ margin: 0, padding: '1rem' }} // Force reset any inherited margins
+    >
+      <div
+        className="relative bg-[#1C1C1E] border border-[#2C2C2E] rounded-2xl shadow-xl w-full max-w-md md:max-w-xl"
+        onClick={handleModalContentClick}
+      >
         {/* Header */}
-        <div className="flex flex-col items-end justify-between p-6  pb-[30px]">
+        <div className="flex flex-col items-end justify-between p-6 pb-[30px]">
           <button
             onClick={onClose}
             className="p-2 rounded-full bg-gray-800/50 hover:bg-gray-700/50 transition-colors"
@@ -161,7 +218,7 @@ export default function CreateSmartLockPlanModal({
         </div>
 
         {/* Form */}
-        <div className="px-6 pb-6 space-y-6">
+        <form onSubmit={handleSubmit} className="px-6 pb-6 space-y-6">
           {/* Name of Plan */}
           <div>
             <label className="block text-sm font-medium text-white mb-2">
@@ -192,8 +249,12 @@ export default function CreateSmartLockPlanModal({
             <div className="relative">
               <button
                 type="button"
-                onClick={() => setShowTokenDropdown(!showTokenDropdown)}
-                className="w-full bg-[#2C2C2E] text-white rounded-lg px-4 py-3 flex items-center justify-between focus:outline-none focus:ring-2 focus:ring-[#6F2FCE]"
+                onClick={(e) => {
+                  e.stopPropagation()
+                  setShowTokenDropdown(!showTokenDropdown)
+                  setShowDurationDropdown(false)
+                }}
+                className="token-dropdown-button w-full bg-[#2C2C2E] text-white rounded-lg px-4 py-3 flex items-center justify-between focus:outline-none focus:ring-2 focus:ring-[#6F2FCE] hover:bg-[#3C3C3E] transition-colors"
                 disabled={isSubmitting}
               >
                 <div className="flex items-center gap-3">
@@ -210,23 +271,26 @@ export default function CreateSmartLockPlanModal({
                   )}
                   <span>{selectedToken?.symbol || 'Select Token'}</span>
                 </div>
-                <ChevronDown className="w-4 h-4 text-gray-400" />
+                <ChevronDown
+                  className={`w-4 h-4 text-gray-400 transition-transform ${showTokenDropdown ? 'rotate-180' : ''}`}
+                />
               </button>
 
               {showTokenDropdown && (
-                <div className="absolute top-full left-0 right-0 mt-1 bg-[#2C2C2E] border border-[#3C3C3E] rounded-lg shadow-lg z-10">
+                <div className="token-dropdown absolute top-full left-0 right-0 mt-1 bg-[#2C2C2E] border border-[#3C3C3E] rounded-lg shadow-lg z-10">
                   {AVAILABLE_TOKENS.map((token) => (
                     <button
                       key={token.symbol}
                       type="button"
-                      onClick={() => {
+                      onClick={(e) => {
+                        e.stopPropagation()
                         setFormData((prev) => ({
                           ...prev,
                           token: token.symbol,
                         }))
                         setShowTokenDropdown(false)
                       }}
-                      className="w-full px-4 py-3 flex items-center gap-3 hover:bg-[#3C3C3E] text-left"
+                      className="w-full px-4 py-3 flex items-center gap-3 hover:bg-[#3C3C3E] text-left transition-colors"
                     >
                       <div className="w-6 h-6 rounded-full overflow-hidden">
                         <Image
@@ -282,22 +346,31 @@ export default function CreateSmartLockPlanModal({
             <div className="relative">
               <button
                 type="button"
-                onClick={() => setShowDurationDropdown(!showDurationDropdown)}
-                className="w-full bg-[#2C2C2E] text-white rounded-lg px-4 py-3 flex items-center justify-between focus:outline-none focus:ring-2 focus:ring-[#6F2FCE]"
+                onClick={(e) => {
+                  e.stopPropagation()
+                  setShowDurationDropdown(!showDurationDropdown)
+                  setShowTokenDropdown(false)
+                }}
+                className="duration-dropdown-button w-full bg-[#2C2C2E] text-white rounded-lg px-4 py-3 flex items-center justify-between focus:outline-none focus:ring-2 focus:ring-[#6F2FCE] hover:bg-[#3C3C3E] transition-colors"
                 disabled={isSubmitting}
               >
                 <span>{selectedDurationPreset}</span>
-                <Calendar className="w-4 h-4 text-gray-400" />
+                <Calendar
+                  className={`w-4 h-4 text-gray-400 transition-transform ${showDurationDropdown ? 'rotate-180' : ''}`}
+                />
               </button>
 
               {showDurationDropdown && (
-                <div className="absolute top-full left-0 right-0 mt-1 bg-[#2C2C2E] border border-[#3C3C3E] rounded-lg shadow-lg z-10">
+                <div className="duration-dropdown absolute top-full left-0 right-0 mt-1 bg-[#2C2C2E] border border-[#3C3C3E] rounded-lg shadow-lg z-10">
                   {DURATION_PRESETS.map((preset) => (
                     <button
                       key={preset.label}
                       type="button"
-                      onClick={() => handleDurationSelect(preset)}
-                      className="w-full px-4 py-3 text-left hover:bg-[#3C3C3E] text-white"
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        handleDurationSelect(preset)
+                      }}
+                      className="w-full px-4 py-3 text-left hover:bg-[#3C3C3E] text-white transition-colors"
                     >
                       {preset.label}
                     </button>
@@ -336,15 +409,14 @@ export default function CreateSmartLockPlanModal({
               Cancel
             </button>
             <button
-              type="button"
-              onClick={handleSubmit}
+              type="submit"
               disabled={isSubmitting}
               className="flex-1 bg-[#6F2FCE] text-white py-3 rounded-lg font-medium hover:bg-[#5B28B8] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isSubmitting ? 'Creating...' : 'Propose Transaction'}
             </button>
           </div>
-        </div>
+        </form>
       </div>
     </div>
   )
