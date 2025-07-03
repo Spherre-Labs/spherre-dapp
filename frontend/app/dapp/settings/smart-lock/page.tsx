@@ -177,11 +177,13 @@ export default function SmartLockPage() {
         </div>
       </div>
 
-      <CreateSmartLockPlanModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onSubmit={handleCreatePlan}
-      />
+      <div>
+        <CreateSmartLockPlanModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          onSubmit={handleCreatePlan}
+        />
+      </div>
     </>
   )
 }

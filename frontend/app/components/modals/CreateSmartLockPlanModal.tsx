@@ -189,9 +189,8 @@ export default function CreateSmartLockPlanModal({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 m-0"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm m-0"
       onClick={handleBackdropClick}
-      style={{ margin: 0, padding: '1rem' }} // Force reset any inherited margins
     >
       <div
         className="relative bg-[#1C1C1E] border border-[#2C2C2E] rounded-2xl shadow-xl w-full max-w-md md:max-w-xl"
