@@ -19,7 +19,7 @@ export default function AddWillModal({
 }: AddWillModalProps) {
   const confirmed = () => {
     if (!willAddress.trim()) {
-      alert('Please enter a valid wallet address')
+      console.log('Please enter a valid wallet address')
       return
     }
 
