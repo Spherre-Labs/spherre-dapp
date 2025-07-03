@@ -1,9 +1,9 @@
-import { SmartEmpty } from './smart-empty'
+import SmartLockPlans from '@/components/smart-lock/smart-lock-plans'
 
 export default function SmartLock() {
   return (
     <section>
-      <SmartEmpty />
+      <SmartLockPlans />
     </section>
   )
 }
