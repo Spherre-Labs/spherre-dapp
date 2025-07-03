@@ -6,7 +6,7 @@ import Image from 'next/image'
 const ButtonSmart = ({ onClick }: { onClick?: () => void }) => (
   <Button className="font-bold text-base h-[50px] rounded-md" onClick={onClick}>
     <Plus />
-    Create New Smart Lock Plan{' '}
+    Create New Smart Lock Plan
   </Button>
 )
 
@@ -26,7 +26,7 @@ export function SmartEmpty() {
       <div className="max-w-[390px] mx-auto mt-5">
         <p className="text-sm text-gray-400 mb-5">
           Get started by creating your first smart lock plan by clicking the
-          "create new" button below.
+          &quot;create new&quot; button below.
         </p>
         <ButtonSmart />
       </div>

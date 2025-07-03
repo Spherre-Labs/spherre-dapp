@@ -5,11 +5,13 @@ import { TransactionDetailsHeader } from './components/TransactionDetailsHeader'
 import { TransactionSummary } from './components/TransactionSummary'
 import { TransactionDetailsBody } from './components/TransactionParticipants'
 
-export default function TransactionDetailsPage({
-  params,
-}: {
-  params: { id: string }
-}) {
+interface PageProps {
+  params: {
+    id: string
+  }
+}
+
+export default function TransactionDetailsPage({ params }: PageProps) {
   const transaction = transactions.find((t) => t.id === parseInt(params.id))
 
   if (!transaction) {

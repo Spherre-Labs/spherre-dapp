@@ -17,8 +17,8 @@ export function SmartNotFound({
       </div>
       <h3 className="text-xl font-semibold text-white mb-2">No plans found</h3>
       <p className="text-gray-400 text-center mb-6 max-w-md">
-        We couldn't find any plans matching your current search criteria. Try
-        adjusting your filters or search terms.
+        We couldn&apos;t find any plans matching your current search criteria.
+        Try adjusting your filters or search terms.
       </p>
       <div className="flex gap-3">
         <Button
