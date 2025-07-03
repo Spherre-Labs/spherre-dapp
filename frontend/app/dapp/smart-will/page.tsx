@@ -3,7 +3,6 @@
 import AddWillModal from '@/app/components/modals/AddWillModal'
 import SmartWillModal from '@/app/components/modals/SmartWillModal'
 import { Button } from '@/components/shared/Button'
-import { Select } from '@/components/shared/Select'
 import { copyToClipboard } from '@/lib/utils'
 import { useAccount } from '@starknet-react/core'
 import { Check, Copy, Info, Pencil, TimerReset } from 'lucide-react'
@@ -197,7 +196,7 @@ const handleCopy = async (text: string, type: 'primary' | 'will') => {
 
 
                 {['days', 'hours', 'minutes', 'seconds'].map((unit, i) => (
-                  <div key={unit} className='w-fit flex flex-col gap-[7px] justify-between items-center h-fit ' >
+                  <div key={i} className='w-fit flex flex-col gap-[7px] justify-between items-center h-fit ' >
                     <span className='font-bold text-lg md:text-2xl text-[#FFFFFF] ' >{timerValues[unit as keyof typeof timerValues]} </span>
                     <span className=' text-xs md:text-sm font-normal text-[#8E9BAE] ' >{unit.charAt(0).toUpperCase() + unit.slice(1)} </span>
                   </div>
