@@ -1,9 +1,10 @@
-// "use client"
+// app/layout.tsx
 import type { Metadata } from 'next'
 import { Geist, Geist_Mono, Nunito_Sans } from 'next/font/google'
 import './globals.css'
 import { StarknetProvider } from './components/Providers'
 import { OnboardingProvider } from '@/context/OnboardingContext'
+import { ThemeProvider } from '@/app/context/theme-context-provider'
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -53,19 +54,21 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
         <link rel="icon" href="/Images/spherrelogo.png" type="image/png" />
         <link rel="apple-touch-icon" href="/favicon.ico" />
         <meta name="theme-color" content="#000000" />
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${nunitoSans.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${nunitoSans.variable} antialiased transition-colors duration-300`}
       >
         <div id="modal-root"></div>
-        <StarknetProvider>
-          <OnboardingProvider>{children}</OnboardingProvider>
-        </StarknetProvider>
+        <ThemeProvider>
+          <StarknetProvider>
+            <OnboardingProvider>{children}</OnboardingProvider>
+          </StarknetProvider>
+        </ThemeProvider>
       </body>
     </html>
   )

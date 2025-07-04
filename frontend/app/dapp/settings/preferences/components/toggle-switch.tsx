@@ -9,7 +9,7 @@ export default function ToggleSwitch({ enabled, onChange }: ToggleSwitchProps) {
   return (
     <button
       className={`relative inline-flex h-8 w-16 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500 ${
-        enabled ? 'bg-purple-500' : 'bg-gray-600'
+        enabled ? 'bg-purple-500' : 'bg-theme-border'
       }`}
       onClick={() => onChange(!enabled)}
       tabIndex={0}

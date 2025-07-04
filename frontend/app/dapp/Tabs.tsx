@@ -11,8 +11,10 @@ import nft6 from '../../public/Images/nft6.png'
 import nft7 from '../../public/Images/nft7.png'
 import nft8 from '../../public/Images/nft8.png'
 import strk from '../../public/Images/strk.png'
+import { useTheme } from '@/app/context/theme-context-provider'
 
 export default function Tabs() {
+  useTheme()
   const [activeTab, setActiveTab] = useState('Tokens')
 
   // Token data matching the first image
@@ -77,28 +79,32 @@ export default function Tabs() {
   ]
 
   return (
-    <div className=" text-white">
-      <div className="flex border-b border-[#292929]">
+    <div className="text-theme transition-colors duration-300">
+      <div className="flex border-b border-theme-border">
         <button
           onClick={() => setActiveTab('Tokens')}
-          className={`px-4 py-2 relative ${
-            activeTab === 'Tokens' ? 'font-bold text-white' : 'text-[#8E9BAE]'
+          className={`px-4 py-2 relative transition-colors duration-200 ${
+            activeTab === 'Tokens'
+              ? 'font-bold text-theme'
+              : 'text-theme-secondary hover:text-theme'
           }`}
         >
           Tokens
           {activeTab === 'Tokens' && (
-            <div className="absolute bottom-0 left-0 right-0 h-[.5px] bg-white"></div>
+            <div className="absolute bottom-0 left-0 right-0 h-[.5px] bg-theme"></div>
           )}
         </button>
         <button
           onClick={() => setActiveTab('NFT')}
-          className={`px-4 py-2 relative ${
-            activeTab === 'NFT' ? 'font-bold text-white' : 'text-[#8E9BAE]'
+          className={`px-4 py-2 relative transition-colors duration-200 ${
+            activeTab === 'NFT'
+              ? 'font-bold text-theme'
+              : 'text-theme-secondary hover:text-theme'
           }`}
         >
           NFT Token Vaults
           {activeTab === 'NFT' && (
-            <div className="absolute bottom-0 left-0 right-0 h-[.5px] bg-white"></div>
+            <div className="absolute bottom-0 left-0 right-0 h-[.5px] bg-theme"></div>
           )}
         </button>
       </div>
@@ -106,7 +112,7 @@ export default function Tabs() {
       {activeTab === 'Tokens' && (
         <div className="my-2 px-2 sm:px-4 md:px-8 py-2 sm:py-4 rounded-lg overflow-x-auto">
           <div className="min-w-[600px]">
-            <div className="flex text-xs sm:text-sm text-[#8E9BAE] font-semibold mb-1 gap-6">
+            <div className="flex text-xs sm:text-sm text-theme-secondary font-semibold mb-1 gap-6 transition-colors duration-300">
               <div className="w-1/5">Coin</div>
               <div className="w-1/5">Price</div>
               <div className="w-1/5">Balance</div>
@@ -116,7 +122,7 @@ export default function Tabs() {
             {tokens.map((token, index) => (
               <div
                 key={index}
-                className="flex items-center gap-6 rounded-lg px-3 py-3"
+                className="flex items-center gap-6 rounded-lg px-3 py-3 hover:bg-theme-bg-tertiary transition-colors duration-200"
               >
                 <div className="flex items-center gap-1 w-1/5">
                   <Image
@@ -125,19 +131,27 @@ export default function Tabs() {
                     height={18}
                     alt="starknet token icon"
                   />
-                  <span>{token.coin}</span>
+                  <span className="text-theme transition-colors duration-300">
+                    {token.coin}
+                  </span>
                 </div>
-                <div className="w-1/5">{token.price}</div>
-                <div className="w-1/5">{token.balance}</div>
-                <div className="w-1/5">{token.value}</div>
+                <div className="w-1/5 text-theme transition-colors duration-300">
+                  {token.price}
+                </div>
+                <div className="w-1/5 text-theme transition-colors duration-300">
+                  {token.balance}
+                </div>
+                <div className="w-1/5 text-theme transition-colors duration-300">
+                  {token.value}
+                </div>
                 <div className="w-1/5 flex flex-col items-end">
-                  <div className="relative w-full h-1 bg-[#292929] rounded-full">
+                  <div className="relative w-full h-1 bg-theme-bg-tertiary rounded-full">
                     <div
-                      className="absolute top-0 left-0 h-1 bg-white rounded-full"
+                      className="absolute top-0 left-0 h-1 bg-theme rounded-full"
                       style={{ width: token.size }}
                     ></div>
                   </div>
-                  <div className="text-[10px] sm:text-xs mt-1 text-right">
+                  <div className="text-[10px] sm:text-xs mt-1 text-right text-theme-secondary transition-colors duration-300">
                     {token.size}
                   </div>
                 </div>
@@ -153,7 +167,7 @@ export default function Tabs() {
             {nfts.map((nft) => (
               <div
                 key={nft.id}
-                className="rounded-lg overflow-hidden bg-gray-800 border-2"
+                className="rounded-lg overflow-hidden bg-theme-bg-secondary border-2 border-theme-border hover:border-theme-border/80 transition-all duration-200"
               >
                 <div className="aspect-square relative">
                   <Image

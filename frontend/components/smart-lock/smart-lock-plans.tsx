@@ -9,8 +9,10 @@ import { SmartSearchFilters } from './smart-search-and-filters'
 import { SmartPlanCard } from './smart-plan-card'
 import { SmartPlanCardSkeleton } from './smart-plan-card-skeleton'
 import { SmartLockPlan } from '@/types/smart-lock'
+import { useTheme } from '@/app/context/theme-context-provider'
 
 export default function SmartLockPlans() {
+  useTheme()
   const [plans, setPlans] = useState<SmartLockPlan[]>([])
   const [filteredPlans, setFilteredPlans] = useState<SmartLockPlan[]>([])
   const [searchQuery, setSearchQuery] = useState('')
@@ -73,7 +75,7 @@ export default function SmartLockPlans() {
   // Show SmartEmpty when there are no plans at all (not just filtered results)
   if (!isLoading && plans.length === 0) {
     return (
-      <div className="min-h-screen bg-black p-6">
+      <div className="min-h-screen bg-theme p-6 transition-colors duration-300">
         <div className="max-w-7xl mx-auto">
           <SmartHeader />
           <SmartEmpty />
@@ -83,7 +85,7 @@ export default function SmartLockPlans() {
   }
 
   return (
-    <div className="min-h-screen bg-black p-6">
+    <div className="min-h-screen bg-theme p-6 transition-colors duration-300">
       <div className="max-w-7xl mx-auto">
         <SmartHeader />
 
