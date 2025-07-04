@@ -28,7 +28,7 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
         ? 'dark'
         : 'light'
     }
-    return 'dark' // fallback
+    return 'dark'
   }
 
   const applyTheme = (resolvedTheme: 'light' | 'dark') => {
@@ -53,15 +53,13 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
   }, [])
 
   useEffect(() => {
-    // Load saved theme or default to system
     const savedTheme = localStorage.getItem('spherre-theme') as Theme
     const initialTheme = savedTheme || 'system'
 
     setTheme(initialTheme)
     const resolved = resolveTheme(initialTheme)
     applyTheme(resolved)
-
-    // Listen for system theme changes
+    
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
     const handleSystemThemeChange = () => {
       if (theme === 'system') {
