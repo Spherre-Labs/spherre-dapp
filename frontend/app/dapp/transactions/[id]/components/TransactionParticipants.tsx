@@ -3,7 +3,6 @@ import React from 'react'
 import Image from 'next/image'
 import { CheckCircle, Copy } from 'lucide-react'
 import { Transaction, Approval } from '@/app/dapp/transactions/data'
-import { useTheme } from '@/app/context/theme-context-provider'
 
 const TimelineStep = ({
   title,
@@ -16,8 +15,6 @@ const TimelineStep = ({
   status: 'completed' | 'pending' | 'future'
   isLast?: boolean
 }) => {
-  useTheme()
-
   return (
     <div className="flex gap-4">
       <div className="flex flex-col items-center">
@@ -61,8 +58,6 @@ const ApprovalList = ({
   approvals: Approval[]
   title: string
 }) => {
-  useTheme()
-
   return (
     <div>
       <p className="text-theme font-medium mb-4 transition-colors duration-300">
@@ -104,7 +99,6 @@ export const TransactionDetailsBody = ({
 }: {
   transaction: Transaction
 }) => {
-  useTheme()
   const isExecuted = transaction.status === 'Executed'
   const isRejected = transaction.status === 'Rejected'
 

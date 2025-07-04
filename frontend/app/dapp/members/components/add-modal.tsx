@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import { useTheme } from '@/app/context/theme-context-provider'
 
 interface AddMemberModalProps {
   isOpen: boolean
@@ -14,7 +13,6 @@ const AddMemberModal: React.FC<AddMemberModalProps> = ({
   onClose,
   onPropose,
 }) => {
-  useTheme()
   const [wallet, setWallet] = useState('')
   const [role, setRole] = useState('')
 

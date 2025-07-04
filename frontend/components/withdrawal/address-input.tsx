@@ -18,7 +18,7 @@ export default function AddressInput({
   onBlur,
   showError = false,
 }: AddressInputProps) {
-  const { actualTheme } = useTheme()
+  useTheme()
 
   // Simple validation for Ethereum-like addresses
   // In a real app, you would use a more robust validation
@@ -75,11 +75,7 @@ export default function AddressInput({
         <div className="flex mb-3 sm:mb-0 space-x-2 sm:ml-2">
           <button
             onClick={handlePaste}
-            className={`px-3 sm:px-4 py-1 rounded-lg transition-colors duration-200 text-xs sm:text-sm ${
-              actualTheme === 'dark'
-                ? 'bg-white text-black hover:bg-gray-200'
-                : 'bg-gray-900 text-white hover:bg-gray-800'
-            }`}
+            className="bg-white dark:bg-gray-900 text-black dark:text-white hover:bg-gray-200 dark:hover:bg-gray-800 px-3 sm:px-4 py-1 rounded-lg transition-colors duration-200 text-xs sm:text-sm"
           >
             Paste
           </button>

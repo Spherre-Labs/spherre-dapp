@@ -59,7 +59,7 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
     setTheme(initialTheme)
     const resolved = resolveTheme(initialTheme)
     applyTheme(resolved)
-    
+
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
     const handleSystemThemeChange = () => {
       if (theme === 'system') {
