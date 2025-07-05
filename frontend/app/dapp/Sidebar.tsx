@@ -7,11 +7,6 @@ import SidebarProfile from './Profile'
 import { NavItem } from '@/app/dapp/navigation'
 import Link from 'next/link'
 import { X } from 'lucide-react'
-// import WalletConnected from '@/components/shared/WalletConnected'
-// import { useConnect } from '@starknet-react/core'
-// import { ChevronUp, ChevronDown } from 'lucide-react'
-// import { useStarknetkitConnectModal, StarknetkitConnector } from 'starknetkit'
-// import { Connector } from '@starknet-react/core'
 
 interface SidebarProps {
   navItems: NavItem[]
@@ -94,15 +89,6 @@ const Sidebar = ({
     }
   }, [isMobile, setSidebarExpanded])
 
-  // const { address } = useAccount()
-
-  // const { connect, connectors } = useConnect()
-  // const { starknetkitConnectModal } = useStarknetkitConnectModal({
-  //   connectors: connectors as StarknetkitConnector[],
-  // })
-
-  // const [profileOpen, setProfileOpen] = useState(false)
-
   // Tooltip component for collapsed state
   const Tooltip = ({
     children,
@@ -116,12 +102,6 @@ const Sidebar = ({
       <span className="tooltip-text">{content}</span>
     </div>
   )
-
-  // async function handleConnectWallet() {
-  //   const { connector } = await starknetkitConnectModal()
-  //   if (!connector) return
-  //   await connect({ connector: connector as Connector })
-  // }
 
   const isExpanded = isMobile ? sidebarExpanded : expanded
 
@@ -137,7 +117,7 @@ const Sidebar = ({
 
       <aside
         id="sidebar"
-        className={`fixed top-0 left-0 h-screen bg-gradient-to-b from-[#1c1d1f] to-[#181a1c] text-white border-r-[1px] border-gray-600 sidebar-transition z-30 ${
+        className={`fixed top-0 left-0 h-screen sidebar-bg text-theme border-r border-theme z-30 sidebar-transition ${
           isMobile
             ? `w-64 transform transition-transform duration-300 ${
                 isExpanded ? 'translate-x-0' : '-translate-x-full'
@@ -155,9 +135,9 @@ const Sidebar = ({
             <div className="flex justify-end mb-4">
               <button
                 onClick={() => setSidebarExpanded(false)}
-                className="p-2 hover:bg-gray-700 rounded-lg transition-colors"
+                className="p-2 hover:bg-theme-tertiary rounded-lg transition-colors"
               >
-                <X size={20} />
+                <X size={20} className="text-theme" />
               </button>
             </div>
           )}
@@ -178,7 +158,7 @@ const Sidebar = ({
             <div
               className={`overflow-hidden transition-all ${isExpanded ? 'w-auto opacity-100' : 'w-0 opacity-0'}`}
             >
-              <h2 className="text-[24px] font-semibold whitespace-nowrap">
+              <h2 className="text-[24px] font-semibold whitespace-nowrap text-theme">
                 Spherre
               </h2>
             </div>
@@ -200,7 +180,7 @@ const Sidebar = ({
                     className={`flex items-center p-3 rounded-lg sidebar-transition sidebar-menu-item ${
                       selectedPage === item.name
                         ? 'active'
-                        : 'text-gray-400 hover:text-white'
+                        : 'text-theme-secondary hover:text-theme'
                     }`}
                     onClick={() => isMobile && setSidebarExpanded(false)}
                   >
@@ -232,7 +212,7 @@ const Sidebar = ({
                       className={`flex items-center justify-center p-3 rounded-lg sidebar-transition sidebar-menu-item ${
                         selectedPage === item.name
                           ? 'active'
-                          : 'text-gray-400 hover:text-white'
+                          : 'text-theme-secondary hover:text-theme'
                       }`}
                       style={{
                         width: '40px',
@@ -261,7 +241,6 @@ const Sidebar = ({
             ))}
           </ul>
 
-          {/* Collapsible Profile/Wallet Section */}
           {/* Profile Section with smooth transition */}
           <div
             className={`profile-section mt-auto ${isExpanded ? 'h-auto opacity-100' : 'h-0 opacity-0'}`}

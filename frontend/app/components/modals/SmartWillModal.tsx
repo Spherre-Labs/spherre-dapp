@@ -3,6 +3,7 @@
 import { X } from 'lucide-react'
 import Image from 'next/image'
 import { useEffect } from 'react'
+import { useTheme } from '@/app/context/theme-context-provider'
 
 interface SmartWillModalProps {
   setIsModalOpen: (isOpen: boolean) => void
@@ -11,6 +12,8 @@ interface SmartWillModalProps {
 export default function SmartWillModal({
   setIsModalOpen,
 }: SmartWillModalProps) {
+  useTheme()
+
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
@@ -29,13 +32,13 @@ export default function SmartWillModal({
       aria-modal="true"
       aria-labelledby="modal-title"
     >
-      <div className="relative bg-[#1C1D1F] border border-[#292929] rounded-lg shadow-lg w-full max-w-xl px-4 sm:px-6 md:px-8 py-8">
+      <div className="relative bg-theme-bg-secondary border border-theme-border rounded-lg shadow-lg w-full max-w-xl px-4 sm:px-6 md:px-8 py-8 transition-colors duration-300">
         <button
-          className="absolute top-4 right-4 z-10 p-1 rounded-full bg-gray-800/50 hover:bg-gray-800/70"
+          className="absolute top-4 right-4 z-10 p-1 rounded-full bg-theme-bg-tertiary border border-theme-border hover:bg-theme-bg-secondary transition-colors duration-200"
           onClick={() => setIsModalOpen(false)}
           aria-label="Close modal"
         >
-          <X className="w-5 h-5 text-[#8E9BAE]" />
+          <X className="w-5 h-5 text-theme-secondary" />
         </button>
 
         <div className="relative w-full max-w-md h-[160px] mx-auto">
@@ -93,12 +96,12 @@ export default function SmartWillModal({
         <div className="mt-16 text-center">
           <h2
             id="modal-title"
-            className="text-xl sm:text-2xl font-bold text-white mb-2"
+            className="text-xl sm:text-2xl font-bold text-theme mb-2 transition-colors duration-300"
           >
             SmartWill
           </h2>
-          <p className="max-sm:text-xs text-sm text-gray-400 mb-4">
-            Welcome to Spherre’s smartwill feature which is a feature that
+          <p className="max-sm:text-xs text-sm text-theme-secondary mb-4 transition-colors duration-300">
+            Welcome to Spherre`s smartwill feature which is a feature that
             allows you to automatically transfer permissions from a primary
             wallet to a backup wallet in case of loss, compromise, or long
             inactivity. When a wallet is added as a primary member of the
@@ -113,7 +116,7 @@ export default function SmartWillModal({
             members must approve the reversal.
           </p>
           <button
-            className="bg-[#6F2FCE] hover:bg-[#5B28B8] w-full text-white px-6 py-2 rounded-md font-medium transition-all duration-200"
+            className="bg-primary hover:opacity-90 w-full text-white px-6 py-2 rounded-md font-medium transition-all duration-200"
             onClick={() => setIsModalOpen(false)}
           >
             Get Started

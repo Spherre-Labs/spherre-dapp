@@ -13,6 +13,7 @@ export const routeToPageMap = {
   '/dapp/apps': 'Apps',
   '/dapp/settings': 'Settings',
   '/dapp/support': 'Support',
+  '/dapp/smart': 'Smart Lock',
 }
 
 export type PageName = keyof typeof routeToPageMap

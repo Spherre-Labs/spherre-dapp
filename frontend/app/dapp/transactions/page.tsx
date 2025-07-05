@@ -6,6 +6,7 @@ import {
   transactions as allTransactions,
   Transaction as TransactionType,
 } from './data'
+import { useTheme } from '@/app/context/theme-context-provider'
 
 // Group transactions by date
 const groupedTransactions = allTransactions.reduce(
@@ -20,6 +21,7 @@ const groupedTransactions = allTransactions.reduce(
 )
 
 export default function TransactionPage() {
+  useTheme()
   const [expandedId, setExpandedId] = useState<number | null>(null)
 
   const handleToggle = (id: number) => {
@@ -27,16 +29,18 @@ export default function TransactionPage() {
   }
 
   return (
-    <div className="overflow-x-hidden">
-      <div className="p-4 sm:p-6 lg:p-10 bg-[#1C1D1F] rounded-xl">
+    <div className="overflow-x-hidden bg-theme transition-colors duration-300">
+      <div className="p-4 sm:p-6 lg:p-10 bg-theme-bg-secondary border border-theme-border rounded-xl transition-colors duration-300">
         {Object.entries(groupedTransactions).map(([date, txns]) => (
           <div key={date} className="mb-4 sm:mb-6">
-            <h2 className="text-gray-400 text-xs sm:text-sm mb-2">{date}</h2>
+            <h2 className="text-theme-secondary text-xs sm:text-sm mb-2 transition-colors duration-300">
+              {date}
+            </h2>
             <div className="space-y-4 sm:space-y-6">
               {txns.map((transaction) => (
                 <div
                   key={transaction.id}
-                  className="bg-[#2A2A2A] rounded-lg overflow-hidden"
+                  className="bg-theme-bg-tertiary border border-theme-border rounded-lg overflow-hidden transition-colors duration-300"
                 >
                   <Transaction
                     transaction={transaction}

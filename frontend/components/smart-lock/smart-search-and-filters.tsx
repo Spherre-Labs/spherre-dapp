@@ -1,3 +1,5 @@
+'use client'
+
 import { Search, Calendar, Filter } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -15,6 +17,7 @@ import {
   DropdownMenuCheckboxItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import { useTheme } from '@/app/context/theme-context-provider'
 
 interface SmartSearchFiltersProps {
   searchQuery: string
@@ -35,46 +38,48 @@ export function SmartSearchFilters({
   handleFilterChange,
   categories,
 }: SmartSearchFiltersProps) {
+  useTheme()
+
   return (
     <div className="flex flex-col sm:flex-row gap-4 mb-8 items-center justify-between">
       <div className="relative flex-1 max-w-md">
-        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-theme-muted w-4 h-4" />
         <Input
           placeholder="Search by plans"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="pl-10 bg-[#101213] border-[#292929] text-white placeholder:text-gray-400 focus:border-gray-600"
+          className="pl-10 bg-theme-bg-secondary border-theme-border text-theme placeholder:text-theme-muted focus:border-primary transition-colors duration-200"
         />
       </div>
 
       <div className="flex gap-3">
         <Select value={selectedDate} onValueChange={setSelectedDate}>
-          <SelectTrigger className="w-40 bg-[#101213] border-[#292929] text-white">
+          <SelectTrigger className="w-40 bg-theme-bg-secondary border-theme-border text-theme transition-colors duration-200">
             <Calendar className="w-4 h-4 mr-2" />
             <SelectValue placeholder="Select Dates" />
           </SelectTrigger>
-          <SelectContent className="bg-[#101213] border-[#292929]">
+          <SelectContent className="bg-theme-bg-secondary border-theme-border">
             <SelectItem
               value="all"
-              className="text-white hover:bg-[#1a1d1e] focus:bg-[#1a1d1e] focus:text-white"
+              className="text-theme hover:bg-theme-bg-tertiary focus:bg-theme-bg-tertiary focus:text-theme"
             >
               All Dates
             </SelectItem>
             <SelectItem
               value="01/01/2025"
-              className="text-white hover:bg-[#1a1d1e] focus:bg-[#1a1d1e]  focus:text-white"
+              className="text-theme hover:bg-theme-bg-tertiary focus:bg-theme-bg-tertiary focus:text-theme"
             >
               01/01/2025
             </SelectItem>
             <SelectItem
               value="02/01/2025"
-              className="text-white hover:bg-[#1a1d1e] focus:bg-[#1a1d1e]  focus:text-white"
+              className="text-theme hover:bg-theme-bg-tertiary focus:bg-theme-bg-tertiary focus:text-theme"
             >
               02/01/2025
             </SelectItem>
             <SelectItem
               value="03/01/2025"
-              className="text-white hover:bg-[#1a1d1e] focus:bg-[#1a1d1e]  focus:text-white"
+              className="text-theme hover:bg-theme-bg-tertiary focus:bg-theme-bg-tertiary focus:text-theme"
             >
               03/01/2025
             </SelectItem>
@@ -85,7 +90,7 @@ export function SmartSearchFilters({
           <DropdownMenuTrigger asChild>
             <Button
               variant="outline"
-              className="bg-[#101213] border-[#292929] text-white hover:bg-[#1a1d1e] hover:text-white"
+              className="bg-theme-bg-secondary border-theme-border text-theme hover:bg-theme-bg-tertiary hover:text-theme transition-colors duration-200"
             >
               <Filter className="w-4 h-4 mr-2" />
               Filters
@@ -99,7 +104,7 @@ export function SmartSearchFilters({
               )}
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent className="bg-[#101213] border-[#292929]">
+          <DropdownMenuContent className="bg-theme-bg-secondary border-theme-border">
             {categories.map((category) => (
               <DropdownMenuCheckboxItem
                 key={category}
@@ -107,7 +112,7 @@ export function SmartSearchFilters({
                 onCheckedChange={(checked) =>
                   handleFilterChange(category, checked)
                 }
-                className="text-white hover:bg-[#1a1d1e]"
+                className="text-theme hover:bg-theme-bg-tertiary transition-colors duration-200"
               >
                 {category}
               </DropdownMenuCheckboxItem>

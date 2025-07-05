@@ -16,7 +16,7 @@ import {
 import { Line } from 'react-chartjs-2'
 import 'chartjs-adapter-moment'
 import moment from 'moment'
-// import { useMediaQuery } from 'react-responsive'
+import { useTheme } from '@/app/context/theme-context-provider'
 
 // Register ChartJS components
 ChartJS.register(
@@ -48,6 +48,7 @@ type ChartDataType = ChartData<'line', number[], Date>
 const AmountAnalysisChart: React.FC<AmountAnalysisChartProps> = ({
   initialDateRange = '1M',
 }) => {
+  const { actualTheme } = useTheme()
   const [dateRange, setDateRange] = useState<DateRangeType>(initialDateRange)
   const [chartData, setChartData] = useState<ChartDataType>({
     labels: [],
@@ -62,6 +63,20 @@ const AmountAnalysisChart: React.FC<AmountAnalysisChartProps> = ({
   const availableYears = Array.from({ length: 7 }, (_, i) =>
     moment().subtract(i, 'years').format('YYYY'),
   )
+
+  // Theme-aware colors
+  const getThemeColors = useCallback(() => {
+    return {
+      gridColor: actualTheme === 'dark' ? '#292929' : '#e2e8f0',
+      tickColor: actualTheme === 'dark' ? '#FFFFFF' : '#374151',
+      tooltipBg: actualTheme === 'dark' ? '#272729' : '#f8fafc',
+      tooltipText: actualTheme === 'dark' ? '#FFFFFF' : '#374151',
+      selectorBg: actualTheme === 'dark' ? '#272729' : '#f1f5f9',
+      selectorText: actualTheme === 'dark' ? '#8E9BAE' : '#64748b',
+      selectBg: actualTheme === 'dark' ? '#2D2F34' : '#f8fafc',
+      selectText: actualTheme === 'dark' ? '#9CA3AF' : '#6b7280',
+    }
+  }, [actualTheme])
 
   // Generate mock data based on date range
   const generateChartData = useCallback(
@@ -236,6 +251,7 @@ const AmountAnalysisChart: React.FC<AmountAnalysisChartProps> = ({
   // Update chart options based on date range
   const getChartOptions = useCallback(
     (range: DateRangeType): ChartOptions<'line'> => {
+      const colors = getThemeColors()
       let unit: TimeUnit = 'day'
       let tooltipFormat = 'MMM DD, YYYY'
 
@@ -288,23 +304,26 @@ const AmountAnalysisChart: React.FC<AmountAnalysisChartProps> = ({
             },
             grid: {
               display: true,
-              color: '#292929',
+              color: colors.gridColor,
               lineWidth: 1,
               drawOnChartArea: true,
               drawTicks: true,
             },
             ticks: {
-              color: '#FFFFFF',
+              color: colors.tickColor,
             },
           },
           y: {
             beginAtZero: false,
             grid: {
               display: true,
-              color: '#292929',
+              color: colors.gridColor,
               lineWidth: 1,
               drawOnChartArea: true,
               drawTicks: true,
+            },
+            ticks: {
+              color: colors.tickColor,
             },
           },
         },
@@ -315,10 +334,10 @@ const AmountAnalysisChart: React.FC<AmountAnalysisChartProps> = ({
           tooltip: {
             mode: 'index',
             intersect: false, // Allow tooltip when near point
-            backgroundColor: '#272729',
+            backgroundColor: colors.tooltipBg,
             cornerRadius: 10,
-            titleColor: '#FFFFFF',
-            bodyColor: '#FFFFFF',
+            titleColor: colors.tooltipText,
+            bodyColor: colors.tooltipText,
             borderColor: '#6F2FCE',
             borderWidth: 0,
             padding: 12,
@@ -357,7 +376,7 @@ const AmountAnalysisChart: React.FC<AmountAnalysisChartProps> = ({
             borderColor: 'rgba(0, 0, 0, 0)', // Transparent space
             borderWidth: 5, // Width of transparent space
             hoverBackgroundColor: '#6F2FCE',
-            hoverBorderColor: '6F2FCE',
+            hoverBorderColor: '#6F2FCE',
             hoverBorderWidth: 5,
           },
           line: {
@@ -366,8 +385,9 @@ const AmountAnalysisChart: React.FC<AmountAnalysisChartProps> = ({
         },
       }
     },
-    [],
+    [getThemeColors],
   )
+
   // Prepare chart data from generated data
   const prepareChartData = (data: DataItem[]): ChartDataType => {
     return {
@@ -413,7 +433,7 @@ const AmountAnalysisChart: React.FC<AmountAnalysisChartProps> = ({
     setChartData(prepareChartData(data))
     setChartOptions(getChartOptions(dateRange))
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dateRange, selectedYear])
+  }, [dateRange, selectedYear, actualTheme])
 
   // Date range selector buttons
   const dateRangeOptions: DateRangeType[] = [
@@ -434,11 +454,15 @@ const AmountAnalysisChart: React.FC<AmountAnalysisChartProps> = ({
       ? Math.max(320, chartData.labels.length * 60) // 60px per point, min 320px
       : '100%'
 
+  const colors = getThemeColors()
+
   return (
-    <div className="bg-[#1C1D1F] rounded-lg p-6 w-full">
+    <div className="bg-theme-bg-secondary border border-theme-border rounded-lg p-6 w-full transition-colors duration-300">
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6 gap-2 sm:gap-0">
         <div className="flex items-center gap-2">
-          <h2 className="text-xl font-semibold text-white">Price Analysis</h2>
+          <h2 className="text-xl font-semibold text-theme transition-colors duration-300">
+            Price Analysis
+          </h2>
         </div>
         {/* Desktop: Range buttons */}
         <div
@@ -446,7 +470,7 @@ const AmountAnalysisChart: React.FC<AmountAnalysisChartProps> = ({
           style={{
             display: 'flex',
             gap: '10px',
-            backgroundColor: '#272729',
+            backgroundColor: colors.selectorBg,
             padding: '4px',
             borderRadius: '7.1px',
           }}
@@ -459,12 +483,13 @@ const AmountAnalysisChart: React.FC<AmountAnalysisChartProps> = ({
                 padding: '6px 8px',
                 backgroundColor:
                   dateRange === range ? '#6F2FCE' : 'transparent',
-                color: dateRange === range ? 'white' : '#8E9BAE',
+                color: dateRange === range ? 'white' : colors.selectorText,
                 border: 'none',
                 borderRadius: '4px',
                 cursor: 'pointer',
                 fontSize: '12.93px',
                 fontWeight: dateRange === range ? 'bold' : 'normal',
+                transition: 'all 0.2s ease',
               }}
             >
               {range}
@@ -476,13 +501,14 @@ const AmountAnalysisChart: React.FC<AmountAnalysisChartProps> = ({
             value={selectedYear}
             onChange={handleYearChange}
             disabled={dateRange === 'ALL'}
-            className={`bg-[#2D2F34] text-gray-300 rounded-md px-3 py-1 text-sm font-medium appearance-none pr-8 focus:outline-none focus:ring-2 focus:ring-[#6F2FCE] ${
+            className={`rounded-md px-3 py-1 text-sm font-medium appearance-none pr-8 focus:outline-none focus:ring-2 focus:ring-primary border border-theme-border transition-colors duration-300 ${
               dateRange === 'ALL'
                 ? 'cursor-not-allowed opacity-50'
                 : 'cursor-pointer'
             }`}
             style={{
-              color: dateRange !== 'ALL' ? '#6F2FCE' : '#9CA3AF',
+              backgroundColor: colors.selectBg,
+              color: dateRange !== 'ALL' ? '#6F2FCE' : colors.selectText,
             }}
           >
             {availableYears.map((year) => (
@@ -490,15 +516,15 @@ const AmountAnalysisChart: React.FC<AmountAnalysisChartProps> = ({
                 key={year}
                 value={year}
                 style={{
-                  color: year === selectedYear ? '#6F2FCE' : '#9CA3AF',
-                  backgroundColor: '#2D2F34',
+                  color: year === selectedYear ? '#6F2FCE' : colors.selectText,
+                  backgroundColor: colors.selectBg,
                 }}
               >
                 {year}
               </option>
             ))}
           </select>
-          <div className="pointer-events-none absolute inset-y-0 right-[75%] flex items-center px-2 text-gray-400">
+          <div className="pointer-events-none absolute inset-y-0 right-[75%] flex items-center px-2 text-theme-muted">
             <svg
               className="h-4 w-4 fill-current"
               xmlns="http://www.w3.org/2000/svg"

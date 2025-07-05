@@ -24,8 +24,8 @@ export default function ThemeCard({
       <div
         className={`relative cursor-pointer rounded-lg border-2 transition-all duration-200 ease-in-out transform hover:scale-105 hover:shadow-lg ${
           isSelected
-            ? 'border-purple-500 bg-gray-800 shadow-purple-500/20 shadow-lg'
-            : 'border-gray-700 bg-gray-900 hover:border-gray-600 hover:bg-gray-800'
+            ? 'border-purple-500 bg-theme-tertiary shadow-purple-500/20 shadow-lg'
+            : 'border-theme bg-theme-secondary hover:border-purple-400'
         }`}
         onClick={onClick}
       >
@@ -51,12 +51,12 @@ export default function ThemeCard({
         )}
       </div>
       {/* Title and Description */}
-      <div className=" pb-4">
+      <div className="pb-4">
         <div className="flex items-center space-x-2 mb-2">
           <span className="text-lg">{icon}</span>
-          <h3 className="text-white font-medium">{title}</h3>
+          <h3 className="text-theme font-medium">{title}</h3>
         </div>
-        <p className="text-ash text-sm">{description}</p>
+        <p className="text-theme-secondary text-sm">{description}</p>
       </div>
     </div>
   )

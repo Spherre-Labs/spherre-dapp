@@ -5,6 +5,7 @@ import { FaPlus } from 'react-icons/fa6'
 import { LuTrash } from 'react-icons/lu'
 import OnboardingCard from './OnboardingCard'
 import { useOnboarding } from '@/context/OnboardingContext'
+import { useTheme } from '@/app/context/theme-context-provider'
 
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm, useFieldArray } from 'react-hook-form'
@@ -42,7 +43,6 @@ const stepTwoSchema = z.object({
       },
       {
         message: 'Each member address must be unique',
-        // Remove the custom path: path: ['unique']
       },
     ),
   approvals: z.number().min(1),
@@ -52,6 +52,7 @@ type StepTwoData = z.infer<typeof stepTwoSchema>
 
 const StepTwo = () => {
   const router = useRouter()
+  const { actualTheme } = useTheme()
   const onboarding = useOnboarding()
   if (!onboarding) throw new Error('OnboardingContext is missing')
   const { setMembers, setApprovals } = onboarding
@@ -127,11 +128,11 @@ const StepTwo = () => {
   return (
     <>
       {/* Writeup */}
-      <div className="max-w-sm my-12">
-        <h1 className="text-center text-white font-[700] text-[40px] leading-[47.42px]">
+      <div className="max-w-sm my-12 ">
+        <h1 className="text-center text-theme font-[700] text-2xl sm:text-3xl lg:text-[40px] leading-tight sm:leading-[47.42px] transition-colors duration-300">
           Add Members to a Multisig Vault
         </h1>
-        <p className="font-[400] text-[16px] leading-[25px] text-center text-[#8E9BAE] lg:px-8 mt-3">
+        <p className="text-sm sm:text-base leading-[25px] text-center text-theme-secondary lg:px-8 mt-3 transition-colors duration-300">
           Add your team members & customize security settings to fit your
           team&apos;s needs.
         </p>
@@ -164,7 +165,7 @@ const StepTwo = () => {
               <div key={field.id} className="w-full">
                 <label
                   htmlFor={`members.${index}.address`}
-                  className="font-[400] text-[14px] leading-[24px] text-white mb-1 block"
+                  className="font-[400] text-xs sm:text-[14px] leading-[24px] text-theme mb-1 block transition-colors duration-300"
                 >
                   Member {index + 1}
                 </label>
@@ -173,14 +174,14 @@ const StepTwo = () => {
                   <input
                     type="text"
                     id={`members.${index}.address`}
-                    className={`w-full border text-white rounded-[7px] placeholder:text-[#8E9BAE] px-4 py-3 bg-transparent outline-none pr-10 ${
+                    className={`w-full text-theme rounded-[7px] placeholder:text-theme-muted px-3 sm:px-4 py-2 sm:py-3 bg-theme-bg-secondary outline-none pr-10 text-sm sm:text-base transition-colors duration-300 ${
                       errors.members?.[index]?.address ||
                       (duplicateAddresses.includes(
                         watch(`members.${index}.address`).trim(),
                       ) &&
                         watch(`members.${index}.address`).trim() !== '')
-                        ? 'border-red-500'
-                        : 'border-[#292929]'
+                        ? 'border border-red-500'
+                        : 'border border-theme-border focus:border-primary'
                     }`}
                     placeholder="Enter team member's address"
                     {...register(`members.${index}.address`)}
@@ -188,17 +189,17 @@ const StepTwo = () => {
                   {index === 0 ? (
                     <LuTrash
                       onClick={() => setValue(`members.${index}.address`, '')}
-                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#8E9BAE] cursor-pointer"
+                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-theme-muted cursor-pointer hover:text-theme transition-colors duration-200"
                     />
                   ) : (
                     <LuTrash
                       onClick={() => remove(index)}
-                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#8E9BAE] cursor-pointer"
+                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-theme-muted cursor-pointer hover:text-theme transition-colors duration-200"
                     />
                   )}
                 </div>
                 {errors.members?.[index]?.address && (
-                  <p className="text-red-500 text-sm mt-1">
+                  <p className="text-red-500 text-xs sm:text-sm mt-1">
                     {errors.members[index]?.address?.message}
                   </p>
                 )}
@@ -206,7 +207,7 @@ const StepTwo = () => {
                   watch(`members.${index}.address`).trim(),
                 ) &&
                   watch(`members.${index}.address`).trim() !== '' && (
-                    <p className="text-red-500 text-sm mt-1">
+                    <p className="text-red-500 text-xs sm:text-sm mt-1">
                       This address is already added
                     </p>
                   )}
@@ -215,7 +216,7 @@ const StepTwo = () => {
 
             <button
               type="button"
-              className="w-full h-[50px] flex justify-center items-center bg-[#272729] shadow-[0px_1.08px_2.16px_0px_#1018280A] text-white font-[500] text-base rounded-[7px]"
+              className="w-full h-[45px] sm:h-[50px] flex justify-center items-center bg-theme-bg-tertiary shadow-[0px_1.08px_2.16px_0px_#1018280A] text-theme font-[500] text-sm sm:text-base rounded-[7px] border border-theme-border hover:bg-theme-bg-secondary transition-all duration-200"
               onClick={addNewMember}
             >
               <FaPlus className="mr-3" /> Add Member
@@ -225,7 +226,7 @@ const StepTwo = () => {
 
         <OnboardingCard title="Configure Threshold">
           <div className="w-full flex flex-col gap-6 py-4 md:px-[26px] px-4">
-            <p className="text-gray-400 text-sm mt-1">
+            <p className="text-theme-secondary text-xs sm:text-sm mt-1 transition-colors duration-300">
               Please select the amount of approvals needed to confirm a
               transaction.
             </p>
@@ -238,37 +239,38 @@ const StepTwo = () => {
                 step={1}
                 value={approvals}
                 onChange={handleApprovalsChange}
-                className="w-full appearance-none h-2 bg-[#292929] rounded-lg outline-none cursor-pointer transition-all"
+                className="w-full appearance-none h-2 bg-theme-bg-tertiary rounded-lg outline-none cursor-pointer transition-all"
+                style={{
+                  background: `linear-gradient(to right, #6f2fcd 0%, #6f2fcd ${percentage}%, var(--theme-bg-tertiary) ${percentage}%, var(--theme-bg-tertiary) 100%)`,
+                }}
               />
               <div className="flex items-center justify-between px-1">
-                <span className="text-sm text-white">1</span>
-                <span className="text-sm text-white">{members.length}</span>
+                <span className="text-xs sm:text-sm text-theme transition-colors duration-300">
+                  1
+                </span>
+                <span className="text-xs sm:text-sm text-theme transition-colors duration-300">
+                  {members.length}
+                </span>
               </div>
-              <p className="text-center text-white mt-2">
+              <p className="text-center text-theme mt-2 text-sm sm:text-base transition-colors duration-300">
                 {approvals} of {members.length} approvals required
               </p>
             </div>
             <button
               disabled={isSubmitting}
-              className="w-full h-[50px] flex justify-center items-center bg-white shadow-[0px_1.08px_2.16px_0px_#1018280A] text-[#101213] font-[500] text-base rounded-[7px]"
+              className={`w-full h-[45px] sm:h-[50px] flex justify-center items-center shadow-[0px_1.08px_2.16px_0px_#1018280A] font-[500] text-sm sm:text-base rounded-[7px] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed ${
+                actualTheme === 'dark'
+                  ? 'bg-white text-black hover:bg-gray-200'
+                  : 'bg-gray-900 text-white hover:bg-gray-800'
+              }`}
             >
               {isSubmitting ? 'Processing...' : 'Continue'}
             </button>
 
             <style jsx>{`
-              input[type='range'] {
-                background: linear-gradient(
-                  to right,
-                  #6f2fcd 0%,
-                  #6f2fcd ${percentage}%,
-                  #292929 ${percentage}%,
-                  #292929 100%
-                );
-              }
-
               input[type='range']::-webkit-slider-thumb {
                 appearance: none;
-                margin-top: -6px; /* (8px - 20px) / 2 */
+                margin-top: -6px;
                 height: 20px;
                 width: 20px;
                 border-radius: 50%;
@@ -322,7 +324,7 @@ const StepTwo = () => {
               }
 
               input[type='range']::-ms-fill-upper {
-                background: #292929;
+                background: var(--theme-bg-tertiary);
                 border-radius: 4px;
               }
             `}</style>

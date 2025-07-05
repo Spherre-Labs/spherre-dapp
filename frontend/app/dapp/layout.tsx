@@ -31,7 +31,7 @@ export default function DappLayout({ children }: DappLayoutProps) {
   const navItems: NavItem[] = [
     { name: 'Dashboard', icon: Dashboard, route: '/dapp/' },
     { name: 'Trade', icon: Trade, route: '/dapp/trade', comingSoon: true },
-    { name: 'Members', icon: Members, route: '/dapp/members' }, // Using Trade icon temporarily for Members
+    { name: 'Members', icon: Members, route: '/dapp/members' },
     {
       name: 'Transactions',
       icon: Transactions,
@@ -116,7 +116,7 @@ export default function DappLayout({ children }: DappLayoutProps) {
   const selectedPage = getSelectedPage(pathname)
 
   return (
-    <div className="bg-black min-h-screen overflow-x-hidden">
+    <div className="bg-theme min-h-screen overflow-x-hidden transition-colors duration-300">
       <Sidebar
         navItems={navItems}
         selectedPage={selectedPage}
@@ -135,7 +135,7 @@ export default function DappLayout({ children }: DappLayoutProps) {
             isMobile={isMobile}
             setSidebarExpanded={setSidebarExpanded}
           />
-          <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-x-hidden">
+          <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-x-hidden bg-theme transition-colors duration-300">
             <div className="max-w-full">{children}</div>
           </main>
         </div>

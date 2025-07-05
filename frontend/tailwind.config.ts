@@ -1,4 +1,5 @@
 import type { Config } from 'tailwindcss'
+import tailwindcssAnimate from 'tailwindcss-animate'
 
 export default {
   darkMode: ['class'],
@@ -48,6 +49,17 @@ export default {
           '4': 'hsl(var(--chart-4))',
           '5': 'hsl(var(--chart-5))',
         },
+        'theme-bg': {
+          DEFAULT: 'var(--theme-bg)',
+          secondary: 'var(--theme-bg-secondary)',
+          tertiary: 'var(--theme-bg-tertiary)',
+        },
+        'theme-text': {
+          DEFAULT: 'var(--theme-text)',
+          secondary: 'var(--theme-text-secondary)',
+          muted: 'var(--theme-text-muted)',
+        },
+        'theme-border': 'var(--theme-border)',
       },
       fontFamily: {
         sans: ['var(--font-nunito-sans)', 'sans-serif'],
@@ -61,5 +73,5 @@ export default {
       },
     },
   },
-  plugins: [require('tailwindcss-animate')],
+  plugins: [tailwindcssAnimate],
 } satisfies Config

@@ -1,5 +1,6 @@
 import Image from 'next/image'
 import { ChevronUp } from 'lucide-react'
+import { useTheme } from '@/app/context/theme-context-provider'
 
 interface ProfileProps {
   name: string
@@ -12,27 +13,28 @@ const SidebarProfile: React.FC<ProfileProps> = ({
   walletAddress,
   profileImage = '/Images/Profile.png', // Default image path
 }) => {
+  useTheme()
+
   return (
-    <div className="absolute bottom-0 left-0 w-full border-t border-gray-600 bg-[#1c1d1f]">
+    <div className="absolute bottom-0 left-0 w-full border-t border-theme bg-theme-secondary transition-colors duration-300">
       <div className="flex items-center justify-between p-4">
         <div className="flex items-center gap-3">
           <div className="relative w-10 h-10 rounded-full overflow-hidden bg-red-500">
             <Image
               src={profileImage}
               alt="Profile"
-              layout="fill"
-              objectFit="cover"
-              className="rounded-full"
+              fill
+              className="rounded-full object-cover"
             />
           </div>
           <div>
-            <p className="text-white text-sm font-medium">{name}</p>
-            <p className="text-gray-400 text-xs truncate w-36">
+            <p className="text-theme text-sm font-medium">{name}</p>
+            <p className="text-theme-secondary text-xs truncate w-36">
               {walletAddress}
             </p>
           </div>
         </div>
-        <ChevronUp className="text-gray-400 w-5 h-5" />
+        <ChevronUp className="text-theme-secondary w-5 h-5" />
       </div>
     </div>
   )

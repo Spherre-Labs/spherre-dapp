@@ -11,11 +11,50 @@
   --purple-border-color: #6f2fce;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+.light {
+  --background: #ffffff;
+  --foreground: #171717;
+  --theme-bg: #ffffff;
+  --theme-bg-secondary: #f8fafc;
+  --theme-bg-tertiary: #f1f5f9;
+  --theme-text: #0f172a;
+  --theme-text-secondary: #475569;
+  --theme-text-muted: #64748b;
+  --theme-border: #e2e8f0;
+  --card-bg: #ffffff;
+  --card-bg-secondary: #f8fafc;
+  --sidebar-bg: #ffffff;
+  --navbar-bg: #ffffff;
+  --modal-bg: #ffffff;
+
+  /* Borders and dividers */
+  --border-color: #e2e8f0;
+  --border-color-hover: #cbd5e1;
+}
+
+/* Dark theme variables */
+.dark {
+  --background: #0a0a0a;
+  --foreground: #ededed;
+
+  --theme-bg: #0a0a0a;
+  --theme-bg-secondary: #1c1d1f;
+  --theme-bg-tertiary: #272729;
+  --theme-text: #ffffff;
+  --theme-text-secondary: #8e9bae;
+  --theme-text-muted: #64748b;
+  --theme-border: #292929;
+
+  /* Card and UI backgrounds */
+  --card-bg: #1c1d1f;
+  --card-bg-secondary: #272729;
+  --sidebar-bg: #1c1d1f;
+  --navbar-bg: #1c1d1f;
+  --modal-bg: #1c1d1f;
+
+  /* Borders and dividers */
+  --border-color: #292929;
+  --border-color-hover: #3f3f46;
 }
 
 body {
@@ -23,6 +62,9 @@ body {
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
   overflow-x: hidden;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
 }
 
 /* Responsive container */
@@ -50,7 +92,75 @@ body {
   box-sizing: border-box;
 }
 
-/* Responsive text utilities */
+/* Theme-aware utility classes */
+.bg-theme {
+  background-color: var(--theme-bg);
+}
+
+.bg-theme-secondary {
+  background-color: var(--theme-bg-secondary);
+}
+
+.bg-theme-tertiary {
+  background-color: var(--theme-bg-tertiary);
+}
+
+.text-theme {
+  color: var(--theme-text);
+}
+
+.text-theme-secondary {
+  color: var(--theme-text-secondary);
+}
+
+.text-theme-muted {
+  color: var(--theme-text-muted);
+}
+
+.border-theme {
+  border-color: var(--theme-border);
+}
+
+/* Sidebar theme-aware styles */
+.sidebar-bg {
+  background: linear-gradient(
+    to bottom,
+    var(--sidebar-bg),
+    var(--theme-bg-secondary)
+  );
+}
+
+.sidebar-item {
+  @apply transition-colors duration-200;
+}
+
+.sidebar-item:hover {
+  background-color: var(--theme-bg-tertiary);
+}
+
+.sidebar-item.active {
+  background-color: var(--theme-bg-tertiary);
+  border-left: 3px solid var(--primary-color);
+}
+.card-theme {
+  background-color: var(--card-bg);
+  border-color: var(--border-color);
+}
+
+.card-theme-secondary {
+  background-color: var(--card-bg-secondary);
+  border-color: var(--border-color);
+}
+
+.modal-theme {
+  background-color: var(--modal-bg);
+  border-color: var(--border-color);
+}
+
+.btn-theme-hover:hover {
+  background-color: var(--theme-bg-tertiary);
+}
+
 .text-responsive-xs {
   font-size: 0.75rem;
   line-height: 1rem;
@@ -98,7 +208,6 @@ body {
   }
 }
 
-/* Responsive spacing */
 .space-responsive {
   gap: 0.5rem;
 }
@@ -115,7 +224,6 @@ body {
   }
 }
 
-/* Mobile-first responsive grid */
 .grid-responsive {
   display: grid;
   grid-template-columns: 1fr;
@@ -284,7 +392,7 @@ body {
 }
 
 .sidebar-menu-item:hover {
-  background-color: #2d2f33;
+  background-color: var(--theme-bg-tertiary);
 }
 
 .sidebar-menu-item:active {
@@ -294,8 +402,8 @@ body {
 
 /* Active item indicator */
 .sidebar-menu-item.active {
-  background-color: #27292d;
-  color: white;
+  background-color: var(--theme-bg-tertiary);
+  color: var(--theme-text);
   border-left: 3px solid var(--primary-color);
 }
 
@@ -308,8 +416,8 @@ body {
   visibility: hidden;
   position: absolute;
   z-index: 100;
-  background-color: #333;
-  color: white;
+  background-color: var(--theme-bg-tertiary);
+  color: var(--theme-text);
   text-align: center;
   padding: 5px 10px;
   border-radius: 6px;
@@ -319,6 +427,7 @@ body {
   transition: opacity 0.3s;
   white-space: nowrap;
   font-size: 0.75rem;
+  border: 1px solid var(--theme-border);
 }
 
 @media (min-width: 640px) {
@@ -554,7 +663,7 @@ body {
 }
 .notification-scrollbar::-webkit-scrollbar-thumb {
   background-color: #1f2024;
-  border-radius: 4px;
+  border-color: var(--theme-border);
 }
 .notification-scrollbar::-webkit-scrollbar-thumb:hover {
   background-color: #212429;
