@@ -95,7 +95,7 @@ export default function PreferencesPage() {
   }
 
   return (
-    <div className="space-y-10 font-sans w-full max-w-7xl mx-auto px-4 md:px-8 py-8 bg-theme transition-colors duration-300">
+    <div className="space-y-10 font-sans w-full max-w-7xl px-4 md:px-8 py-8 bg-theme transition-colors duration-300">
       {/* Header */}
       <div>
         <h1 className="text-2xl font-bold text-theme mb-3">Preferences</h1>

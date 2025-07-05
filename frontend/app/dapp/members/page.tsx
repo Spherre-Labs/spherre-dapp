@@ -246,7 +246,7 @@ const Members = () => {
         </div>
 
         <button
-          className="rounded-[7px] bg-primary gap-2 sm:gap-[10px] text-xs sm:text-sm lg:text-[14px] font-medium w-full sm:w-auto h-[40px] sm:h-[45px] flex items-center justify-center p-3 mt-[-10px] hover:opacity-90 transition-opacity duration-200"
+          className="rounded-[7px] bg-primary gap-2 sm:gap-[10px] text-xs sm:text-sm lg:text-[14px] font-medium w-full sm:w-auto h-[40px] sm:h-[45px] flex items-center justify-center p-3 mt-[-10px] hover:opacity-90 transition-opacity duration-200 text-white"
           onClick={() => setIsAddMemberModalOpen(true)}
         >
           <Image
