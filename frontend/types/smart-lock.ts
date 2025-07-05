@@ -7,5 +7,5 @@ export interface SmartLockPlan {
   unlockDate: string
   isUnlockable: boolean
   category: string
-  imageUrl: string
+  imageUrl?: string
 }

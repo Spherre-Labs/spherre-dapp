@@ -1,6 +1,12 @@
+'use client'
+
 import { Button } from '@/components/ui/button'
 import { Plus } from 'lucide-react'
 import { useTheme } from '@/app/context/theme-context-provider'
+
+interface SmartHeaderProps {
+  onCreateNewPlan?: () => void
+}
 
 const ButtonSmart = ({ onClick }: { onClick?: () => void }) => {
   useTheme()
@@ -16,9 +22,7 @@ const ButtonSmart = ({ onClick }: { onClick?: () => void }) => {
   )
 }
 
-export function SmartHeader() {
-  useTheme()
-
+export function SmartHeader({ onCreateNewPlan }: SmartHeaderProps) {
   return (
     <div className="flex max-sm:flex-col justify-between items-center mb-4 gap-4">
       <div className="max-sm:text-center">
@@ -29,7 +33,7 @@ export function SmartHeader() {
           Manage, plan and lock desirable amount of tokens for future spending.
         </p>
       </div>
-      <ButtonSmart />
+      <ButtonSmart onClick={onCreateNewPlan} />
     </div>
   )
 }

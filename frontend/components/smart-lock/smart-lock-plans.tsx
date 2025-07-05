@@ -1,17 +1,25 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { mockPlans, categories } from '@/lib/smart-lock-mock-data'
+import { categories } from '@/lib/smart-lock-mock-data'
 import { SmartEmpty } from '@/components/smart-lock/smart-empty'
 import { SmartHeader } from '@/components/smart-lock/smart-header'
 import { SmartNotFound } from './smart-not-found'
 import { SmartSearchFilters } from './smart-search-and-filters'
 import { SmartPlanCard } from './smart-plan-card'
 import { SmartPlanCardSkeleton } from './smart-plan-card-skeleton'
-import { SmartLockPlan } from '@/types/smart-lock'
+import type { SmartLockPlan } from '@/types/smart-lock'
 import { useTheme } from '@/app/context/theme-context-provider'
 
-export default function SmartLockPlans() {
+interface SmartLockPlansProps {
+  plans: SmartLockPlan[]
+  onCreateNewPlan: () => void
+}
+
+export default function SmartLockPlans({
+  plans: initialPlans,
+  onCreateNewPlan,
+}: SmartLockPlansProps) {
   useTheme()
   const [plans, setPlans] = useState<SmartLockPlan[]>([])
   const [filteredPlans, setFilteredPlans] = useState<SmartLockPlan[]>([])
@@ -23,11 +31,11 @@ export default function SmartLockPlans() {
   useEffect(() => {
     // Simulate loading - change to empty array to test SmartEmpty component
     setTimeout(() => {
-      setPlans(mockPlans) // Change to [] to see SmartEmpty component
-      setFilteredPlans(mockPlans) // Change to [] to see SmartEmpty component
+      setPlans(initialPlans) // Use the plans passed from parent
+      setFilteredPlans(initialPlans) // Use the plans passed from parent
       setIsLoading(false)
     }, 2000)
-  }, [])
+  }, [initialPlans])
 
   useEffect(() => {
     let filtered = plans
@@ -77,7 +85,7 @@ export default function SmartLockPlans() {
     return (
       <div className="min-h-screen bg-theme p-6 transition-colors duration-300">
         <div className="max-w-7xl mx-auto">
-          <SmartHeader />
+          <SmartHeader onCreateNewPlan={onCreateNewPlan} />
           <SmartEmpty />
         </div>
       </div>
@@ -87,7 +95,7 @@ export default function SmartLockPlans() {
   return (
     <div className="min-h-screen bg-theme p-6 transition-colors duration-300">
       <div className="max-w-7xl mx-auto">
-        <SmartHeader />
+        <SmartHeader onCreateNewPlan={onCreateNewPlan} />
 
         <SmartSearchFilters
           searchQuery={searchQuery}
