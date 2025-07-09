@@ -1,25 +1,34 @@
 'use client'
-import React from 'react'
+import React, { use } from 'react'
 import { transactions } from '@/app/dapp/transactions/data'
 import { TransactionDetailsHeader } from './components/TransactionDetailsHeader'
 import { TransactionSummary } from './components/TransactionSummary'
 import { TransactionDetailsBody } from './components/TransactionParticipants'
+import { useTheme } from '@/app/context/theme-context-provider'
 
-export default function TransactionDetailsPage({
-  params,
-}: {
-  params: { id: string }
-}) {
-  const transaction = transactions.find((t) => t.id === parseInt(params.id))
+interface PageProps {
+  params: Promise<{
+    id: string
+  }>
+}
+
+export default function TransactionDetailsPage({ params }: PageProps) {
+  useTheme()
+  const resolvedParams = use(params)
+  const transaction = transactions.find(
+    (t) => t.id === parseInt(resolvedParams.id),
+  )
 
   if (!transaction) {
     return (
-      <div className="text-white text-center p-10">Transaction not found.</div>
+      <div className="text-theme text-center p-10 bg-theme min-h-screen transition-colors duration-300">
+        Transaction not found.
+      </div>
     )
   }
 
   return (
-    <div className="bg-[#1C1D1F] text-white p-6 rounded-lg h-[95.5vh]">
+    <div className="bg-theme-bg-secondary border border-theme-border text-theme p-6 rounded-lg h-[95.5vh] transition-colors duration-300">
       <TransactionDetailsHeader status={transaction.status} />
       <TransactionSummary transaction={transaction} />
       <TransactionDetailsBody transaction={transaction} />

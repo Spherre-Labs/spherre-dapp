@@ -10,12 +10,14 @@ import threshold_img from '../../../../public/Images/threshold.png'
 import group from '../../../../public/Images/group-profile.png'
 import starkneticon from '../../../../public/Images/starknet-icon.png'
 import { useRouter } from 'next/navigation'
+import { useTheme } from '@/app/context/theme-context-provider'
 
 export default function MultisigWalletUI() {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [threshold, setThreshold] = useState(1)
   const totalMembers = 3
   const router = useRouter()
+  const { actualTheme } = useTheme()
 
   const openModal = () => setIsModalOpen(true)
   const closeModal = () => setIsModalOpen(false)
@@ -25,10 +27,10 @@ export default function MultisigWalletUI() {
   }
 
   return (
-    <div className="text-white p-2 sm:p-6">
+    <div className="text-theme p-2 sm:p-6 bg-theme transition-colors duration-300">
       <div className="mx-auto">
         {/* Header */}
-        <h1 className="text-xl sm:text-2xl font-semibold text-gray-300 mb-4 sm:mb-8">
+        <h1 className="text-xl sm:text-2xl font-semibold text-theme-secondary mb-4 sm:mb-8">
           All Multisig Wallets
         </h1>
 
@@ -114,17 +116,17 @@ export default function MultisigWalletUI() {
           </div>
 
           {/* Create Multisig Card */}
-          <div className="bg-[#1C1D1F] rounded-2xl p-3 sm:p-6 relative overflow-hidden mt-4 sm:mt-0">
+          <div className="bg-theme-bg-secondary border border-theme-border rounded-2xl p-3 sm:p-6 relative overflow-hidden mt-4 sm:mt-0 transition-colors duration-300">
             <div className="relative z-10">
-              <h3 className="text-base sm:text-xl font-semibold text-white mb-2 sm:mb-4">
+              <h3 className="text-base sm:text-xl font-semibold text-theme mb-2 sm:mb-4">
                 Create a multisig Account
               </h3>
-              <div className=" bg-coin h-[60px] sm:h-[108px] w-full"></div>
-              <p className="text-purple-100 text-xs sm:text-sm my-2 sm:my-3 leading-relaxed">
+              <div className="bg-coin h-[60px] sm:h-[108px] w-full"></div>
+              <p className="text-theme-secondary text-xs sm:text-sm my-2 sm:my-3 leading-relaxed">
                 Secure Your Digital Assets Seamlessly. Add Members to your new
                 Multisig Vault.
               </p>
-              <button className="w-full bg-white bg-opacity-20 backdrop-blur-sm text-white py-2 sm:py-3 rounded-lg font-medium hover:bg-black/40 transition-all text-xs sm:text-base">
+              <button className="w-full bg-theme-bg-tertiary hover:bg-theme-bg-tertiary/80 text-theme py-2 sm:py-3 rounded-lg font-medium transition-all text-xs sm:text-base border border-theme-border">
                 Create Now
               </button>
             </div>
@@ -133,35 +135,37 @@ export default function MultisigWalletUI() {
 
         {/* More Details Section */}
         <div className="mt-4 sm:mt-8">
-          <h3 className="text-base sm:text-xl font-medium text-gray-400 mb-3 sm:mb-6">
+          <h3 className="text-base sm:text-xl font-medium text-theme-secondary mb-3 sm:mb-6">
             More Details
           </h3>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-6">
             {/* Members Card */}
-            <div className="bg-[#1C1D1F] rounded-xl p-3 sm:p-6">
+            <div className="bg-theme-bg-secondary border border-theme-border rounded-xl p-3 sm:p-6 transition-colors duration-300">
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center space-x-3">
                   <Image src={group} width={30} height={30} alt="group" />
                   <div>
-                    <p className="text-gray-400 text-xs sm:text-sm">Members</p>
+                    <p className="text-theme-secondary text-xs sm:text-sm">
+                      Members
+                    </p>
                   </div>
                 </div>
                 <div className="text-right">
-                  <p className="text-2xl sm:text-5xl font-bold text-white">5</p>
+                  <p className="text-2xl sm:text-5xl font-bold text-theme">5</p>
                 </div>
               </div>
 
               <button
                 onClick={() => router.push('/dapp/members')}
-                className="w-full bg-[#272729] hover:bg-black/40 text-white py-2 sm:py-3 rounded-lg font-medium transition-all text-xs sm:text-base"
+                className="w-full bg-theme-bg-tertiary hover:bg-theme-bg-tertiary/80 text-theme py-2 sm:py-3 rounded-lg font-medium transition-all text-xs sm:text-base border border-theme-border"
               >
                 Manage Members
               </button>
             </div>
 
             {/* Threshold Card */}
-            <div className="bg-[#1C1D1F] rounded-xl p-3 sm:p-6">
+            <div className="bg-theme-bg-secondary border border-theme-border rounded-xl p-3 sm:p-6 transition-colors duration-300">
               <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center space-x-3">
                   <Image
@@ -171,14 +175,14 @@ export default function MultisigWalletUI() {
                     alt="threshold"
                   />
                   <div className="flex items-center space-x-2">
-                    <p className="text-gray-400 text-xs sm:text-sm">
+                    <p className="text-theme-secondary text-xs sm:text-sm">
                       Threshold
                     </p>
-                    <HelpCircle className="w-4 h-4 text-gray-500" />
+                    <HelpCircle className="w-4 h-4 text-theme-muted" />
                   </div>
                 </div>
                 <div className="text-right">
-                  <p className="text-2xl sm:text-5xl font-bold text-white">
+                  <p className="text-2xl sm:text-5xl font-bold text-theme">
                     3/5
                   </p>
                 </div>
@@ -186,7 +190,7 @@ export default function MultisigWalletUI() {
 
               <button
                 onClick={openModal}
-                className="w-full bg-[#272729] hover:bg-black/40 text-white py-2 sm:py-3 rounded-lg font-medium transition-all flex items-center justify-center space-x-2 text-xs sm:text-base"
+                className="w-full bg-theme-bg-tertiary hover:bg-theme-bg-tertiary/80 text-theme py-2 sm:py-3 rounded-lg font-medium transition-all flex items-center justify-center space-x-2 text-xs sm:text-base border border-theme-border"
               >
                 <Edit3 className="w-4 h-4" />
                 <span>Edit Threshold</span>
@@ -199,21 +203,21 @@ export default function MultisigWalletUI() {
       {/* Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50 p-2 sm:p-4">
-          <div className="bg-[#1C1D1F] rounded-2xl p-4 sm:p-8 mx-2 sm:mx-4 relative w-full max-w-[95vw] sm:max-w-lg">
+          <div className="bg-theme-bg-secondary border border-theme-border rounded-2xl p-4 sm:p-8 mx-2 sm:mx-4 relative w-full max-w-[95vw] sm:max-w-lg transition-colors duration-300">
             {/* Close Button */}
             <button
               onClick={closeModal}
-              className="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors"
+              className="absolute top-4 right-4 text-theme-muted hover:text-theme transition-colors"
             >
               <X className="w-6 h-6" />
             </button>
 
             {/* Modal Header */}
             <div className="text-center mb-8">
-              <h2 className="text-lg sm:text-2xl font-bold text-white mb-2">
+              <h2 className="text-lg sm:text-2xl font-bold text-theme mb-2">
                 Edit Threshold
               </h2>
-              <p className="text-gray-400 text-xs sm:text-sm leading-relaxed">
+              <p className="text-theme-secondary text-xs sm:text-sm leading-relaxed">
                 Please select the amount of approvals needed to confirm a
                 transaction.
               </p>
@@ -222,27 +226,27 @@ export default function MultisigWalletUI() {
             {/* Content */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-12 mb-6 sm:mb-8">
               {/* Members */}
-              <div className="bg-[#272729] rounded-xl p-3 sm:p-6 text-center flex items-center justify-between">
+              <div className="bg-theme-bg-tertiary border border-theme-border rounded-xl p-3 sm:p-6 text-center flex items-center justify-between transition-colors duration-300">
                 <div className="flex flex-col items-start gap-8">
                   <Image src={group} width={30} height={30} alt="group" />
-                  <div className="text-gray-400 text-xs sm:text-sm">
+                  <div className="text-theme-secondary text-xs sm:text-sm">
                     Members
                   </div>
                 </div>
-                <div className="text-4xl font-bold text-white mb-2">
+                <div className="text-4xl font-bold text-theme mb-2">
                   {totalMembers}
                 </div>
               </div>
 
               {/* Threshold */}
-              <div className="bg-[#272729] gap-12 rounded-xl p-3 sm:p-6 text-center flex items-center justify-between">
+              <div className="bg-theme-bg-tertiary border border-theme-border gap-12 rounded-xl p-3 sm:p-6 text-center flex items-center justify-between transition-colors duration-300">
                 <div className="flex flex-col items-start gap-8">
                   <Image src={group} width={30} height={30} alt="group" />
-                  <div className="text-gray-400 text-xs sm:text-sm">
+                  <div className="text-theme-secondary text-xs sm:text-sm">
                     Threshold
                   </div>
                 </div>
-                <div className="text-4xl font-bold text-white mb-2">
+                <div className="text-4xl font-bold text-theme mb-2">
                   {threshold}/{totalMembers}
                 </div>
                 <div className="flex flex-col items-start gap-8"></div>
@@ -262,7 +266,7 @@ export default function MultisigWalletUI() {
                   }
                   className="w-full h-2 rounded-lg appearance-none cursor-pointer slider"
                 />
-                <div className="flex justify-between text-gray-400 text-xs sm:text-sm mt-2">
+                <div className="flex justify-between text-theme-secondary text-xs sm:text-sm mt-2">
                   {Array.from({ length: totalMembers }, (_, i) => (
                     <span key={i + 1}>{i + 1}</span>
                   ))}
@@ -274,7 +278,7 @@ export default function MultisigWalletUI() {
             <div className="flex flex-col sm:flex-row gap-2 sm:gap-4">
               <button
                 onClick={closeModal}
-                className="w-full sm:flex-1 bg-[#272729] text-white py-2 sm:py-3 rounded-lg font-medium hover:bg-gray-800 transition-all text-xs sm:text-base"
+                className="w-full sm:flex-1 bg-theme-bg-tertiary border border-theme-border text-theme py-2 sm:py-3 rounded-lg font-medium hover:bg-theme-bg-tertiary/80 transition-all text-xs sm:text-base"
               >
                 Close
               </button>
@@ -284,7 +288,7 @@ export default function MultisigWalletUI() {
                   console.log('New threshold:', threshold)
                   closeModal()
                 }}
-                className="w-full sm:flex-1 bg-gradient-to-r from-purple-600 to-purple-700 text-white py-2 sm:py-3 rounded-lg font-medium hover:from-purple-700 hover:to-purple-800 transition-all text-xs sm:text-base"
+                className="w-full sm:flex-1 bg-primary text-white py-2 sm:py-3 rounded-lg font-medium hover:opacity-90 transition-all text-xs sm:text-base"
               >
                 Propose Transaction
               </button>
@@ -299,7 +303,7 @@ export default function MultisigWalletUI() {
           height: 20px;
           width: 20px;
           border-radius: 50%;
-          background: white;
+          background: ${actualTheme === 'dark' ? 'white' : '#374151'};
           cursor: pointer;
           box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
         }
@@ -308,7 +312,7 @@ export default function MultisigWalletUI() {
           height: 20px;
           width: 20px;
           border-radius: 50%;
-          background: white;
+          background: ${actualTheme === 'dark' ? 'white' : '#374151'};
           cursor: pointer;
           border: none;
           box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
@@ -317,10 +321,12 @@ export default function MultisigWalletUI() {
         .slider {
           background: linear-gradient(
             to right,
-            white 0%,
-            white ${(threshold - 1) * (100 / (totalMembers - 1))}%,
-            #374151 ${(threshold - 1) * (100 / (totalMembers - 1))}%,
-            #374151 100%
+            ${actualTheme === 'dark' ? 'white' : '#6366f1'} 0%,
+            ${actualTheme === 'dark' ? 'white' : '#6366f1'}
+              ${(threshold - 1) * (100 / (totalMembers - 1))}%,
+            ${actualTheme === 'dark' ? '#374151' : '#cbd5e1'}
+              ${(threshold - 1) * (100 / (totalMembers - 1))}%,
+            ${actualTheme === 'dark' ? '#374151' : '#cbd5e1'} 100%
           );
         }
       `}</style>

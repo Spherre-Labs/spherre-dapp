@@ -3,13 +3,13 @@ import React, { useState } from 'react'
 interface AddEmailModalProps {
   open: boolean
   onClose: () => void
-  onSign: (email: string) => void
+  onSave: (email: string) => void
 }
 
 const AddEmailModal: React.FC<AddEmailModalProps> = ({
   open,
   onClose,
-  onSign,
+  onSave,
 }) => {
   const [email, setEmail] = useState('')
 
@@ -47,7 +47,7 @@ const AddEmailModal: React.FC<AddEmailModalProps> = ({
           </button>
           <button
             className="flex-1 bg-[#6F2FCE] hover:bg-[#7d5fff] text-white rounded-[7px] px-6 py-3 font-semibold transition"
-            onClick={() => onSign(email)}
+            onClick={() => onSave(email)}
           >
             Sign Message
           </button>

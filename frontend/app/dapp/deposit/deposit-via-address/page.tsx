@@ -45,18 +45,20 @@ const Page = () => {
   }, [])
   return (
     <div
-      className={`${nunito.className} p-10 flex  items-center flex-col justify-center h-full`}
+      className={`${nunito.className} p-10 flex items-center flex-col justify-center h-full transition-colors duration-300`}
     >
       <div className="flex-col items-center flex justify-center">
-        <p className="font-bold text-[30px]">Deposit to Spherre Wallet</p>
-        <p className="text-[16px] font-normal text-[#8E9BAE] max-w-[379px] pt-2 text-center ">
+        <p className="font-bold text-[30px] text-gray-900 dark:text-white transition-colors duration-300">
+          Deposit to Spherre Wallet
+        </p>
+        <p className="text-[16px] font-normal text-[#8E9BAE] max-w-[379px] pt-2 text-center">
           Please copy the wallet address link of this account and deposit funds
           to it.
         </p>
       </div>
-      <div className="flex-col items-start  flex justify-center w-[621px]">
+      <div className="flex-col items-start flex justify-center w-[621px]">
         <p className="pb-5 text-[14px] text-[#8E9BAE]">Account</p>
-        <div className="relative w-full flex px-5 justify-between  h-[98px] mb-10">
+        <div className="relative w-full flex px-5 justify-between h-[98px] mb-10 bg-[#0a0a0a] rounded-[10px]">
           <svg
             className="absolute inset-0 w-full h-full pointer-events-none"
             xmlns="http://www.w3.org/2000/svg"
@@ -83,41 +85,39 @@ const Page = () => {
               width={50}
               className="rounded-full"
             />
-            <div className=" flex justify-between flex-col py-5">
+            <div className="flex justify-between flex-col py-5">
               <p className="font-bold text-white">Backstreet boys</p>
               <p className="font-medium text-[#8E9BAE]">G252...62teyw</p>
             </div>
           </div>
 
-          <div className=" flex justify-between  flex-col h-full">
+          <div className="flex justify-between flex-col h-full">
             <p className="pt-[8px]">
-              <span className="font-medium text-[14px]  text-[#8E9BAE]">
+              <span className="font-medium text-[14px] text-[#8E9BAE]">
                 Available Balance:{' '}
               </span>{' '}
-              <span className="font-semibold  text-[25px]  text-white">
+              <span className="font-semibold text-[25px] text-white">
                 250.35
               </span>{' '}
-              <span className="font-normal text-[20px]  text-[#8E9BAE]">
+              <span className="font-normal text-[20px] text-[#8E9BAE]">
                 STRK
               </span>
             </p>
             <p className="text-right pb-[25px]">
               {' '}
-              <span className="font-medium text-[14px]  text-[#8E9BAE]">
+              <span className="font-medium text-[14px] text-[#8E9BAE]">
                 Threshold:
               </span>{' '}
-              <span className="font-semibold  text-[16px]  text-white">
+              <span className="font-semibold text-[16px] text-white">
                 2/3
               </span>{' '}
             </p>
           </div>
-          {/* <div className="relative z-10 w-full h-full rounded-[10px] bg-transparent"> hh</div> */}
         </div>
 
-        <div className="flex  flex-col   h-[322px] w-[621px]">
-          <div className="flex justify-between   gap-5">
-            {/* <div className="bg-white size-[250px]"></div> */}
-            <div className="size-[250px] relative overflow-hidden rounded-[10px] bg-[#1C1D1F] p-2 shadow-lg">
+        <div className="flex flex-col h-[322px] w-[621px]">
+          <div className="flex justify-between gap-5">
+            <div className="size-[250px] relative overflow-hidden rounded-[10px] bg-gray-100 dark:bg-[#1C1D1F] p-2 shadow-lg transition-colors duration-300">
               {src ? (
                 <>
                   <Image
@@ -132,18 +132,21 @@ const Page = () => {
                     alt="member avatar"
                     height={60}
                     width={60}
-                    className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-[#1C1D1F] p-2"
+                    className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-gray-100 dark:bg-[#1C1D1F] p-2 transition-colors duration-300"
                   />
                 </>
               ) : (
                 <div className="flex items-center justify-center w-full h-full">
-                  <HiMiniArrowPath size={40} className="animate-spin" />
+                  <HiMiniArrowPath
+                    size={40}
+                    className="animate-spin text-gray-600 dark:text-white transition-colors duration-300"
+                  />
                 </div>
               )}
             </div>
 
-            <div className="my-2 max-w-[345px] text-left ">
-              <p className="text-[16px] text-white">
+            <div className="my-2 max-w-[345px] text-left">
+              <p className="text-[16px] text-gray-900 dark:text-white transition-colors duration-300">
                 Send funds to this address.
               </p>
               <p className="text-[14px] text-[#8E9BAE]">
@@ -152,19 +155,21 @@ const Page = () => {
                 available Spherre balance nor will it be refunded
               </p>
               <p className="text-[14px] text-[#8E9BAE] pt-5">Minimum Deposit</p>
-              <p className="text-[14px] text-white pb-5">0.00000001 USDT</p>
-              <p className="text-[14px] text-[#8E9BAE] ">
+              <p className="text-[14px] text-gray-900 dark:text-white pb-5 transition-colors duration-300">
+                0.00000001 USDT
+              </p>
+              <p className="text-[14px] text-[#8E9BAE]">
                 Expected Arrival & Duration
               </p>
-              <p className="text-[14px] text-white ">
+              <p className="text-[14px] text-gray-900 dark:text-white transition-colors duration-300">
                 24 Hours 3 Confirmations
               </p>
             </div>
           </div>
 
-          <div className="h-[48px] bg-[#1C1D1F] px-2 mt-5 rounded-[10px]  flex justify-between items-center">
-            <span className="text-[#8E9BAE]">{address}</span>
-            <div className="bg-[#29292A] rounded-[5px] gap-1 w-[90px] h-[28px] flex  items-center justify-center cursor-pointer">
+          <div className="h-[48px] bg-[#1C1D1F] px-2 mt-5 rounded-[10px] flex justify-between items-center">
+            <span className="text-white">{address}</span>
+            <div className="bg-[#29292A] rounded-[5px] gap-1 w-[90px] h-[28px] flex items-center justify-center cursor-pointer">
               <span className="text-white">Copy</span>{' '}
               <Image
                 src="/copy-white.svg"
@@ -179,14 +184,14 @@ const Page = () => {
                 className="cursor-pointer"
               />
             </div>{' '}
-            {copied && <p className=" text-[11px] ">Copied!</p>}
+            {copied && <p className="text-[11px] text-green-400">Copied!</p>}
           </div>
         </div>
 
-        <div className="flex justify-between  gap-5 mt-5">
+        <div className="flex justify-between gap-5 mt-5">
           <button
             onClick={downloadQRCode}
-            className="w-[304px] h-[50px] rounded-[7px]  bg-[#272729] text-white"
+            className="w-[304px] h-[50px] rounded-[7px] bg-gray-200 dark:bg-[#272729] text-gray-900 dark:text-white transition-colors duration-300"
           >
             Save as image
           </button>{' '}
@@ -194,7 +199,7 @@ const Page = () => {
             onClick={() =>
               copyToClipboard('G2520xec7Spherre520bb71f30523bcce4c10ad62teyw')
             }
-            className="w-[304px] h-[50px] rounded-[7px]  bg-[#6F2FCE] text-white"
+            className="w-[304px] h-[50px] rounded-[7px] bg-[#6F2FCE] text-white"
           >
             Copy address
           </button>{' '}
