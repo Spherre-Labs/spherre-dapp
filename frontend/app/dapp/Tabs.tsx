@@ -24,7 +24,7 @@ export default function Tabs() {
       price: '$0.46',
       balance: '5',
       value: '$460.43',
-      size: '25%',
+      size: '100%',
     },
     {
       coin: 'STRK',
@@ -91,7 +91,7 @@ export default function Tabs() {
         >
           Tokens
           {activeTab === 'Tokens' && (
-            <div className="absolute bottom-0 left-0 right-0 h-[.5px] bg-theme"></div>
+            <div className="absolute bottom-0 left-0 right-0 h-[.5px] bg-black dark:bg-white transition-colors duration-300"></div>
           )}
         </button>
         <button
@@ -104,7 +104,7 @@ export default function Tabs() {
         >
           NFT Token Vaults
           {activeTab === 'NFT' && (
-            <div className="absolute bottom-0 left-0 right-0 h-[.5px] bg-theme"></div>
+            <div className="absolute bottom-0 left-0 right-0 h-[0.5px] bg-black dark:bg-white transition-colors duration-300"></div>
           )}
         </button>
       </div>
@@ -144,15 +144,15 @@ export default function Tabs() {
                 <div className="w-1/5 text-theme transition-colors duration-300">
                   {token.value}
                 </div>
-                <div className="w-1/5 flex flex-col items-end">
-                  <div className="relative w-full h-1 bg-theme-bg-tertiary rounded-full">
+                <div className="w-1/5 flex flex-col items-start gap-[3px]">
+                  <div className="text-[10px] sm:text-sm mt-1 text-left text-theme-secondary transition-colors duration-300">
+                    {token.size}
+                  </div>
+                  <div className="relative w-full h-1 rounded-full">
                     <div
-                      className="absolute top-0 left-0 h-1 bg-theme rounded-full"
+                      className="absolute top-0 left-0 h-1 bg-gray-900 dark:bg-white rounded-full transition-colors duration-300"
                       style={{ width: token.size }}
                     ></div>
-                  </div>
-                  <div className="text-[10px] sm:text-xs mt-1 text-right text-theme-secondary transition-colors duration-300">
-                    {token.size}
                   </div>
                 </div>
               </div>

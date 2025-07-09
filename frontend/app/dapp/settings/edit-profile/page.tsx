@@ -87,7 +87,7 @@ const EditProfileContent = () => {
             className="w-full h-full rounded-full object-cover bg-theme-bg-secondary transition-opacity duration-200 group-hover:opacity-60"
           />
           <button
-            className="absolute bottom-6 right-7 border-2 border-theme-border rounded-full p-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-theme-bg-secondary"
+            className="absolute bottom-6 right-7 border-2 border-theme-border rounded-full p-2 opacity-0 group-hover:opacity-60 transition-opacity duration-200 bg-gray-800 "
             tabIndex={-1} // Not focusable
             type="button"
           >

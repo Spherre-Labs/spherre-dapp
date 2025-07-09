@@ -314,7 +314,7 @@ export default function Transaction({
               {(transaction.status === 'Executed' ||
                 transaction.status === 'Rejected') && (
                 <button
-                  className={`${isDark ? 'bg-[#6F2FCE] hover:bg-purple-700' : 'bg-blue-600 hover:bg-blue-700'} text-white px-4 sm:px-6 py-2 rounded-md transition duration-200 text-sm sm:text-base w-full`}
+                  className={`${isDark ? 'bg-[#6F2FCE] hover:bg-purple-700' : 'bg-[#6F2FCE] hover:bg-purple-700'} text-white px-4 sm:px-6 py-2 rounded-md transition duration-200 text-sm sm:text-base w-full`}
                 >
                   Download CSV
                 </button>
@@ -375,7 +375,7 @@ export default function Transaction({
             </div>
             <Link href={`/dapp/transactions/${transaction.id}`}>
               <button
-                className={`mt-3 sm:mt-4 w-full ${isDark ? 'bg-[#3a3a3a] hover:bg-[#4a4a4a] text-white' : 'bg-gray-100 hover:bg-gray-200 text-gray-800'} py-2 rounded-lg transition-colors text-sm sm:text-base`}
+                className={`mt-3 sm:mt-4 w-full ${isDark ? 'bg-[#3a3a3a] hover:bg-[#4a4a4a] text-white' : 'bg-[#3a3a3a] hover:bg-[#4a4a4a] text-white'} py-2 rounded-lg transition-colors text-sm sm:text-base`}
               >
                 See transaction details
               </button>

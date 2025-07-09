@@ -266,13 +266,14 @@ const Members = () => {
             {members.map((member) => (
               <div
                 key={member.id}
-                className="min-h-[240px] sm:h-[260px] bg-theme-bg-secondary border border-theme-border rounded-[10px] relative transition-colors duration-300"
+                className="min-h-[240px] sm:h-[260px] bg-theme-bg-secondary border border-theme-border rounded-[10px] relative transition-colors duration-300 pt-6 px-6 "
                 style={{
                   zIndex: dropdownOpen === member.id ? 20 : 10,
                 }}
               >
+                {/* Header section with avatar and name */}
                 <div className="flex flex-col items-center">
-                  <div className="w-[95%] h-[70px] sm:h-[78px] bg-theme-bg-tertiary mt-2 justify-between px-2 flex items-center rounded-[7px] border border-theme-border">
+                  <div className="w-full h-[70px] sm:h-[78px] bg-theme-bg-tertiary justify-between px-2 flex items-center rounded-[7px] border border-theme-border">
                     <div className="flex gap-2 sm:gap-3 flex-1 min-w-0">
                       <Image
                         src={member.image}
@@ -399,7 +400,8 @@ const Members = () => {
                   </div>
                 </div>
 
-                <div className="flex mt-3 sm:mt-5 ml-3 sm:ml-5 gap-[8px] sm:gap-[10px] flex-wrap">
+                {/* Roles section */}
+                <div className="flex mt-4 sm:mt-5 gap-[8px] sm:gap-[10px] flex-wrap">
                   <p className="text-theme-secondary text-xs sm:text-[14px] font-semibold">
                     Roles:
                   </p>
@@ -413,7 +415,8 @@ const Members = () => {
                   ))}
                 </div>
 
-                <div className="flex mt-3 sm:mt-5 ml-3 sm:ml-4 gap-[8px] sm:gap-[10px]">
+                {/* Date added section */}
+                <div className="flex mt-3 sm:mt-4 gap-[8px] sm:gap-[10px]">
                   <p className="text-theme-secondary text-xs sm:text-[14px] font-semibold">
                     Date added:
                   </p>
@@ -422,9 +425,10 @@ const Members = () => {
                   </p>
                 </div>
 
-                <div className="flex items-center justify-center mt-3 sm:mt-5">
+                {/* Remove button section */}
+                <div className="flex items-center justify-center mt-4 sm:mt-5">
                   <button
-                    className="bg-theme-bg-tertiary border border-theme-border rounded-[7px] flex items-center justify-center font-medium text-xs sm:text-[14px] text-theme w-[90%] h-[32px] sm:h-[36px] hover:bg-theme-bg-secondary transition-colors duration-200"
+                    className="bg-theme-bg-tertiary border border-theme-border rounded-[7px] flex items-center justify-center font-medium text-xs sm:text-[14px] text-theme w-full h-[32px] sm:h-[36px] hover:bg-theme-bg-secondary transition-colors duration-200"
                     onClick={() => handleRemoveMember(member)}
                   >
                     Remove member
