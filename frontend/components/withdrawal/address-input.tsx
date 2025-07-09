@@ -1,6 +1,7 @@
 'use client'
 
 import type React from 'react'
+import { useTheme } from '@/app/context/theme-context-provider'
 
 interface AddressInputProps {
   value: string
@@ -17,6 +18,8 @@ export default function AddressInput({
   onBlur,
   showError = false,
 }: AddressInputProps) {
+  useTheme()
+
   // Simple validation for Ethereum-like addresses
   // In a real app, you would use a more robust validation
   const validateAddress = (address: string): boolean => {
@@ -58,8 +61,8 @@ export default function AddressInput({
   return (
     <div>
       <div
-        className={`flex flex-col sm:flex-row items-stretch sm:items-center bg-[#1C1D1F] px-3 sm:px-4 rounded-[10px] 
-        ${showError ? 'border border-red-500' : 'border border-transparent'}`}
+        className={`flex flex-col sm:flex-row items-stretch sm:items-center bg-theme-bg-secondary px-3 sm:px-4 rounded-[10px] transition-colors duration-300
+         ${showError ? 'border border-red-500' : 'border border-theme-border'}`}
       >
         <input
           type="text"
@@ -67,18 +70,18 @@ export default function AddressInput({
           onChange={handleChange}
           onBlur={onBlur}
           placeholder="Write address, name of the recipient, strk, sol, glow..."
-          className="flex-grow bg-transparent text-white py-3 rounded-lg focus:outline-none placeholder:text-ash text-sm sm:text-base"
+          className="flex-grow bg-transparent text-theme py-3 rounded-lg focus:outline-none placeholder:text-theme-muted text-sm sm:text-base transition-colors duration-300"
         />
         <div className="flex mb-3 sm:mb-0 space-x-2 sm:ml-2">
           <button
             onClick={handlePaste}
-            className="bg-white text-black px-3 sm:px-4 py-1 rounded-lg hover:bg-gray-200 transition-colors text-xs sm:text-sm"
+            className="bg-white dark:bg-gray-900 text-black dark:text-white hover:bg-gray-200 dark:hover:bg-gray-800 px-3 sm:px-4 py-1 rounded-lg transition-colors duration-200 text-xs sm:text-sm"
           >
             Paste
           </button>
           <button
             onClick={handleMySphereWallet}
-            className="bg-[#29292A] text-white px-3 sm:px-4 py-1 rounded-lg hover:bg-gray-800 transition-colors text-xs sm:text-sm"
+            className="bg-theme-bg-tertiary border border-theme-border text-theme px-3 sm:px-4 py-1 rounded-lg hover:bg-theme-bg-secondary transition-colors duration-200 text-xs sm:text-sm"
           >
             My Spherre Wallet
           </button>

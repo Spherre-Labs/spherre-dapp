@@ -8,40 +8,12 @@ import { Monitor, Moon, Sun } from 'lucide-react'
 import SignMessageModal from '../../../components/modals/SignMessageModal'
 import Loader from '../../../components/modals/Loader'
 import SuccessModal from '../../../components/modals/SuccessModal'
+import { useTheme } from '@/app/context/theme-context-provider'
 
-type Theme = 'dark' | 'light' | 'system'
 type ToggleType = 'email' | 'browser' | null
 
-const applyTheme = (theme: Theme) => {
-  const root = document.documentElement
-
-  if (theme === 'dark') {
-    root.style.setProperty('--bg-primary', '#030712') // gray-950
-    root.style.setProperty('--bg-secondary', '#111827') // gray-900
-    root.style.setProperty('--text-primary', '#ffffff')
-    root.style.setProperty('--text-secondary', '#9ca3af') // ash
-    document.body.style.backgroundColor = '#030712'
-    document.body.style.color = '#ffffff'
-  } else if (theme === 'light') {
-    root.style.setProperty('--bg-primary', '#ffffff')
-    root.style.setProperty('--bg-secondary', '#f9fafb') // gray-50
-    root.style.setProperty('--text-primary', '#111827') // gray-900
-    root.style.setProperty('--text-secondary', '#6b7280') // gray-500
-    document.body.style.backgroundColor = '#ffffff'
-    document.body.style.color = '#111827'
-  } else {
-    // System mode - check system preference
-    const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches
-    if (systemDark) {
-      applyTheme('dark')
-    } else {
-      applyTheme('light')
-    }
-  }
-}
-
 export default function PreferencesPage() {
-  const [selectedTheme, setSelectedTheme] = useState<Theme>('dark')
+  const { theme, setTheme } = useTheme()
   const [emailNotifications, setEmailNotifications] = useState(false)
   const [browserNotifications, setBrowserNotifications] = useState(false)
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -54,22 +26,15 @@ export default function PreferencesPage() {
 
   // Load preferences from localStorage on mount
   useEffect(() => {
-    const savedTheme = localStorage.getItem('spherre-theme') as Theme
     const savedEmail = localStorage.getItem('spherre-email-notifications')
     const savedBrowser = localStorage.getItem('spherre-browser-notifications')
 
-    if (savedTheme) {
-      setSelectedTheme(savedTheme)
-      applyTheme(savedTheme)
-    }
     if (savedEmail) setEmailNotifications(savedEmail === 'true')
     if (savedBrowser) setBrowserNotifications(savedBrowser === 'true')
-  }, []) // Empty dependency array since applyTheme is defined outside component
+  }, [])
 
-  const handleThemeChange = (theme: Theme) => {
-    setSelectedTheme(theme)
-    localStorage.setItem('spherre-theme', theme)
-    applyTheme(theme)
+  const handleThemeChange = (newTheme: 'dark' | 'light' | 'system') => {
+    setTheme(newTheme)
   }
 
   const handleToggleClick = (type: ToggleType) => {
@@ -130,31 +95,31 @@ export default function PreferencesPage() {
   }
 
   return (
-    <div className="space-y-10 font-sans w-full max-w-7x mx-auto px-4 md:px-8 py-8">
+    <div className="space-y-10 font-sans w-full  px-4 md:px-8 py-8 bg-theme transition-colors duration-300">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold text-white mb-3">Preferences</h1>
-        <p className="text-ash text-sm ">
+        <h1 className="text-2xl font-bold text-theme mb-3">Preferences</h1>
+        <p className="text-theme-secondary text-sm">
           Manage your notification preferences to control how and when you
           receive updates, alerts, and reminders.
         </p>
       </div>
 
-      <hr className="border-t border-[#292929]" />
+      <hr className="border-t border-theme" />
 
       {/* Interface Theme Section */}
       <div>
-        <h2 className="text-xl font-bold text-white mb-1">Interface Theme</h2>
-        <p className="text-ash mb-6">
-          Customize your Spherre&apos;s account theme.
+        <h2 className="text-xl font-bold text-theme mb-1">Interface Theme</h2>
+        <p className="text-theme-secondary mb-6">
+          Customize your Spherre`s account theme.
         </p>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl">
           <ThemeCard
             title="Dark Mode"
             description="More visible and eye-friendly design for low-light environments."
-            icon={<Moon />}
-            isSelected={selectedTheme === 'dark'}
+            icon={<Moon className="text-theme" />}
+            isSelected={theme === 'dark'}
             onClick={() => handleThemeChange('dark')}
             previewContent={<BrowserPreview theme="dark" />}
           />
@@ -162,8 +127,8 @@ export default function PreferencesPage() {
           <ThemeCard
             title="Light Mode"
             description="Light visuals when your system is configured to light mode."
-            icon={<Sun />}
-            isSelected={selectedTheme === 'light'}
+            icon={<Sun className="text-theme" />}
+            isSelected={theme === 'light'}
             onClick={() => handleThemeChange('light')}
             previewContent={<BrowserPreview theme="light" />}
           />
@@ -171,8 +136,8 @@ export default function PreferencesPage() {
           <ThemeCard
             title="System Mode"
             description="This will make use of the theme your system is currently using now."
-            icon={<Monitor />}
-            isSelected={selectedTheme === 'system'}
+            icon={<Monitor className="text-theme" />}
+            isSelected={theme === 'system'}
             onClick={() => handleThemeChange('system')}
             previewContent={<BrowserPreview theme="system" />}
           />
@@ -180,13 +145,13 @@ export default function PreferencesPage() {
       </div>
 
       {/* Email Notification Section */}
-      <div className="border-t border-gray-700 pt-8 w-full">
+      <div className="border-t border-theme pt-8 w-full">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-xl font-semibold text-white mb-2">
+            <h2 className="text-xl font-semibold text-theme mb-2">
               Email Notification
             </h2>
-            <p className="text-ash">
+            <p className="text-theme-secondary">
               Receive email updates about Spherre on your email and be the first
               to get notified before anyone else.
             </p>
@@ -199,13 +164,13 @@ export default function PreferencesPage() {
       </div>
 
       {/* Browser Notification Section */}
-      <div className="border-t border-gray-700 pt-8">
+      <div className="border-t border-theme pt-8">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-xl font-semibold text-white mb-2">
+            <h2 className="text-xl font-semibold text-theme mb-2">
               Browser Notification
             </h2>
-            <p className="text-ash">
+            <p className="text-theme-secondary">
               Receive Spherre updates directly on your web browser as you go
               about your day.
             </p>

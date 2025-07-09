@@ -43,25 +43,30 @@ const SecurityPage = () => {
   }
 
   return (
-    <div className="w-full px-0">
+    <div className="w-full px-0 bg-theme min-h-screen transition-colors duration-300">
       {/* Security Title */}
-      <h2 className="text-2xl font-bold text-white mb-2">Security</h2>
-      <p className="text-[#8E9BAE] mb-8">
+      <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2 transition-colors duration-300">
+        Security
+      </h2>
+      <p className="text-theme mb-8 transition-colors duration-300">
         Protect your Spherre&apos;s account.
       </p>
 
-      <hr className="border-[#292929] mb-8" />
+      <hr className="border-gray-200 dark:border-[#292929] mb-8 transition-colors duration-300" />
 
       {/* Privacy Section */}
       <div>
-        <h3 className="text-xl font-semibold text-white mb-2">Privacy</h3>
-        <p className="text-[#8E9BAE] mb-2">
+        <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2 transition-colors duration-300">
+          Privacy
+        </h3>
+        <p className="text-theme mb-2 transition-colors duration-300">
           Streamlining and viewing your Spherre content will only be available
           to Spherre members when turned on.
         </p>
-        <p className="text-[#8E9BAE] text-sm mb-6">
+        <p className="text-theme text-sm mb-6 transition-colors duration-300">
           Note: all on-chain activity will still be visible.
         </p>
+
         {/* Toggle Switch */}
         <div className="flex w-full">
           <div className="flex-1" />
@@ -72,9 +77,11 @@ const SecurityPage = () => {
               checked={privacyOn}
               onChange={handleToggle}
             />
-            <div className="w-11 h-6 bg-[#292929] rounded-full peer peer-checked:bg-[#a259ff] transition-colors"></div>
+            <div className="w-11 h-6 bg-gray-300 dark:bg-[#292929] rounded-full peer peer-checked:bg-[#a259ff] transition-colors duration-300"></div>
             <div
-              className={`absolute left-0.5 top-0.5 w-5 h-5 bg-white rounded-full shadow-md transition-transform ${privacyOn ? 'translate-x-5' : ''}`}
+              className={`absolute left-0.5 top-0.5 w-5 h-5 bg-white rounded-full shadow-md transition-transform duration-300 ${
+                privacyOn ? 'translate-x-5' : ''
+              }`}
             ></div>
           </label>
         </div>
