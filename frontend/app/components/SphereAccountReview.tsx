@@ -25,7 +25,7 @@ const SphereAccountReview: React.FC<SphereAccountReviewProps> = ({
   const members = onboarding?.members || []
 
   return (
-    <div className="w-full">
+    <div className="w-full ">
       {/* Group Name */}
       <div className="flex items-center mb-4">
         <div className="w-10 h-10 bg-gray-700 rounded-full flex items-center justify-center mr-3">
@@ -53,7 +53,7 @@ const SphereAccountReview: React.FC<SphereAccountReviewProps> = ({
       {/* Deploy Fee Section */}
       <div className="mb-4 relative">
         <div className="flex flex-wrap gap-6 py-3 items-center">
-          <p className="text-sm text-white">
+          <p className="text-sm text-theme">
             Deploy Fee{' '}
             <span
               className="text-gray-400 cursor-pointer ml-2"
@@ -63,7 +63,7 @@ const SphereAccountReview: React.FC<SphereAccountReviewProps> = ({
               ⓘ
             </span>
           </p>
-          <p className="font-['Nunito_Sans'] font-bold text-xl sm:text-2xl md:text-3xl text-white">
+          <p className="font-['Nunito_Sans'] font-bold text-xl sm:text-2xl md:text-3xl text-theme">
             {deployFee}
           </p>
         </div>
@@ -78,7 +78,7 @@ const SphereAccountReview: React.FC<SphereAccountReviewProps> = ({
         {/* Info Text */}
         <p className="text-xs text-gray-500 mt-2">
           <span
-            className="text-gray-400 mr-2 cursor-pointer"
+            className="text-theme mr-2 cursor-pointer"
             onMouseEnter={() => setShowTooltip(true)}
             onMouseLeave={() => setShowTooltip(false)}
           >
