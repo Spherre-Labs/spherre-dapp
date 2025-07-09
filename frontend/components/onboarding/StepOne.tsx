@@ -69,7 +69,7 @@ const StepOne = () => {
   }
 
   return (
-    <div className="overflow-x-hidden">
+    <div className="">
       {/* Writeup */}
       <div>
         <h1 className="text-center text-theme font-[700] text-2xl sm:text-3xl lg:text-[40px] leading-tight sm:leading-[47.42px] px-4 transition-colors duration-300">

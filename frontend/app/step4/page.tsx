@@ -11,7 +11,7 @@ export default function Page() {
   useTheme()
 
   return (
-    <div className="font-sans w-full min-h-screen flex flex-col items-center justify-center bg-theme gap-5 md:gap-6 p-6 transition-colors duration-300">
+    <div className="font-sans w-full min-h-screen flex flex-col items-center  bg-theme gap-5 md:gap-6 p-6 transition-colors duration-300">
       {/* <Header /> */}
       <Nav />
       <Stepper />
