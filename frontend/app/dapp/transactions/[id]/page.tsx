@@ -1,5 +1,5 @@
 'use client'
-import React, { use } from 'react'
+import React from 'react'
 import { transactions } from '@/app/dapp/transactions/data'
 import { TransactionDetailsHeader } from './components/TransactionDetailsHeader'
 import { TransactionSummary } from './components/TransactionSummary'
@@ -7,16 +7,15 @@ import { TransactionDetailsBody } from './components/TransactionParticipants'
 import { useTheme } from '@/app/context/theme-context-provider'
 
 interface PageProps {
-  params: Promise<{
+  params: {
     id: string
-  }>
+  }
 }
 
 export default function TransactionDetailsPage({ params }: PageProps) {
   useTheme()
-  const resolvedParams = use(params)
   const transaction = transactions.find(
-    (t) => t.id === parseInt(resolvedParams.id),
+    (t) => t.id === parseInt(params.id),
   )
 
   if (!transaction) {
