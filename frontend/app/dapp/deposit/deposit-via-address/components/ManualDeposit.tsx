@@ -157,9 +157,8 @@ const ManualDeposit = () => {
         </div>
 
         <div className="h-[48px] bg-[#1C1D1F] px-2 mt-5 rounded-[10px] flex justify-between items-center">
-          <span className="text-white">{address}</span>
-          <div className="bg-[#29292A] rounded-[5px] gap-1 w-[90px] h-[28px] flex items-center justify-center cursor-pointer">
-            <span className="text-white">Copy</span>{' '}
+          <span className="text-white text-sm">{address}</span>
+          <div className="bg-[#29292A] rounded-[5px] gap-1 w-8 h-8 flex items-center justify-center cursor-pointer">
             <Image
               src="/copy-white.svg"
               alt="copy"
