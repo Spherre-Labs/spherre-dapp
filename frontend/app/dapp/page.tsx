@@ -8,10 +8,12 @@ import AmountChart from '@/app/dapp/AmountChart'
 import WithdrawalModal from '@/app/components/modal'
 import DepositModal from '../components/deposit-modal'
 import { useTheme } from '@/app/context/theme-context-provider'
+import { useTokenBalances } from '@/hooks/useTokenBalances'
 
 export default function DashboardPage() {
   useTheme()
   const [open, setOpen] = useState(false)
+  const { tokensDisplay, loadingTokenData } = useTokenBalances()
 
   const handleOpen = () => {
     setOpen(true)
@@ -140,7 +142,7 @@ export default function DashboardPage() {
         </div>
       </div>
       <div className="w-full overflow-x-auto">
-        <Tabs />
+        <Tabs loadingTokenData={loadingTokenData} tokens={tokensDisplay} />
       </div>
 
       {/* Add the WithdrawalModal component */}
