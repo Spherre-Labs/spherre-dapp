@@ -24,9 +24,10 @@ export function useTokenBalances() {
       try {
         setLoadingTokenData(true)
 
+        // TODO: Replace with actual price API integration
         const prices: Record<string, number> = {
-          ETH: 3000, // Dummy ETH price
-          STRK: 0.46, // Dummy STRK price
+          ETH: 3000, // Dummy ETH price - replace with API call
+          STRK: 0.46, // Dummy STRK price - replace with API call
         }
 
         const rawData: {
@@ -36,22 +37,43 @@ export function useTokenBalances() {
         }[] = []
 
         for (const token of COMMON_TOKENS_SEPOLIA) {
-          const balance = await readContractFunction(
-            'balance_of',
-            [address],
-            token.address,
-            ERC20_ABI,
-          )
+          try {
+            const balance = await readContractFunction(
+              'balance_of',
+              [address],
+              token.address,
+              ERC20_ABI,
+            )
 
-          rawData.push({
-            symbol: token.symbol,
-            decimals: token.decimals,
-            balance: balance as bigint,
-          })
+            rawData.push({
+              symbol: token.symbol,
+              decimals: token.decimals,
+              balance: balance as bigint,
+            })
+          } catch (error) {
+            console.warn(`Failed to fetch balance for ${token.symbol}:`, error)
+            // Continue with other tokens, add zero balance for failed token
+            rawData.push({
+              symbol: token.symbol,
+              decimals: token.decimals,
+              balance: BigInt(0),
+            })
+          }
         }
 
         const tokenWithValues = rawData.map((t) => {
-          const floatBalance = Number(t.balance) / 10 ** t.decimals
+          const divisor = BigInt(10 ** t.decimals)
+          const floatBalance = Number(t.balance) / Number(divisor)
+
+          if (floatBalance === Infinity || isNaN(floatBalance)) {
+            console.warn(`Balance conversion overflow for token ${t.symbol}`)
+            return {
+              coin: t.symbol,
+              price: 0,
+              balance: 0,
+              value: 0,
+            }
+          }
           const price = prices[t.symbol] ?? 1
           const value = floatBalance * price
 

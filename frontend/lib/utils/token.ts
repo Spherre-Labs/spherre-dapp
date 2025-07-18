@@ -159,13 +159,6 @@ export const COMMON_TOKENS_SEPOLIA_MAINNET: {
   },
   {
     address:
-      '0x053C91253BC9682c04929cA02ED00b3E423f6710D2ee7e0D5EBB06F3eCF368A8',
-    name: 'USD Coin',
-    symbol: 'USDC',
-    decimals: 6,
-  },
-  {
-    address:
       '0x03Fe2b97C1Fd336E750087D68B9b867997Fd64a2661fF3ca5A7C771641e8e7AC',
     name: 'Wrapped BTC',
     symbol: 'WBTC',
