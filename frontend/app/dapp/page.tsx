@@ -17,14 +17,7 @@ export default function DashboardPage() {
   const [open, setOpen] = useState(false)
   const { address } = useAccount()
   const { tokensDisplay, loadingTokenData } = useTokenBalances()
-  const info = address
-    ? useAccountInfo(address)
-    : {
-        isLoading: false,
-        error: null,
-        members: null,
-        threshold: null,
-      }
+  const info = useAccountInfo(address || '0x0')
 
   useEffect(() => {
     console.log('Modal state:', open)
