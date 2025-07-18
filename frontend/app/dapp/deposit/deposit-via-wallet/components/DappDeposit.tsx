@@ -7,7 +7,7 @@ import { TOKEN_ADDRESSES } from '@/lib/contracts/token-contracts'
 import { getERC20ContractConfig } from '@/lib/contracts/erc20-contracts'
 import { useMulticall } from '@/hooks/useMulticall'
 import { HiMiniArrowPath, HiMiniCheckCircle } from 'react-icons/hi2'
-import { SpherreAccountContext } from '@/app/context/account-context'
+import { useSpherreAccount } from '@/app/context/account-context'
 
 interface TokenInfo {
   symbol: string
@@ -20,9 +20,7 @@ interface TokenInfo {
 
 const DappDeposit = () => {
   const { address: userAddress } = useAccount()
-  const { accountAddress: spherreAccountAddress } = useContext(
-    SpherreAccountContext,
-  )
+  const { accountAddress: spherreAccountAddress } = useSpherreAccount()
 
   const [selectedToken, setSelectedToken] = useState<string>('STRK')
   const [amount, setAmount] = useState<string>('')

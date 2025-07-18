@@ -4,8 +4,11 @@ import Image from 'next/image'
 import QRCode from 'qrcode'
 import { HiMiniArrowPath } from 'react-icons/hi2'
 import { useTokenBalance } from '@/hooks/useTokenBalance'
+import { SPHERRE_CONTRACTS } from '@/lib/contracts/spherre-contracts'
 
 const ManualDeposit = () => {
+  const address = SPHERRE_CONTRACTS.SPHERRE
+
   const [copied, setCopied] = useState(false)
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text)
@@ -13,7 +16,6 @@ const ManualDeposit = () => {
     setTimeout(() => setCopied(false), 2000)
   }
   const [src, setSrc] = useState<string>('')
-  const address = 'G2520xec7Spherre520bb71f30523bcce4c10ad62teyw'
 
   const generateQRCode = (address: string) => {
     QRCode.toDataURL(address, {

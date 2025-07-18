@@ -1,5 +1,5 @@
 'use client'
-import { createContext, useState, ReactNode } from 'react'
+import { createContext, useState, ReactNode, useContext } from 'react'
 import { SPHERRE_CONTRACTS } from '@/lib'
 
 export const SpherreAccountContext = createContext<{
@@ -31,4 +31,14 @@ export const SpherreAccountProvider = ({
       {children}
     </SpherreAccountContext.Provider>
   )
+}
+
+export const useSpherreAccount = () => {
+  const context = useContext(SpherreAccountContext)
+  if (!context) {
+    throw new Error(
+      'useSpherreAccount must be used within a SpherreAccountProvider',
+    )
+  }
+  return context
 }
