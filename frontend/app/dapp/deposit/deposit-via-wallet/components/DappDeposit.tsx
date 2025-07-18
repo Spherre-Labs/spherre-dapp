@@ -1,5 +1,5 @@
 'use client'
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import Image from 'next/image'
 import { useAccount } from '@starknet-react/core'
 import { useTokenBalance } from '@/hooks/useTokenBalance'
@@ -7,7 +7,7 @@ import { TOKEN_ADDRESSES } from '@/lib/contracts/token-contracts'
 import { getERC20ContractConfig } from '@/lib/contracts/erc20-contracts'
 import { useMulticall } from '@/hooks/useMulticall'
 import { HiMiniArrowPath, HiMiniCheckCircle } from 'react-icons/hi2'
-import { SPHERRE_CONTRACTS } from '@/lib/contracts/spherre-contracts'
+import { SpherreAccountContext } from '@/app/context/account-context'
 
 interface TokenInfo {
   symbol: string
@@ -20,9 +20,9 @@ interface TokenInfo {
 
 const DappDeposit = () => {
   const { address: userAddress } = useAccount()
-  // const spherreAccountAddress = SPHERRE_CONTRACTS.SPHERRE_ACCOUNT
-  const spherreAccountAddress =
-    '0x04744C1e1455eA6261390e0f46aBa99803169fAcfF5FAc2Cfb8390bD81A31972'
+  const { accountAddress: spherreAccountAddress } = useContext(
+    SpherreAccountContext,
+  )
 
   const [selectedToken, setSelectedToken] = useState<string>('STRK')
   const [amount, setAmount] = useState<string>('')
