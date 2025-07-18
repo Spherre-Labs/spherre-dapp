@@ -1,5 +1,5 @@
 'use client'
-import React, { useState, useContext } from 'react'
+import React, { useState } from 'react'
 import Image from 'next/image'
 import { useAccount } from '@starknet-react/core'
 import { useTokenBalance } from '@/hooks/useTokenBalance'
