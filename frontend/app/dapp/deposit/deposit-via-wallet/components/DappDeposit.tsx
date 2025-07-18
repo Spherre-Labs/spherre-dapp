@@ -5,8 +5,8 @@ import { useAccount } from '@starknet-react/core'
 import { useTokenBalance } from '@/hooks/useTokenBalance'
 import { TOKEN_ADDRESSES } from '@/lib/contracts/token-contracts'
 import { getERC20ContractConfig } from '@/lib/contracts/erc20-contracts'
-import { useMulticall } from '@/hooks/useMulticall'
-import { HiMiniArrowPath, HiMiniCheckCircle } from 'react-icons/hi2'
+import { useScaffoldWriteContract } from '@/hooks/useScaffoldWriteContract'
+import { HiMiniArrowPath } from 'react-icons/hi2'
 import { useSpherreAccount } from '@/app/context/account-context'
 
 interface TokenInfo {
@@ -86,16 +86,18 @@ const DappDeposit = () => {
     }
   }
 
-  // Multicall hook for approve + transfer
-  const { writeAsync: executeMulticall, isLoading: isMulticallLoading } =
-    useMulticall({
+  // Transfer hook using useScaffoldWriteContract
+  const { writeAsync: transferAsync, isLoading: isTransferLoading } =
+    useScaffoldWriteContract({
+      contractConfig: getERC20ContractConfig(getSelectedTokenAddress()),
+      functionName: 'transfer',
       onSuccess: (result) => {
-        console.log('✅ Multicall successful:', result)
+        console.log('✅ Transfer successful:', result)
         setProcessingStatus('completed')
         setAmount('')
       },
       onError: (error) => {
-        console.error('❌ Multicall error:', error)
+        console.error('❌ Transfer error:', error)
         setError(error.message)
         setProcessingStatus('none')
       },
@@ -153,7 +155,7 @@ const DappDeposit = () => {
         parseFloat(amount) * Math.pow(10, selectedTokenInfo?.decimals || 18),
       )
 
-      console.log('🔍 Multicall Debug Info:')
+      console.log('🔍 Transfer Debug Info:')
       console.log('User Address:', userAddress)
       console.log('Spherre Account Address:', spherreAccountAddress)
       console.log('Token Address:', getSelectedTokenAddress())
@@ -166,39 +168,17 @@ const DappDeposit = () => {
         throw new Error('Insufficient balance for deposit')
       }
 
-      // Create multicall with approve + transfer using contract configs
-      const tokenContractConfig = getERC20ContractConfig(
-        getSelectedTokenAddress(),
-      )
+      // Execute transfer
+      const result = await transferAsync({
+        recipient: spherreAccountAddress,
+        amount: amountInWei,
+      })
 
-      const multicallCalls = [
-        {
-          contractConfig: tokenContractConfig,
-          functionName: 'approve',
-          args: {
-            spender: spherreAccountAddress,
-            amount: amountInWei,
-          },
-        },
-        {
-          contractConfig: tokenContractConfig,
-          functionName: 'transfer',
-          args: {
-            recipient: spherreAccountAddress,
-            amount: amountInWei,
-          },
-        },
-      ]
-
-      console.log('📋 Multicall calls:', multicallCalls)
-
-      const result = await executeMulticall(multicallCalls)
-
-      console.log('✅ Multicall successful:', result)
+      console.log('✅ Transfer successful:', result)
       setProcessingStatus('completed')
       setAmount('')
     } catch (err) {
-      console.error('❌ Multicall error:', err)
+      console.error('❌ Transfer error:', err)
 
       let errorMessage = 'Deposit failed'
 
@@ -236,7 +216,7 @@ const DappDeposit = () => {
     }
   }
 
-  const isLoading = isMulticallLoading || isProcessing
+  const isLoading = isTransferLoading || isProcessing
 
   // Show error if no wallet connected
   if (!userAddress) {
@@ -326,7 +306,7 @@ const DappDeposit = () => {
         >
           {availableTokens.map((token) => (
             <option key={token.symbol} value={token.symbol}>
-              {token.symbol} - {token.balance.toFixed(4)} available
+              {token.symbol}
             </option>
           ))}
         </select>
@@ -364,24 +344,6 @@ const DappDeposit = () => {
         </div>
       )}
 
-      {/* Status Indicators */}
-      <div className="w-full mb-6 space-y-2">
-        <div className="flex items-center gap-2">
-          {processingStatus === 'completed' ? (
-            <HiMiniCheckCircle className="text-green-400" size={20} />
-          ) : (
-            <div className="w-5 h-5 border-2 border-[#8E9BAE] rounded-full" />
-          )}
-          <span
-            className={`text-sm ${processingStatus === 'completed' ? 'text-green-400' : 'text-[#8E9BAE]'}`}
-          >
-            {processingStatus === 'completed'
-              ? 'Deposit completed'
-              : 'Approve and transfer tokens to Spherre Treasury'}
-          </span>
-        </div>
-      </div>
-
       {/* Action Buttons */}
       <div className="w-full space-y-3">
         <button
@@ -389,7 +351,7 @@ const DappDeposit = () => {
           disabled={isLoading || !amount || parseFloat(amount) <= 0}
           className="w-full h-[50px] rounded-[7px] bg-[#6F2FCE] text-white font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
         >
-          {isMulticallLoading || isProcessing ? (
+          {isTransferLoading || isProcessing ? (
             <div className="flex items-center justify-center gap-2">
               <HiMiniArrowPath className="animate-spin" size={20} />
               Processing...
@@ -415,9 +377,9 @@ const DappDeposit = () => {
         <ul className="text-[12px] text-[#8E9BAE] space-y-1">
           <li>• Select a token with available balance</li>
           <li>• Enter the amount you want to deposit</li>
-          <li>• Approve and transfer tokens in a single transaction</li>
+          <li>• Transfer tokens directly to the Spherre Treasury</li>
           <li>• Tokens will be deposited to the Spherre Treasury</li>
-          <li>• This uses multicall to save gas and time</li>
+          <li>• Simple and efficient single transaction</li>
         </ul>
       </div>
     </div>
