@@ -9,11 +9,19 @@ import WithdrawalModal from '@/app/components/modal'
 import DepositModal from '../components/deposit-modal'
 import { useTheme } from '@/app/context/theme-context-provider'
 import { useTokenBalances } from '@/hooks/useTokenBalances'
+import { useAccount } from '@starknet-react/core'
+import { useAccountInfo } from '../../hooks/useSpherreHooks'
 
 export default function DashboardPage() {
   useTheme()
   const [open, setOpen] = useState(false)
+  const { address } = useAccount()
   const { tokensDisplay, loadingTokenData } = useTokenBalances()
+  const info = useAccountInfo(address || '0x0')
+
+  useEffect(() => {
+    console.log('Modal state:', open)
+  }, [open])
 
   const handleOpen = () => {
     setOpen(true)
@@ -27,10 +35,6 @@ export default function DashboardPage() {
     console.log('Selected option:', option)
     // Handle the selected option
   }
-
-  useEffect(() => {
-    console.log('Modal state:', open)
-  }, [open])
 
   return (
     <div className="py-4 sm:py-6 lg:py-8 px-1 sm:px-4 lg:px-6 rounded-[10px] flex flex-col gap-y-4 sm:gap-y-6 lg:gap-y-8 border-theme-border border-2 mx-1 sm:mx-4 overflow-x-hidden w-full min-h-[90vh] bg-theme-bg-secondary transition-colors duration-300">
@@ -91,9 +95,17 @@ export default function DashboardPage() {
                 Members
               </p>
             </div>
-            <h3 className="text-2xl sm:text-3xl lg:text-[45px] text-theme font-semibold transition-colors duration-300">
-              5
-            </h3>
+            {info?.isLoading ? (
+              <span className="text-theme-secondary text-lg animate-pulse">
+                Loading...
+              </span>
+            ) : info?.error && !info.members ? (
+              <span className="text-theme-secondary text-lg">—</span>
+            ) : (
+              <h3 className="text-2xl sm:text-3xl lg:text-[45px] text-theme font-semibold transition-colors duration-300">
+                {info?.members}
+              </h3>
+            )}
           </div>
           <div className="bg-theme-bg-tertiary border border-theme-border rounded-[10px] py-4 sm:py-6 lg:py-[25px] px-3 sm:px-6 lg:px-[28px] flex items-center justify-between w-full transition-colors duration-300">
             <div className="flex flex-col justify-between h-full gap-y-2">
@@ -115,9 +127,17 @@ export default function DashboardPage() {
                 />
               </div>
             </div>
-            <h3 className="text-2xl sm:text-3xl lg:text-[45px] text-theme font-semibold transition-colors duration-300">
-              3/5
-            </h3>
+            {info?.isLoading ? (
+              <span className="text-theme-secondary text-lg animate-pulse">
+                Loading...
+              </span>
+            ) : info?.error && !info.threshold ? (
+              <span className="text-theme-secondary text-lg">-</span>
+            ) : (
+              <h3 className="text-2xl sm:text-3xl lg:text-[45px] text-theme font-semibold transition-colors duration-300">
+                {info?.threshold}
+              </h3>
+            )}
           </div>
         </div>
       </div>

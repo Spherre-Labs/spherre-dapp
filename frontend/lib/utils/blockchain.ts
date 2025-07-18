@@ -2,10 +2,10 @@ import { Abi, Contract, RpcProvider } from 'starknet'
 
 export async function readContractFunction(
   functionName: string,
-  args: any[] = [],
+  args: unknown[] = [],
   contract_address: `0x${string}`,
   abi: Abi,
-): Promise<any> {
+): Promise<unknown> {
   const provider = new RpcProvider({
     nodeUrl: process.env.NEXT_PUBLIC_RPC_URL,
   })
