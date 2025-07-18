@@ -20,7 +20,9 @@ interface TokenInfo {
 
 const DappDeposit = () => {
   const { address: userAddress } = useAccount()
-  const spherreAccountAddress = SPHERRE_CONTRACTS.SPHERRE_ACCOUNT
+  // const spherreAccountAddress = SPHERRE_CONTRACTS.SPHERRE_ACCOUNT
+  const spherreAccountAddress =
+    '0x04744C1e1455eA6261390e0f46aBa99803169fAcfF5FAc2Cfb8390bD81A31972'
 
   const [selectedToken, setSelectedToken] = useState<string>('STRK')
   const [amount, setAmount] = useState<string>('')
