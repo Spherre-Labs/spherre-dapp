@@ -1,5 +1,5 @@
 'use client'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, Suspense } from 'react'
 import { Nunito_Sans } from 'next/font/google'
 import { useSearchParams, useRouter } from 'next/navigation'
 import ManualDeposit from './components/ManualDeposit'
@@ -10,7 +10,7 @@ const nunito = Nunito_Sans({
   weight: ['200', '300', '400', '500', '600', '700', '800', '900'],
 })
 
-const Page = () => {
+const DepositContent = () => {
   const searchParams = useSearchParams()
   const router = useRouter()
   const [activeTab, setActiveTab] = useState<'manual' | 'dapp'>('dapp')
@@ -78,6 +78,20 @@ const Page = () => {
         {activeTab === 'manual' ? <ManualDeposit /> : <DappDeposit />}
       </div>
     </div>
+  )
+}
+
+const Page = () => {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex items-center justify-center h-full">
+          <div className="text-white">Loading...</div>
+        </div>
+      }
+    >
+      <DepositContent />
+    </Suspense>
   )
 }
 

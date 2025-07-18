@@ -145,7 +145,7 @@ const ProfileOverview: React.FC<ProfileOverviewProps> = ({ onEditProfile }) => {
       <AddEmailModal
         open={showModal}
         onClose={() => setShowModal(false)}
-        onSign={handleEmailSign}
+        onSave={handleEmailSign}
       />
     </div>
   )

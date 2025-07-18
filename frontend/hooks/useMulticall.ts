@@ -108,7 +108,7 @@ export function useMulticall({
           console.log('  Arguments:', call.args)
           console.log('  Calldata:', calldata)
 
-          // Use contract.populate like in useScaffoldWriteContract
+          // Use contract.populate
           return contract.populate(call.functionName, calldata)
         })
 
