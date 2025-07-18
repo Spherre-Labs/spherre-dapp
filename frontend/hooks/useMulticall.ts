@@ -1,42 +1,47 @@
 'use client'
 
 import {
-  useContract,
   useSendTransaction,
   useTransactionReceipt,
+  useAccount,
 } from '@starknet-react/core'
 import type {
   ContractConfig,
-  ContractWriteResult,
   ContractFunctionArgs,
 } from '@/lib/contracts/types'
 import { useCallback, useState, useMemo } from 'react'
 import type { InvokeFunctionResponse } from 'starknet'
+import { Contract } from 'starknet'
 
-interface UseScaffoldWriteContractProps {
+interface MulticallCall {
   contractConfig: ContractConfig
   functionName: string
+  args: ContractFunctionArgs
+}
+
+interface UseMulticallProps {
   onSuccess?: (data: InvokeFunctionResponse) => void
   onError?: (error: Error) => void
 }
 
+interface MulticallResult {
+  writeAsync: (calls: MulticallCall[]) => Promise<InvokeFunctionResponse>
+  data: InvokeFunctionResponse | undefined
+  error: Error | null
+  isLoading: boolean
+  isSuccess: boolean
+  reset: () => void
+}
+
 /**
- * Enhanced contract write hook with transaction tracking
+ * Enhanced multicall hook for executing multiple contract calls in a single transaction
  */
-export function useScaffoldWriteContract({
-  contractConfig,
-  functionName,
+export function useMulticall({
   onSuccess,
   onError,
-}: UseScaffoldWriteContractProps): ContractWriteResult {
+}: UseMulticallProps = {}): MulticallResult {
   const [lastTransactionHash, setLastTransactionHash] = useState<string>()
-
-  const { contract } = useContract({
-    address: contractConfig.address.startsWith('0x')
-      ? (contractConfig.address as `0x${string}`)
-      : (`0x${contractConfig.address}` as `0x${string}`),
-    abi: contractConfig.abi,
-  })
+  const { account } = useAccount()
 
   const {
     sendAsync,
@@ -59,29 +64,63 @@ export function useScaffoldWriteContract({
   })
 
   const writeAsync = useCallback(
-    async (args: ContractFunctionArgs = {}) => {
-      if (!contract) {
-        throw new Error('Contract not initialized')
+    async (calls: MulticallCall[]): Promise<InvokeFunctionResponse> => {
+      if (!calls || calls.length === 0) {
+        throw new Error('No calls provided for multicall')
+      }
+
+      if (!account) {
+        throw new Error('Account not connected')
       }
 
       try {
-        // Convert args object to array format and ensure correct type
-        const calldata = Object.values(args) as (string | number | bigint)[]
+        console.log('🔍 Multicall Debug Info:')
+        console.log('Number of calls:', calls.length)
 
-        console.log('🔍 Debug Info:')
-        console.log('Contract Address:', contractConfig.address)
-        console.log('Function Name:', functionName)
-        console.log('Arguments:', args)
-        console.log('Calldata:', calldata)
+        // Create contract instances and populate calls
+        const populatedCalls = calls.map((call, index) => {
+          // Validate contract config
+          if (!call.contractConfig.address || !call.contractConfig.abi) {
+            throw new Error(
+              `Invalid contract config for call ${index + 1}: missing address or ABI`,
+            )
+          }
 
-        const calls = [contract.populate(functionName, calldata)]
+          // Create contract instance using Contract constructor
+          const contract = new Contract(
+            call.contractConfig.abi,
+            call.contractConfig.address.startsWith('0x')
+              ? call.contractConfig.address
+              : `0x${call.contractConfig.address}`,
+            account,
+          )
 
-        console.log('📤 Sending transaction with calls:', calls)
+          // Convert args object to array format and ensure correct type
+          const calldata = Object.values(call.args) as (
+            | string
+            | number
+            | bigint
+          )[]
 
-        const result = await sendAsync(calls)
+          console.log(`📋 Call ${index + 1}:`)
+          console.log('  Contract Address:', call.contractConfig.address)
+          console.log('  Function Name:', call.functionName)
+          console.log('  Arguments:', call.args)
+          console.log('  Calldata:', calldata)
+
+          // Use contract.populate like in useScaffoldWriteContract
+          return contract.populate(call.functionName, calldata)
+        })
+
+        console.log(
+          '📤 Sending multicall transaction with calls:',
+          populatedCalls,
+        )
+
+        const result = await sendAsync(populatedCalls)
         setLastTransactionHash(result.transaction_hash)
 
-        console.log('✅ Transaction sent:', result)
+        console.log('✅ Multicall transaction sent:', result)
 
         if (onSuccess) {
           onSuccess(result)
@@ -89,9 +128,9 @@ export function useScaffoldWriteContract({
 
         return result
       } catch (error) {
-        console.error('❌ Transaction error:', error)
+        console.error('❌ Multicall transaction error:', error)
 
-        let errorMessage = 'Transaction failed'
+        let errorMessage = 'Multicall transaction failed'
         let isUserRejection = false
 
         if (error instanceof Error) {
@@ -113,7 +152,8 @@ export function useScaffoldWriteContract({
             msg.includes('insufficient funds') ||
             msg.includes('insufficient balance')
           ) {
-            errorMessage = 'Insufficient funds to complete transaction'
+            errorMessage =
+              'Insufficient funds to complete multicall transaction'
           } else if (msg.includes('network') || msg.includes('fetch')) {
             errorMessage =
               'Network error: Please check your connection and try again'
@@ -124,9 +164,9 @@ export function useScaffoldWriteContract({
             msg.includes('class_hash_not_found')
           ) {
             errorMessage =
-              'Contract not found: Please check the contract address'
+              'Contract not found: Please check the contract addresses'
           } else if (msg.includes('entry point not found')) {
-            errorMessage = `Function '${functionName}' not found in contract`
+            errorMessage = 'One or more functions not found in contracts'
           } else {
             errorMessage = `${originalMessage} (Original error preserved for debugging)`
           }
@@ -143,14 +183,7 @@ export function useScaffoldWriteContract({
         throw processedError
       }
     },
-    [
-      contract,
-      contractConfig.address,
-      functionName,
-      sendAsync,
-      onSuccess,
-      onError,
-    ],
+    [account, sendAsync, onSuccess, onError],
   )
 
   const reset = useCallback(() => {
