@@ -3,7 +3,6 @@ import React, { useState } from 'react'
 import Image from 'next/image'
 import { useAccount } from '@starknet-react/core'
 import { useTokenBalance } from '@/hooks/useTokenBalance'
-import { useSpherreAccount } from '@/hooks/useSpherreAccount'
 import { TOKEN_ADDRESSES } from '@/lib/contracts/token-contracts'
 import { getERC20ContractConfig } from '@/lib/contracts/erc20-contracts'
 import { useMulticall } from '@/hooks/useMulticall'
@@ -20,8 +19,9 @@ interface TokenInfo {
 
 const DappDeposit = () => {
   const { address: userAddress } = useAccount()
-  const { accountAddress: spherreAccountAddress, isLoading: accountLoading } =
-    useSpherreAccount()
+  // Hardcoded Spherre account address
+  const spherreAccountAddress =
+    '0x04744C1e1455eA6261390e0f46aBa99803169fAcfF5FAc2Cfb8390bD81A31972'
   const [selectedToken, setSelectedToken] = useState<string>('STRK')
   const [amount, setAmount] = useState<string>('')
   const [isProcessing, setIsProcessing] = useState(false)
@@ -136,7 +136,7 @@ const DappDeposit = () => {
   }
 
   const handleDeposit = async () => {
-    if (!validateAmount() || !spherreAccountAddress) return
+    if (!validateAmount()) return
 
     // Check wallet connection first
     if (!userAddress) {
@@ -236,24 +236,7 @@ const DappDeposit = () => {
     }
   }
 
-  const isLoading = isMulticallLoading || isProcessing || accountLoading
-
-  // Show loading state if account is still loading
-  if (accountLoading) {
-    return (
-      <div className="flex-col items-start flex justify-center w-full">
-        <div className="w-full h-[400px] flex items-center justify-center">
-          <div className="flex items-center gap-2">
-            <HiMiniArrowPath
-              className="animate-spin text-[#6F2FCE]"
-              size={24}
-            />
-            <span className="text-[#8E9BAE]">Loading account...</span>
-          </div>
-        </div>
-      </div>
-    )
-  }
+  const isLoading = isMulticallLoading || isProcessing
 
   // Show error if no wallet connected
   if (!userAddress) {
@@ -262,19 +245,6 @@ const DappDeposit = () => {
         <div className="w-full p-6 bg-yellow-900/20 border border-yellow-500/30 rounded-[7px]">
           <p className="text-yellow-400 text-center">
             Please connect your wallet first to deposit tokens.
-          </p>
-        </div>
-      </div>
-    )
-  }
-
-  // Show error if no account found
-  if (!spherreAccountAddress) {
-    return (
-      <div className="flex-col items-start flex justify-center w-full">
-        <div className="w-full p-6 bg-red-900/20 border border-red-500/30 rounded-[7px]">
-          <p className="text-red-400 text-center">
-            No Spherre account found. Please create an account first.
           </p>
         </div>
       </div>
@@ -308,21 +278,21 @@ const DappDeposit = () => {
         <div className="flex gap-3">
           <Image
             src={'/depositAddy.svg'}
-            alt="member avatar"
+            alt="Spherre account"
             height={50}
             width={50}
             className="rounded-full"
           />
           <div className="flex justify-between flex-col py-5">
-            <p className="font-bold text-white">Backstreet boys</p>
-            <p className="font-medium text-[#8E9BAE]">G252...62teyw</p>
+            <p className="font-bold text-white">Spherre Treasury</p>
+            <p className="font-medium text-[#8E9BAE]">0xcaaf...788</p>
           </div>
         </div>
 
         <div className="flex justify-between flex-col h-full">
           <p className="pt-[8px]">
             <span className="font-medium text-[14px] text-[#8E9BAE]">
-              Available Balance:{' '}
+              Your Balance:{' '}
             </span>{' '}
             <span className="font-semibold text-[25px] text-white">
               {selectedTokenInfo?.balance.toFixed(4) || '0.0000'}
@@ -334,10 +304,10 @@ const DappDeposit = () => {
           <p className="text-right pb-[25px]">
             {' '}
             <span className="font-medium text-[14px] text-[#8E9BAE]">
-              Threshold:
+              Deposit to:
             </span>{' '}
             <span className="font-semibold text-[16px] text-white">
-              2/3
+              Treasury
             </span>{' '}
           </p>
         </div>
@@ -407,7 +377,7 @@ const DappDeposit = () => {
           >
             {processingStatus === 'completed'
               ? 'Deposit completed'
-              : 'Approve and transfer tokens to Spherre'}
+              : 'Approve and transfer tokens to Spherre Treasury'}
           </span>
         </div>
       </div>
@@ -425,7 +395,7 @@ const DappDeposit = () => {
               Processing...
             </div>
           ) : (
-            `Deposit ${selectedToken} to Spherre`
+            `Deposit ${selectedToken} to Treasury`
           )}
         </button>
 
@@ -433,7 +403,7 @@ const DappDeposit = () => {
           <div className="w-full p-4 bg-green-900/20 border border-green-500/30 rounded-[7px]">
             <p className="text-green-400 text-sm text-center">
               ✅ Deposit completed successfully! Your tokens have been
-              transferred to your Spherre account.
+              transferred to the Spherre Treasury.
             </p>
           </div>
         )}
@@ -446,7 +416,7 @@ const DappDeposit = () => {
           <li>• Select a token with available balance</li>
           <li>• Enter the amount you want to deposit</li>
           <li>• Approve and transfer tokens in a single transaction</li>
-          <li>• Tokens will be available in your Spherre wallet immediately</li>
+          <li>• Tokens will be deposited to the Spherre Treasury</li>
           <li>• This uses multicall to save gas and time</li>
         </ul>
       </div>
