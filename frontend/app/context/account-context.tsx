@@ -1,6 +1,7 @@
 'use client'
 import { createContext, useState, ReactNode, useContext } from 'react'
 import { SPHERRE_CONTRACTS } from '@/lib'
+import { validateAndParseAddress } from 'starknet'
 
 export const SpherreAccountContext = createContext<{
   accountAddress: `0x${string}` | null
@@ -21,10 +22,13 @@ export const SpherreAccountProvider = ({
   const [accountAddress, setAccountAddress] = useState<`0x${string}` | null>(
     SPHERRE_CONTRACTS.SPHERRE_ACCOUNT,
   )
+
   return (
     <SpherreAccountContext.Provider
       value={{
-        accountAddress,
+        accountAddress: accountAddress
+          ? (validateAndParseAddress(accountAddress) as `0x${string}`)
+          : null,
         setAccountAddress,
       }}
     >
