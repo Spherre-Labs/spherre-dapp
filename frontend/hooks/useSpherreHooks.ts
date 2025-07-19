@@ -1,5 +1,6 @@
 'use client'
 
+import { CairoOption, CairoOptionVariant } from 'starknet'
 import { useScaffoldReadContract } from './useScaffoldReadContract'
 import { useScaffoldWriteContract } from './useScaffoldWriteContract'
 import {
@@ -146,11 +147,15 @@ export function useTransactionList(
   start?: bigint,
   limit?: bigint,
 ) {
-  const args: { start?: bigint; limit?: bigint } = {}
-  if (start !== undefined) args.start = start
-  if (limit !== undefined) args.limit = limit
-
-  console.log('args', args)
+  // Use proper CairoOption class for Option types
+  const args = {
+    start: start !== undefined
+      ? new CairoOption<bigint>(CairoOptionVariant.Some, start)
+      : new CairoOption<bigint>(CairoOptionVariant.None),
+    limit: limit !== undefined
+      ? new CairoOption<bigint>(CairoOptionVariant.Some, limit)
+      : new CairoOption<bigint>(CairoOptionVariant.None)
+  }
 
   return useScaffoldReadContract<SpherreTransaction[]>({
     contractConfig: {
@@ -158,7 +163,7 @@ export function useTransactionList(
       abi: spherreAccountConfig.abi,
     },
     functionName: 'transaction_list',
-    args: Object.keys(args).length > 0 ? args : undefined,
+    args,
     enabled: !!accountAddress,
   })
 }
