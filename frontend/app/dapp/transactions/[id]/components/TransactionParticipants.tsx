@@ -1,8 +1,8 @@
 'use client'
 import React from 'react'
-import Image from 'next/image'
-import { CheckCircle, Copy } from 'lucide-react'
-import { Transaction, Approval } from '@/app/dapp/transactions/data'
+import { useTheme } from '@/app/context/theme-context-provider'
+import { type TransactionDisplayInfo } from '@/lib/contracts/types'
+import { formatTimestamp, formatTime } from '@/lib/utils/transaction-utils'
 
 const TimelineStep = ({
   title,
@@ -16,33 +16,29 @@ const TimelineStep = ({
   isLast?: boolean
 }) => {
   return (
-    <div className="flex gap-4">
-      <div className="flex flex-col items-center">
+    <div className="flex items-start mb-4">
+      <div className="flex flex-col items-center mr-4">
         <div
-          className={`w-4 h-4 rounded-full flex items-center justify-center transition-colors duration-300 ${
-            status === 'completed'
-              ? 'bg-green-500'
-              : 'bg-theme-bg-tertiary border border-theme-border'
-          }`}
-        >
-          {status === 'completed' && (
-            <CheckCircle size={14} className="text-white" />
-          )}
-        </div>
+          className={`w-3 h-3 rounded-full border-2 transition-colors duration-300 ${status === 'completed'
+            ? 'bg-green-500 border-green-500'
+            : status === 'pending'
+              ? 'bg-yellow-500 border-yellow-500'
+              : 'bg-gray-300 border-gray-300'
+            }`}
+        />
         {!isLast && (
-          <div className="w-px h-full border-l-2 border-dotted border-theme-border my-1"></div>
+          <div className="w-0.5 h-8 bg-theme-border mt-1 transition-colors duration-300" />
         )}
       </div>
-      <div>
+      <div className="flex-1 min-w-0">
         <p
-          className={`font-medium transition-colors duration-300 ${
-            status === 'future' ? 'text-theme-muted' : 'text-theme'
-          }`}
+          className={`text-sm font-medium transition-colors duration-300 ${status === 'completed' ? 'text-theme' : 'text-theme-secondary'
+            }`}
         >
           {title}
         </p>
         {timestamp && (
-          <p className="text-theme-secondary text-sm transition-colors duration-300">
+          <p className="text-xs text-theme-secondary mt-1 transition-colors duration-300">
             {timestamp}
           </p>
         )}
@@ -55,50 +51,52 @@ const ApprovalList = ({
   approvals,
   title,
 }: {
-  approvals: Approval[]
+  approvals: Array<{
+    member: { name: string; avatar: string }
+    status: 'Confirmed' | 'Rejected' | 'Pending'
+  }>
   title: string
 }) => {
   return (
     <div>
-      <p className="text-theme font-medium mb-4 transition-colors duration-300">
+      <h4 className="text-theme-secondary text-sm font-medium mb-2 transition-colors duration-300">
         {title}
-      </p>
-      {approvals.length > 0 ? (
-        <div className="space-y-3">
-          {approvals.map((approval) => (
-            <div
-              key={approval.member.name}
-              className="flex items-center justify-between"
-            >
-              <div className="flex items-center gap-3">
-                <Image
-                  src={approval.member.avatar}
-                  alt={approval.member.name}
-                  width={24}
-                  height={24}
-                  className="rounded-full"
-                />
-                <span className="text-theme text-sm transition-colors duration-300">
-                  {approval.member.name}
-                </span>
-              </div>
+      </h4>
+      <div className="space-y-2">
+        {approvals.map((approval, index) => (
+          <div key={index} className="flex items-center gap-2">
+            <div className="w-6 h-6 bg-theme-border rounded-full flex items-center justify-center">
+              <span className="text-xs text-theme-secondary">
+                {approval.member.name.charAt(0)}
+              </span>
             </div>
-          ))}
-        </div>
-      ) : (
-        <p className="text-theme-secondary text-sm transition-colors duration-300">
-          ----------
-        </p>
-      )}
+            <span className="text-theme text-sm transition-colors duration-300">
+              {approval.member.name}
+            </span>
+            <span
+              className={`text-xs px-2 py-1 rounded-full transition-colors duration-300 ${approval.status === 'Confirmed'
+                ? 'text-green-400 bg-green-400/10'
+                : approval.status === 'Rejected'
+                  ? 'text-red-400 bg-red-400/10'
+                  : 'text-yellow-400 bg-yellow-400/10'
+                }`}
+            >
+              {approval.status}
+            </span>
+          </div>
+        ))}
+      </div>
     </div>
   )
 }
 
 export const TransactionDetailsBody = ({
-  transaction,
+  transactionInfo,
 }: {
-  transaction: Transaction
+  transactionInfo: TransactionDisplayInfo
 }) => {
+  useTheme()
+  const { transaction } = transactionInfo
   const isExecuted = transaction.status === 'Executed'
   const isRejected = transaction.status === 'Rejected'
 
@@ -112,211 +110,118 @@ export const TransactionDetailsBody = ({
   )
 
   return (
-    <div className="space-y-6">
-      <section className="grid md:grid-cols-3 gap-6">
-        <div className="bg-theme-bg-secondary border border-theme-border p-6 rounded-lg space-y-4 transition-colors duration-300">
-          {detailItem(
-            'Initiator',
-            <div className="flex items-center gap-2">
-              <Image
-                src={transaction.initiator.avatar}
-                alt={transaction.initiator.name}
-                width={20}
-                height={20}
-                className="rounded-full"
-              />
-              <p className="text-theme text-sm truncate transition-colors duration-300">
-                {transaction.initiator.address || transaction.initiator.name}
-              </p>
-            </div>,
-          )}
-          {detailItem(
-            'Date initiated',
-            <p className="text-theme text-sm transition-colors duration-300">
-              {transaction.dateInitiated}
-            </p>,
-          )}
-          {isExecuted &&
-            transaction.dateExecuted &&
-            detailItem(
-              'Date Executed',
-              <p className="text-theme text-sm transition-colors duration-300">
-                {transaction.dateExecuted}
-              </p>,
-            )}
-          {detailItem(
-            'Account',
-            <div className="flex items-center gap-2">
-              <Image
-                src={transaction.account.avatar}
-                alt={transaction.account.name}
-                width={20}
-                height={20}
-                className="rounded-full"
-              />
-              <p className="text-theme text-sm transition-colors duration-300">
-                {transaction.account.name}
-              </p>
-            </div>,
-          )}
-          {detailItem(
-            'Transaction Link',
-            <div className="flex items-center gap-2">
-              <p className="text-theme text-sm truncate transition-colors duration-300">
-                {transaction.transactionLink}
-              </p>
-              <button className="text-theme-secondary hover:text-theme transition-colors duration-200">
-                <Copy size={16} />
-              </button>
-            </div>,
-          )}
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      {/* Transaction Details */}
+      <section className="bg-theme-bg-tertiary border border-theme-border p-4 rounded-lg transition-colors duration-300">
+        <h3 className="text-theme font-medium mb-4 transition-colors duration-300">
+          Transaction Details
+        </h3>
+        <div className="space-y-3">
           {detailItem(
             'Transaction ID',
-            <p className="text-theme text-sm truncate transition-colors duration-300">
-              {transaction.transactionId}
-            </p>,
-          )}
-        </div>
-
-        <div className="bg-theme-bg-secondary border border-theme-border p-6 rounded-lg transition-colors duration-300">
-          <div className="flex items-center gap-3 mb-6">
-            <Image
-              src={transaction.account.avatar}
-              alt={transaction.account.name}
-              width={48}
-              height={48}
-              className="rounded-full"
-            />
-            <div className="flex-1">
-              <p className="text-theme font-semibold text-base transition-colors duration-300">
-                {transaction.account.name}
-              </p>
-              <p className="text-theme-secondary text-sm transition-colors duration-300">
-                {transaction.account.address}
-              </p>
-            </div>
-            <span className="bg-theme-bg-tertiary border border-theme-border text-theme-secondary px-3 py-1.5 text-xs font-medium rounded-md transition-colors duration-300">
-              Team Account
+            <span className="text-theme text-sm font-mono transition-colors duration-300">
+              {transaction.id.toString().slice(0, 20)}...
             </span>
-          </div>
-          <div className="grid grid-cols-2 gap-4 mb-4">
-            <div className="bg-theme-bg-tertiary border border-theme-border p-3 rounded-md text-center transition-colors duration-300">
-              <p className="text-theme-secondary text-sm mb-1">Threshold</p>
-              <p className="text-theme font-semibold text-lg transition-colors duration-300">
-                {transaction.threshold.required}/{transaction.approvals.length}
-              </p>
-            </div>
-            <div className="bg-theme-bg-tertiary border border-theme-border p-3 rounded-md text-center transition-colors duration-300">
-              <p className="text-theme-secondary text-sm mb-1">Members</p>
-              <p className="text-theme font-semibold text-lg transition-colors duration-300">
-                {transaction.approvals.length}
-              </p>
-            </div>
-          </div>
-          {transaction.dateExecuted &&
-            detailItem(
-              'Last transaction',
-              <p className="text-theme text-sm transition-colors duration-300">
-                {transaction.dateExecuted.split(' ')[0]}
-              </p>,
-            )}
-        </div>
-
-        <div className="bg-theme-bg-secondary border border-theme-border p-6 rounded-lg transition-colors duration-300">
-          <div className="flex items-center gap-3 mb-6">
-            <Image
-              src={transaction.to.avatar}
-              alt={transaction.to.name}
-              width={48}
-              height={48}
-              className="rounded-full"
-            />
-            <div className="flex-1">
-              <p className="text-theme font-semibold text-base transition-colors duration-300">
-                {transaction.to.name}
-              </p>
-              <p className="text-theme-secondary text-sm transition-colors duration-300">
-                {transaction.to.address}
-              </p>
-            </div>
-          </div>
-          <div className="space-y-4">
-            {transaction.dateExecuted &&
-              detailItem(
-                'Last transaction',
-                <p className="text-theme text-sm transition-colors duration-300">
-                  {transaction.dateExecuted.split(' ')[0]}
-                </p>,
-              )}
-            {detailItem(
-              'Member Number',
-              <p className="text-theme text-sm transition-colors duration-300">
-                2
-              </p>,
-            )}
-            {detailItem(
-              'Email Address',
-              <p className="text-theme text-sm transition-colors duration-300">
-                denzieesmith@gmail.com
-              </p>,
-            )}
-          </div>
+          )}
+          {detailItem(
+            'Type',
+            <span className="text-theme text-sm transition-colors duration-300">
+              {transactionInfo.title}
+            </span>
+          )}
+          {detailItem(
+            'Proposer',
+            <span className="text-theme text-sm font-mono transition-colors duration-300">
+              {transaction.proposer.slice(0, 10)}...{transaction.proposer.slice(-6)}
+            </span>
+          )}
+          {detailItem(
+            'Date Created',
+            <span className="text-theme text-sm transition-colors duration-300">
+              {formatTimestamp(transaction.dateCreated)} {formatTime(transaction.dateCreated)}
+            </span>
+          )}
+          {transaction.dateExecuted && detailItem(
+            'Date Executed',
+            <span className="text-theme text-sm transition-colors duration-300">
+              {formatTimestamp(transaction.dateExecuted)} {formatTime(transaction.dateExecuted)}
+            </span>
+          )}
+          {transaction.executor && detailItem(
+            'Executor',
+            <span className="text-theme text-sm font-mono transition-colors duration-300">
+              {transaction.executor.slice(0, 10)}...{transaction.executor.slice(-6)}
+            </span>
+          )}
+          {transactionInfo.amount && detailItem(
+            'Amount',
+            <span className="text-theme text-sm transition-colors duration-300">
+              {transactionInfo.amount}
+            </span>
+          )}
+          {transactionInfo.recipient && detailItem(
+            'Recipient',
+            <span className="text-theme text-sm font-mono transition-colors duration-300">
+              {transactionInfo.recipient}
+            </span>
+          )}
+          {transactionInfo.token && detailItem(
+            'Token',
+            <span className="text-theme text-sm font-mono transition-colors duration-300">
+              {transactionInfo.token}
+            </span>
+          )}
         </div>
       </section>
 
-      <section className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="bg-theme-bg-secondary border border-theme-border p-6 rounded-lg transition-colors duration-300">
-          <h3 className="text-theme text-base font-medium mb-6 transition-colors duration-300">
-            Updates/Transaction Progress
-          </h3>
-          <div className="grid grid-cols-3 gap-6 mb-8">
-            <div className="bg-theme-bg-tertiary border border-theme-border p-3 rounded-md text-center transition-colors duration-300">
-              <p className="text-theme-secondary text-sm mb-2">Threshold</p>
-              <p className="text-theme font-bold text-2xl transition-colors duration-300">
-                {transaction.threshold.required}/{transaction.approvals.length}
-              </p>
-            </div>
-            <div className="bg-theme-bg-tertiary border border-theme-border p-3 rounded-md text-center transition-colors duration-300">
-              <p className="text-theme-secondary text-sm mb-2">Confirmed</p>
-              <p className="text-theme font-bold text-2xl transition-colors duration-300">
-                {transaction.approvals.length}
-              </p>
-            </div>
-            <div className="bg-theme-bg-tertiary border border-theme-border p-3 rounded-md text-center transition-colors duration-300">
-              <p className="text-theme-secondary text-sm mb-2">Rejections</p>
-              <p className="text-theme font-bold text-2xl transition-colors duration-300">
-                {transaction.rejections.length}
-              </p>
-            </div>
-          </div>
+      {/* Approval Status */}
+      <section className="bg-theme-bg-tertiary border border-theme-border p-4 rounded-lg transition-colors duration-300">
+        <h3 className="text-theme font-medium mb-4 transition-colors duration-300">
+          Approval Status
+        </h3>
+        <div className="space-y-4">
+          {/* Progress Timeline */}
           <div className="flex gap-8">
             <div className="flex-shrink-0">
               <TimelineStep
                 title="Initiated Transaction"
-                timestamp={transaction.dateInitiated}
+                timestamp={`${formatTimestamp(transaction.dateCreated)} ${formatTime(transaction.dateCreated)}`}
                 status="completed"
               />
               <TimelineStep
-                title="Pending"
-                timestamp={`Threshold: ${transaction.approvals.length}/${transaction.threshold.required} approved`}
+                title="Approval Status"
+                timestamp={`Approved: ${transaction.approved.length} | Rejected: ${transaction.rejected.length}`}
                 status={isExecuted || isRejected ? 'completed' : 'pending'}
               />
               <TimelineStep
                 title={isRejected ? 'Rejected' : 'Executed'}
-                timestamp={transaction.dateExecuted}
+                timestamp={transaction.dateExecuted ?
+                  `${formatTimestamp(transaction.dateExecuted)} ${formatTime(transaction.dateExecuted)}` :
+                  undefined
+                }
                 status={isExecuted || isRejected ? 'completed' : 'future'}
                 isLast={true}
               />
             </div>
-            <div className="flex-grow grid grid-cols-2 gap-8">
-              <ApprovalList
-                approvals={transaction.approvals}
-                title="Confirmed Approvals"
-              />
-              <ApprovalList
-                approvals={transaction.rejections}
-                title="Rejections"
-              />
+            <div className="flex-grow grid grid-cols-1 gap-4">
+              {transaction.approved.length > 0 && (
+                <ApprovalList
+                  approvals={transaction.approved.map(addr => ({
+                    member: { name: `${addr.slice(0, 8)}...`, avatar: '/placeholder.svg' },
+                    status: 'Confirmed' as const
+                  }))}
+                  title="Confirmed Approvals"
+                />
+              )}
+              {transaction.rejected.length > 0 && (
+                <ApprovalList
+                  approvals={transaction.rejected.map(addr => ({
+                    member: { name: `${addr.slice(0, 8)}...`, avatar: '/placeholder.svg' },
+                    status: 'Rejected' as const
+                  }))}
+                  title="Rejections"
+                />
+              )}
             </div>
           </div>
         </div>
