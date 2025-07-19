@@ -370,18 +370,6 @@ const DappDeposit = () => {
           </div>
         )}
       </div>
-
-      {/* Info Section */}
-      <div className="w-full mt-6 p-4 bg-[#1C1D1F] rounded-[7px]">
-        <p className="text-[14px] text-[#8E9BAE] mb-2">How it works:</p>
-        <ul className="text-[12px] text-[#8E9BAE] space-y-1">
-          <li>• Select a token with available balance</li>
-          <li>• Enter the amount you want to deposit</li>
-          <li>• Transfer tokens directly to the Spherre Treasury</li>
-          <li>• Tokens will be deposited to the Spherre Treasury</li>
-          <li>• Simple and efficient single transaction</li>
-        </ul>
-      </div>
     </div>
   )
 }

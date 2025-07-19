@@ -4,10 +4,10 @@ import Image from 'next/image'
 import QRCode from 'qrcode'
 import { HiMiniArrowPath } from 'react-icons/hi2'
 import { useTokenBalance } from '@/hooks/useTokenBalance'
-import { SPHERRE_CONTRACTS } from '@/lib/contracts/spherre-contracts'
+import { useSpherreAccount } from '@/app/context/account-context'
 
 const ManualDeposit = () => {
-  const address = SPHERRE_CONTRACTS.SPHERRE
+  const { accountAddress: spherreAccountAddress } = useSpherreAccount()
 
   const [copied, setCopied] = useState(false)
   const copyToClipboard = (text: string) => {
@@ -30,9 +30,11 @@ const ManualDeposit = () => {
   }
 
   const downloadQRCode = () => {
+    if (!spherreAccountAddress) return
+
     const link = document.createElement('a')
     link.href = src
-    link.download = `spherre-${address.slice(0, 5)}-qrcode-.png`
+    link.download = `spherre-${spherreAccountAddress.slice(0, 5)}-qrcode-.png`
     document.body.appendChild(link)
     link.click()
     document.body.removeChild(link)
@@ -41,8 +43,10 @@ const ManualDeposit = () => {
   const { balance, symbol } = useTokenBalance()
 
   useEffect(() => {
-    generateQRCode(address)
-  }, [])
+    if (spherreAccountAddress) {
+      generateQRCode(spherreAccountAddress)
+    }
+  }, [spherreAccountAddress])
 
   return (
     <div className="flex-col items-start flex justify-center w-full">
@@ -157,7 +161,7 @@ const ManualDeposit = () => {
         </div>
 
         <div className="h-[48px] bg-[#1C1D1F] px-2 mt-5 rounded-[10px] flex justify-between items-center">
-          <span className="text-white text-sm">{address}</span>
+          <span className="text-white text-sm">{spherreAccountAddress}</span>
           <div className="bg-[#29292A] rounded-[5px] gap-1 w-8 h-8 flex items-center justify-center cursor-pointer">
             <Image
               src="/copy-white.svg"
