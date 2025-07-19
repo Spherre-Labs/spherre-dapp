@@ -1,21 +1,17 @@
-import { Abi, Contract, RpcProvider } from 'starknet'
+import { Abi, Contract, RpcProvider, ArgsOrCalldata } from 'starknet'
 
 export async function readContractFunction(
   functionName: string,
-  args: unknown[] = [],
   contract_address: `0x${string}`,
   abi: Abi,
+  args: ArgsOrCalldata[] = [],
 ): Promise<unknown> {
-  const provider = new RpcProvider({
-    nodeUrl: process.env.NEXT_PUBLIC_RPC_URL,
-  })
-
   if (!abi) {
     throw new Error('No ABI found for the contract.')
   }
 
   // Instantiate contract
-  const contract = new Contract(abi, contract_address, provider)
+  const contract = new Contract(abi, contract_address)
 
   // Dynamically call the function
   if (typeof contract[functionName] !== 'function') {
@@ -24,6 +20,6 @@ export async function readContractFunction(
     )
   }
 
-  const result = await contract[functionName](...args)
+  const result = await contract.call(functionName, args)
   return result
 }

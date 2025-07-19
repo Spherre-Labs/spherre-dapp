@@ -10,10 +10,10 @@ export const getSTRKPrice = async () => {
       throw new Error(`coingecko response status: ${response.status}`)
     }
     const json = await response.json()
-    return json
+    return json.starknet.usd
   } catch (e) {
     console.log(e)
-    return { starknet: { usd: 0 } }
+    return 0
   }
 }
 
@@ -24,23 +24,26 @@ export const getETHPrice = async () => {
       throw new Error(`coingecko response status: ${response.status}`)
     }
     const json = await response.json()
-    return json
+    return json.ethereum.usd
   } catch (e) {
     console.log(e)
-    return {
-      ethereum: { usd: 0 },
-    }
+    return 0
   }
 }
 
 export const getETHPriceEquivalent = async (amount: number) => {
   const priceResponse = await getETHPrice()
-  const price = Number(priceResponse.ethereum.usd)
+  const price = Number(priceResponse)
   return price * amount
 }
 
 export const getSTRKPriceEquivalent = async (amount: number) => {
   const priceResponse = await getSTRKPrice()
-  const price = Number(priceResponse.starknet.usd)
+  const price = Number(priceResponse)
   return price * amount
+}
+
+export const tokenPriceFecther: Record<string, () => Promise<any>> = {
+  STRK: getSTRKPrice,
+  ETH: getETHPrice,
 }

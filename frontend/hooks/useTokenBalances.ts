@@ -4,8 +4,11 @@ import { readContractFunction } from '@/lib/utils/blockchain'
 import { ERC20_ABI } from '@/lib/contracts/erc20-contracts'
 import { SpherreAccountContext } from '@/app/context/account-context'
 import {
+  getETHPrice,
   getETHPriceEquivalent,
+  getSTRKPrice,
   getSTRKPriceEquivalent,
+  tokenPriceFecther,
 } from '@/lib/utils/token_prices'
 
 export type TokenDisplay = {
@@ -42,9 +45,9 @@ export function useTokenBalances() {
           try {
             const balance = await readContractFunction(
               'balance_of',
-              [accountAddress],
               token.address,
               ERC20_ABI,
+              [accountAddress],
             )
 
             rawData.push({
@@ -84,17 +87,15 @@ export function useTokenBalances() {
             let value = 0
             let price = 0
 
-            try {
-              if (t.symbol === 'ETH') {
-                value = await getETHPriceEquivalent(floatBalance)
-              } else if (t.symbol === 'STRK') {
-                value = await getSTRKPriceEquivalent(floatBalance)
+            if (tokenPriceFecther[t.symbol]) {
+              try {
+                price = await tokenPriceFecther[t.symbol]()
+                value = price * floatBalance
+              } catch (error) {
+                console.warn(`Failed to fetch price for ${t.symbol}:`, error)
+                price = 0
+                value = 0
               }
-              price = floatBalance > 0 ? value / floatBalance : 0
-            } catch (error) {
-              console.warn(`Failed to fetch price for ${t.symbol}:`, error)
-              price = 0
-              value = 0
             }
 
             return {
