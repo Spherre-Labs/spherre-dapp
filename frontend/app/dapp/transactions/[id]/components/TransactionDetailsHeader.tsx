@@ -34,7 +34,7 @@ export const TransactionDetailsHeader = ({
     }
 
     try {
-      await approveAsync({ tx_id: transactionId })
+      await approveAsync({ transaction_id: transactionId })
       console.log('Transaction approved successfully:', transactionId)
     } catch (error) {
       console.error('Failed to approve transaction:', error, {
@@ -52,7 +52,7 @@ export const TransactionDetailsHeader = ({
     }
 
     try {
-      await rejectAsync({ tx_id: transactionId })
+      await rejectAsync({ transaction_id: transactionId })
       console.log('Transaction rejected successfully:', transactionId)
     } catch (error) {
       console.error('Failed to reject transaction:', error, {

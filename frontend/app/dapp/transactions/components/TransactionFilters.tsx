@@ -129,7 +129,7 @@ export default function TransactionFilters({
               </label>
               <select
                 value={currentFilters.type}
-                onChange={(e) => onFilterType(e.target.value === 'All' ? 'All' : parseInt(e.target.value) as TransactionType)}
+                onChange={(e) => onFilterType(e.target.value === 'All' ? 'All' : Number(e.target.value) as TransactionType)}
                 className="w-full bg-theme-bg-secondary border border-theme-border text-theme p-2 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
               >
                 {typeOptions.map((option) => (

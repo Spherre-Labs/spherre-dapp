@@ -67,7 +67,7 @@ export default function Transaction({
     }
 
     try {
-      await approveAsync({ tx_id: transaction.id })
+      await approveAsync({ transaction_id: transaction.id })
       console.log('Transaction approved successfully:', transaction.id)
     } catch (error) {
       console.error('Failed to approve transaction:', error, {
@@ -86,7 +86,7 @@ export default function Transaction({
     }
 
     try {
-      await rejectAsync({ tx_id: transaction.id })
+      await rejectAsync({ transaction_id: transaction.id })
       console.log('Transaction rejected successfully:', transaction.id)
     } catch (error) {
       console.error('Failed to reject transaction:', error, {

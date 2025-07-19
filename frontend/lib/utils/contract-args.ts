@@ -230,16 +230,16 @@ export const SpherreArgsResolvers = {
     })
   },
 
-  approveTransaction: (args: { tx_id: U256 }) => {
+  approveTransaction: (args: { transaction_id: U256 }) => {
     return ContractArgsResolver.resolveArgs(args, {
-      tx_id: (value: unknown) =>
+      transaction_id: (value: unknown) =>
         ContractArgsResolver.resolveU256(value as U256),
     })
   },
 
-  rejectTransaction: (args: { tx_id: U256 }) => {
+  rejectTransaction: (args: { transaction_id: U256 }) => {
     return ContractArgsResolver.resolveArgs(args, {
-      tx_id: (value: unknown) =>
+      transaction_id: (value: unknown) =>
         ContractArgsResolver.resolveU256(value as U256),
     })
   },

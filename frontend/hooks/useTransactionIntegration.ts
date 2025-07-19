@@ -86,56 +86,60 @@ export function useTransactionIntegration(
     data: tokenTransactions,
     isLoading: isLoadingToken,
     error: errorToken,
-  } = useTokenTransactionList(shouldFetchDetails ? accountAddress! : null!)
+    refetch: refetchToken,
+  } = useTokenTransactionList(shouldFetchDetails ? accountAddress! : '0x' as const)
 
   const {
     data: nftTransactions,
     isLoading: isLoadingNft,
     error: errorNft,
-  } = useNftTransactionList(shouldFetchDetails ? accountAddress! : null!)
+    refetch: refetchNft,
+  } = useNftTransactionList(shouldFetchDetails ? accountAddress! : '0x' as const)
 
   const {
     data: memberAddTransactions,
     isLoading: isLoadingMemberAdd,
     error: errorMemberAdd,
-  } = useMemberAddTransactionList(shouldFetchDetails ? accountAddress! : null!)
+  } = useMemberAddTransactionList(shouldFetchDetails ? accountAddress! : '0x' as const)
 
   const {
     data: memberRemovalTransactions,
     isLoading: isLoadingMemberRemoval,
     error: errorMemberRemoval,
-  } = useMemberRemovalTransactionList(shouldFetchDetails ? accountAddress! : null!)
+  } = useMemberRemovalTransactionList(shouldFetchDetails ? accountAddress! : '0x' as const)
 
   const {
     data: editPermissionTransactions,
     isLoading: isLoadingEditPermission,
     error: errorEditPermission,
-  } = useEditPermissionTransactionList(shouldFetchDetails ? accountAddress! : null!)
+  } = useEditPermissionTransactionList(shouldFetchDetails ? accountAddress! : '0x' as const)
 
   const {
     data: smartLockTransactions,
     isLoading: isLoadingSmartLock,
     error: errorSmartLock,
-  } = useSmartTokenLockTransactionList(shouldFetchDetails ? accountAddress! : null!)
+  } = useSmartTokenLockTransactionList(shouldFetchDetails ? accountAddress! : '0x' as const)
 
   const {
     data: thresholdTransactions,
     isLoading: isLoadingThreshold,
     error: errorThreshold,
-  } = useAllThresholdChangeTransactions(shouldFetchDetails ? accountAddress! : null!)
+  } = useAllThresholdChangeTransactions(shouldFetchDetails ? accountAddress! : '0x' as const)
 
   // Helper function to get transaction ID from different transaction types
   const getTransactionId = (transaction: unknown): bigint | string | null => {
-    if (!transaction || typeof transaction !== 'object') return null
+    if (!transaction || typeof transaction !== 'object' || transaction === null) {
+      return null
+    }
 
     const tx = transaction as Record<string, unknown>
 
-    // Try different possible ID field names
-    if (typeof tx.transaction_id === 'bigint' || typeof tx.transaction_id === 'string') {
-      return tx.transaction_id
-    }
-    if (typeof tx.id === 'bigint' || typeof tx.id === 'string') {
-      return tx.id
+    // Try different possible ID field names with proper type checking
+    for (const key of ['transaction_id', 'id']) {
+      const value = tx[key]
+      if (typeof value === 'bigint' || typeof value === 'string') {
+        return value
+      }
     }
 
     return null
@@ -368,7 +372,8 @@ export function useTransactionIntegration(
 
   const refetch = () => {
     refetchBase()
-
+    refetchToken()
+    refetchNft()
   }
 
   return {
