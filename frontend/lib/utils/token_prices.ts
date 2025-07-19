@@ -43,7 +43,7 @@ export const getSTRKPriceEquivalent = async (amount: number) => {
   return price * amount
 }
 
-export const tokenPriceFecther: Record<string, () => Promise<any>> = {
+export const tokenPriceFecther: Record<string, () => Promise<number>> = {
   STRK: getSTRKPrice,
   ETH: getETHPrice,
 }

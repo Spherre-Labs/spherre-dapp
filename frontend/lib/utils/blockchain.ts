@@ -1,4 +1,4 @@
-import { Abi, Contract, RpcProvider, ArgsOrCalldata } from 'starknet'
+import { Abi, Contract, ArgsOrCalldata } from 'starknet'
 
 export async function readContractFunction(
   functionName: string,
