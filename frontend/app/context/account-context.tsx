@@ -1,3 +1,4 @@
+'use client'
 import { createContext, useState, ReactNode } from 'react'
 import { SPHERRE_CONTRACTS } from '@/lib'
 

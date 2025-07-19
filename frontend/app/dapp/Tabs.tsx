@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Image from 'next/image'
 import nft1 from '../../public/Images/nft1.png'
 import nft2 from '../../public/Images/nft2.png'
@@ -13,6 +13,7 @@ import nft8 from '../../public/Images/nft8.png'
 import strk from '../../public/Images/strk.png'
 import { useTheme } from '@/app/context/theme-context-provider'
 import Loader from '../components/modals/Loader'
+import { getTokenImage } from '@/lib/utils/token_image'
 
 export default function Tabs({
   loadingTokenData,
@@ -25,10 +26,27 @@ export default function Tabs({
     balance: string
     value: string
     size: string
+    contract_address: `0x${string}`
+    id: string
   }[]
 }) {
   useTheme()
   const [activeTab, setActiveTab] = useState('Tokens')
+  const [tokenImages, setTokenImages] = useState<Record<string, string>>({})
+
+  useEffect(() => {
+    const fetchImages = async () => {
+      const images: Record<string, string> = {}
+
+      for (const token of tokens) {
+        const imageUrl = await getTokenImage(token.id)
+        if (imageUrl) images[token.coin] = imageUrl
+      }
+      setTokenImages(images)
+    }
+
+    fetchImages()
+  }, [tokens])
 
   // NFT data with correctly imported image objects
   const nfts = [
@@ -117,7 +135,7 @@ export default function Tabs({
                 >
                   <div className="flex items-center gap-1 w-1/5">
                     <Image
-                      src={strk}
+                      src={tokenImages[token.coin] || strk}
                       width={18}
                       height={18}
                       alt="starknet token icon"

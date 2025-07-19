@@ -1,8 +1,12 @@
-import { useState, useEffect } from 'react'
-import { useAccount } from '@starknet-react/core'
+import { useState, useEffect, useContext } from 'react'
 import { COMMON_TOKENS_SEPOLIA } from '@/lib'
 import { readContractFunction } from '@/lib/utils/blockchain'
 import { ERC20_ABI } from '@/lib/contracts/erc20-contracts'
+import { SpherreAccountContext } from '@/app/context/account-context'
+import {
+  getETHPriceEquivalent,
+  getSTRKPriceEquivalent,
+} from '@/lib/utils/token_prices'
 
 export type TokenDisplay = {
   coin: string
@@ -10,37 +14,35 @@ export type TokenDisplay = {
   balance: string
   value: string
   size: string
+  contract_address: `0x${string}`
+  id: string
 }
 
 export function useTokenBalances() {
-  const { address } = useAccount()
+  const { accountAddress } = useContext(SpherreAccountContext)
   const [loadingTokenData, setLoadingTokenData] = useState(false)
   const [tokensDisplay, setTokensDisplay] = useState<TokenDisplay[]>([])
 
   useEffect(() => {
-    if (!address) return
+    if (!accountAddress) return
 
-    async function getBalances() {
+    const getBalances = async () => {
       try {
         setLoadingTokenData(true)
-
-        // TODO: Replace with actual price API integration
-        const prices: Record<string, number> = {
-          ETH: 3000, // Dummy ETH price - replace with API call
-          STRK: 0.46, // Dummy STRK price - replace with API call
-        }
 
         const rawData: {
           symbol: string
           decimals: number
           balance: bigint
+          contract_address: `0x${string}`
+          id: string
         }[] = []
 
         for (const token of COMMON_TOKENS_SEPOLIA) {
           try {
             const balance = await readContractFunction(
               'balance_of',
-              [address],
+              [accountAddress],
               token.address,
               ERC20_ABI,
             )
@@ -49,41 +51,62 @@ export function useTokenBalances() {
               symbol: token.symbol,
               decimals: token.decimals,
               balance: balance as bigint,
+              contract_address: token.address,
+              id: token.id,
             })
           } catch (error) {
             console.warn(`Failed to fetch balance for ${token.symbol}:`, error)
-            // Continue with other tokens, add zero balance for failed token
             rawData.push({
               symbol: token.symbol,
               decimals: token.decimals,
               balance: BigInt(0),
+              contract_address: token.address,
+              id: token.id,
             })
           }
         }
 
-        const tokenWithValues = rawData.map((t) => {
-          const divisor = BigInt(10 ** t.decimals)
-          const floatBalance = Number(t.balance) / Number(divisor)
+        const tokenWithValues = await Promise.all(
+          rawData.map(async (t) => {
+            const divisor = BigInt(10 ** t.decimals)
+            const floatBalance = Number(t.balance) / Number(divisor)
 
-          if (floatBalance === Infinity || isNaN(floatBalance)) {
-            console.warn(`Balance conversion overflow for token ${t.symbol}`)
+            if (floatBalance === Infinity || isNaN(floatBalance)) {
+              console.warn(`Balance conversion overflow for token ${t.symbol}`)
+              return {
+                coin: t.symbol,
+                price: 0,
+                balance: 0,
+                value: 0,
+              }
+            }
+
+            let value = 0
+            let price = 0
+
+            try {
+              if (t.symbol === 'ETH') {
+                value = await getETHPriceEquivalent(floatBalance)
+              } else if (t.symbol === 'STRK') {
+                value = await getSTRKPriceEquivalent(floatBalance)
+              }
+              price = floatBalance > 0 ? value / floatBalance : 0
+            } catch (error) {
+              console.warn(`Failed to fetch price for ${t.symbol}:`, error)
+              price = 0
+              value = 0
+            }
+
             return {
               coin: t.symbol,
-              price: 0,
-              balance: 0,
-              value: 0,
+              price,
+              balance: floatBalance,
+              value,
+              contract_address: t.contract_address,
+              id: t.id,
             }
-          }
-          const price = prices[t.symbol] ?? 1
-          const value = floatBalance * price
-
-          return {
-            coin: t.symbol,
-            price,
-            balance: floatBalance,
-            value,
-          }
-        })
+          }),
+        )
 
         const totalValue = tokenWithValues.reduce((acc, t) => acc + t.value, 0)
 
@@ -96,6 +119,8 @@ export function useTokenBalances() {
             totalValue > 0
               ? `${((t.value / totalValue) * 100).toFixed(2)}%`
               : '0%',
+          contract_address: t.contract_address as `0x${string}`,
+          id: t.id as string,
         }))
 
         setTokensDisplay(finalDisplay)
@@ -107,7 +132,7 @@ export function useTokenBalances() {
     }
 
     getBalances()
-  }, [address])
+  }, [accountAddress])
 
   return {
     tokensDisplay,

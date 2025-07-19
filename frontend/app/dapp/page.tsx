@@ -1,6 +1,5 @@
 'use client'
-
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import Image from 'next/image'
 import { Button } from '@/components/shared/Button'
 import Tabs from './Tabs'
@@ -9,15 +8,24 @@ import WithdrawalModal from '@/app/components/modal'
 import DepositModal from '../components/deposit-modal'
 import { useTheme } from '@/app/context/theme-context-provider'
 import { useTokenBalances } from '@/hooks/useTokenBalances'
-import { useAccount } from '@starknet-react/core'
 import { useAccountInfo } from '../../hooks/useSpherreHooks'
+import { SpherreAccountContext } from '../context/account-context'
 
 export default function DashboardPage() {
   useTheme()
   const [open, setOpen] = useState(false)
-  const { address } = useAccount()
+  const { accountAddress } = useContext(SpherreAccountContext)
   const { tokensDisplay, loadingTokenData } = useTokenBalances()
-  const info = useAccountInfo(address || '0x0')
+  const info = useAccountInfo(accountAddress || '0x0')
+
+  useEffect(() => {
+    console.log(tokensDisplay)
+  }, [tokensDisplay])
+
+  const totalValue = tokensDisplay.reduce((acc, token) => {
+    const numericValue = parseFloat(token.value.replace('$', '')) || 0
+    return acc + numericValue
+  }, 0)
 
   useEffect(() => {
     console.log('Modal state:', open)
@@ -63,7 +71,7 @@ export default function DashboardPage() {
               />
             </div>
             <h2 className="text-2xl sm:text-3xl lg:text-[45px] text-theme font-semibold transition-colors duration-300">
-              $250.35
+              {loadingTokenData ? 'Loading...' : `$${totalValue.toFixed(2)}`}
             </h2>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-x-3">
@@ -103,7 +111,7 @@ export default function DashboardPage() {
               <span className="text-theme-secondary text-lg">—</span>
             ) : (
               <h3 className="text-2xl sm:text-3xl lg:text-[45px] text-theme font-semibold transition-colors duration-300">
-                {info?.members}
+                {info?.members?.length}
               </h3>
             )}
           </div>
@@ -135,7 +143,7 @@ export default function DashboardPage() {
               <span className="text-theme-secondary text-lg">-</span>
             ) : (
               <h3 className="text-2xl sm:text-3xl lg:text-[45px] text-theme font-semibold transition-colors duration-300">
-                {info?.threshold}
+                {info?.threshold?.[0]?.toString?.() ?? '-'}
               </h3>
             )}
           </div>

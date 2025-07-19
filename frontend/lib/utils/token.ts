@@ -113,6 +113,7 @@ export const COMMON_TOKENS_SEPOLIA: {
   name: string
   symbol: string
   decimals: number
+  id: string
 }[] = [
   {
     address:
@@ -120,6 +121,7 @@ export const COMMON_TOKENS_SEPOLIA: {
     name: 'Ether',
     symbol: 'ETH',
     decimals: 18,
+    id: 'ethereum',
   },
   {
     address:
@@ -127,6 +129,7 @@ export const COMMON_TOKENS_SEPOLIA: {
     name: 'StarkNet Token',
     symbol: 'STRK',
     decimals: 18,
+    id: 'starknet',
   },
 ]
 
@@ -135,6 +138,7 @@ export const COMMON_TOKENS_SEPOLIA_MAINNET: {
   name: string
   symbol: string
   decimals: number
+  id: string
 }[] = [
   {
     address:
@@ -142,6 +146,7 @@ export const COMMON_TOKENS_SEPOLIA_MAINNET: {
     name: 'Ether',
     symbol: 'ETH',
     decimals: 18,
+    id: 'ethereum',
   },
   {
     address:
@@ -149,6 +154,7 @@ export const COMMON_TOKENS_SEPOLIA_MAINNET: {
     name: 'Starknet Token',
     symbol: 'STRK',
     decimals: 18,
+    id: 'starknet',
   },
   {
     address:
@@ -156,6 +162,7 @@ export const COMMON_TOKENS_SEPOLIA_MAINNET: {
     name: 'USD Coin',
     symbol: 'USDC',
     decimals: 6,
+    id: 'usd-coin',
   },
   {
     address:
@@ -163,5 +170,6 @@ export const COMMON_TOKENS_SEPOLIA_MAINNET: {
     name: 'Wrapped BTC',
     symbol: 'WBTC',
     decimals: 8,
+    id: 'wrapped-bitcoin',
   },
 ]
