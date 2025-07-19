@@ -22,7 +22,7 @@ export function useDeployAccount() {
   })
 }
 
-export function useIsDeployedAccount(accountAddress: string) {
+export function useIsDeployedAccount(accountAddress: `0x${string}`) {
   return useScaffoldReadContract<boolean>({
     contractConfig: spherreConfig,
     functionName: 'is_deployed_account',
@@ -39,7 +39,7 @@ export function useGetAccountClassHash() {
 }
 
 // Account Contract Read Hooks
-export function useGetAccountMembers(accountAddress: string) {
+export function useGetAccountMembers(accountAddress: `0x${string}`) {
   return useScaffoldReadContract<string[]>({
     contractConfig: {
       address: accountAddress,
@@ -50,7 +50,7 @@ export function useGetAccountMembers(accountAddress: string) {
   })
 }
 
-export function useGetMembersCount(accountAddress: string) {
+export function useGetMembersCount(accountAddress: `0x${string}`) {
   return useScaffoldReadContract<bigint>({
     contractConfig: {
       address: accountAddress,
@@ -61,7 +61,7 @@ export function useGetMembersCount(accountAddress: string) {
   })
 }
 
-export function useGetThreshold(accountAddress: string) {
+export function useGetThreshold(accountAddress: `0x${string}`) {
   return useScaffoldReadContract<[bigint, bigint]>({
     contractConfig: {
       address: accountAddress,
@@ -72,7 +72,7 @@ export function useGetThreshold(accountAddress: string) {
   })
 }
 
-export function useGetAccountName(accountAddress: string) {
+export function useGetAccountName(accountAddress: `0x${string}`) {
   return useScaffoldReadContract<string>({
     contractConfig: {
       address: accountAddress,
@@ -83,7 +83,7 @@ export function useGetAccountName(accountAddress: string) {
   })
 }
 
-export function useGetAccountDescription(accountAddress: string) {
+export function useGetAccountDescription(accountAddress: `0x${string}`) {
   return useScaffoldReadContract<string>({
     contractConfig: {
       address: accountAddress,
@@ -94,7 +94,7 @@ export function useGetAccountDescription(accountAddress: string) {
   })
 }
 
-export function useGetAccountDetails(accountAddress: string) {
+export function useGetAccountDetails(accountAddress: `0x${string}`) {
   return useScaffoldReadContract<AccountDetails>({
     contractConfig: {
       address: accountAddress,
@@ -105,7 +105,10 @@ export function useGetAccountDetails(accountAddress: string) {
   })
 }
 
-export function useIsMember(accountAddress: string, memberAddress: string) {
+export function useIsMember(
+  accountAddress: `0x${string}`,
+  memberAddress: `0x${string}`,
+) {
   return useScaffoldReadContract<boolean>({
     contractConfig: {
       address: accountAddress,
@@ -117,7 +120,10 @@ export function useIsMember(accountAddress: string, memberAddress: string) {
   })
 }
 
-export function useGetTransaction(accountAddress: string, transactionId: U256) {
+export function useGetTransaction(
+  accountAddress: `0x${string}`,
+  transactionId: U256,
+) {
   return useScaffoldReadContract<SpherreTransaction>({
     contractConfig: {
       address: accountAddress,
@@ -130,7 +136,7 @@ export function useGetTransaction(accountAddress: string, transactionId: U256) {
 }
 
 // Account Contract Write Hooks
-export function useApproveTransaction(accountAddress: string) {
+export function useApproveTransaction(accountAddress: `0x${string}`) {
   return useScaffoldWriteContract({
     contractConfig: {
       address: accountAddress,
@@ -140,7 +146,7 @@ export function useApproveTransaction(accountAddress: string) {
   })
 }
 
-export function useRejectTransaction(accountAddress: string) {
+export function useRejectTransaction(accountAddress: `0x${string}`) {
   return useScaffoldWriteContract({
     contractConfig: {
       address: accountAddress,
@@ -150,7 +156,7 @@ export function useRejectTransaction(accountAddress: string) {
   })
 }
 
-export function useProposeMemberAdd(accountAddress: string) {
+export function useProposeMemberAdd(accountAddress: `0x${string}`) {
   return useScaffoldWriteContract({
     contractConfig: {
       address: accountAddress,
@@ -160,7 +166,7 @@ export function useProposeMemberAdd(accountAddress: string) {
   })
 }
 
-export function useExecuteMemberAdd(accountAddress: string) {
+export function useExecuteMemberAdd(accountAddress: `0x${string}`) {
   return useScaffoldWriteContract({
     contractConfig: {
       address: accountAddress,
@@ -170,7 +176,7 @@ export function useExecuteMemberAdd(accountAddress: string) {
   })
 }
 
-export function useProposeMemberRemove(accountAddress: string) {
+export function useProposeMemberRemove(accountAddress: `0x${string}`) {
   return useScaffoldWriteContract({
     contractConfig: {
       address: accountAddress,
@@ -180,7 +186,7 @@ export function useProposeMemberRemove(accountAddress: string) {
   })
 }
 
-export function useExecuteMemberRemove(accountAddress: string) {
+export function useExecuteMemberRemove(accountAddress: `0x${string}`) {
   return useScaffoldWriteContract({
     contractConfig: {
       address: accountAddress,
@@ -190,7 +196,7 @@ export function useExecuteMemberRemove(accountAddress: string) {
   })
 }
 
-export function useProposeTokenTransaction(accountAddress: string) {
+export function useProposeTokenTransaction(accountAddress: `0x${string}`) {
   return useScaffoldWriteContract({
     contractConfig: {
       address: accountAddress,
@@ -200,7 +206,7 @@ export function useProposeTokenTransaction(accountAddress: string) {
   })
 }
 
-export function useExecuteTokenTransaction(accountAddress: string) {
+export function useExecuteTokenTransaction(accountAddress: `0x${string}`) {
   return useScaffoldWriteContract({
     contractConfig: {
       address: accountAddress,
@@ -210,7 +216,7 @@ export function useExecuteTokenTransaction(accountAddress: string) {
   })
 }
 
-export function useProposeThresholdChange(accountAddress: string) {
+export function useProposeThresholdChange(accountAddress: `0x${string}`) {
   return useScaffoldWriteContract({
     contractConfig: {
       address: accountAddress,
@@ -220,7 +226,7 @@ export function useProposeThresholdChange(accountAddress: string) {
   })
 }
 
-export function useExecuteThresholdChange(accountAddress: string) {
+export function useExecuteThresholdChange(accountAddress: `0x${string}`) {
   return useScaffoldWriteContract({
     contractConfig: {
       address: accountAddress,
@@ -276,7 +282,7 @@ export function useGetNFTTransaction(accountAddress: string, id: U256) {
 }
 
 // Utility hooks that combine multiple operations
-export function useAccountInfo(accountAddress: string) {
+export function useAccountInfo(accountAddress: `0x${string}`) {
   const {
     data: members,
     isLoading: membersLoading,

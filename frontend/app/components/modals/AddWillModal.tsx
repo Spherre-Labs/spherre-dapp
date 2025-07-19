@@ -34,7 +34,7 @@ export default function AddWillModal({
     if (savedWillAddress && !willAddress) {
       setWillAddress(savedWillAddress)
     }
-  }, [setWillAddress])
+  }, [setWillAddress, willAddress])
 
   return (
     <div
