@@ -8,7 +8,9 @@ import {
 } from '@/lib/contracts/spherre-contracts'
 import type {
   AccountDetails,
+  NFTTransactionData,
   SpherreTransaction,
+  TokenTransactionData,
   U256,
 } from '@/lib/contracts/types'
 
@@ -225,6 +227,51 @@ export function useExecuteThresholdChange(accountAddress: string) {
       abi: spherreAccountConfig.abi,
     },
     functionName: 'execute_threshold_change_transaction',
+  })
+}
+
+export function useExecuteTransaction(accountAddress: string) {
+  return useScaffoldWriteContract({
+    contractConfig: {
+      address: accountAddress,
+      abi: spherreAccountConfig.abi,
+    },
+    functionName: 'execute_transaction',
+  })
+}
+
+export function useTokenTransactionList(accountAddress: string) {
+  return useScaffoldReadContract<SpherreTransaction[]>({
+    contractConfig: {
+      address: accountAddress,
+      abi: spherreAccountConfig.abi,
+    },
+    functionName: 'token_transaction_list',
+    enabled: !!accountAddress, //must submit account address
+  })
+}
+
+export function useGetTokenTransaction(accountAddress: string, id: U256) {
+  return useScaffoldReadContract<TokenTransactionData>({
+    contractConfig: {
+      address: accountAddress,
+      abi: spherreAccountConfig.abi,
+    },
+    functionName: 'get_token_transaction',
+    args: id ? { id: id } : undefined,
+    enabled: !!(accountAddress && id),
+  })
+}
+
+export function useGetNFTTransaction(accountAddress: string, id: U256) {
+  return useScaffoldReadContract<NFTTransactionData>({
+    contractConfig: {
+      address: accountAddress,
+      abi: spherreAccountConfig.abi,
+    },
+    functionName: 'get_nft_transaction',
+    args: id ? { id: id } : undefined,
+    enabled: !!(accountAddress && id),
   })
 }
 
