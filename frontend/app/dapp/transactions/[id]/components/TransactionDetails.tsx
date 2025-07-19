@@ -90,7 +90,7 @@ const ApprovalList = ({
   )
 }
 
-export const TransactionDetailsBody = ({
+export const TransactionDetails = ({
   transactionInfo,
 }: {
   transactionInfo: TransactionDisplayInfo

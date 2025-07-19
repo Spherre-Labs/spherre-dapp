@@ -173,64 +173,78 @@ export function useTransactionIntegration(
         // Find the corresponding transaction data based on type
         switch (baseTransaction.tx_type) {
           case TransactionType.TOKEN_SEND:
-            transactionData = transactionDataArrays.token?.find(
-              (t: TokenTransactionData) => {
-                const txId = getTransactionId(t)
-                return txId?.toString() === baseTransaction.id.toString()
-              }
-            )
-            break
+            {
+              transactionData = transactionDataArrays.token?.find(
+                (t: TokenTransactionData) => {
+                  const txId = getTransactionId(t)
+                  return txId?.toString() === baseTransaction.id.toString()
+                }
+              )
+              break
+            }
 
           case TransactionType.NFT_SEND:
-            transactionData = transactionDataArrays.nft?.find(
-              (t: NFTTransactionData) => {
-                const txId = getTransactionId(t)
-                return txId?.toString() === baseTransaction.id.toString()
-              }
-            )
-            break
+            {
+              transactionData = transactionDataArrays.nft?.find(
+                (t: NFTTransactionData) => {
+                  const txId = getTransactionId(t)
+                  return txId?.toString() === baseTransaction.id.toString()
+                }
+              )
+              break
+            }
 
           case TransactionType.MEMBER_ADD:
-            transactionData = transactionDataArrays.memberAdd?.find(
-              (t: MemberAddData) => {
-                const txId = getTransactionId(t)
-                return txId?.toString() === baseTransaction.id.toString()
-              }
-            )
-            break
+            {
+              transactionData = transactionDataArrays.memberAdd?.find(
+                (t: MemberAddData) => {
+                  const txId = getTransactionId(t)
+                  return txId?.toString() === baseTransaction.id.toString()
+                }
+              )
+              break
+            }
 
           case TransactionType.MEMBER_REMOVE:
-            transactionData = transactionDataArrays.memberRemoval?.find(
-              (t: MemberRemoveData) => {
-                const txId = getTransactionId(t)
-                return txId?.toString() === baseTransaction.id.toString()
-              }
-            )
-            break
+            {
+              transactionData = transactionDataArrays.memberRemoval?.find(
+                (t: MemberRemoveData) => {
+                  const txId = getTransactionId(t)
+                  return txId?.toString() === baseTransaction.id.toString()
+                }
+              )
+              break
+            }
 
           case TransactionType.MEMBER_PERMISSION_EDIT:
-            transactionData = transactionDataArrays.editPermission?.find(
-              (t: EditPermissionTransaction) => {
-                const txId = getTransactionId(t)
-                return txId?.toString() === baseTransaction.id.toString()
-              }
-            )
-            break
+            {
+              transactionData = transactionDataArrays.editPermission?.find(
+                (t: EditPermissionTransaction) => {
+                  const txId = getTransactionId(t)
+                  return txId?.toString() === baseTransaction.id.toString()
+                }
+              )
+              break
+            }
 
           case TransactionType.THRESHOLD_CHANGE:
-            transactionData = transactionDataArrays.threshold?.find(
-              (t: ThresholdChangeData) => {
-                const txId = getTransactionId(t)
-                return txId?.toString() === baseTransaction.id.toString()
-              }
-            )
-            break
+            {
+              transactionData = transactionDataArrays.threshold?.find(
+                (t: ThresholdChangeData) => {
+                  const txId = getTransactionId(t)
+                  return txId?.toString() === baseTransaction.id.toString()
+                }
+              )
+              break
+            }
 
           case TransactionType.SMART_TOKEN_LOCK:
-            transactionData = transactionDataArrays.smartLock?.find(
-              (t: SmartTokenLockTransaction) => t.transaction_id.toString() === baseTransaction.id.toString()
-            )
-            break
+            {
+              transactionData = transactionDataArrays.smartLock?.find(
+                (t: SmartTokenLockTransaction) => t.transaction_id.toString() === baseTransaction.id.toString()
+              )
+              break
+            }
 
           default:
             console.warn(`Unknown transaction type: ${baseTransaction.tx_type}`)
@@ -378,6 +392,7 @@ export function useTransactionDetails(transactionId: string | bigint) {
     data: baseTransaction,
     isLoading: isLoadingBase,
     error: errorBase,
+    refetch: refetchBase,
   } = useTransactionList(accountAddress!)
 
   // Find the specific transaction from the list
@@ -447,6 +462,10 @@ export function useTransactionDetails(transactionId: string | bigint) {
     transactionType === TransactionType.THRESHOLD_CHANGE ? transactionId : undefined!
   )
 
+  const refetch = () => {
+    refetchBase()
+  }
+
   // Process the transaction data
   const processedTransaction = useMemo(() => {
     if (!targetTransaction) return null
@@ -511,5 +530,6 @@ export function useTransactionDetails(transactionId: string | bigint) {
     transaction: processedTransaction,
     isLoading,
     error: errorBase,
+    refetch,
   }
 } 

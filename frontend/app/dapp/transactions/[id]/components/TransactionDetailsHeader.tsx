@@ -22,9 +22,9 @@ export const TransactionDetailsHeader = ({
   const { accountAddress } = useSpherreAccount()
 
   // Contract interaction hooks
-  const { writeAsync: approveAsync, isLoading: isApproving } = useApproveTransaction(accountAddress!)
-  const { writeAsync: rejectAsync, isLoading: isRejecting } = useRejectTransaction(accountAddress!)
-  const { writeAsync: executeAsync, isLoading: isExecuting } = useExecuteTransaction(accountAddress!)
+  const { writeAsync: approveAsync, isLoading: isApproving } = useApproveTransaction(accountAddress || '0x0')
+  const { writeAsync: rejectAsync, isLoading: isRejecting } = useRejectTransaction(accountAddress || '0x0')
+  const { writeAsync: executeAsync, isLoading: isExecuting } = useExecuteTransaction(accountAddress || '0x0')
 
   // Handle transaction actions
   const handleApprove = async () => {

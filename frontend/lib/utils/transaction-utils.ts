@@ -58,56 +58,64 @@ export function getTransactionDisplayInfo(transaction: UnifiedTransaction): Tran
 
   switch (transaction.transactionType) {
     case TransactionType.TOKEN_SEND:
-      const tokenData = transaction.data as TokenTransactionData
-      title = 'Token Transfer'
-      subtitle = `Send ${formatTokenAmount(tokenData.amount)} tokens`
-      amount = formatTokenAmount(tokenData.amount)
-      recipient = formatAddress(tokenData.recipient)
-      token = formatAddress(tokenData.token)
-      break
-
+      {
+        const tokenData = transaction.data as TokenTransactionData
+        title = 'Token Transfer'
+        subtitle = `Send ${formatTokenAmount(tokenData.amount)} tokens`
+        amount = formatTokenAmount(tokenData.amount)
+        recipient = formatAddress(tokenData.recipient)
+        token = formatAddress(tokenData.token)
+        break
+      }
     case TransactionType.NFT_SEND:
-      const nftData = transaction.data as NFTTransactionData
-      title = 'NFT Transfer'
-      subtitle = `Send NFT #${nftData.token_id}`
-      recipient = formatAddress(nftData.recipient)
-      break
-
+      {
+        const nftData = transaction.data as NFTTransactionData
+        title = 'NFT Transfer'
+        subtitle = `Send NFT #${nftData.token_id}`
+        recipient = formatAddress(nftData.recipient)
+        break
+      }
     case TransactionType.MEMBER_ADD:
-      const memberAddData = transaction.data as MemberAddData
-      title = 'Add Member'
-      subtitle = `Add ${formatAddress(memberAddData.member)} as member`
-      recipient = formatAddress(memberAddData.member)
-      break
-
+      {
+        const memberAddData = transaction.data as MemberAddData
+        title = 'Add Member'
+        subtitle = `Add ${formatAddress(memberAddData.member)} as member`
+        recipient = formatAddress(memberAddData.member)
+        break
+      }
     case TransactionType.MEMBER_REMOVE:
-      const memberRemoveData = transaction.data as MemberRemoveData
-      title = 'Remove Member'
-      subtitle = `Remove ${formatAddress(memberRemoveData.member_address)}`
-      recipient = formatAddress(memberRemoveData.member_address)
-      break
-
+      {
+        const memberRemoveData = transaction.data as MemberRemoveData
+        title = 'Remove Member'
+        subtitle = `Remove ${formatAddress(memberRemoveData.member_address)}`
+        recipient = formatAddress(memberRemoveData.member_address)
+        break
+      }
     case TransactionType.MEMBER_PERMISSION_EDIT:
-      const permissionData = transaction.data as EditPermissionTransaction
-      title = 'Edit Permissions'
-      subtitle = `Update permissions for ${formatAddress(permissionData.member)}`
-      recipient = formatAddress(permissionData.member)
-      break
-
+      {
+        const permissionData = transaction.data as EditPermissionTransaction
+        title = 'Edit Permissions'
+        subtitle = `Update permissions for ${formatAddress(permissionData.member)}`
+        recipient = formatAddress(permissionData.member)
+        break
+      }
     case TransactionType.THRESHOLD_CHANGE:
-      const thresholdData = transaction.data as ThresholdChangeData
-      title = 'Change Threshold'
-      subtitle = `Set threshold to ${thresholdData.new_threshold}`
-      amount = thresholdData.new_threshold.toString()
-      break
-
+      {
+        const thresholdData = transaction.data as ThresholdChangeData
+        title = 'Change Threshold'
+        subtitle = `Set threshold to ${thresholdData.new_threshold}`
+        amount = thresholdData.new_threshold.toString()
+        break
+      }
     case TransactionType.SMART_TOKEN_LOCK:
-      const smartLockData = transaction.data as SmartTokenLockTransaction
-      title = 'Smart Token Lock'
-      subtitle = `Lock ${formatTokenAmount(smartLockData.amount)} tokens for ${smartLockData.duration} seconds`
-      amount = formatTokenAmount(smartLockData.amount)
-      token = formatAddress(smartLockData.token)
-      break
+      {
+        const smartLockData = transaction.data as SmartTokenLockTransaction
+        title = 'Smart Token Lock'
+        subtitle = `Lock ${formatTokenAmount(smartLockData.amount)} tokens for ${smartLockData.duration} seconds`
+        amount = formatTokenAmount(smartLockData.amount)
+        token = formatAddress(smartLockData.token)
+        break
+      }
 
     default:
       title = 'Unknown Transaction'
@@ -132,9 +140,9 @@ export function formatAddress(address: string): string {
   return `${address.slice(0, 6)}...${address.slice(-4)}`
 }
 
-export function formatTokenAmount(amount: bigint): string {
+export function formatTokenAmount(amount: bigint, decimals: number = 18): string {
   // Convert from wei to readable format (assuming 18 decimals)
-  const divisor = BigInt(10) ** BigInt(18)
+  const divisor = BigInt(10) ** BigInt(decimals)
   const whole = amount / divisor
   const decimal = amount % divisor
 

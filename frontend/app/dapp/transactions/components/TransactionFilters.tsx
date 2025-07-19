@@ -90,8 +90,8 @@ export default function TransactionFilters({
               key={option.value}
               onClick={() => onFilterStatus(option.value as 'Pending' | 'Executed' | 'Rejected' | 'All')}
               className={`px-3 py-1 rounded-full text-sm transition-colors duration-200 ${currentFilters.status === option.value
-                  ? 'bg-primary text-white'
-                  : 'bg-theme-bg-tertiary text-theme hover:bg-theme-border'
+                ? 'bg-primary text-white'
+                : 'bg-theme-bg-tertiary text-theme hover:bg-theme-border'
                 }`}
             >
               {option.label}
@@ -193,21 +193,31 @@ export default function TransactionFilters({
 
             {/* Page Numbers */}
             <div className="flex gap-1">
-              {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
-                const pageNumber = i + 1
-                return (
-                  <button
-                    key={pageNumber}
-                    onClick={() => onPageChange(pageNumber)}
-                    className={`px-3 py-1 rounded-lg transition-colors duration-200 ${currentPage === pageNumber
-                      ? 'bg-primary text-white'
-                      : 'bg-theme-bg-tertiary border border-theme-border text-theme hover:bg-theme-border'
-                      }`}
-                  >
-                    {pageNumber}
-                  </button>
-                )
-              })}
+              {(() => {
+                const maxButtons = 5;
+                let startPage = Math.max(1, currentPage - Math.floor(maxButtons / 2));
+                const endPage = Math.min(totalPages, startPage + maxButtons - 1);
+
+                if (endPage - startPage + 1 < maxButtons) {
+                  startPage = Math.max(1, endPage - maxButtons + 1);
+                }
+
+                return Array.from({ length: endPage - startPage + 1 }, (_, i) => {
+                  const pageNumber = startPage + i;
+                  return (
+                    <button
+                      key={pageNumber}
+                      onClick={() => onPageChange(pageNumber)}
+                      className={`px-3 py-1 rounded-lg transition-colors duration-200 ${currentPage === pageNumber
+                        ? 'bg-primary text-white'
+                        : 'bg-theme-bg-tertiary border border-theme-border text-theme hover:bg-theme-border'
+                        }`}
+                    >
+                      {pageNumber}
+                    </button>
+                  )
+                });
+              })()}
             </div>
 
             <button

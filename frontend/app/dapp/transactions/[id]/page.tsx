@@ -2,7 +2,7 @@
 import React, { use } from 'react'
 import { TransactionDetailsHeader } from './components/TransactionDetailsHeader'
 import { TransactionSummary } from './components/TransactionSummary'
-import { TransactionDetailsBody } from './components/TransactionParticipants'
+import { TransactionDetails } from './components/TransactionDetails'
 import { useTheme } from '@/app/context/theme-context-provider'
 import { useTransactionDetails } from '@/hooks/useTransactionIntegration'
 
@@ -21,6 +21,7 @@ export default function TransactionDetailsPage({ params }: PageProps) {
     transaction: transactionInfo,
     isLoading,
     error,
+    refetch
   } = useTransactionDetails(resolvedParams.id)
 
   // Handle error logging as per requirements
@@ -50,7 +51,7 @@ export default function TransactionDetailsPage({ params }: PageProps) {
             Unable to fetch transaction details. Please try again later.
           </div>
           <button
-            onClick={() => window.location.reload()}
+            onClick={() => refetch()}
             className="bg-primary text-white px-4 py-2 rounded-lg hover:opacity-90 transition-opacity duration-200"
           >
             Try Again
@@ -76,7 +77,7 @@ export default function TransactionDetailsPage({ params }: PageProps) {
         transactionId={transactionInfo.transaction.id}
       />
       <TransactionSummary transactionInfo={transactionInfo} />
-      <TransactionDetailsBody transactionInfo={transactionInfo} />
+      <TransactionDetails transactionInfo={transactionInfo} />
     </div>
   )
 }
