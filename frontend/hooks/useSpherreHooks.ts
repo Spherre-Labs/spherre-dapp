@@ -1,5 +1,6 @@
 'use client'
 
+import { CairoOption, CairoOptionVariant } from 'starknet'
 import { useScaffoldReadContract } from './useScaffoldReadContract'
 import { useScaffoldWriteContract } from './useScaffoldWriteContract'
 import {
@@ -10,6 +11,13 @@ import type {
   AccountDetails,
   SpherreTransaction,
   U256,
+  TokenTransactionData,
+  NFTTransactionData,
+  MemberAddData,
+  MemberRemoveData,
+  EditPermissionTransaction,
+  ThresholdChangeData,
+  SmartTokenLockTransaction,
 } from '@/lib/contracts/types'
 
 // Factory Contract Hooks
@@ -133,6 +141,216 @@ export function useGetTransaction(
   })
 }
 
+// Transaction List Hooks
+export function useTransactionList(
+  accountAddress: `0x${string}`,
+  start?: bigint,
+  limit?: bigint,
+) {
+  // Use proper CairoOption class for Option types
+  const args = {
+    start: start !== undefined
+      ? new CairoOption<bigint>(CairoOptionVariant.Some, start)
+      : new CairoOption<bigint>(CairoOptionVariant.None),
+    limit: limit !== undefined
+      ? new CairoOption<bigint>(CairoOptionVariant.Some, limit)
+      : new CairoOption<bigint>(CairoOptionVariant.None)
+  }
+
+  return useScaffoldReadContract<SpherreTransaction[]>({
+    contractConfig: {
+      address: accountAddress,
+      abi: spherreAccountConfig.abi,
+    },
+    functionName: 'transaction_list',
+    args,
+    enabled: !!accountAddress,
+  })
+}
+
+export function useTokenTransactionList(accountAddress: `0x${string}`) {
+  return useScaffoldReadContract<TokenTransactionData[]>({
+    contractConfig: {
+      address: accountAddress,
+      abi: spherreAccountConfig.abi,
+    },
+    functionName: 'token_transaction_list',
+    enabled: !!accountAddress,
+  })
+}
+
+export function useNftTransactionList(accountAddress: `0x${string}`) {
+  return useScaffoldReadContract<NFTTransactionData[]>({
+    contractConfig: {
+      address: accountAddress,
+      abi: spherreAccountConfig.abi,
+    },
+    functionName: 'nft_transaction_list',
+    enabled: !!accountAddress,
+  })
+}
+
+export function useMemberAddTransactionList(accountAddress: `0x${string}`) {
+  return useScaffoldReadContract<MemberAddData[]>({
+    contractConfig: {
+      address: accountAddress,
+      abi: spherreAccountConfig.abi,
+    },
+    functionName: 'member_add_transaction_list',
+    enabled: !!accountAddress,
+  })
+}
+
+export function useMemberRemovalTransactionList(accountAddress: `0x${string}`) {
+  return useScaffoldReadContract<MemberRemoveData[]>({
+    contractConfig: {
+      address: accountAddress,
+      abi: spherreAccountConfig.abi,
+    },
+    functionName: 'member_removal_transaction_list',
+    enabled: !!accountAddress,
+  })
+}
+
+export function useEditPermissionTransactionList(accountAddress: `0x${string}`) {
+  return useScaffoldReadContract<EditPermissionTransaction[]>({
+    contractConfig: {
+      address: accountAddress,
+      abi: spherreAccountConfig.abi,
+    },
+    functionName: 'get_edit_permission_transaction_list',
+    enabled: !!accountAddress,
+  })
+}
+
+export function useSmartTokenLockTransactionList(accountAddress: `0x${string}`) {
+  return useScaffoldReadContract<SmartTokenLockTransaction[]>({
+    contractConfig: {
+      address: accountAddress,
+      abi: spherreAccountConfig.abi,
+    },
+    functionName: 'smart_token_lock_transaction_list',
+    enabled: !!accountAddress,
+  })
+}
+
+export function useAllThresholdChangeTransactions(accountAddress: `0x${string}`) {
+  return useScaffoldReadContract<ThresholdChangeData[]>({
+    contractConfig: {
+      address: accountAddress,
+      abi: spherreAccountConfig.abi,
+    },
+    functionName: 'get_all_threshold_change_transactions',
+    enabled: !!accountAddress,
+  })
+}
+
+// Individual Transaction Getter Hooks
+export function useGetTokenTransaction(
+  accountAddress: `0x${string}`,
+  transactionId: U256,
+) {
+  return useScaffoldReadContract<TokenTransactionData>({
+    contractConfig: {
+      address: accountAddress,
+      abi: spherreAccountConfig.abi,
+    },
+    functionName: 'get_token_transaction',
+    args: transactionId ? { id: transactionId } : undefined,
+    enabled: !!(accountAddress && transactionId),
+  })
+}
+
+export function useGetNftTransaction(
+  accountAddress: `0x${string}`,
+  transactionId: U256,
+) {
+  return useScaffoldReadContract<NFTTransactionData>({
+    contractConfig: {
+      address: accountAddress,
+      abi: spherreAccountConfig.abi,
+    },
+    functionName: 'get_nft_transaction',
+    args: transactionId ? { id: transactionId } : undefined,
+    enabled: !!(accountAddress && transactionId),
+  })
+}
+
+export function useGetMemberAddTransaction(
+  accountAddress: `0x${string}`,
+  transactionId: U256,
+) {
+  return useScaffoldReadContract<MemberAddData>({
+    contractConfig: {
+      address: accountAddress,
+      abi: spherreAccountConfig.abi,
+    },
+    functionName: 'get_member_add_transaction',
+    args: transactionId ? { transaction_id: transactionId } : undefined,
+    enabled: !!(accountAddress && transactionId),
+  })
+}
+
+export function useGetMemberRemovalTransaction(
+  accountAddress: `0x${string}`,
+  transactionId: U256,
+) {
+  return useScaffoldReadContract<MemberRemoveData>({
+    contractConfig: {
+      address: accountAddress,
+      abi: spherreAccountConfig.abi,
+    },
+    functionName: 'get_member_removal_transaction',
+    args: transactionId ? { transaction_id: transactionId } : undefined,
+    enabled: !!(accountAddress && transactionId),
+  })
+}
+
+export function useGetEditPermissionTransaction(
+  accountAddress: `0x${string}`,
+  transactionId: U256,
+) {
+  return useScaffoldReadContract<EditPermissionTransaction>({
+    contractConfig: {
+      address: accountAddress,
+      abi: spherreAccountConfig.abi,
+    },
+    functionName: 'get_edit_permission_transaction',
+    args: transactionId ? { transaction_id: transactionId } : undefined,
+    enabled: !!(accountAddress && transactionId),
+  })
+}
+
+export function useGetSmartTokenLockTransaction(
+  accountAddress: `0x${string}`,
+  transactionId: U256,
+) {
+  return useScaffoldReadContract<SmartTokenLockTransaction>({
+    contractConfig: {
+      address: accountAddress,
+      abi: spherreAccountConfig.abi,
+    },
+    functionName: 'get_smart_token_lock_transaction',
+    args: transactionId ? { transaction_id: transactionId } : undefined,
+    enabled: !!(accountAddress && transactionId),
+  })
+}
+
+export function useGetThresholdChangeTransaction(
+  accountAddress: `0x${string}`,
+  transactionId: U256,
+) {
+  return useScaffoldReadContract<ThresholdChangeData>({
+    contractConfig: {
+      address: accountAddress,
+      abi: spherreAccountConfig.abi,
+    },
+    functionName: 'get_threshold_change_transaction',
+    args: transactionId ? { id: transactionId } : undefined,
+    enabled: !!(accountAddress && transactionId),
+  })
+}
+
 // Account Contract Write Hooks
 export function useApproveTransaction(accountAddress: `0x${string}`) {
   return useScaffoldWriteContract({
@@ -231,6 +449,17 @@ export function useExecuteThresholdChange(accountAddress: `0x${string}`) {
       abi: spherreAccountConfig.abi,
     },
     functionName: 'execute_threshold_change_transaction',
+  })
+}
+
+// Add execute_transaction hook
+export function useExecuteTransaction(accountAddress: `0x${string}`) {
+  return useScaffoldWriteContract({
+    contractConfig: {
+      address: accountAddress,
+      abi: spherreAccountConfig.abi,
+    },
+    functionName: 'execute_transaction',
   })
 }
 

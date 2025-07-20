@@ -1,64 +1,72 @@
 'use client'
 import React from 'react'
-import Image from 'next/image'
-import { Transaction } from '@/app/dapp/transactions/data'
 import { useTheme } from '@/app/context/theme-context-provider'
-
-const getSummaryTitle = (transaction: Transaction) => {
-  switch (transaction.type) {
-    case 'withdraw':
-      return `Withdraw ${transaction.amount} to ${transaction.to.name} (${transaction.to.address})`
-    case 'swap':
-      return `Swap ${transaction.tokenIn?.amount} ${transaction.tokenIn?.name} for ${transaction.tokenOut?.amount} ${transaction.tokenOut?.name}`
-    case 'limitSwap':
-      return `Limit Swap ${transaction.tokenIn?.amount} ${transaction.tokenIn?.name} for ${transaction.tokenOut?.amount} ${transaction.tokenOut?.name}`
-    default:
-      return 'Transaction'
-  }
-}
+import { type TransactionDisplayInfo } from '@/lib/contracts/types'
 
 export const TransactionSummary = ({
-  transaction,
+  transactionInfo,
 }: {
-  transaction: Transaction
+  transactionInfo: TransactionDisplayInfo
 }) => {
   useTheme()
 
   return (
-    <section className="p-4 rounded-lg flex justify-between items-center mb-6 border border-dashed border-theme-border bg-theme-bg-secondary transition-colors duration-300">
-      <div className="flex items-center gap-4">
-        <div className="bg-theme-bg-tertiary border border-theme-border p-2 rounded-lg transition-colors duration-300">
-          <Image
-            src="/Images/Transactions.png"
-            alt="Transaction"
-            width={24}
-            height={24}
-          />
+    <section className="mb-6">
+      <h2 className="text-lg font-medium text-theme mb-4 transition-colors duration-300">
+        Transaction Summary
+      </h2>
+      <div className="bg-theme-bg-tertiary border border-theme-border p-4 rounded-lg transition-colors duration-300">
+        <div className="flex items-center mb-3">
+          <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center mr-3">
+            <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <div>
+            <h3 className="text-theme font-medium transition-colors duration-300">
+              {transactionInfo.title}
+            </h3>
+            <p className="text-theme-secondary text-sm transition-colors duration-300">
+              {transactionInfo.subtitle}
+            </p>
+          </div>
         </div>
-        <div>
-          <p className="text-theme transition-colors duration-300">
-            {getSummaryTitle(transaction)}
-          </p>
-          <span
-            className={`px-2 py-1 rounded-full text-xs transition-colors duration-300 ${
-              transaction.status === 'Executed'
-                ? 'text-green-400 bg-green-400/10'
-                : transaction.status === 'Pending'
-                  ? 'text-yellow-400 bg-yellow-400/10'
-                  : 'text-red-400 bg-red-400/10'
-            }`}
-          >
-            {transaction.status}
-          </span>
+
+        {/* Additional details based on transaction type */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+          {transactionInfo.amount && (
+            <div className="flex justify-between">
+              <span className="text-theme-secondary">Amount:</span>
+              <span className="text-theme font-medium">{transactionInfo.amount}</span>
+            </div>
+          )}
+
+          {transactionInfo.recipient && (
+            <div className="flex justify-between">
+              <span className="text-theme-secondary">Recipient:</span>
+              <span className="text-theme font-medium">{transactionInfo.recipient}</span>
+            </div>
+          )}
+
+          {transactionInfo.token && (
+            <div className="flex justify-between">
+              <span className="text-theme-secondary">Token:</span>
+              <span className="text-theme font-medium">{transactionInfo.token}</span>
+            </div>
+          )}
+
+          <div className="flex justify-between">
+            <span className="text-theme-secondary">Status:</span>
+            <span className={`font-medium ${transactionInfo.transaction.status === 'Pending'
+              ? 'text-yellow-400'
+              : transactionInfo.transaction.status === 'Executed'
+                ? 'text-green-400'
+                : 'text-red-500'
+              }`}>
+              {transactionInfo.transaction.status}
+            </span>
+          </div>
         </div>
-      </div>
-      <div className="text-right border border-theme-border bg-theme-bg-tertiary p-2 rounded-md transition-colors duration-300">
-        <p className="font-bold text-lg text-theme transition-colors duration-300">
-          You Send {transaction.amount}
-        </p>
-        <p className="text-theme-secondary text-sm transition-colors duration-300">
-          130 USD
-        </p>
       </div>
     </section>
   )
