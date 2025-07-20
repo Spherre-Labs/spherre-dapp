@@ -6,6 +6,7 @@ import RemoveMemberModal from './components/remove-modal'
 import AddMemberModal from './components/add-modal'
 import EditMemberRolesModal from './components/edit-roles-modal'
 import { useTheme } from '@/app/context/theme-context-provider'
+import { useGlobalModal } from '../../components/modals/useGlobalModal';
 
 const nunito = Nunito_Sans({
   subsets: ['latin'],
@@ -78,6 +79,7 @@ interface Member {
 
 const Members = () => {
   useTheme()
+  const { showProcessing, showSuccess, hideModal } = useGlobalModal();
   const [activeTab, setActiveTab] = useState('members')
   const [dropdownOpen, setDropdownOpen] = useState<number | null>(null)
   const [copiedMessage, setCopiedMessage] = useState<string | null>(null)
@@ -150,10 +152,20 @@ const Members = () => {
 
   // Handle confirm removal
   const handleConfirmRemoval = (memberId: number) => {
-    setMembers(members.filter((member) => member.id !== memberId))
-    console.log(`Member ${memberId} removed and transaction proposed`)
-    // Here you would typically call your blockchain transaction function
-  }
+    showProcessing({
+      title: 'Processing Transaction!',
+      subtitle: 'Please exercise a little patience as we process your details',
+    });
+    setTimeout(() => {
+      hideModal();
+      setMembers((prev) => prev.filter((member) => member.id !== memberId));
+      showSuccess({
+        title: 'Successful Transaction!',
+        message: 'Member has been successfully removed and the transaction has been confirmed.',
+        onClose: hideModal,
+      });
+    }, 2000);
+  };
 
   // Snake border animation
   useEffect(() => {

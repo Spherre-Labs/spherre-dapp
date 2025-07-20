@@ -1,5 +1,10 @@
 {
   "dependencies": {
     "next-themes": "^0.4.6"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.15",
+    "@types/react": "^19.1.8",
+    "typescript": "^5.8.3"
   }
 }
