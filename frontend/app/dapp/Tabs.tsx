@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Image from 'next/image'
 import nft1 from '../../public/Images/nft1.png'
 import nft2 from '../../public/Images/nft2.png'
@@ -12,35 +12,41 @@ import nft7 from '../../public/Images/nft7.png'
 import nft8 from '../../public/Images/nft8.png'
 import strk from '../../public/Images/strk.png'
 import { useTheme } from '@/app/context/theme-context-provider'
+import Loader from '../components/modals/Loader'
+import { getTokenImage } from '@/lib/utils/token_image'
 
-export default function Tabs() {
+export default function Tabs({
+  loadingTokenData,
+  tokens,
+}: {
+  loadingTokenData: boolean
+  tokens: {
+    coin: string
+    price: string
+    balance: string
+    value: string
+    size: string
+    contract_address: `0x${string}`
+    id: string
+  }[]
+}) {
   useTheme()
   const [activeTab, setActiveTab] = useState('Tokens')
+  const [tokenImages, setTokenImages] = useState<Record<string, string>>({})
 
-  // Token data matching the first image
-  const tokens = [
-    {
-      coin: 'STRK',
-      price: '$0.46',
-      balance: '5',
-      value: '$460.43',
-      size: '100%',
-    },
-    {
-      coin: 'STRK',
-      price: '$0.46',
-      balance: '2',
-      value: '$700.20',
-      size: '25%',
-    },
-    {
-      coin: 'STRK',
-      price: '$0.46',
-      balance: '3',
-      value: '$527.00',
-      size: '50%',
-    },
-  ]
+  useEffect(() => {
+    const fetchImages = async () => {
+      const images: Record<string, string> = {}
+
+      for (const token of tokens) {
+        const imageUrl = await getTokenImage(token.id)
+        if (imageUrl) images[token.coin] = imageUrl
+      }
+      setTokenImages(images)
+    }
+
+    fetchImages()
+  }, [tokens])
 
   // NFT data with correctly imported image objects
   const nfts = [
@@ -109,57 +115,60 @@ export default function Tabs() {
         </button>
       </div>
 
-      {activeTab === 'Tokens' && (
-        <div className="my-2 px-2 sm:px-4 md:px-8 py-2 sm:py-4 rounded-lg overflow-x-auto">
-          <div className="min-w-[600px]">
-            <div className="flex text-xs sm:text-sm text-theme-secondary font-semibold mb-1 gap-6 transition-colors duration-300">
-              <div className="w-1/5">Coin</div>
-              <div className="w-1/5">Price</div>
-              <div className="w-1/5">Balance</div>
-              <div className="w-1/5">Value</div>
-              <div className="w-1/5">Size</div>
-            </div>
-            {tokens.map((token, index) => (
-              <div
-                key={index}
-                className="flex items-center gap-6 rounded-lg px-3 py-3 hover:bg-theme-bg-tertiary transition-colors duration-200"
-              >
-                <div className="flex items-center gap-1 w-1/5">
-                  <Image
-                    src={strk}
-                    width={18}
-                    height={18}
-                    alt="starknet token icon"
-                  />
-                  <span className="text-theme transition-colors duration-300">
-                    {token.coin}
-                  </span>
-                </div>
-                <div className="w-1/5 text-theme transition-colors duration-300">
-                  {token.price}
-                </div>
-                <div className="w-1/5 text-theme transition-colors duration-300">
-                  {token.balance}
-                </div>
-                <div className="w-1/5 text-theme transition-colors duration-300">
-                  {token.value}
-                </div>
-                <div className="w-1/5 flex flex-col items-start gap-[3px]">
-                  <div className="text-[10px] sm:text-sm mt-1 text-left text-theme-secondary transition-colors duration-300">
-                    {token.size}
-                  </div>
-                  <div className="relative w-full h-1 rounded-full">
-                    <div
-                      className="absolute top-0 left-0 h-1 bg-gray-900 dark:bg-white rounded-full transition-colors duration-300"
-                      style={{ width: token.size }}
-                    ></div>
-                  </div>
-                </div>
+      {activeTab === 'Tokens' &&
+        (loadingTokenData ? (
+          <Loader />
+        ) : (
+          <div className="my-2 px-2 sm:px-4 md:px-8 py-2 sm:py-4 rounded-lg overflow-x-auto">
+            <div className="min-w-[600px]">
+              <div className="flex text-xs sm:text-sm text-theme-secondary font-semibold mb-1 gap-6 transition-colors duration-300">
+                <div className="w-1/5">Coin</div>
+                <div className="w-1/5">Price</div>
+                <div className="w-1/5">Balance</div>
+                <div className="w-1/5">Value</div>
+                <div className="w-1/5">Size</div>
               </div>
-            ))}
+              {tokens.map((token, index) => (
+                <div
+                  key={index}
+                  className="flex items-center gap-6 rounded-lg px-3 py-3 hover:bg-theme-bg-tertiary transition-colors duration-200"
+                >
+                  <div className="flex items-center gap-1 w-1/5">
+                    <Image
+                      src={tokenImages[token.coin] || strk}
+                      width={18}
+                      height={18}
+                      alt="starknet token icon"
+                    />
+                    <span className="text-theme transition-colors duration-300">
+                      {token.coin}
+                    </span>
+                  </div>
+                  <div className="w-1/5 text-theme transition-colors duration-300">
+                    {token.price}
+                  </div>
+                  <div className="w-1/5 text-theme transition-colors duration-300">
+                    {token.balance}
+                  </div>
+                  <div className="w-1/5 text-theme transition-colors duration-300">
+                    {token.value}
+                  </div>
+                  <div className="w-1/5 flex flex-col items-start gap-[3px]">
+                    <div className="text-[10px] sm:text-sm mt-1 text-left text-theme-secondary transition-colors duration-300">
+                      {token.size}
+                    </div>
+                    <div className="relative w-full h-1 rounded-full">
+                      <div
+                        className="absolute top-0 left-0 h-1 bg-gray-900 dark:bg-white rounded-full transition-colors duration-300"
+                        style={{ width: token.size }}
+                      ></div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
-      )}
+        ))}
 
       {activeTab === 'NFT' && (
         <div className="p-4">

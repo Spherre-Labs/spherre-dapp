@@ -1,14 +1,14 @@
 'use client'
 import React, { Suspense } from 'react'
 import { Nunito_Sans } from 'next/font/google'
-import ManualDeposit from './components/ManualDeposit'
+import DappDeposit from './components/DappDeposit'
 
 const nunito = Nunito_Sans({
   subsets: ['latin'],
   weight: ['200', '300', '400', '500', '600', '700', '800', '900'],
 })
 
-const DepositViaAddressContent = () => {
+const DepositViaWallet = () => {
   return (
     <div
       className={`${nunito.className} p-10 flex items-center flex-col justify-center h-full transition-colors duration-300`}
@@ -18,13 +18,13 @@ const DepositViaAddressContent = () => {
           Deposit to Spherre Wallet
         </p>
         <p className="text-[16px] font-normal text-[#8E9BAE] max-w-[379px] pt-2 text-center">
-          Send funds to your Spherre wallet address
+          Connect your wallet to deposit funds directly
         </p>
       </div>
 
-      {/* Manual Deposit Content */}
+      {/* Dapp Deposit Content */}
       <div className="w-[621px]">
-        <ManualDeposit />
+        <DappDeposit />
       </div>
     </div>
   )
@@ -39,7 +39,7 @@ const Page = () => {
         </div>
       }
     >
-      <DepositViaAddressContent />
+      <DepositViaWallet />
     </Suspense>
   )
 }
