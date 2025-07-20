@@ -53,6 +53,7 @@ export enum TransactionType {
   THRESHOLD_CHANGE = 4,
   TOKEN_SEND = 5,
   NFT_SEND = 6,
+  SMART_TOKEN_LOCK = 7,
 }
 
 export interface SpherreTransaction {
@@ -108,6 +109,14 @@ export interface ThresholdChangeData {
   new_threshold: bigint
 }
 
+// Smart Token Lock transaction data
+export interface SmartTokenLockTransaction {
+  token: string
+  amount: bigint
+  duration: bigint
+  transaction_id: bigint
+}
+
 // Account deployment data
 export interface AccountDeploymentData {
   owner: string
@@ -133,3 +142,41 @@ export interface TokenBalance {
 
 // Utility type for u256 values
 export type U256 = bigint | string | number
+
+// Unified transaction types for UI integration
+export interface BaseTransactionDisplay {
+  id: string | bigint
+  status: 'Pending' | 'Executed' | 'Rejected'
+  proposer: string
+  executor?: string
+  approved: string[]
+  rejected: string[]
+  dateCreated: bigint
+  dateExecuted?: bigint
+  transactionType: TransactionType
+}
+
+// Transaction data union type
+export type TransactionData =
+  | TokenTransactionData
+  | NFTTransactionData
+  | MemberAddData
+  | MemberRemoveData
+  | EditPermissionTransaction
+  | ThresholdChangeData
+  | SmartTokenLockTransaction
+
+// Complete transaction with base info and specific data
+export interface UnifiedTransaction extends BaseTransactionDisplay {
+  data: TransactionData
+}
+
+// For UI components - transaction with display helpers
+export interface TransactionDisplayInfo {
+  transaction: UnifiedTransaction
+  title: string
+  subtitle?: string
+  amount?: string
+  recipient?: string
+  token?: string
+}
