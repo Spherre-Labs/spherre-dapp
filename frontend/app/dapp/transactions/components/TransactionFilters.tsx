@@ -44,8 +44,14 @@ export default function TransactionFilters({
     { value: TransactionType.NFT_SEND.toString(), label: 'NFT Transfer' },
     { value: TransactionType.MEMBER_ADD.toString(), label: 'Add Member' },
     { value: TransactionType.MEMBER_REMOVE.toString(), label: 'Remove Member' },
-    { value: TransactionType.MEMBER_PERMISSION_EDIT.toString(), label: 'Edit Permissions' },
-    { value: TransactionType.THRESHOLD_CHANGE.toString(), label: 'Change Threshold' },
+    {
+      value: TransactionType.MEMBER_PERMISSION_EDIT.toString(),
+      label: 'Edit Permissions',
+    },
+    {
+      value: TransactionType.THRESHOLD_CHANGE.toString(),
+      label: 'Change Threshold',
+    },
     { value: TransactionType.SMART_TOKEN_LOCK.toString(), label: 'Smart Lock' },
   ]
 
@@ -64,8 +70,18 @@ export default function TransactionFilters({
             onClick={() => setIsFiltersOpen(!isFiltersOpen)}
             className="flex items-center gap-2 bg-theme-bg-tertiary border border-theme-border text-theme px-4 py-2 rounded-lg hover:bg-theme-border transition-colors duration-200"
           >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.414A1 1 0 013 6.707V4z" />
+            <svg
+              className="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.414A1 1 0 013 6.707V4z"
+              />
             </svg>
             Filters
             <svg
@@ -74,7 +90,12 @@ export default function TransactionFilters({
               stroke="currentColor"
               viewBox="0 0 24 24"
             >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M19 9l-7 7-7-7"
+              />
             </svg>
           </button>
 
@@ -88,11 +109,16 @@ export default function TransactionFilters({
           {statusOptions.map((option) => (
             <button
               key={option.value}
-              onClick={() => onFilterStatus(option.value as 'Pending' | 'Executed' | 'Rejected' | 'All')}
-              className={`px-3 py-1 rounded-full text-sm transition-colors duration-200 ${currentFilters.status === option.value
-                ? 'bg-primary text-white'
-                : 'bg-theme-bg-tertiary text-theme hover:bg-theme-border'
-                }`}
+              onClick={() =>
+                onFilterStatus(
+                  option.value as 'Pending' | 'Executed' | 'Rejected' | 'All',
+                )
+              }
+              className={`px-3 py-1 rounded-full text-sm transition-colors duration-200 ${
+                currentFilters.status === option.value
+                  ? 'bg-primary text-white'
+                  : 'bg-theme-bg-tertiary text-theme hover:bg-theme-border'
+              }`}
             >
               {option.label}
             </button>
@@ -111,7 +137,15 @@ export default function TransactionFilters({
               </label>
               <select
                 value={currentFilters.status}
-                onChange={(e) => onFilterStatus(e.target.value as 'Pending' | 'Executed' | 'Rejected' | 'All')}
+                onChange={(e) =>
+                  onFilterStatus(
+                    e.target.value as
+                      | 'Pending'
+                      | 'Executed'
+                      | 'Rejected'
+                      | 'All',
+                  )
+                }
                 className="w-full bg-theme-bg-secondary border border-theme-border text-theme p-2 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
               >
                 {statusOptions.map((option) => (
@@ -129,7 +163,13 @@ export default function TransactionFilters({
               </label>
               <select
                 value={currentFilters.type}
-                onChange={(e) => onFilterType(e.target.value === 'All' ? 'All' : Number(e.target.value) as TransactionType)}
+                onChange={(e) =>
+                  onFilterType(
+                    e.target.value === 'All'
+                      ? 'All'
+                      : (Number(e.target.value) as TransactionType),
+                  )
+                }
                 className="w-full bg-theme-bg-secondary border border-theme-border text-theme p-2 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
               >
                 {typeOptions.map((option) => (
@@ -147,7 +187,9 @@ export default function TransactionFilters({
               </label>
               <select
                 value={currentFilters.sort}
-                onChange={(e) => onSort(e.target.value as 'newest' | 'oldest' | 'amount')}
+                onChange={(e) =>
+                  onSort(e.target.value as 'newest' | 'oldest' | 'amount')
+                }
                 className="w-full bg-theme-bg-secondary border border-theme-border text-theme p-2 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
               >
                 {sortOptions.map((option) => (
@@ -194,29 +236,36 @@ export default function TransactionFilters({
             {/* Page Numbers */}
             <div className="flex gap-1">
               {(() => {
-                const maxButtons = 5;
-                let startPage = Math.max(1, currentPage - Math.floor(maxButtons / 2));
-                const endPage = Math.min(totalPages, startPage + maxButtons - 1);
+                const maxButtons = 5
+                let startPage = Math.max(
+                  1,
+                  currentPage - Math.floor(maxButtons / 2),
+                )
+                const endPage = Math.min(totalPages, startPage + maxButtons - 1)
 
                 if (endPage - startPage + 1 < maxButtons) {
-                  startPage = Math.max(1, endPage - maxButtons + 1);
+                  startPage = Math.max(1, endPage - maxButtons + 1)
                 }
 
-                return Array.from({ length: endPage - startPage + 1 }, (_, i) => {
-                  const pageNumber = startPage + i;
-                  return (
-                    <button
-                      key={pageNumber}
-                      onClick={() => onPageChange(pageNumber)}
-                      className={`px-3 py-1 rounded-lg transition-colors duration-200 ${currentPage === pageNumber
-                        ? 'bg-primary text-white'
-                        : 'bg-theme-bg-tertiary border border-theme-border text-theme hover:bg-theme-border'
+                return Array.from(
+                  { length: endPage - startPage + 1 },
+                  (_, i) => {
+                    const pageNumber = startPage + i
+                    return (
+                      <button
+                        key={pageNumber}
+                        onClick={() => onPageChange(pageNumber)}
+                        className={`px-3 py-1 rounded-lg transition-colors duration-200 ${
+                          currentPage === pageNumber
+                            ? 'bg-primary text-white'
+                            : 'bg-theme-bg-tertiary border border-theme-border text-theme hover:bg-theme-border'
                         }`}
-                    >
-                      {pageNumber}
-                    </button>
-                  )
-                });
+                      >
+                        {pageNumber}
+                      </button>
+                    )
+                  },
+                )
               })()}
             </div>
 
@@ -232,4 +281,4 @@ export default function TransactionFilters({
       )}
     </div>
   )
-} 
+}

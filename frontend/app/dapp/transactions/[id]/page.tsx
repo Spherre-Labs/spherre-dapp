@@ -21,7 +21,7 @@ export default function TransactionDetailsPage({ params }: PageProps) {
     transaction: transactionInfo,
     isLoading,
     error,
-    refetch
+    refetch,
   } = useTransactionDetails(resolvedParams.id)
 
   // Handle error logging as per requirements

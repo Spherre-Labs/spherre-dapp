@@ -149,12 +149,14 @@ export function useTransactionList(
 ) {
   // Use proper CairoOption class for Option types
   const args = {
-    start: start !== undefined
-      ? new CairoOption<bigint>(CairoOptionVariant.Some, start)
-      : new CairoOption<bigint>(CairoOptionVariant.None),
-    limit: limit !== undefined
-      ? new CairoOption<bigint>(CairoOptionVariant.Some, limit)
-      : new CairoOption<bigint>(CairoOptionVariant.None)
+    start:
+      start !== undefined
+        ? new CairoOption<bigint>(CairoOptionVariant.Some, start)
+        : new CairoOption<bigint>(CairoOptionVariant.None),
+    limit:
+      limit !== undefined
+        ? new CairoOption<bigint>(CairoOptionVariant.Some, limit)
+        : new CairoOption<bigint>(CairoOptionVariant.None),
   }
 
   return useScaffoldReadContract<SpherreTransaction[]>({
@@ -212,7 +214,9 @@ export function useMemberRemovalTransactionList(accountAddress: `0x${string}`) {
   })
 }
 
-export function useEditPermissionTransactionList(accountAddress: `0x${string}`) {
+export function useEditPermissionTransactionList(
+  accountAddress: `0x${string}`,
+) {
   return useScaffoldReadContract<EditPermissionTransaction[]>({
     contractConfig: {
       address: accountAddress,
@@ -223,7 +227,9 @@ export function useEditPermissionTransactionList(accountAddress: `0x${string}`) 
   })
 }
 
-export function useSmartTokenLockTransactionList(accountAddress: `0x${string}`) {
+export function useSmartTokenLockTransactionList(
+  accountAddress: `0x${string}`,
+) {
   return useScaffoldReadContract<SmartTokenLockTransaction[]>({
     contractConfig: {
       address: accountAddress,
@@ -234,7 +240,9 @@ export function useSmartTokenLockTransactionList(accountAddress: `0x${string}`) 
   })
 }
 
-export function useAllThresholdChangeTransactions(accountAddress: `0x${string}`) {
+export function useAllThresholdChangeTransactions(
+  accountAddress: `0x${string}`,
+) {
   return useScaffoldReadContract<ThresholdChangeData[]>({
     contractConfig: {
       address: accountAddress,

@@ -18,7 +18,11 @@ export const TransactionSummary = ({
       <div className="bg-theme-bg-tertiary border border-theme-border p-4 rounded-lg transition-colors duration-300">
         <div className="flex items-center mb-3">
           <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center mr-3">
-            <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+            <svg
+              className="w-4 h-4 text-white"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+            >
               <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
           </div>
@@ -37,32 +41,41 @@ export const TransactionSummary = ({
           {transactionInfo.amount && (
             <div className="flex justify-between">
               <span className="text-theme-secondary">Amount:</span>
-              <span className="text-theme font-medium">{transactionInfo.amount}</span>
+              <span className="text-theme font-medium">
+                {transactionInfo.amount}
+              </span>
             </div>
           )}
 
           {transactionInfo.recipient && (
             <div className="flex justify-between">
               <span className="text-theme-secondary">Recipient:</span>
-              <span className="text-theme font-medium">{transactionInfo.recipient}</span>
+              <span className="text-theme font-medium">
+                {transactionInfo.recipient}
+              </span>
             </div>
           )}
 
           {transactionInfo.token && (
             <div className="flex justify-between">
               <span className="text-theme-secondary">Token:</span>
-              <span className="text-theme font-medium">{transactionInfo.token}</span>
+              <span className="text-theme font-medium">
+                {transactionInfo.token}
+              </span>
             </div>
           )}
 
           <div className="flex justify-between">
             <span className="text-theme-secondary">Status:</span>
-            <span className={`font-medium ${transactionInfo.transaction.status === 'Pending'
-              ? 'text-yellow-400'
-              : transactionInfo.transaction.status === 'Executed'
-                ? 'text-green-400'
-                : 'text-red-500'
-              }`}>
+            <span
+              className={`font-medium ${
+                transactionInfo.transaction.status === 'Pending'
+                  ? 'text-yellow-400'
+                  : transactionInfo.transaction.status === 'Executed'
+                    ? 'text-green-400'
+                    : 'text-red-500'
+              }`}
+            >
               {transactionInfo.transaction.status}
             </span>
           </div>

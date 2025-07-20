@@ -5,7 +5,10 @@ import Transaction from './components/transaction'
 import TransactionFilters from './components/TransactionFilters'
 import { useTheme } from '@/app/context/theme-context-provider'
 import { useTransactionIntegration } from '@/hooks/useTransactionIntegration'
-import { TransactionType, type TransactionDisplayInfo } from '@/lib/contracts/types'
+import {
+  TransactionType,
+  type TransactionDisplayInfo,
+} from '@/lib/contracts/types'
 
 const TRANSACTIONS_PER_PAGE = 10
 
@@ -36,21 +39,29 @@ export default function TransactionPage() {
 
     // Apply status filter
     if (filters.status !== 'All') {
-      filtered = filtered.filter(tx => tx.transaction.status === filters.status)
+      filtered = filtered.filter(
+        (tx) => tx.transaction.status === filters.status,
+      )
     }
 
     // Apply type filter
     if (filters.type !== 'All') {
-      filtered = filtered.filter(tx => tx.transaction.transactionType === filters.type)
+      filtered = filtered.filter(
+        (tx) => tx.transaction.transactionType === filters.type,
+      )
     }
 
     // Apply sorting
     switch (filters.sort) {
       case 'newest':
-        filtered.sort((a, b) => Number(b.transaction.dateCreated - a.transaction.dateCreated))
+        filtered.sort((a, b) =>
+          Number(b.transaction.dateCreated - a.transaction.dateCreated),
+        )
         break
       case 'oldest':
-        filtered.sort((a, b) => Number(a.transaction.dateCreated - b.transaction.dateCreated))
+        filtered.sort((a, b) =>
+          Number(a.transaction.dateCreated - b.transaction.dateCreated),
+        )
         break
       case 'amount':
         filtered.sort((a, b) => {
@@ -65,41 +76,50 @@ export default function TransactionPage() {
   }, [allTransactions, filters])
 
   // Pagination logic
-  const totalPages = Math.ceil(filteredAndSortedTransactions.length / TRANSACTIONS_PER_PAGE)
+  const totalPages = Math.ceil(
+    filteredAndSortedTransactions.length / TRANSACTIONS_PER_PAGE,
+  )
   const startIndex = (currentPage - 1) * TRANSACTIONS_PER_PAGE
   const paginatedTransactions = filteredAndSortedTransactions.slice(
     startIndex,
-    startIndex + TRANSACTIONS_PER_PAGE
+    startIndex + TRANSACTIONS_PER_PAGE,
   )
 
   // Group paginated transactions by date
   const groupedTransactions = useMemo(() => {
-    return paginatedTransactions.reduce((acc, txInfo) => {
-      const dateKey = new Date(Number(txInfo.transaction.dateCreated) * 1000).toLocaleDateString()
-      if (!acc[dateKey]) {
-        acc[dateKey] = []
-      }
-      acc[dateKey].push(txInfo)
-      return acc
-    }, {} as Record<string, TransactionDisplayInfo[]>)
+    return paginatedTransactions.reduce(
+      (acc, txInfo) => {
+        const dateKey = new Date(
+          Number(txInfo.transaction.dateCreated) * 1000,
+        ).toLocaleDateString()
+        if (!acc[dateKey]) {
+          acc[dateKey] = []
+        }
+        acc[dateKey].push(txInfo)
+        return acc
+      },
+      {} as Record<string, TransactionDisplayInfo[]>,
+    )
   }, [paginatedTransactions])
 
   const handleToggle = (id: string) => {
     setExpandedId(expandedId === id ? null : id)
   }
 
-  const handleFilterStatus = (status: 'Pending' | 'Executed' | 'Rejected' | 'All') => {
-    setFilters(prev => ({ ...prev, status }))
+  const handleFilterStatus = (
+    status: 'Pending' | 'Executed' | 'Rejected' | 'All',
+  ) => {
+    setFilters((prev) => ({ ...prev, status }))
     setCurrentPage(1) // Reset to first page when filtering
   }
 
   const handleFilterType = (type: TransactionType | 'All') => {
-    setFilters(prev => ({ ...prev, type }))
+    setFilters((prev) => ({ ...prev, type }))
     setCurrentPage(1) // Reset to first page when filtering
   }
 
   const handleSort = (sort: 'newest' | 'oldest' | 'amount') => {
-    setFilters(prev => ({ ...prev, sort }))
+    setFilters((prev) => ({ ...prev, sort }))
     setCurrentPage(1) // Reset to first page when sorting
   }
 
@@ -160,34 +180,41 @@ export default function TransactionPage() {
         {!isLoading && !error && filteredAndSortedTransactions.length === 0 && (
           <div className="flex justify-center items-center py-20">
             <div className="text-theme-secondary transition-colors duration-300">
-              {allTransactions.length === 0 ? 'No transactions found.' : 'No transactions match your filters.'}
+              {allTransactions.length === 0
+                ? 'No transactions found.'
+                : 'No transactions match your filters.'}
             </div>
           </div>
         )}
 
         {/* Transactions */}
-        {!isLoading && !error && Object.entries(groupedTransactions).map(([date, txns]) => (
-          <div key={date} className="mb-4 sm:mb-6">
-            <h2 className="text-theme-secondary text-xs sm:text-sm mb-2 transition-colors duration-300">
-              {date}
-            </h2>
-            <div className="space-y-4 sm:space-y-6">
-              {txns.map((txInfo) => (
-                <div
-                  key={txInfo.transaction.id.toString()}
-                  className="bg-theme-bg-tertiary border border-theme-border rounded-lg overflow-hidden transition-colors duration-300"
-                >
-                  <Transaction
-                    transactionInfo={txInfo}
-                    isExpanded={expandedId === txInfo.transaction.id.toString()}
-                    onToggle={() => handleToggle(txInfo.transaction.id.toString())}
-                  />
-                </div>
-              ))}
+        {!isLoading &&
+          !error &&
+          Object.entries(groupedTransactions).map(([date, txns]) => (
+            <div key={date} className="mb-4 sm:mb-6">
+              <h2 className="text-theme-secondary text-xs sm:text-sm mb-2 transition-colors duration-300">
+                {date}
+              </h2>
+              <div className="space-y-4 sm:space-y-6">
+                {txns.map((txInfo) => (
+                  <div
+                    key={txInfo.transaction.id.toString()}
+                    className="bg-theme-bg-tertiary border border-theme-border rounded-lg overflow-hidden transition-colors duration-300"
+                  >
+                    <Transaction
+                      transactionInfo={txInfo}
+                      isExpanded={
+                        expandedId === txInfo.transaction.id.toString()
+                      }
+                      onToggle={() =>
+                        handleToggle(txInfo.transaction.id.toString())
+                      }
+                    />
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
-        ))}
-
+          ))}
 
         {!isLoading && !error && totalPages > 1 && currentPage < totalPages && (
           <div className="flex justify-center mt-8">

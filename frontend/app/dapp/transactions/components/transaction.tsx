@@ -10,11 +10,11 @@ import { useSpherreAccount } from '@/app/context/account-context'
 import {
   useApproveTransaction,
   useRejectTransaction,
-  useExecuteTransaction
+  useExecuteTransaction,
 } from '@/hooks/useSpherreHooks'
 import {
   TransactionType,
-  type TransactionDisplayInfo
+  type TransactionDisplayInfo,
 } from '@/lib/contracts/types'
 import { formatTimestamp, formatTime } from '@/lib/utils/transaction-utils'
 
@@ -33,9 +33,12 @@ export default function Transaction({
   const { accountAddress } = useSpherreAccount()
 
   // Contract interaction hooks
-  const { writeAsync: approveAsync, isLoading: isApproving } = useApproveTransaction(accountAddress || '0x0')
-  const { writeAsync: rejectAsync, isLoading: isRejecting } = useRejectTransaction(accountAddress || '0x0')
-  const { writeAsync: executeAsync, isLoading: isExecuting } = useExecuteTransaction(accountAddress || '0x0')
+  const { writeAsync: approveAsync, isLoading: isApproving } =
+    useApproveTransaction(accountAddress || '0x0')
+  const { writeAsync: rejectAsync, isLoading: isRejecting } =
+    useRejectTransaction(accountAddress || '0x0')
+  const { writeAsync: executeAsync, isLoading: isExecuting } =
+    useExecuteTransaction(accountAddress || '0x0')
 
   const { transaction } = transactionInfo
 
@@ -43,7 +46,9 @@ export default function Transaction({
   const getTypeIcon = (type: TransactionType): ReactNode => {
     switch (type) {
       case TransactionType.TOKEN_SEND:
-        return <Image src={withdraw} width={20} height={20} alt="token transfer" />
+        return (
+          <Image src={withdraw} width={20} height={20} alt="token transfer" />
+        )
       case TransactionType.NFT_SEND:
         return <Image src={swap} width={20} height={20} alt="nft transfer" />
       case TransactionType.MEMBER_ADD:
@@ -51,7 +56,9 @@ export default function Transaction({
       case TransactionType.MEMBER_PERMISSION_EDIT:
         return <Image src={limit} width={20} height={20} alt="member action" />
       case TransactionType.THRESHOLD_CHANGE:
-        return <Image src={limit} width={20} height={20} alt="threshold change" />
+        return (
+          <Image src={limit} width={20} height={20} alt="threshold change" />
+        )
       case TransactionType.SMART_TOKEN_LOCK:
         return <Image src={swap} width={20} height={20} alt="smart lock" />
       default:
@@ -73,7 +80,7 @@ export default function Transaction({
       console.error('Failed to approve transaction:', error, {
         transactionId: transaction.id,
         accountAddress,
-        errorMessage: error instanceof Error ? error.message : 'Unknown error'
+        errorMessage: error instanceof Error ? error.message : 'Unknown error',
       })
       // You could add a toast notification here in the future
     }
@@ -92,7 +99,7 @@ export default function Transaction({
       console.error('Failed to reject transaction:', error, {
         transactionId: transaction.id,
         accountAddress,
-        errorMessage: error instanceof Error ? error.message : 'Unknown error'
+        errorMessage: error instanceof Error ? error.message : 'Unknown error',
       })
       // You could add a toast notification here in the future
     }
@@ -111,7 +118,7 @@ export default function Transaction({
       console.error('Failed to execute transaction:', error, {
         transactionId: transaction.id,
         accountAddress,
-        errorMessage: error instanceof Error ? error.message : 'Unknown error'
+        errorMessage: error instanceof Error ? error.message : 'Unknown error',
       })
       // You could add a toast notification here in the future
     }
@@ -173,18 +180,20 @@ export default function Transaction({
               {formatTime(transaction.dateCreated)}
             </span>
             <span
-              className={`text-xs sm:text-sm ${transaction.status === 'Pending'
-                ? 'text-yellow-400'
-                : transaction.status === 'Executed'
-                  ? 'text-green-400'
-                  : 'text-red-500'
-                }`}
+              className={`text-xs sm:text-sm ${
+                transaction.status === 'Pending'
+                  ? 'text-yellow-400'
+                  : transaction.status === 'Executed'
+                    ? 'text-green-400'
+                    : 'text-red-500'
+              }`}
             >
               {transaction.status}
             </span>
             <svg
-              className={`w-4 h-4 sm:w-5 sm:h-5 text-theme-secondary transform transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''
-                }`}
+              className={`w-4 h-4 sm:w-5 sm:h-5 text-theme-secondary transform transition-transform duration-300 ${
+                isExpanded ? 'rotate-180' : ''
+              }`}
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -259,7 +268,8 @@ export default function Transaction({
                       Initiated Transaction
                     </p>
                     <p className="text-theme-secondary text-xs sm:text-sm transition-colors duration-300">
-                      {formatTimestamp(transaction.dateCreated)} {formatTime(transaction.dateCreated)}
+                      {formatTimestamp(transaction.dateCreated)}{' '}
+                      {formatTime(transaction.dateCreated)}
                     </p>
                   </div>
                 </div>
@@ -278,7 +288,10 @@ export default function Transaction({
                       {transaction.status}
                     </p>
                     <div className="flex items-center text-theme-secondary text-xs sm:text-sm transition-colors duration-300">
-                      <p>Approvals: {transaction.approved.length} | Rejections: {transaction.rejected.length}</p>
+                      <p>
+                        Approvals: {transaction.approved.length} | Rejections:{' '}
+                        {transaction.rejected.length}
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -288,8 +301,9 @@ export default function Transaction({
                 <div className="flex">
                   <div className="flex flex-col items-center mr-3 sm:mr-4">
                     <div
-                      className={`w-2 h-2 border border-theme-border ${transaction.status === 'Executed' ? 'bg-theme' : ''
-                        } rounded-full flex items-center justify-center mb-1 transition-colors duration-300`}
+                      className={`w-2 h-2 border border-theme-border ${
+                        transaction.status === 'Executed' ? 'bg-theme' : ''
+                      } rounded-full flex items-center justify-center mb-1 transition-colors duration-300`}
                     >
                       {transaction.status === 'Executed' ? (
                         <svg
@@ -307,16 +321,18 @@ export default function Transaction({
                   </div>
                   <div>
                     <p
-                      className={`text-sm sm:text-base transition-colors duration-300 ${transaction.status === 'Executed'
-                        ? 'text-theme'
-                        : 'text-theme-secondary'
-                        }`}
+                      className={`text-sm sm:text-base transition-colors duration-300 ${
+                        transaction.status === 'Executed'
+                          ? 'text-theme'
+                          : 'text-theme-secondary'
+                      }`}
                     >
                       Executed
                     </p>
                     {transaction.dateExecuted && (
                       <p className="text-theme-secondary text-xs sm:text-sm transition-colors duration-300">
-                        {formatTimestamp(transaction.dateExecuted)} {formatTime(transaction.dateExecuted)}
+                        {formatTimestamp(transaction.dateExecuted)}{' '}
+                        {formatTime(transaction.dateExecuted)}
                       </p>
                     )}
                   </div>
@@ -351,7 +367,8 @@ export default function Transaction({
                   </button>
                 </div>
               )}
-              {(transaction.status === 'Executed' || transaction.status === 'Rejected') && (
+              {(transaction.status === 'Executed' ||
+                transaction.status === 'Rejected') && (
                 <button className="bg-[#6F2FCE] hover:bg-purple-700 text-white px-4 sm:px-6 py-2 rounded-md transition duration-200 text-sm sm:text-base w-full">
                   Download CSV
                 </button>
@@ -374,7 +391,8 @@ export default function Transaction({
               <div className="flex justify-between">
                 <span>Proposer:</span>
                 <span className="text-theme truncate transition-colors duration-300">
-                  {transaction.proposer.slice(0, 8)}...{transaction.proposer.slice(-4)}
+                  {transaction.proposer.slice(0, 8)}...
+                  {transaction.proposer.slice(-4)}
                 </span>
               </div>
               <div className="flex justify-between">

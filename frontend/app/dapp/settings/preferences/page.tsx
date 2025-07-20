@@ -6,7 +6,7 @@ import ToggleSwitch from './components/toggle-switch'
 import BrowserPreview from './components/browser-preview'
 import { Monitor, Moon, Sun } from 'lucide-react'
 import SignMessageModal from '../../../components/modals/SignMessageModal'
-import { useGlobalModal } from '../../../components/modals/useGlobalModal';
+import { useGlobalModal } from '../../../components/modals/useGlobalModal'
 
 type ToggleType = 'email' | 'browser' | null
 
@@ -18,7 +18,7 @@ export default function PreferencesPage() {
   const [activeToggle, setActiveToggle] = useState<ToggleType>(null)
   const [modalTitle, setModalTitle] = useState('')
   const [modalDescription, setModalDescription] = useState('')
-  const { showSuccess, showProcessing, hideModal } = useGlobalModal();
+  const { showSuccess, showProcessing, hideModal } = useGlobalModal()
 
   // Load preferences from localStorage on mount
   useEffect(() => {
@@ -64,34 +64,34 @@ export default function PreferencesPage() {
   }
 
   const handleSignMessage = (email: string) => {
-    console.log(`Signing message for ${activeToggle} with email:`, email);
-    setIsModalOpen(false);
+    console.log(`Signing message for ${activeToggle} with email:`, email)
+    setIsModalOpen(false)
     showProcessing({
       title: 'Processing Transaction!',
       subtitle: 'Please exercise a little patience as we process your details',
-    });
+    })
 
     setTimeout(() => {
-      hideModal();
+      hideModal()
       if (activeToggle === 'email') {
-        setEmailNotifications(true);
-        localStorage.setItem('spherre-email-notifications', 'true');
+        setEmailNotifications(true)
+        localStorage.setItem('spherre-email-notifications', 'true')
         showSuccess({
           title: 'Successful Transaction!',
           message: 'Email notifications have been enabled successfully.',
           onClose: hideModal,
-        });
+        })
       } else if (activeToggle === 'browser') {
-        setBrowserNotifications(true);
-        localStorage.setItem('spherre-browser-notifications', 'true');
+        setBrowserNotifications(true)
+        localStorage.setItem('spherre-browser-notifications', 'true')
         showSuccess({
           title: 'Successful Transaction!',
           message: 'Browser notifications have been enabled successfully.',
           onClose: hideModal,
-        });
+        })
       }
-    }, 3000);
-  };
+    }, 3000)
+  }
 
   return (
     <div className="space-y-10 font-sans w-full  px-4 md:px-8 py-8 bg-theme transition-colors duration-300">

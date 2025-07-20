@@ -6,7 +6,7 @@ import { useSpherreAccount } from '@/app/context/account-context'
 import {
   useApproveTransaction,
   useRejectTransaction,
-  useExecuteTransaction
+  useExecuteTransaction,
 } from '@/hooks/useSpherreHooks'
 
 interface TransactionDetailsHeaderProps {
@@ -22,9 +22,12 @@ export const TransactionDetailsHeader = ({
   const { accountAddress } = useSpherreAccount()
 
   // Contract interaction hooks
-  const { writeAsync: approveAsync, isLoading: isApproving } = useApproveTransaction(accountAddress || '0x0')
-  const { writeAsync: rejectAsync, isLoading: isRejecting } = useRejectTransaction(accountAddress || '0x0')
-  const { writeAsync: executeAsync, isLoading: isExecuting } = useExecuteTransaction(accountAddress || '0x0')
+  const { writeAsync: approveAsync, isLoading: isApproving } =
+    useApproveTransaction(accountAddress || '0x0')
+  const { writeAsync: rejectAsync, isLoading: isRejecting } =
+    useRejectTransaction(accountAddress || '0x0')
+  const { writeAsync: executeAsync, isLoading: isExecuting } =
+    useExecuteTransaction(accountAddress || '0x0')
 
   // Handle transaction actions
   const handleApprove = async () => {
@@ -40,7 +43,7 @@ export const TransactionDetailsHeader = ({
       console.error('Failed to approve transaction:', error, {
         transactionId,
         accountAddress,
-        errorMessage: error instanceof Error ? error.message : 'Unknown error'
+        errorMessage: error instanceof Error ? error.message : 'Unknown error',
       })
     }
   }
@@ -58,7 +61,7 @@ export const TransactionDetailsHeader = ({
       console.error('Failed to reject transaction:', error, {
         transactionId,
         accountAddress,
-        errorMessage: error instanceof Error ? error.message : 'Unknown error'
+        errorMessage: error instanceof Error ? error.message : 'Unknown error',
       })
     }
   }
@@ -76,7 +79,7 @@ export const TransactionDetailsHeader = ({
       console.error('Failed to execute transaction:', error, {
         transactionId,
         accountAddress,
-        errorMessage: error instanceof Error ? error.message : 'Unknown error'
+        errorMessage: error instanceof Error ? error.message : 'Unknown error',
       })
     }
   }

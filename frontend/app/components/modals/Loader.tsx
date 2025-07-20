@@ -1,10 +1,10 @@
-import React from 'react';
+import React from 'react'
 
 interface ProcessingModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  title?: string;
-  subtitle?: string;
+  isOpen: boolean
+  onClose: () => void
+  title?: string
+  subtitle?: string
 }
 
 const ProcessingModal: React.FC<ProcessingModalProps> = ({
@@ -13,7 +13,7 @@ const ProcessingModal: React.FC<ProcessingModalProps> = ({
   title = 'Processing Transaction!',
   subtitle = 'Please exercise a little patience as we process your details',
 }) => {
-  if (!isOpen) return null;
+  if (!isOpen) return null
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
@@ -29,7 +29,13 @@ const ProcessingModal: React.FC<ProcessingModalProps> = ({
           aria-label="Close"
         >
           <svg width="24" height="24" fill="none" viewBox="0 0 24 24">
-            <path stroke="#A1A1AA" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" d="M18 6L6 18M6 6l12 12" />
+            <path
+              stroke="#A1A1AA"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M18 6L6 18M6 6l12 12"
+            />
           </svg>
         </button>
         <h2 className="text-3xl font-bold text-white mb-2 mt-2">{title}</h2>
@@ -40,7 +46,7 @@ const ProcessingModal: React.FC<ProcessingModalProps> = ({
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default ProcessingModal;
+export default ProcessingModal

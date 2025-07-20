@@ -6,7 +6,7 @@ import { StarknetProvider } from './components/Providers'
 import { OnboardingProvider } from '@/context/OnboardingContext'
 import { ThemeProvider } from '@/app/context/theme-context-provider'
 import { SpherreAccountProvider } from './context/account-context'
-import { GlobalModalProvider } from './components/modals/GlobalModalProvider';
+import { GlobalModalProvider } from './components/modals/GlobalModalProvider'
 
 const geistSans = Geist({
   variable: '--font-geist-sans',

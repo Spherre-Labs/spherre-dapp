@@ -8,7 +8,7 @@ import { getERC20ContractConfig } from '@/lib/contracts/erc20-contracts'
 import { useScaffoldWriteContract } from '@/hooks/useScaffoldWriteContract'
 import { HiMiniArrowPath } from 'react-icons/hi2'
 import { useSpherreAccount } from '@/app/context/account-context'
-import { useGlobalModal } from '../../../../components/modals/useGlobalModal';
+import { useGlobalModal } from '../../../../components/modals/useGlobalModal'
 
 interface TokenInfo {
   symbol: string
@@ -22,7 +22,7 @@ interface TokenInfo {
 const DappDeposit = () => {
   const { address: userAddress } = useAccount()
   const { accountAddress: spherreAccountAddress } = useSpherreAccount()
-  const { showProcessing, showSuccess, showError, hideModal } = useGlobalModal();
+  const { showProcessing, showSuccess, showError, hideModal } = useGlobalModal()
 
   const [selectedToken, setSelectedToken] = useState<string>('STRK')
   const [amount, setAmount] = useState<string>('')
@@ -147,7 +147,7 @@ const DappDeposit = () => {
     showProcessing({
       title: 'Processing Transaction!',
       subtitle: 'Please exercise a little patience as we process your details',
-    });
+    })
 
     try {
       const amountInWei = BigInt(
@@ -177,9 +177,10 @@ const DappDeposit = () => {
       setAmount('')
       showSuccess({
         title: 'Successful Transaction!',
-        message: 'Deposit completed successfully! Your tokens have been transferred to the Spherre Treasury.',
+        message:
+          'Deposit completed successfully! Your tokens have been transferred to the Spherre Treasury.',
         onClose: hideModal,
-      });
+      })
     } catch (err) {
       hideModal()
       let errorMessage = 'Deposit failed'
@@ -215,7 +216,7 @@ const DappDeposit = () => {
       showError({
         title: 'Deposit Failed',
         errorText: errorMessage,
-      });
+      })
     }
   }
 

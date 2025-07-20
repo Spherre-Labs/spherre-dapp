@@ -1,14 +1,14 @@
-import React from 'react';
-import Image from 'next/image';
+import React from 'react'
+import Image from 'next/image'
 
 interface SuccessModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onViewTransaction?: () => void;
-  title?: string;
-  message?: string;
-  closeLabel?: string;
-  viewLabel?: string;
+  isOpen: boolean
+  onClose: () => void
+  onViewTransaction?: () => void
+  title?: string
+  message?: string
+  closeLabel?: string
+  viewLabel?: string
 }
 
 const SuccessModal: React.FC<SuccessModalProps> = ({
@@ -20,7 +20,7 @@ const SuccessModal: React.FC<SuccessModalProps> = ({
   closeLabel = 'Close',
   viewLabel = 'View Transaction',
 }) => {
-  if (!isOpen) return null;
+  if (!isOpen) return null
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
@@ -36,7 +36,13 @@ const SuccessModal: React.FC<SuccessModalProps> = ({
           aria-label="Close"
         >
           <svg width="24" height="24" fill="none" viewBox="0 0 24 24">
-            <path stroke="#A1A1AA" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" d="M18 6L6 18M6 6l12 12" />
+            <path
+              stroke="#A1A1AA"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M18 6L6 18M6 6l12 12"
+            />
           </svg>
         </button>
         <div className="flex justify-center mb-4 mt-2">
@@ -65,7 +71,7 @@ const SuccessModal: React.FC<SuccessModalProps> = ({
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default SuccessModal;
+export default SuccessModal

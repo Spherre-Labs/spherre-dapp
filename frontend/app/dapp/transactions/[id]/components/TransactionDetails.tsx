@@ -19,12 +19,13 @@ const TimelineStep = ({
     <div className="flex items-start mb-4">
       <div className="flex flex-col items-center mr-4">
         <div
-          className={`w-3 h-3 rounded-full border-2 transition-colors duration-300 ${status === 'completed'
-            ? 'bg-green-500 border-green-500'
-            : status === 'pending'
-              ? 'bg-yellow-500 border-yellow-500'
-              : 'bg-gray-300 border-gray-300'
-            }`}
+          className={`w-3 h-3 rounded-full border-2 transition-colors duration-300 ${
+            status === 'completed'
+              ? 'bg-green-500 border-green-500'
+              : status === 'pending'
+                ? 'bg-yellow-500 border-yellow-500'
+                : 'bg-gray-300 border-gray-300'
+          }`}
         />
         {!isLast && (
           <div className="w-0.5 h-8 bg-theme-border mt-1 transition-colors duration-300" />
@@ -32,8 +33,9 @@ const TimelineStep = ({
       </div>
       <div className="flex-1 min-w-0">
         <p
-          className={`text-sm font-medium transition-colors duration-300 ${status === 'completed' ? 'text-theme' : 'text-theme-secondary'
-            }`}
+          className={`text-sm font-medium transition-colors duration-300 ${
+            status === 'completed' ? 'text-theme' : 'text-theme-secondary'
+          }`}
         >
           {title}
         </p>
@@ -74,12 +76,13 @@ const ApprovalList = ({
               {approval.member.name}
             </span>
             <span
-              className={`text-xs px-2 py-1 rounded-full transition-colors duration-300 ${approval.status === 'Confirmed'
-                ? 'text-green-400 bg-green-400/10'
-                : approval.status === 'Rejected'
-                  ? 'text-red-400 bg-red-400/10'
-                  : 'text-yellow-400 bg-yellow-400/10'
-                }`}
+              className={`text-xs px-2 py-1 rounded-full transition-colors duration-300 ${
+                approval.status === 'Confirmed'
+                  ? 'text-green-400 bg-green-400/10'
+                  : approval.status === 'Rejected'
+                    ? 'text-red-400 bg-red-400/10'
+                    : 'text-yellow-400 bg-yellow-400/10'
+              }`}
             >
               {approval.status}
             </span>
@@ -121,56 +124,65 @@ export const TransactionDetails = ({
             'Transaction ID',
             <span className="text-theme text-sm font-mono transition-colors duration-300">
               {transaction.id.toString().slice(0, 20)}...
-            </span>
+            </span>,
           )}
           {detailItem(
             'Type',
             <span className="text-theme text-sm transition-colors duration-300">
               {transactionInfo.title}
-            </span>
+            </span>,
           )}
           {detailItem(
             'Proposer',
             <span className="text-theme text-sm font-mono transition-colors duration-300">
-              {transaction.proposer.slice(0, 10)}...{transaction.proposer.slice(-6)}
-            </span>
+              {transaction.proposer.slice(0, 10)}...
+              {transaction.proposer.slice(-6)}
+            </span>,
           )}
           {detailItem(
             'Date Created',
             <span className="text-theme text-sm transition-colors duration-300">
-              {formatTimestamp(transaction.dateCreated)} {formatTime(transaction.dateCreated)}
-            </span>
+              {formatTimestamp(transaction.dateCreated)}{' '}
+              {formatTime(transaction.dateCreated)}
+            </span>,
           )}
-          {transaction.dateExecuted && detailItem(
-            'Date Executed',
-            <span className="text-theme text-sm transition-colors duration-300">
-              {formatTimestamp(transaction.dateExecuted)} {formatTime(transaction.dateExecuted)}
-            </span>
-          )}
-          {transaction.executor && detailItem(
-            'Executor',
-            <span className="text-theme text-sm font-mono transition-colors duration-300">
-              {transaction.executor.slice(0, 10)}...{transaction.executor.slice(-6)}
-            </span>
-          )}
-          {transactionInfo.amount && detailItem(
-            'Amount',
-            <span className="text-theme text-sm transition-colors duration-300">
-              {transactionInfo.amount}
-            </span>
-          )}
-          {transactionInfo.recipient && detailItem(
-            'Recipient',
-            <span className="text-theme text-sm font-mono transition-colors duration-300">
-              {transactionInfo.recipient}
-            </span>
-          )}
-          {transactionInfo.token && detailItem(
-            'Token',
-            <span className="text-theme text-sm font-mono transition-colors duration-300">
-              {transactionInfo.token}
-            </span>
-          )}
+          {transaction.dateExecuted &&
+            detailItem(
+              'Date Executed',
+              <span className="text-theme text-sm transition-colors duration-300">
+                {formatTimestamp(transaction.dateExecuted)}{' '}
+                {formatTime(transaction.dateExecuted)}
+              </span>,
+            )}
+          {transaction.executor &&
+            detailItem(
+              'Executor',
+              <span className="text-theme text-sm font-mono transition-colors duration-300">
+                {transaction.executor.slice(0, 10)}...
+                {transaction.executor.slice(-6)}
+              </span>,
+            )}
+          {transactionInfo.amount &&
+            detailItem(
+              'Amount',
+              <span className="text-theme text-sm transition-colors duration-300">
+                {transactionInfo.amount}
+              </span>,
+            )}
+          {transactionInfo.recipient &&
+            detailItem(
+              'Recipient',
+              <span className="text-theme text-sm font-mono transition-colors duration-300">
+                {transactionInfo.recipient}
+              </span>,
+            )}
+          {transactionInfo.token &&
+            detailItem(
+              'Token',
+              <span className="text-theme text-sm font-mono transition-colors duration-300">
+                {transactionInfo.token}
+              </span>,
+            )}
         </div>
       </section>
 
@@ -195,9 +207,10 @@ export const TransactionDetails = ({
               />
               <TimelineStep
                 title={isRejected ? 'Rejected' : 'Executed'}
-                timestamp={transaction.dateExecuted ?
-                  `${formatTimestamp(transaction.dateExecuted)} ${formatTime(transaction.dateExecuted)}` :
-                  undefined
+                timestamp={
+                  transaction.dateExecuted
+                    ? `${formatTimestamp(transaction.dateExecuted)} ${formatTime(transaction.dateExecuted)}`
+                    : undefined
                 }
                 status={isExecuted || isRejected ? 'completed' : 'future'}
                 isLast={true}
@@ -206,18 +219,24 @@ export const TransactionDetails = ({
             <div className="flex-grow grid grid-cols-1 gap-4">
               {transaction.approved.length > 0 && (
                 <ApprovalList
-                  approvals={transaction.approved.map(addr => ({
-                    member: { name: `${addr.slice(0, 8)}...`, avatar: '/placeholder.svg' },
-                    status: 'Confirmed' as const
+                  approvals={transaction.approved.map((addr) => ({
+                    member: {
+                      name: `${addr.slice(0, 8)}...`,
+                      avatar: '/placeholder.svg',
+                    },
+                    status: 'Confirmed' as const,
                   }))}
                   title="Confirmed Approvals"
                 />
               )}
               {transaction.rejected.length > 0 && (
                 <ApprovalList
-                  approvals={transaction.rejected.map(addr => ({
-                    member: { name: `${addr.slice(0, 8)}...`, avatar: '/placeholder.svg' },
-                    status: 'Rejected' as const
+                  approvals={transaction.rejected.map((addr) => ({
+                    member: {
+                      name: `${addr.slice(0, 8)}...`,
+                      avatar: '/placeholder.svg',
+                    },
+                    status: 'Rejected' as const,
                   }))}
                   title="Rejections"
                 />
