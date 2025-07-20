@@ -8,7 +8,6 @@ import { getERC20ContractConfig } from '@/lib/contracts/erc20-contracts'
 import { useScaffoldWriteContract } from '@/hooks/useScaffoldWriteContract'
 import { HiMiniArrowPath } from 'react-icons/hi2'
 import { useSpherreAccount } from '@/app/context/account-context'
-import { useGlobalModal } from '../../../../components/modals/useGlobalModal'
 
 interface TokenInfo {
   symbol: string
@@ -22,10 +21,13 @@ interface TokenInfo {
 const DappDeposit = () => {
   const { address: userAddress } = useAccount()
   const { accountAddress: spherreAccountAddress } = useSpherreAccount()
-  const { showProcessing, showSuccess, showError, hideModal } = useGlobalModal()
 
   const [selectedToken, setSelectedToken] = useState<string>('STRK')
   const [amount, setAmount] = useState<string>('')
+  const [isProcessing, setIsProcessing] = useState(false)
+  const [processingStatus, setProcessingStatus] = useState<
+    'none' | 'processing' | 'completed'
+  >('none')
   const [error, setError] = useState<string>('')
 
   // Get balances for all tokens
@@ -91,13 +93,13 @@ const DappDeposit = () => {
       functionName: 'transfer',
       onSuccess: (result) => {
         console.log('✅ Transfer successful:', result)
-        hideModal()
+        setProcessingStatus('completed')
         setAmount('')
       },
       onError: (error) => {
         console.error('❌ Transfer error:', error)
         setError(error.message)
-        hideModal()
+        setProcessingStatus('none')
       },
     })
 
@@ -118,6 +120,7 @@ const DappDeposit = () => {
     setSelectedToken(e.target.value)
     setAmount('')
     setError('')
+    setProcessingStatus('none')
   }
 
   const validateAmount = (): boolean => {
@@ -143,11 +146,9 @@ const DappDeposit = () => {
       return
     }
 
+    setIsProcessing(true)
+    setProcessingStatus('processing')
     setError('')
-    showProcessing({
-      title: 'Processing Transaction!',
-      subtitle: 'Please exercise a little patience as we process your details',
-    })
 
     try {
       const amountInWei = BigInt(
@@ -168,21 +169,17 @@ const DappDeposit = () => {
       }
 
       // Execute transfer
-      await transferAsync({
+      const result = await transferAsync({
         recipient: spherreAccountAddress,
         amount: amountInWei,
       })
 
-      hideModal()
+      console.log('✅ Transfer successful:', result)
+      setProcessingStatus('completed')
       setAmount('')
-      showSuccess({
-        title: 'Successful Transaction!',
-        message:
-          'Deposit completed successfully! Your tokens have been transferred to the Spherre Treasury.',
-        onClose: hideModal,
-      })
     } catch (err) {
-      hideModal()
+      console.error('❌ Transfer error:', err)
+
       let errorMessage = 'Deposit failed'
 
       if (err instanceof Error) {
@@ -213,14 +210,13 @@ const DappDeposit = () => {
       }
 
       setError(errorMessage)
-      showError({
-        title: 'Deposit Failed',
-        errorText: errorMessage,
-      })
+      setProcessingStatus('none')
+    } finally {
+      setIsProcessing(false)
     }
   }
 
-  const isLoading = isTransferLoading
+  const isLoading = isTransferLoading || isProcessing
 
   // Show error if no wallet connected
   if (!userAddress) {
@@ -352,10 +348,10 @@ const DappDeposit = () => {
       <div className="w-full space-y-3">
         <button
           onClick={handleDeposit}
-          disabled={isTransferLoading || !amount || parseFloat(amount) <= 0}
+          disabled={isLoading || !amount || parseFloat(amount) <= 0}
           className="w-full h-[50px] rounded-[7px] bg-[#6F2FCE] text-white font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
         >
-          {isTransferLoading ? (
+          {isTransferLoading || isProcessing ? (
             <div className="flex items-center justify-center gap-2">
               <HiMiniArrowPath className="animate-spin" size={20} />
               Processing...
@@ -364,6 +360,15 @@ const DappDeposit = () => {
             `Deposit ${selectedToken} to Treasury`
           )}
         </button>
+
+        {processingStatus === 'completed' && (
+          <div className="w-full p-4 bg-green-900/20 border border-green-500/30 rounded-[7px]">
+            <p className="text-green-400 text-sm text-center">
+              ✅ Deposit completed successfully! Your tokens have been
+              transferred to the Spherre Treasury.
+            </p>
+          </div>
+        )}
       </div>
     </div>
   )

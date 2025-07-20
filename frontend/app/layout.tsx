@@ -6,7 +6,6 @@ import { StarknetProvider } from './components/Providers'
 import { OnboardingProvider } from '@/context/OnboardingContext'
 import { ThemeProvider } from '@/app/context/theme-context-provider'
 import { SpherreAccountProvider } from './context/account-context'
-import { GlobalModalProvider } from './components/modals/GlobalModalProvider'
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -66,15 +65,13 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} ${nunitoSans.variable} antialiased transition-colors duration-300`}
       >
         <div id="modal-root"></div>
-        <GlobalModalProvider>
-          <ThemeProvider>
-            <SpherreAccountProvider>
-              <StarknetProvider>
-                <OnboardingProvider>{children}</OnboardingProvider>
-              </StarknetProvider>
-            </SpherreAccountProvider>
-          </ThemeProvider>
-        </GlobalModalProvider>
+        <ThemeProvider>
+          <SpherreAccountProvider>
+            <StarknetProvider>
+              <OnboardingProvider>{children}</OnboardingProvider>
+            </StarknetProvider>
+          </SpherreAccountProvider>
+        </ThemeProvider>
       </body>
     </html>
   )

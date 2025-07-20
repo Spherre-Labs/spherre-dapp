@@ -1,1 +1,0 @@
-export { useGlobalModal } from './GlobalModalProvider'

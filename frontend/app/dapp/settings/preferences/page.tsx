@@ -6,7 +6,9 @@ import ToggleSwitch from './components/toggle-switch'
 import BrowserPreview from './components/browser-preview'
 import { Monitor, Moon, Sun } from 'lucide-react'
 import SignMessageModal from '../../../components/modals/SignMessageModal'
-import { useGlobalModal } from '../../../components/modals/useGlobalModal'
+import Loader from '../../../components/modals/Loader'
+import SuccessModal from '../../../components/modals/SuccessModal'
+import { useTheme } from '@/app/context/theme-context-provider'
 
 type ToggleType = 'email' | 'browser' | null
 
@@ -15,10 +17,12 @@ export default function PreferencesPage() {
   const [emailNotifications, setEmailNotifications] = useState(false)
   const [browserNotifications, setBrowserNotifications] = useState(false)
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
+  const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false)
+  const [successMessage, setSuccessMessage] = useState('')
   const [activeToggle, setActiveToggle] = useState<ToggleType>(null)
   const [modalTitle, setModalTitle] = useState('')
   const [modalDescription, setModalDescription] = useState('')
-  const { showSuccess, showProcessing, hideModal } = useGlobalModal()
 
   // Load preferences from localStorage on mount
   useEffect(() => {
@@ -66,31 +70,28 @@ export default function PreferencesPage() {
   const handleSignMessage = (email: string) => {
     console.log(`Signing message for ${activeToggle} with email:`, email)
     setIsModalOpen(false)
-    showProcessing({
-      title: 'Processing Transaction!',
-      subtitle: 'Please exercise a little patience as we process your details',
-    })
+    setIsLoading(true)
 
     setTimeout(() => {
-      hideModal()
+      setIsLoading(false)
       if (activeToggle === 'email') {
         setEmailNotifications(true)
         localStorage.setItem('spherre-email-notifications', 'true')
-        showSuccess({
-          title: 'Successful Transaction!',
-          message: 'Email notifications have been enabled successfully.',
-          onClose: hideModal,
-        })
+        setSuccessMessage('Email notifications have been enabled successfully.')
       } else if (activeToggle === 'browser') {
         setBrowserNotifications(true)
         localStorage.setItem('spherre-browser-notifications', 'true')
-        showSuccess({
-          title: 'Successful Transaction!',
-          message: 'Browser notifications have been enabled successfully.',
-          onClose: hideModal,
-        })
+        setSuccessMessage(
+          'Browser notifications have been enabled successfully.',
+        )
       }
+      setIsSuccessModalOpen(true)
     }, 3000)
+  }
+
+  const handleCloseSuccessModal = () => {
+    setIsSuccessModalOpen(false)
+    setActiveToggle(null)
   }
 
   return (
@@ -187,6 +188,14 @@ export default function PreferencesPage() {
         onSign={handleSignMessage}
         title={modalTitle}
         description={modalDescription}
+      />
+
+      {isLoading && <Loader />}
+
+      <SuccessModal
+        isOpen={isSuccessModalOpen}
+        onClose={handleCloseSuccessModal}
+        message={successMessage}
       />
     </div>
   )
