@@ -18,9 +18,11 @@ import {
 } from '@/lib'
 import { useSpherreAccount } from '@/app/context/account-context'
 import { HiMiniArrowPath } from 'react-icons/hi2'
+import { useGlobalModal } from '@/app/components/modals/GlobalModalProvider'
 
 export default function WithdrawPage() {
   const { accountAddress: spherreAccountAddress } = useSpherreAccount()
+  const { showSuccess, showError } = useGlobalModal()
 
   const [currentStep, setCurrentStep] = useState(1)
   const router = useRouter()
@@ -31,7 +33,6 @@ export default function WithdrawPage() {
   const [amount, setAmount] = useState<string>('')
   const [selectedToken, setSelectedToken] = useState<string>('STRK')
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
-  const [error, setError] = useState<string>('')
   const [availableTokens, setAvailableTokens] = useState<
     (TokenInfo & {
       balance: number
@@ -90,7 +91,6 @@ export default function WithdrawPage() {
     // Only allow numbers and decimals
     if (value === '' || /^\d*\.?\d*$/.test(value)) {
       setAmount(value)
-      setError('') // Clear error when user starts typing
     }
   }
 
@@ -116,32 +116,35 @@ export default function WithdrawPage() {
     functionName: 'propose_token_transaction',
     onSuccess: () => {
       setIsSubmitting(false)
-      setError('')
-      router.push('/dapp')
+      showSuccess({
+        title: 'Proposal Created!',
+        message: 'Token withdrawal proposal created.',
+      })
+      // Navigate after a short delay to allow the modal to show
+      setTimeout(() => {
+        router.push('/dapp')
+      }, 2000)
     },
     onError: (error) => {
       setIsSubmitting(false)
-      setError(error.message || 'Transaction failed. Please try again.')
+      showError({
+        title: 'Transaction Failed',
+        errorText: 'Transaction failed. Please try again.',
+      })
     },
   })
 
-  // Handle balance error
-  useEffect(() => {
-    if (balanceError) {
-      setError('Failed to fetch token balance. Please try again.')
-    }
-  }, [balanceError])
-
-  // Handle write error
-  useEffect(() => {
-    if (writeError) {
-      setError(writeError.message || 'Transaction failed. Please try again.')
-    }
-  }, [writeError])
-
   const handleNext = async () => {
     // Clear any previous errors
-    setError('')
+
+    // Check if wallet is connected first
+    if (!address) {
+      showError({
+        title: 'Wallet Not Connected',
+        errorText: 'Connect your wallet to propose a withdrawal.',
+      })
+      return
+    }
 
     // Navigate to the next step (review)
     if (currentStep === 3) {
@@ -150,15 +153,30 @@ export default function WithdrawPage() {
 
         // Validate required fields
         if (!selectedTokenAddress) {
-          throw new Error('Token address not found')
+          showError({
+            title: 'Token Error',
+            errorText: 'Token address not found.',
+          })
+          setIsSubmitting(false)
+          return
         }
 
         if (!recipientAddress) {
-          throw new Error('Recipient address is required')
+          showError({
+            title: 'Recipient Required',
+            errorText: 'Recipient address is required.',
+          })
+          setIsSubmitting(false)
+          return
         }
 
         if (!amount || parseFloat(amount) <= 0) {
-          throw new Error('Please enter a valid amount')
+          showError({
+            title: 'Invalid Amount',
+            errorText: 'Please enter a valid amount.',
+          })
+          setIsSubmitting(false)
+          return
         }
 
         // Get the selected token data
@@ -167,12 +185,22 @@ export default function WithdrawPage() {
         )
 
         if (!selectedTokenData) {
-          throw new Error('Selected token not found')
+          showError({
+            title: 'Token Not Found',
+            errorText: 'Selected token not found.',
+          })
+          setIsSubmitting(false)
+          return
         }
 
         // Validate amount against balance
         if (parseFloat(amount) > selectedTokenData.balance) {
-          throw new Error('Insufficient balance')
+          showError({
+            title: 'Insufficient Balance',
+            errorText: 'Not enough tokens to propose this withdrawal.',
+          })
+          setIsSubmitting(false)
+          return
         }
 
         // Convert amount to wei (U256 format)
@@ -188,11 +216,13 @@ export default function WithdrawPage() {
         })
       } catch (error) {
         setIsSubmitting(false)
-        setError(
-          error instanceof Error
-            ? error.message
-            : 'Transaction failed. Please try again.',
-        )
+        showError({
+          title: 'Transaction Failed',
+          errorText:
+            error instanceof Error
+              ? error.message
+              : 'Transaction failed. Please try again.',
+        })
       }
     } else {
       if (isAddressValid || isValidAmount(amount))
@@ -206,7 +236,6 @@ export default function WithdrawPage() {
     } else {
       // Reset UI state when going back
       setCurrentStep((prev) => prev - 1)
-      setError('')
       setIsSubmitting(false)
 
       // Reset form state based on which step we're going back from
@@ -227,6 +256,14 @@ export default function WithdrawPage() {
   }
 
   const handleCancel = () => {
+    // Show rejection message if user cancels during submission
+    if (isSubmitting) {
+      showError({
+        title: 'Proposal Cancelled',
+        errorText: 'Proposal cancelled by user.',
+      })
+      setIsSubmitting(false)
+    }
     // Navigate back to the dashboard or previous page
     router.push('/dapp')
   }
@@ -308,17 +345,10 @@ export default function WithdrawPage() {
             />
           )}
 
-          {/* Error Display */}
-          {error && (
-            <div className="bg-red-900/20 border border-red-600/30 rounded-lg p-3 mb-4 ">
-              <p className="text-red-400 text-sm">Withdrawal Failed: {error}</p>
-            </div>
-          )}
           {/* Action Buttons */}
           <div className="grid grid-cols-2 gap-2 sm:gap-4">
             <button
               onClick={handleCancel}
-              disabled={isSubmitting}
               className="py-2 sm:py-3 px-3 sm:px-4 text-sm sm:text-base bg-[#272729] text-white rounded-lg hover:bg-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Cancel
