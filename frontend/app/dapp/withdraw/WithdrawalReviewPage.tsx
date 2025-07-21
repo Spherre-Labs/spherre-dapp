@@ -66,8 +66,7 @@ export default function WithdrawalReviewPage({
     recipientFullAddress: recipientAddress,
     fromAccount: {
       name: data || 'Spherre Account', // Use actual account name from contract
-      address:
-        '0xcaaf4903ec077207db11bc020e64f78fa8e8f7a24a18cab95466e08a09b788',
+      address: spherreAccountAddress || '',
       avatar: Backstage,
     },
     toAccount: {

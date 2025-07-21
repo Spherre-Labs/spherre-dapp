@@ -11,7 +11,6 @@ import { useAccount } from '@starknet-react/core'
 import {
   AVAILABLE_TOKENS,
   SPHERRE_ACCOUNT_ABI,
-  SPHERRE_CONTRACTS,
   TokenInfo,
   useScaffoldReadContract,
   useScaffoldWriteContract,
@@ -47,7 +46,7 @@ export default function WithdrawPage() {
   const selectedTokenAddress =
     availableTokens.find((t) => t.symbol === selectedToken)?.address || ''
 
-  const { data, error: balanceError } = useScaffoldReadContract({
+  const { data } = useScaffoldReadContract({
     contractConfig: {
       address: spherreAccountAddress || '',
       abi: SPHERRE_ACCOUNT_ABI,
@@ -108,9 +107,9 @@ export default function WithdrawPage() {
     )
   }
 
-  const { writeAsync, error: writeError } = useScaffoldWriteContract({
+  const { writeAsync } = useScaffoldWriteContract({
     contractConfig: {
-      address: SPHERRE_CONTRACTS.SPHERRE_ACCOUNT,
+      address: spherreAccountAddress as `0x${string}`,
       abi: SPHERRE_ACCOUNT_ABI,
     },
     functionName: 'propose_token_transaction',
@@ -119,17 +118,20 @@ export default function WithdrawPage() {
       showSuccess({
         title: 'Proposal Created!',
         message: 'Token withdrawal proposal created.',
+        onViewTransaction: () => {
+          router.push('dapp/transactions/')
+        },
       })
       // Navigate after a short delay to allow the modal to show
-      setTimeout(() => {
-        router.push('/dapp')
-      }, 2000)
     },
     onError: (error) => {
       setIsSubmitting(false)
       showError({
         title: 'Transaction Failed',
-        errorText: 'Transaction failed. Please try again.',
+        errorText:
+          error instanceof Error
+            ? `Transaction failed: ${error.message}`
+            : 'Transaction failed. Please try again.',
       })
     },
   })
