@@ -1,41 +1,85 @@
 'use client'
 import { useRouter } from 'next/navigation'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { ArrowLeft } from 'lucide-react'
 import { Button } from '@/components/shared/Button'
 import WithdrawalStepOne from './withdraw-step-one'
 import WithdrawStepTwo from './withdraw-step-two'
 import WithdrawStepper from './withdraw-stepper'
-import WithdrawalReviewPage from './step3/page'
-
-export interface Token {
-  symbol: string
-  balance: number
-  icon?: string
-  usdValue?: number
-}
+import WithdrawalReviewPage from './WithdrawalReviewPage'
+import { useAccount } from '@starknet-react/core'
+import {
+  AVAILABLE_TOKENS,
+  SPHERRE_ACCOUNT_ABI,
+  SPHERRE_CONTRACTS,
+  TokenInfo,
+  useScaffoldReadContract,
+  useScaffoldWriteContract,
+} from '@/lib'
+import { useSpherreAccount } from '@/app/context/account-context'
+import { HiMiniArrowPath } from 'react-icons/hi2'
 
 export default function WithdrawPage() {
+  const { accountAddress: spherreAccountAddress } = useSpherreAccount()
+
   const [currentStep, setCurrentStep] = useState(1)
   const router = useRouter()
+  const { address } = useAccount()
   const [isAddressValid, setIsAddressValid] = useState<boolean>(false)
   const [recipientAddress, setRecipientAddress] = useState<string>('')
   const [addressTouched, setAddressTouched] = useState<boolean>(false)
   const [amount, setAmount] = useState<string>('')
   const [selectedToken, setSelectedToken] = useState<string>('STRK')
-  const [availableTokens] = useState<Token[]>([
-    {
-      symbol: 'STRK',
-      balance: 10.0,
-      icon: '/Images/starknet.svg',
-      usdValue: 0.15,
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
+  const [error, setError] = useState<string>('')
+  const [availableTokens, setAvailableTokens] = useState<
+    (TokenInfo & {
+      balance: number
+    })[]
+  >(
+    AVAILABLE_TOKENS.map((token) => ({
+      ...token,
+      balance: 0,
+    })),
+  )
+
+  const selectedTokenAddress =
+    availableTokens.find((t) => t.symbol === selectedToken)?.address || ''
+
+  const { data, error: balanceError } = useScaffoldReadContract({
+    contractConfig: {
+      address: spherreAccountAddress || '',
+      abi: SPHERRE_ACCOUNT_ABI,
     },
-    {
-      symbol: 'ETH',
-      balance: 0.0,
-      usdValue: 0,
+    functionName: 'get_token_balance',
+    args: {
+      token_address: selectedTokenAddress,
     },
-  ])
+    watch: true,
+    enabled: !!spherreAccountAddress,
+  })
+
+  // Update token balance in UI when contract data changes
+  useEffect(() => {
+    if (data && selectedToken) {
+      const selectedTokenData = availableTokens.find(
+        (t) => t.symbol === selectedToken,
+      )
+      if (selectedTokenData) {
+        const balanceInWei = Number(data)
+        const balanceInTokens =
+          balanceInWei / Math.pow(10, selectedTokenData.decimals || 18)
+
+        setAvailableTokens((prev) =>
+          prev.map((token) =>
+            token.symbol === selectedToken
+              ? { ...token, balance: balanceInTokens }
+              : token,
+          ),
+        )
+      }
+    }
+  }, [data, selectedToken, availableTokens])
 
   const onAddressChange = (isValid: boolean) => {
     setIsAddressValid(isValid)
@@ -46,8 +90,10 @@ export default function WithdrawPage() {
     // Only allow numbers and decimals
     if (value === '' || /^\d*\.?\d*$/.test(value)) {
       setAmount(value)
+      setError('') // Clear error when user starts typing
     }
   }
+
   // Validation
   const isValidAmount = (amount: string) => {
     const numAmount = parseFloat(amount)
@@ -62,12 +108,92 @@ export default function WithdrawPage() {
     )
   }
 
-  const handleNext = () => {
-    // Store the withdrawal details and navigate to the next step
+  const { writeAsync, error: writeError } = useScaffoldWriteContract({
+    contractConfig: {
+      address: SPHERRE_CONTRACTS.SPHERRE_ACCOUNT,
+      abi: SPHERRE_ACCOUNT_ABI,
+    },
+    functionName: 'propose_token_transaction',
+    onSuccess: () => {
+      setIsSubmitting(false)
+      setError('')
+      router.push('/dapp')
+    },
+    onError: (error) => {
+      setIsSubmitting(false)
+      setError(error.message || 'Transaction failed. Please try again.')
+    },
+  })
+
+  // Handle balance error
+  useEffect(() => {
+    if (balanceError) {
+      setError('Failed to fetch token balance. Please try again.')
+    }
+  }, [balanceError])
+
+  // Handle write error
+  useEffect(() => {
+    if (writeError) {
+      setError(writeError.message || 'Transaction failed. Please try again.')
+    }
+  }, [writeError])
+
+  const handleNext = async () => {
+    // Clear any previous errors
+    setError('')
 
     // Navigate to the next step (review)
     if (currentStep === 3) {
-      router.push('/dapp')
+      try {
+        setIsSubmitting(true)
+
+        // Validate required fields
+        if (!selectedTokenAddress) {
+          throw new Error('Token address not found')
+        }
+
+        if (!recipientAddress) {
+          throw new Error('Recipient address is required')
+        }
+
+        if (!amount || parseFloat(amount) <= 0) {
+          throw new Error('Please enter a valid amount')
+        }
+
+        // Get the selected token data
+        const selectedTokenData = availableTokens.find(
+          (t) => t.symbol === selectedToken,
+        )
+
+        if (!selectedTokenData) {
+          throw new Error('Selected token not found')
+        }
+
+        // Validate amount against balance
+        if (parseFloat(amount) > selectedTokenData.balance) {
+          throw new Error('Insufficient balance')
+        }
+
+        // Convert amount to wei (U256 format)
+        const amountInWei = BigInt(
+          parseFloat(amount) * Math.pow(10, selectedTokenData.decimals || 18),
+        )
+
+        // Call the contract function with proper arguments
+        await writeAsync({
+          token: selectedTokenAddress,
+          amount: amountInWei,
+          recipient: recipientAddress,
+        })
+      } catch (error) {
+        setIsSubmitting(false)
+        setError(
+          error instanceof Error
+            ? error.message
+            : 'Transaction failed. Please try again.',
+        )
+      }
     } else {
       if (isAddressValid || isValidAmount(amount))
         setCurrentStep((prev) => prev + 1)
@@ -77,8 +203,27 @@ export default function WithdrawPage() {
   const handlePrev = () => {
     if (currentStep === 1) {
       router.push('/dapp')
+    } else {
+      // Reset UI state when going back
+      setCurrentStep((prev) => prev - 1)
+      setError('')
+      setIsSubmitting(false)
+
+      // Reset form state based on which step we're going back from
+      if (currentStep === 3) {
+        // Going back from review step - keep amount and token selection
+        // but reset recipient address validation
+        setIsAddressValid(false)
+        setAddressTouched(false)
+      } else if (currentStep === 2) {
+        // Going back from token/amount step - reset amount and token
+        setAmount('')
+        setSelectedToken('STRK')
+        setIsAddressValid(false)
+        setRecipientAddress('')
+        setAddressTouched(false)
+      }
     }
-    setCurrentStep((prev) => (prev <= 1 ? 1 : prev - 1))
   }
 
   const handleCancel = () => {
@@ -96,8 +241,13 @@ export default function WithdrawPage() {
     <div className="min-h-screen bg-[#000] text-white pt-16 pl-6">
       <div className="flex items-center mb-6 md:mb-0">
         <Button
-          className="p-2 bg-gray-800 rounded-lg hover:bg-gray-600 transition duration-200 px-[1.25rem]"
+          className={`p-2 rounded-lg transition duration-200 px-[1.25rem] ${
+            address
+              ? 'bg-gray-800 hover:bg-gray-600'
+              : 'bg-gray-600 opacity-50 cursor-not-allowed'
+          }`}
           onClick={() => handlePrev()}
+          disabled={!address || isSubmitting}
         >
           <ArrowLeft className="h-4 w-4 text-white" />
         </Button>
@@ -120,6 +270,15 @@ export default function WithdrawPage() {
               'Please review your information before withdrawing.'}
           </p>
 
+          {!address && (
+            <div className="bg-yellow-900/20 border border-yellow-600/30 rounded-lg p-4 mb-6 text-center">
+              <p className="text-yellow-400 font-medium">
+                Please connect your wallet to continue with the withdrawal
+                process.
+              </p>
+            </div>
+          )}
+
           {currentStep === 1 && (
             <WithdrawalStepOne
               isAddressValid={isAddressValid}
@@ -139,24 +298,41 @@ export default function WithdrawPage() {
               selectedToken={selectedToken}
             />
           )}
-          {currentStep === 3 && <WithdrawalReviewPage />}
+          {currentStep === 3 && (
+            <WithdrawalReviewPage
+              recipientAddress={recipientAddress}
+              amount={amount}
+              selectedToken={selectedToken}
+              availableTokens={availableTokens}
+              spherreAccountAddress={spherreAccountAddress}
+            />
+          )}
 
+          {/* Error Display */}
+          {error && (
+            <div className="bg-red-900/20 border border-red-600/30 rounded-lg p-3 mb-4 ">
+              <p className="text-red-400 text-sm">Withdrawal Failed: {error}</p>
+            </div>
+          )}
           {/* Action Buttons */}
           <div className="grid grid-cols-2 gap-2 sm:gap-4">
             <button
               onClick={handleCancel}
-              className="py-2 sm:py-3 px-3 sm:px-4 text-sm sm:text-base bg-[#272729] text-white rounded-lg hover:bg-gray-700 transition-colors"
+              disabled={isSubmitting}
+              className="py-2 sm:py-3 px-3 sm:px-4 text-sm sm:text-base bg-[#272729] text-white rounded-lg hover:bg-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Cancel
             </button>
             <button
               onClick={handleNext}
               disabled={
+                !address ||
+                isSubmitting ||
                 (!isAddressValid && currentStep === 1) ||
                 (!isValidAmount(amount) && currentStep === 2) ||
                 (currentStep === 3 && !isAddressValid)
               }
-              className={`py-2 sm:py-3 px-3 sm:px-4 text-sm sm:text-base rounded-lg disabled:opacity-50 disabled:cursor-not-allowed ${
+              className={`py-2 flex items-center justify-center gap-1 sm:py-3 px-3 sm:px-4 text-sm sm:text-base rounded-lg disabled:opacity-50 disabled:cursor-not-allowed ${
                 (isAddressValid && currentStep === 1) ||
                 (isValidAmount(amount) && currentStep === 2) ||
                 (currentStep === 3 && isAddressValid)
@@ -164,7 +340,14 @@ export default function WithdrawPage() {
                   : 'bg-primary/50 cursor-not-allowed'
               } transition-colors`}
             >
-              {currentStep === 3 ? 'Execute' : 'Next'}
+              {isSubmitting && (
+                <HiMiniArrowPath className="animate-spin" size={20} />
+              )}
+              {isSubmitting
+                ? 'Processing...'
+                : currentStep === 3
+                  ? 'Confirm'
+                  : 'Next'}
             </button>
           </div>
           {currentStep === 3 && (

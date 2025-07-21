@@ -43,12 +43,12 @@ export function useTokenBalances() {
 
         for (const token of COMMON_TOKENS_SEPOLIA) {
           try {
-            const balance = await readContractFunction(
-              'balance_of',
-              token.address,
-              ERC20_ABI,
-              [accountAddress],
-            )
+            const balance = await readContractFunction({
+              functionName: 'balance_of',
+              contractAddress: token.address,
+              abi: ERC20_ABI,
+              args: [accountAddress],
+            })
 
             rawData.push({
               symbol: token.symbol,

@@ -37,10 +37,6 @@ const DappDeposit = () => {
     TOKEN_ADDRESSES.ETH as `0x${string}`,
     userAddress,
   )
-  const { balance: usdcBalance } = useTokenBalance(
-    TOKEN_ADDRESSES.USDC as `0x${string}`,
-    userAddress,
-  )
 
   // Available tokens with balances > 0
   const availableTokens: TokenInfo[] = [
@@ -60,14 +56,6 @@ const DappDeposit = () => {
       balance: ethBalance,
       icon: '/Images/eth.svg',
     },
-    {
-      symbol: 'USDC',
-      name: 'USD Coin',
-      address: TOKEN_ADDRESSES.USDC,
-      decimals: 6,
-      balance: usdcBalance,
-      icon: '/Images/usdc.svg',
-    },
   ].filter((token) => token.balance > 0)
 
   // Get selected token address
@@ -77,8 +65,7 @@ const DappDeposit = () => {
         return TOKEN_ADDRESSES.STRK
       case 'ETH':
         return TOKEN_ADDRESSES.ETH
-      case 'USDC':
-        return TOKEN_ADDRESSES.USDC
+
       default:
         return TOKEN_ADDRESSES.STRK
     }
