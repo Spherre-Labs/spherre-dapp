@@ -6,7 +6,6 @@ import { useSpherreAccount } from '@/app/context/account-context'
 import {
   useApproveTransaction,
   useRejectTransaction,
-  useExecuteTransaction,
 } from '@/hooks/useSpherreHooks'
 
 interface TransactionDetailsHeaderProps {
@@ -26,8 +25,6 @@ export const TransactionDetailsHeader = ({
     useApproveTransaction(accountAddress || '0x0')
   const { writeAsync: rejectAsync, isLoading: isRejecting } =
     useRejectTransaction(accountAddress || '0x0')
-  const { writeAsync: executeAsync, isLoading: isExecuting } =
-    useExecuteTransaction(accountAddress || '0x0')
 
   // Handle transaction actions
   const handleApprove = async () => {
@@ -59,24 +56,6 @@ export const TransactionDetailsHeader = ({
       console.log('Transaction rejected successfully:', transactionId)
     } catch (error) {
       console.error('Failed to reject transaction:', error, {
-        transactionId,
-        accountAddress,
-        errorMessage: error instanceof Error ? error.message : 'Unknown error',
-      })
-    }
-  }
-
-  const handleExecute = async () => {
-    if (!transactionId || !accountAddress) {
-      console.error('Missing transaction ID or account address for execution')
-      return
-    }
-
-    try {
-      await executeAsync({ transaction_id: transactionId })
-      console.log('Transaction executed successfully:', transactionId)
-    } catch (error) {
-      console.error('Failed to execute transaction:', error, {
         transactionId,
         accountAddress,
         errorMessage: error instanceof Error ? error.message : 'Unknown error',
@@ -119,13 +98,6 @@ export const TransactionDetailsHeader = ({
                 className="bg-theme-bg-tertiary border border-theme-border text-theme px-6 py-2 rounded-lg hover:bg-theme-bg-secondary transition-colors duration-200 disabled:opacity-50"
               >
                 {isRejecting ? 'Rejecting...' : 'Reject'}
-              </button>
-              <button
-                onClick={handleExecute}
-                disabled={isExecuting}
-                className="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition-all duration-200 disabled:opacity-50"
-              >
-                {isExecuting ? 'Executing...' : 'Execute'}
               </button>
             </>
           )}

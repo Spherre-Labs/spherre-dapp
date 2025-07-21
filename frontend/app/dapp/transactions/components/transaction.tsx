@@ -10,7 +10,6 @@ import { useSpherreAccount } from '@/app/context/account-context'
 import {
   useApproveTransaction,
   useRejectTransaction,
-  useExecuteTransaction,
 } from '@/hooks/useSpherreHooks'
 import {
   TransactionType,
@@ -37,8 +36,6 @@ export default function Transaction({
     useApproveTransaction(accountAddress || '0x0')
   const { writeAsync: rejectAsync, isLoading: isRejecting } =
     useRejectTransaction(accountAddress || '0x0')
-  const { writeAsync: executeAsync, isLoading: isExecuting } =
-    useExecuteTransaction(accountAddress || '0x0')
 
   const { transaction } = transactionInfo
 
@@ -97,25 +94,6 @@ export default function Transaction({
       console.log('Transaction rejected successfully:', transaction.id)
     } catch (error) {
       console.error('Failed to reject transaction:', error, {
-        transactionId: transaction.id,
-        accountAddress,
-        errorMessage: error instanceof Error ? error.message : 'Unknown error',
-      })
-      // You could add a toast notification here in the future
-    }
-  }
-
-  const handleExecute = async () => {
-    if (!transaction.id || !accountAddress) {
-      console.error('Missing transaction ID or account address for execution')
-      return
-    }
-
-    try {
-      await executeAsync({ transaction_id: transaction.id })
-      console.log('Transaction executed successfully:', transaction.id)
-    } catch (error) {
-      console.error('Failed to execute transaction:', error, {
         transactionId: transaction.id,
         accountAddress,
         errorMessage: error instanceof Error ? error.message : 'Unknown error',
@@ -347,23 +325,16 @@ export default function Transaction({
                   <button
                     onClick={handleApprove}
                     disabled={isApproving}
-                    className="bg-[#6F2FCE] hover:bg-purple-700 text-white px-4 sm:px-6 py-2 rounded-md transition duration-200 text-sm sm:text-base w-full sm:w-1/3 disabled:opacity-50"
+                    className="bg-[#6F2FCE] hover:bg-purple-700 text-white px-4 sm:px-6 py-2 rounded-md transition duration-200 text-sm sm:text-base w-full sm:w-1/2 disabled:opacity-50"
                   >
                     {isApproving ? 'Approving...' : 'Approve'}
                   </button>
                   <button
                     onClick={handleReject}
                     disabled={isRejecting}
-                    className="bg-theme-bg-tertiary hover:bg-theme-border text-theme px-4 sm:px-6 py-2 rounded-md transition duration-200 text-sm sm:text-base w-full sm:w-1/3 border border-theme-border disabled:opacity-50"
+                    className="bg-theme-bg-tertiary hover:bg-theme-border text-theme px-4 sm:px-6 py-2 rounded-md transition duration-200 text-sm sm:text-base w-full sm:w-1/2 border border-theme-border disabled:opacity-50"
                   >
                     {isRejecting ? 'Rejecting...' : 'Reject'}
-                  </button>
-                  <button
-                    onClick={handleExecute}
-                    disabled={isExecuting}
-                    className="bg-green-600 hover:bg-green-700 text-white px-4 sm:px-6 py-2 rounded-md transition duration-200 text-sm sm:text-base w-full sm:w-1/3 disabled:opacity-50"
-                  >
-                    {isExecuting ? 'Executing...' : 'Execute'}
                   </button>
                 </div>
               )}
