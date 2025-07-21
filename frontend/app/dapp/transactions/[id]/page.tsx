@@ -5,6 +5,8 @@ import { TransactionSummary } from './components/TransactionSummary'
 import { TransactionDetails } from './components/TransactionDetails'
 import { useTheme } from '@/app/context/theme-context-provider'
 import { useTransactionDetails } from '@/hooks/useTransactionIntegration'
+import { transactions as allTransactions } from '../data'
+import { type TransactionDisplayInfo } from '@/lib/contracts/types'
 
 interface PageProps {
   params: Promise<{
@@ -32,7 +34,7 @@ export default function TransactionDetailsPage({ params }: PageProps) {
   // Loading state
   if (isLoading) {
     return (
-      <div className="bg-theme-bg-secondary border border-theme-border text-theme p-6 rounded-lg h-[95.5vh] transition-colors duration-300">
+      <div className="bg-theme-bg-secondary border border-theme-border text-theme p-6 rounded-lg min-h-screen transition-colors duration-300">
         <div className="flex justify-center items-center h-full">
           <div className="text-theme-secondary transition-colors duration-300">
             Loading transaction details...
@@ -45,7 +47,7 @@ export default function TransactionDetailsPage({ params }: PageProps) {
   // Error state
   if (error && !isLoading) {
     return (
-      <div className="bg-theme-bg-secondary border border-theme-border text-theme p-6 rounded-lg h-[95.5vh] transition-colors duration-300">
+      <div className="bg-theme-bg-secondary border border-theme-border text-theme p-6 rounded-lg min-h-screen transition-colors duration-300">
         <div className="flex flex-col items-center justify-center h-full">
           <div className="text-red-500 mb-4 text-center">
             Unable to fetch transaction details. Please try again later.
@@ -61,17 +63,67 @@ export default function TransactionDetailsPage({ params }: PageProps) {
     )
   }
 
-  // Transaction not found
+  // Transaction not found - try to find in mock data as fallback
   if (!transactionInfo) {
+    const mockTransaction = allTransactions.find(
+      (t) => t.id.toString() === resolvedParams.id,
+    )
+
+    if (!mockTransaction) {
+      return (
+        <div className="text-theme text-center p-10 bg-theme min-h-screen transition-colors duration-300">
+          Transaction not found.
+        </div>
+      )
+    }
+
+    // Convert mock data to TransactionDisplayInfo format
+    const fallbackTransactionInfo: TransactionDisplayInfo = {
+      transaction: {
+        id: BigInt(mockTransaction.id),
+        status: mockTransaction.status,
+        proposer: mockTransaction.initiator.address || '0x0',
+        approved: mockTransaction.approvals.map(
+          (a) => a.member.address || '0x0',
+        ),
+        rejected: mockTransaction.rejections.map(
+          (r) => r.member.address || '0x0',
+        ),
+        dateCreated: BigInt(Date.now()),
+        transactionType:
+          mockTransaction.type === 'withdraw'
+            ? 5
+            : mockTransaction.type === 'swap'
+              ? 6
+              : 7,
+        data: {
+          token: 'STRK',
+          amount: BigInt(
+            Math.floor(parseFloat(mockTransaction.amount.split(' ')[0] || '0')),
+          ),
+          recipient: mockTransaction.toAddress,
+        },
+      },
+      title: `${mockTransaction.type.charAt(0).toUpperCase() + mockTransaction.type.slice(1)} ${mockTransaction.amount}`,
+      subtitle: `To: ${mockTransaction.toAddress}`,
+      amount: mockTransaction.amount,
+      recipient: mockTransaction.toAddress,
+    }
+
     return (
-      <div className="text-theme text-center p-10 bg-theme min-h-screen transition-colors duration-300">
-        Transaction not found.
+      <div className="bg-theme-bg-secondary border border-theme-border text-theme p-6 rounded-lg min-h-screen transition-colors duration-300">
+        <TransactionDetailsHeader
+          status={fallbackTransactionInfo.transaction.status}
+          transactionId={fallbackTransactionInfo.transaction.id}
+        />
+        <TransactionSummary transactionInfo={fallbackTransactionInfo} />
+        <TransactionDetails transactionInfo={fallbackTransactionInfo} />
       </div>
     )
   }
 
   return (
-    <div className="bg-theme-bg-secondary border border-theme-border text-theme p-6 rounded-lg h-[95.5vh] transition-colors duration-300">
+    <div className="bg-theme-bg-secondary border border-theme-border text-theme p-6 rounded-lg min-h-screen transition-colors duration-300">
       <TransactionDetailsHeader
         status={transactionInfo.transaction.status}
         transactionId={transactionInfo.transaction.id}
