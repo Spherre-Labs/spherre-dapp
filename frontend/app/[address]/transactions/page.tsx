@@ -7,32 +7,44 @@ import {
   Transaction as TransactionType,
 } from './data'
 import { useTheme } from '@/app/context/theme-context-provider'
-import { TransactionDisplayInfo, TransactionType as ContractTransactionType } from '@/lib/contracts/types'
+import {
+  TransactionDisplayInfo,
+  TransactionType as ContractTransactionType,
+} from '@/lib/contracts/types'
 
 // Convert mock data to TransactionDisplayInfo format
-const convertToTransactionDisplayInfo = (transaction: TransactionType): TransactionDisplayInfo => {
+const convertToTransactionDisplayInfo = (
+  transaction: TransactionType,
+): TransactionDisplayInfo => {
   return {
     transaction: {
       id: BigInt(transaction.id),
       transactionType: ContractTransactionType.TOKEN_SEND, // Default type
-      status: transaction.status === 'Pending' ? 'Pending' : transaction.status === 'Executed' ? 'Executed' : 'Rejected',
+      status:
+        transaction.status === 'Pending'
+          ? 'Pending'
+          : transaction.status === 'Executed'
+            ? 'Executed'
+            : 'Rejected',
       proposer: transaction.initiator.name,
       executor: transaction.account.address,
-      approved: transaction.approvals.map(a => a.member.name),
-      rejected: transaction.rejections.map(a => a.member.name),
+      approved: transaction.approvals.map((a) => a.member.name),
+      rejected: transaction.rejections.map((a) => a.member.name),
       dateCreated: BigInt(Date.now()),
-      dateExecuted: transaction.dateExecuted ? BigInt(new Date(transaction.dateExecuted).getTime()) : undefined,
+      dateExecuted: transaction.dateExecuted
+        ? BigInt(new Date(transaction.dateExecuted).getTime())
+        : undefined,
       data: {
         token: 'STRK',
         amount: BigInt(parseFloat(transaction.amount) * 1e18),
         recipient: transaction.toAddress,
-      }
+      },
     },
     title: `${transaction.type} ${transaction.amount} ${transaction.tokenIn?.name || 'STRK'}`,
     subtitle: `To: ${transaction.toAddress}`,
     amount: transaction.amount,
     recipient: transaction.toAddress,
-    token: transaction.tokenIn?.name || 'STRK'
+    token: transaction.tokenIn?.name || 'STRK',
   }
 }
 
@@ -72,8 +84,12 @@ export default function TransactionPage() {
                 >
                   <Transaction
                     transactionInfo={transactionInfo}
-                    isExpanded={expandedId === Number(transactionInfo.transaction.id)}
-                    onToggle={() => handleToggle(Number(transactionInfo.transaction.id))}
+                    isExpanded={
+                      expandedId === Number(transactionInfo.transaction.id)
+                    }
+                    onToggle={() =>
+                      handleToggle(Number(transactionInfo.transaction.id))
+                    }
                   />
                 </div>
               ))}
@@ -83,4 +99,4 @@ export default function TransactionPage() {
       </div>
     </div>
   )
-} 
+}
