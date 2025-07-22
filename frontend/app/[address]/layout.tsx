@@ -46,14 +46,12 @@ export const routes = (address: `0x${string}` | null) => ({
 })
 
 export default function DappLayout({ children, params }: DappLayoutProps) {
-  // State to track sidebar expansion
+  // All hooks at the top - ALWAYS called in the same order
   const [sidebarExpanded, setSidebarExpanded] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
   const pathname = usePathname()
   const selectedPage = pathname
   const account_address = useSpherreAccount().accountAddress
-
-  // Unwrap params with React.use() for future-proofing
   const { address } = React.use(params)
   const addressToUse = account_address ?? (address as `0x${string}`)
   const { data: accountName } = useGetAccountName(addressToUse)
@@ -119,8 +117,10 @@ export default function DappLayout({ children, params }: DappLayoutProps) {
     },
   ]
 
-  // Check for mobile screen size
+  // Check for mobile screen size - only use window after mount
   useEffect(() => {
+    if (typeof window === 'undefined') return
+
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 768)
     }
@@ -131,8 +131,10 @@ export default function DappLayout({ children, params }: DappLayoutProps) {
     return () => window.removeEventListener('resize', checkMobile)
   }, [])
 
-  // Listen for sidebar expansion state changes
+  // Listen for sidebar expansion state changes - only use document after mount
   useEffect(() => {
+    if (typeof window === 'undefined') return
+
     const sidebar = document.getElementById('sidebar')
 
     const handleSidebarHover = () => {

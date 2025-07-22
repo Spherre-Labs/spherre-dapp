@@ -12,6 +12,8 @@ import { useTheme } from '@/app/context/theme-context-provider'
 type ToggleType = 'email' | 'browser' | null
 
 export default function PreferencesPage() {
+  const [mounted, setMounted] = useState(false)
+  useEffect(() => setMounted(true), [])
   const { theme, setTheme } = useTheme()
   const [emailNotifications, setEmailNotifications] = useState(false)
   const [browserNotifications, setBrowserNotifications] = useState(false)
@@ -29,6 +31,8 @@ export default function PreferencesPage() {
     if (savedEmail) setEmailNotifications(savedEmail === 'true')
     if (savedBrowser) setBrowserNotifications(savedBrowser === 'true')
   }, [])
+
+  if (!mounted) return null
 
   const handleThemeChange = (newTheme: 'dark' | 'light' | 'system') => {
     setTheme(newTheme)

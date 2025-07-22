@@ -9,6 +9,8 @@ import { Check, Copy, Info, Pencil, TimerReset } from 'lucide-react'
 import React, { useEffect, useRef, useState } from 'react'
 
 const SmartWillPage = () => {
+  const [mounted, setMounted] = useState(false)
+  useEffect(() => setMounted(true), [])
   const [isModalOpen, setIsModalOpen] = useState(true)
   const [isWillModalOpen, setIsWillModalOpen] = useState(false)
   const [walletType, setWalletType] = useState('Primary')
@@ -99,6 +101,8 @@ const SmartWillPage = () => {
       console.log('Failed to copy')
     }
   }
+
+  if (!mounted) return null
 
   return (
     <div className="p-4 font-['Nunito_Sans'] bg-theme min-h-screen transition-colors duration-300">

@@ -27,18 +27,13 @@ const Sidebar = ({
   sidebarExpanded,
   setSidebarExpanded,
 }: SidebarProps) => {
-  // State to track if component is mounted (for hydration safety)
   const [mounted, setMounted] = useState(false)
+  useEffect(() => setMounted(true), [])
 
   // State to track sidebar expansion
   const [expanded, setExpanded] = useState(false) // Start with false for SSR
 
   const { accountAddress } = useSpherreAccount()
-
-  // Set mounted state after hydration
-  useEffect(() => {
-    setMounted(true)
-  }, [])
 
   // Load saved preference after mount
   useEffect(() => {
@@ -121,6 +116,8 @@ const Sidebar = ({
   )
 
   const isExpanded = isMobile ? sidebarExpanded : expanded
+
+  if (!mounted) return null
 
   return (
     <>

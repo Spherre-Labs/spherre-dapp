@@ -5,10 +5,13 @@ import Loader from '../../../components/modals/Loader'
 import SuccessModal from '../../../components/modals/SuccessModal'
 
 const SecurityPage = () => {
+  const [mounted, setMounted] = useState(false)
   const [privacyOn, setPrivacyOn] = useState(false)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false)
+
+  useEffect(() => setMounted(true), [])
 
   useEffect(() => {
     const savedPrivacy = localStorage.getItem('spherre-privacy-settings')
@@ -41,6 +44,8 @@ const SecurityPage = () => {
   const handleCloseSuccessModal = () => {
     setIsSuccessModalOpen(false)
   }
+
+  if (!mounted) return null
 
   return (
     <div className="w-full px-0 bg-theme min-h-screen transition-colors duration-300">
