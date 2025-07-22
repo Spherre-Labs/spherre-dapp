@@ -1,9 +1,9 @@
 'use client'
 
 import Nav from '@/components/onboarding/Nav'
-import ConfirmationFooter from '../../components/ConfirmationFooter'
+import ConfirmationFooter from '../../../components/ConfirmationFooter'
 // import Header from '../components/Header'
-import Stepper from '../components/Stepper'
+import Stepper from '../../components/Stepper'
 import ReviewAccount from './ReviewAccount'
 import { useTheme } from '@/app/context/theme-context-provider'
 
