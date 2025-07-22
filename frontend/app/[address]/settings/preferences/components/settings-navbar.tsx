@@ -3,17 +3,19 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useTheme } from '@/app/context/theme-context-provider'
+import { useSpherreAccount } from '@/app/context/account-context'
 
 export default function SettingsNavbar() {
   const pathname = usePathname()
+  const { accountAddress } = useSpherreAccount()
   useTheme()
 
   const tabs = [
-    { name: 'Profile', href: '/dapp/settings/profile' },
-    { name: 'Wallet & Account', href: '/dapp/settings/wallet' },
-    { name: 'Preferences', href: '/dapp/settings/preferences' },
-    { name: 'Security', href: '/dapp/settings/security' },
-    { name: 'Smart Lock', href: '/dapp/settings/smart-lock' },
+    { name: 'Profile', href: `/${accountAddress}/settings/profile` },
+    { name: 'Wallet & Account', href: `/${accountAddress}/settings/wallet` },
+    { name: 'Preferences', href: `/${accountAddress}/settings/preferences` },
+    { name: 'Security', href: `/${accountAddress}/settings/security` },
+    { name: 'Smart Lock', href: `/${accountAddress}/settings/smart-lock` },
   ]
 
   const isActive = (href: string) => pathname === href
