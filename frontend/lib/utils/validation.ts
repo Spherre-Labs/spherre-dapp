@@ -35,7 +35,7 @@ export function addressToFelt(address: string): string {
 // Convert ByteArray (felt values) back to string
 export function byteArrayToString(byteArray: string[]): string {
   console.log('Converting ByteArray:', byteArray)
-  
+
   if (!Array.isArray(byteArray) || byteArray.length === 0) {
     console.log('Empty or invalid ByteArray')
     return ''
@@ -45,7 +45,7 @@ export function byteArrayToString(byteArray: string[]): string {
     // The first element is the number of full words
     const numFullWords = parseInt(byteArray[0])
     console.log('Number of full words:', numFullWords)
-    
+
     const result: number[] = []
 
     // Process full words (31 bytes each)

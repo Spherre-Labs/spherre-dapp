@@ -18,8 +18,12 @@ import SmartLock from '@/public/Images/Smart-lock.png'
 import { NavItem } from './navigation'
 import { usePathname } from 'next/navigation'
 import { useSpherreAccount } from '../context/account-context'
-import { spherreAccountConfig, useGetAccountName, useGetAccountDetails } from '@/lib'
-import React from 'react';
+import {
+  spherreAccountConfig,
+  useGetAccountName,
+  useGetAccountDetails,
+} from '@/lib'
+import React from 'react'
 
 interface DappLayoutProps {
   children: ReactNode
@@ -52,11 +56,11 @@ export default function DappLayout({ children, params }: DappLayoutProps) {
   const pathname = usePathname()
   const selectedPage = pathname
   const account_address = useSpherreAccount().accountAddress
-  
+
   // Unwrap params with React.use()
-  const { address } = React.use(params);
-  const addressToUse = account_address ?? (address as `0x${string}`);
-  const { data: accountName } = useGetAccountName(addressToUse);
+  const { address } = React.use(params)
+  const addressToUse = account_address ?? (address as `0x${string}`)
+  const { data: accountName } = useGetAccountName(addressToUse)
   const [title, setTitle] = useState(pathname)
 
   // Define navigation items
