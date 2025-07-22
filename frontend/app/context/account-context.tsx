@@ -77,8 +77,11 @@ export const useSpherreAccount = () => {
       'useSpherreAccount must be used within a SpherreAccountProvider',
     )
   }
-  if (params.address) {
-    context.setAccountAddress(params.address as `0x${string}`)
-  }
+  useEffect(()=>{
+    if (params.address) {
+      context.setAccountAddress(params.address as `0x${string}`)
+    }
+  },[params.address])
+  
   return context
 }
