@@ -95,7 +95,9 @@ const Members = () => {
 
   // Get account info from contract
   const { accountAddress } = useContext(SpherreAccountContext)
-  const { members: contractMembers, isLoading } = useAccountInfo(accountAddress || '0x0')
+  const { members: contractMembers, isLoading } = useAccountInfo(
+    accountAddress || '0x0',
+  )
 
   // Modal state
   const [isRemoveModalOpen, setIsRemoveModalOpen] = useState(false)
@@ -107,31 +109,34 @@ const Members = () => {
   // Transform contract members to UI format
   useEffect(() => {
     if (contractMembers && contractMembers.length > 0) {
-      const transformedMembers: Member[] = contractMembers.map((memberAddress, index) => {
-        // Generate a truncated address for display
-        const truncatedAddress = memberAddress.length > 10 
-          ? `${memberAddress.slice(0, 6)}...${memberAddress.slice(-4)}`
-          : memberAddress
+      const transformedMembers: Member[] = contractMembers.map(
+        (memberAddress, index) => {
+          // Generate a truncated address for display
+          const truncatedAddress =
+            memberAddress.length > 10
+              ? `${memberAddress.slice(0, 6)}...${memberAddress.slice(-4)}`
+              : memberAddress
 
-        // Assign default roles and styling based on index
-        let roles: string[] = ['Voter']
-        if (index === 0) roles = ['Voter', 'Proposer', 'Executer']
-        else if (index === 1) roles = ['Voter', 'Proposer']
+          // Assign default roles and styling based on index
+          let roles: string[] = ['Voter']
+          if (index === 0) roles = ['Voter', 'Proposer', 'Executer']
+          else if (index === 1) roles = ['Voter', 'Proposer']
 
-        // Assign avatar based on index (cycle through available images)
-        const avatarIndex = (index % 3) + 1
-        const image = `/member${avatarIndex}.svg`
+          // Assign avatar based on index (cycle through available images)
+          const avatarIndex = (index % 3) + 1
+          const image = `/member${avatarIndex}.svg`
 
-        return {
-          id: index + 1,
-          name: `Member ${index + 1}`,
-          address: truncatedAddress,
-          fullAddress: memberAddress,
-          roles,
-          dateAdded: '24 Mar 2025', // You might want to get this from contract
-          image,
-        }
-      })
+          return {
+            id: index + 1,
+            name: `Member ${index + 1}`,
+            address: truncatedAddress,
+            fullAddress: memberAddress,
+            roles,
+            dateAdded: '24 Mar 2025', // You might want to get this from contract
+            image,
+          }
+        },
+      )
       setMembers(transformedMembers)
     } else {
       setMembers([])
@@ -274,7 +279,9 @@ const Members = () => {
 
   if (isLoading) {
     return (
-      <div className={`${nunito.className} bg-theme min-h-screen p-3 sm:p-4 lg:p-5 py-6 sm:py-8 lg:py-10 overflow-x-hidden transition-colors duration-300`}>
+      <div
+        className={`${nunito.className} bg-theme min-h-screen p-3 sm:p-4 lg:p-5 py-6 sm:py-8 lg:py-10 overflow-x-hidden transition-colors duration-300`}
+      >
         <div className="flex items-center justify-center h-64">
           <div className="text-theme text-lg">Loading members...</div>
         </div>
