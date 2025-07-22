@@ -53,8 +53,8 @@ export default function DappLayout({ children, params }: DappLayoutProps) {
   const selectedPage = pathname
   const account_address = useSpherreAccount().accountAddress
 
-  // Unwrap params directly
-  const { address } = params
+  // Unwrap params with React.use() for future-proofing
+  const { address } = React.use(params)
   const addressToUse = account_address ?? (address as `0x${string}`)
   const { data: accountName } = useGetAccountName(addressToUse)
   const [title, setTitle] = useState(pathname)
