@@ -2,7 +2,7 @@
 import { ReactNode } from 'react'
 
 import { useState, useEffect } from 'react'
-import Sidebar from '../dapp/Sidebar'
+import Sidebar from './Sidebar'
 import Navbar from './Navbar'
 import Dashboard from '@/public/Images/Dash.png'
 import Trade from '@/public/Images/Trade.png'
@@ -15,60 +15,63 @@ import Apps from '@/public/Images/Apps.png'
 import Settings from '@/public/Images/Settings.png'
 import Support from '@/public/Images/Support.png'
 import SmartLock from '@/public/Images/Smart-lock.png'
-import { getSelectedPage, NavItem } from '@/app/dapp/navigation'
-import { usePathname } from 'next/navigation'
+import { getSelectedPage, NavItem } from './navigation'
+import { useParams, usePathname } from 'next/navigation'
 
 interface DappLayoutProps {
-  children: ReactNode
+  children: ReactNode,
+  params: {address: string}
 }
 
-export default function DappLayout({ children }: DappLayoutProps) {
+export default function DappLayout({ children, params }: DappLayoutProps) {
+  
   // State to track sidebar expansion
   const [sidebarExpanded, setSidebarExpanded] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
+  const account_address = params.address;
 
   // Define navigation items
   const navItems: NavItem[] = [
-    { name: 'Dashboard', icon: Dashboard, route: '/dapp/' },
-    { name: 'Trade', icon: Trade, route: '/dapp/trade', comingSoon: true },
-    { name: 'Members', icon: Members, route: '/dapp/members' },
+    { name: 'Dashboard', icon: Dashboard, route: `/${account_address}/` },
+    { name: 'Trade', icon: Trade, route: `/${account_address}/trade`, comingSoon: true },
+    { name: 'Members', icon: Members, route: `/${account_address}/members` },
     {
       name: 'Transactions',
       icon: Transactions,
-      route: '/dapp/transactions',
+      route: `/${account_address}/transactions`,
     },
-    { name: 'Stake', icon: Stake, comingSoon: true, route: '/dapp/stake' },
+    { name: 'Stake', icon: Stake, comingSoon: true, route: `/${account_address}/stake` },
     {
       name: 'Smart Will',
       icon: Stake,
       comingSoon: true,
-      route: '/dapp/smart-will',
+      route: `/${account_address}/smart-will`,
     },
     {
       name: 'Treasury',
       icon: Treasury,
-      route: '/dapp/treasury',
+      route: `/${account_address}/treasury`,
       comingSoon: true,
     },
     {
       name: 'Smart Lock',
       icon: SmartLock,
-      route: '/dapp/smart',
+      route: `/${account_address}/smart`,
       comingSoon: true,
     },
     {
       name: 'Payments',
       icon: Payments,
       comingSoon: true,
-      route: '/dapp/payments',
+      route: `/${account_address}/payments`,
     },
-    { name: 'Apps', icon: Apps, comingSoon: true, route: '/dapp/apps' },
-    { name: 'Settings', icon: Settings, route: '/dapp/settings' },
+    { name: 'Apps', icon: Apps, comingSoon: true, route: `/${account_address}/apps` },
+    { name: 'Settings', icon: Settings, route: `/${account_address}/settings` },
     {
       name: 'Support',
       icon: Support,
       comingSoon: true,
-      route: '/dapp/support',
+      route: `/${account_address}/support`,
     },
   ]
 
