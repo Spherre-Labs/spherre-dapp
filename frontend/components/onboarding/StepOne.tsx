@@ -62,7 +62,7 @@ const StepOne = () => {
       setAccountName(data.accountName)
       setDescription(data.desc)
       // Necessary submit logic
-      router.push('/onboarding/step2')
+      router.push('/create-account/step-2')
     } catch (error) {
       console.error(error)
     }
