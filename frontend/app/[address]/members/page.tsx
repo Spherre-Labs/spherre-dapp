@@ -163,7 +163,7 @@ const Members = () => {
         title: 'Successful Transaction!',
         message:
           'Member has been successfully removed and the transaction has been confirmed.',
-        onClose: hideModal,
+        // onClose: hideModal,
       })
     }, 2000)
   }
