@@ -2,6 +2,7 @@
 import { createContext, useState, ReactNode, useContext } from 'react'
 import { SPHERRE_CONTRACTS } from '@/lib'
 import { validateAndParseAddress } from 'starknet'
+import { useParams } from 'next/navigation'
 
 export const SpherreAccountContext = createContext<{
   accountAddress: `0x${string}` | null
@@ -39,10 +40,14 @@ export const SpherreAccountProvider = ({
 
 export const useSpherreAccount = () => {
   const context = useContext(SpherreAccountContext)
+  const params = useParams();
   if (!context) {
     throw new Error(
       'useSpherreAccount must be used within a SpherreAccountProvider',
     )
+  }
+  if (params.address) {
+    context.setAccountAddress(params.address as `0x${string}`);
   }
   return context
 }

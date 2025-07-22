@@ -4,7 +4,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import logo from '../../public/Images/spherrelogo.png'
 import Image from 'next/image'
 import SidebarProfile from './Profile'
-import { NavItem } from '@/app/dapp/navigation'
+import { NavItem } from './navigation'
 import Link from 'next/link'
 import { X } from 'lucide-react'
 

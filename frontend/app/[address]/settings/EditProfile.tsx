@@ -3,6 +3,7 @@
 import React, { useState } from 'react'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
+import { useSpherreAccount } from '@/app/context/account-context'
 
 interface EditProfileProps {
   onCancel?: () => void
@@ -14,6 +15,7 @@ export default function EditProfile({ onCancel }: EditProfileProps) {
   const [editingEmail, setEditingEmail] = useState(false)
 
   const router = useRouter()
+  const {accountAddress} = useSpherreAccount()
 
   // Image sources - make sure these paths exist in your public folder
   const profile_image = '/images/placeholder-profile.jpg'
@@ -66,7 +68,7 @@ export default function EditProfile({ onCancel }: EditProfileProps) {
     if (onCancel) {
       onCancel()
     } else {
-      router.push('/dapp/settings/profile')
+      router.push(`/${accountAddress}/settings/profile`)
     }
   }
 
