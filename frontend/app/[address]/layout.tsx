@@ -44,7 +44,7 @@ export const routes = (address: `0x${string}` | null) => ({
   support: `/${address}/support`,
 })
 
-export default function DappLayout({ children, params }: DappLayoutProps) {
+export default function DappLayout({ children }: DappLayoutProps) {
   // State to track sidebar expansion
   const [sidebarExpanded, setSidebarExpanded] = useState(false)
   const [isMobile, setIsMobile] = useState(false)

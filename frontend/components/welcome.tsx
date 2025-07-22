@@ -35,17 +35,6 @@ const Welcome = () => {
   const { address } = useAccount()
   const { accountAddress } = useSpherreAccount()
 
-  async function checkForAccount() {
-    // Check for addresses in localStorage
-    const storedAddress = localStorage.getItem('SpherreAddress')
-    if (!storedAddress) {
-      console.log('No account found in localStorage.')
-      return
-    }
-
-    router.push(`/${storedAddress[0]}`)
-  }
-
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -87,10 +76,6 @@ const Welcome = () => {
     { value: 'dark', label: 'Dark', icon: <Moon size={16} /> },
     { value: 'system', label: 'System', icon: <Monitor size={16} /> },
   ]
-  useEffect(() => {
-    // check for accont and navigate to the first account
-    checkForAccount()
-  }, [address])
   return (
     <div className="flex flex-col lg:flex-row bg-theme transition-colors duration-300 min-h-screen">
       {/* Left Section with Image */}

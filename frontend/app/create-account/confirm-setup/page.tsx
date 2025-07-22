@@ -3,55 +3,37 @@ import StepIndicators from '../../../components/onboarding/StepIndicators'
 import SphereAccountReview from '../../components/SphereAccountReview'
 import MembersThreshold from '../../components/MembersThreshold'
 import { useRouter } from 'next/navigation'
-import { useMulticall } from '@/hooks/useMulticall'
-import {
-  spherreConfig,
-  useGetDeploymentFee,
-  useGetFeesTokenAddress,
-  useScaffoldWriteContract,
-} from '@/lib'
-import { useAccount, useConnect } from '@starknet-react/core'
-import { InvokeFunctionResponse, RpcProvider } from 'starknet'
+import { spherreConfig, useScaffoldWriteContract } from '@/lib'
+import { useAccount } from '@starknet-react/core'
+import { InvokeFunctionResponse } from 'starknet'
 import { useGlobalModal } from '@/app/components/modals/GlobalModalProvider'
 import { useOnboarding } from '@/context/OnboardingContext'
-import { ERC20_ABI } from '@/lib/contracts/erc20-contracts'
-import { use, useContext, useEffect } from 'react'
+import { useContext, useEffect } from 'react'
 import { SpherreAccountContext } from '@/app/context/account-context'
 import { routes } from '@/app/[address]/layout'
 import { useScaffoldEventHistory } from '@/hooks/useScaffoldEventHistory'
-import { set } from 'zod'
 
 export default function ConfirmSetup() {
   const router = useRouter()
-  const { showProcessing, showError, showSuccess, hideModal } = useGlobalModal()
+  const { showProcessing, showError, hideModal } = useGlobalModal()
 
-  const { data: fee } = useGetDeploymentFee(`0x11`)
-  const feeToken = useGetFeesTokenAddress()
   const onboarding = useOnboarding()
   const { setAccountAddress } = useContext(SpherreAccountContext)
 
-  const provider = new RpcProvider({
-    nodeUrl:
-      process.env.NEXT_PUBLIC_RPC_URL ||
-      'https://free-rpc.nethermind.io/sepolia-juno',
+  const { writeAsync, isLoading } = useScaffoldWriteContract({
+    contractConfig: spherreConfig,
+    functionName: 'deploy_account',
+    onSuccess: (data) => {
+      onSuccessfulAccountCreation(data)
+    },
+    onError: (err) => {
+      hideModal()
+      showError({
+        title: 'Transaction Failed',
+        errorText: err instanceof Error ? err.message : 'Something went wrong.',
+      })
+    },
   })
-
-  const { writeAsync, data, isLoading, isSuccess, error } =
-    useScaffoldWriteContract({
-      contractConfig: spherreConfig,
-      functionName: 'deploy_account',
-      onSuccess: (data) => {
-        onSuccessfulAccountCreation(data)
-      },
-      onError: (err) => {
-        hideModal()
-        showError({
-          title: 'Transaction Failed',
-          errorText:
-            err instanceof Error ? err.message : 'Something went wrong.',
-        })
-      },
-    })
   const { account, address } = useAccount()
 
   const { data: eventData } = useScaffoldEventHistory({
