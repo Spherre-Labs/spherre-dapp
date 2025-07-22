@@ -43,25 +43,33 @@ export default function Transaction({
 
   const { transaction } = transactionInfo
 
-  // Define type-specific elements
+  // Define type-specific elements with proper icon mapping
   const getTypeIcon = (type: TransactionType): ReactNode => {
+    // Map transaction type to appropriate icon based on the transaction title
+    const title = transactionInfo.title.toLowerCase()
+
+    // Check title first for accurate mapping (since title includes the actual transaction type)
+    if (title.startsWith('withdraw')) {
+      return <Image src={withdraw} width={20} height={20} alt="withdraw" />
+    } else if (title.startsWith('limitswap')) {
+      return <Image src={limit} width={20} height={20} alt="limit swap" />
+    } else if (title.startsWith('swap')) {
+      return <Image src={swap} width={20} height={20} alt="swap" />
+    }
+
+    // Fallback to contract type mapping for other transaction types
     switch (type) {
       case TransactionType.TOKEN_SEND:
-        return (
-          <Image src={withdraw} width={20} height={20} alt="token transfer" />
-        )
+        return <Image src={withdraw} width={20} height={20} alt="withdraw" />
       case TransactionType.NFT_SEND:
-        return <Image src={swap} width={20} height={20} alt="nft transfer" />
+        return <Image src={swap} width={20} height={20} alt="swap" />
+      case TransactionType.SMART_TOKEN_LOCK:
+        return <Image src={limit} width={20} height={20} alt="limit swap" />
       case TransactionType.MEMBER_ADD:
       case TransactionType.MEMBER_REMOVE:
       case TransactionType.MEMBER_PERMISSION_EDIT:
-        return <Image src={limit} width={20} height={20} alt="member action" />
       case TransactionType.THRESHOLD_CHANGE:
-        return (
-          <Image src={limit} width={20} height={20} alt="threshold change" />
-        )
-      case TransactionType.SMART_TOKEN_LOCK:
-        return <Image src={swap} width={20} height={20} alt="smart lock" />
+        return <Image src={limit} width={20} height={20} alt="admin action" />
       default:
         return <Image src={withdraw} width={20} height={20} alt="transaction" />
     }
@@ -83,7 +91,6 @@ export default function Transaction({
         accountAddress,
         errorMessage: error instanceof Error ? error.message : 'Unknown error',
       })
-      // You could add a toast notification here in the future
     }
   }
 
@@ -102,7 +109,6 @@ export default function Transaction({
         accountAddress,
         errorMessage: error instanceof Error ? error.message : 'Unknown error',
       })
-      // You could add a toast notification here in the future
     }
   }
 
@@ -121,7 +127,6 @@ export default function Transaction({
         accountAddress,
         errorMessage: error instanceof Error ? error.message : 'Unknown error',
       })
-      // You could add a toast notification here in the future
     }
   }
 
@@ -418,7 +423,7 @@ export default function Transaction({
               )}
             </div>
             <Link
-              href={routes(accountAddress).transactionDetails(
+              href={routes(accountAddress || '0x0').transactionDetails(
                 transaction.id.toString(),
               )}
             >

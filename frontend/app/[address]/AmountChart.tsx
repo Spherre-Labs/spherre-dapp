@@ -48,6 +48,7 @@ type ChartDataType = ChartData<'line', number[], Date>
 const AmountAnalysisChart: React.FC<AmountAnalysisChartProps> = ({
   initialDateRange = '1M',
 }) => {
+  const [mounted, setMounted] = useState(false)
   const { actualTheme } = useTheme()
   const [dateRange, setDateRange] = useState<DateRangeType>(initialDateRange)
   const [chartData, setChartData] = useState<ChartDataType>({
@@ -58,6 +59,10 @@ const AmountAnalysisChart: React.FC<AmountAnalysisChartProps> = ({
   const [selectedYear, setSelectedYear] = useState<string>(
     moment().format('YYYY'),
   )
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   // Available years (last 7 years)
   const availableYears = Array.from({ length: 7 }, (_, i) =>
@@ -87,8 +92,11 @@ const AmountAnalysisChart: React.FC<AmountAnalysisChartProps> = ({
       const currentYear = parseInt(moment().format('YYYY'))
       const selectedYearInt = year ? parseInt(year) : currentYear
 
-      // Base value for the chart (starting point)
-      let baseValue = 500 + Math.random() * 500
+      // Base value for the chart (starting point) - only use Math.random after mount
+      let baseValue = 500
+      if (mounted) {
+        baseValue = 500 + Math.random() * 500
+      }
 
       switch (range) {
         case '1D':
@@ -102,8 +110,10 @@ const AmountAnalysisChart: React.FC<AmountAnalysisChartProps> = ({
           for (let i = 0; i < 24; i++) {
             const date = moment(dayStart).add(i, 'hours').toDate()
 
-            // Small random changes for hourly data
-            baseValue += (Math.random() - 0.5) * 20
+            // Small random changes for hourly data - only after mount
+            if (mounted) {
+              baseValue += (Math.random() - 0.5) * 20
+            }
 
             data.push({
               date,
@@ -128,8 +138,10 @@ const AmountAnalysisChart: React.FC<AmountAnalysisChartProps> = ({
           for (let i = 0; i < 7; i++) {
             const date = moment(weekStart).add(i, 'days').toDate()
 
-            // Slightly larger changes for daily data
-            baseValue += (Math.random() - 0.5) * 50
+            // Slightly larger changes for daily data - only after mount
+            if (mounted) {
+              baseValue += (Math.random() - 0.5) * 50
+            }
 
             data.push({
               date,
@@ -154,8 +166,10 @@ const AmountAnalysisChart: React.FC<AmountAnalysisChartProps> = ({
           for (let i = 0; i < 15; i++) {
             const date = moment(monthStart).add(i, 'days').toDate()
 
-            // More noticeable changes for monthly view
-            baseValue += (Math.random() - 0.5) * 60
+            // More noticeable changes for monthly view - only after mount
+            if (mounted) {
+              baseValue += (Math.random() - 0.5) * 60
+            }
 
             data.push({
               date,
@@ -180,8 +194,10 @@ const AmountAnalysisChart: React.FC<AmountAnalysisChartProps> = ({
           for (let i = 0; i < 12; i++) {
             const date = moment(quarterStart).add(i, 'weeks').toDate()
 
-            // Larger changes for 3-month view
-            baseValue += (Math.random() - 0.5) * 100
+            // Larger changes for 3-month view - only after mount
+            if (mounted) {
+              baseValue += (Math.random() - 0.5) * 100
+            }
 
             data.push({
               date,
@@ -201,8 +217,10 @@ const AmountAnalysisChart: React.FC<AmountAnalysisChartProps> = ({
           for (let i = 0; i < 12; i++) {
             const date = moment(yearStart).add(i, 'months').toDate()
 
-            // Significant changes for yearly view
-            baseValue += (Math.random() - 0.5) * 150
+            // Significant changes for yearly view - only after mount
+            if (mounted) {
+              baseValue += (Math.random() - 0.5) * 150
+            }
 
             data.push({
               date,
@@ -225,8 +243,10 @@ const AmountAnalysisChart: React.FC<AmountAnalysisChartProps> = ({
             // Use mid-year point for better visualization
             const date = moment(yearValue, 'YYYY').startOf('year').toDate()
 
-            // Yearly trend with some randomness
-            baseValue += 100 + (Math.random() - 0.3) * 200
+            // Yearly trend with some randomness - only after mount
+            if (mounted) {
+              baseValue += 100 + (Math.random() - 0.3) * 200
+            }
 
             data.push({
               date,
@@ -245,7 +265,7 @@ const AmountAnalysisChart: React.FC<AmountAnalysisChartProps> = ({
       // Ensure data is sorted chronologically
       return data.sort((a, b) => a.date.getTime() - b.date.getTime())
     },
-    [availableYears], // Add availableYears as a dependency since it's used in the ALL case
+    [availableYears, mounted], // Add mounted as a dependency
   )
 
   // Update chart options based on date range
@@ -429,11 +449,13 @@ const AmountAnalysisChart: React.FC<AmountAnalysisChartProps> = ({
   }
 
   useEffect(() => {
+    if (!mounted) return // Only update chart after mount
+
     const data = generateChartData(dateRange, selectedYear)
     setChartData(prepareChartData(data))
     setChartOptions(getChartOptions(dateRange))
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dateRange, selectedYear, actualTheme])
+  }, [dateRange, selectedYear, actualTheme, mounted])
 
   // Date range selector buttons
   const dateRangeOptions: DateRangeType[] = [
@@ -446,13 +468,25 @@ const AmountAnalysisChart: React.FC<AmountAnalysisChartProps> = ({
   ]
 
   // Responsive: detect mobile
-  const isMobile = typeof window !== 'undefined' && window.innerWidth < 640
+  const isMobile =
+    mounted && typeof window !== 'undefined' && window.innerWidth < 640
 
   // Calculate min-width for chart area based on data points (for scroll)
   const minChartWidth =
-    chartData.labels && chartData.labels.length > 0 && isMobile
+    mounted && chartData.labels && chartData.labels.length > 0 && isMobile
       ? Math.max(320, chartData.labels.length * 60) // 60px per point, min 320px
       : '100%'
+
+  if (!mounted) {
+    return (
+      <div className="bg-theme-bg-secondary border border-theme-border rounded-lg p-6 w-full transition-colors duration-300">
+        <div className="animate-pulse">
+          <div className="h-6 bg-theme-bg-tertiary rounded w-1/4 mb-4"></div>
+          <div className="h-64 bg-theme-bg-tertiary rounded"></div>
+        </div>
+      </div>
+    )
+  }
 
   const colors = getThemeColors()
 

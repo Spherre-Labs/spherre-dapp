@@ -30,6 +30,7 @@ export const SpherreAccountProvider = ({
     SPHERRE_CONTRACTS.SPHERRE_ACCOUNT,
   )
 
+  // Load from localStorage after mount, but don't block rendering
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const value = window.localStorage.getItem('SpherreAccountAddress')
@@ -37,9 +38,7 @@ export const SpherreAccountProvider = ({
         _setAccountAddress(value as `0x${string}`)
       } else if (value) {
         console.error('Invalid address in local storage:', value)
-        if (typeof window !== 'undefined') {
-          window.localStorage.removeItem('SpherreAccountAddress')
-        }
+        window.localStorage.removeItem('SpherreAccountAddress')
       }
     }
   }, [])
@@ -58,6 +57,7 @@ export const SpherreAccountProvider = ({
       }
     }
   }
+
   return (
     <SpherreAccountContext.Provider
       value={{
@@ -74,13 +74,27 @@ export const SpherreAccountProvider = ({
 
 export const useSpherreAccount = () => {
   const context = useContext(SpherreAccountContext)
-  const params = useParams()
   if (!context) {
     throw new Error(
-      'useSpherreAccount must be used within a SpherreAccountProvider',
+      'useSpherreAccount must be used within SpherreAccountProvider',
     )
   }
-  // Remove direct setAccountAddress call from render phase
-  // Instead, use a useEffect in the component that uses this hook, or provide a custom hook for this logic
-  return { ...context, params }
+  return context
+}
+
+// Using the current address from the URL as the account address
+export const useCurrentAccountAddress = () => {
+  const params = useParams()
+  const { accountAddress } = useSpherreAccount()
+
+  // If we have an account address from context, use it, otherwise use URL param
+  if (accountAddress) {
+    return accountAddress
+  }
+
+  if (params?.address && typeof params.address === 'string') {
+    return params.address as `0x${string}`
+  }
+
+  return null
 }
