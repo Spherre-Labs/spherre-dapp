@@ -15,8 +15,9 @@ import Apps from '@/public/Images/Apps.png'
 import Settings from '@/public/Images/Settings.png'
 import Support from '@/public/Images/Support.png'
 import SmartLock from '@/public/Images/Smart-lock.png'
-import { getSelectedPage, NavItem } from './navigation'
-import { useParams, usePathname } from 'next/navigation'
+import { NavItem } from './navigation'
+import { usePathname } from 'next/navigation'
+import { useSpherreAccount } from '../context/account-context'
 
 interface DappLayoutProps {
   children: ReactNode,
@@ -28,7 +29,7 @@ export default function DappLayout({ children, params }: DappLayoutProps) {
   // State to track sidebar expansion
   const [sidebarExpanded, setSidebarExpanded] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
-  const account_address = params.address;
+  const account_address = useSpherreAccount().accountAddress;
 
   // Define navigation items
   const navItems: NavItem[] = [
@@ -116,7 +117,7 @@ export default function DappLayout({ children, params }: DappLayoutProps) {
   }, [isMobile])
 
   const pathname = usePathname()
-  const selectedPage = getSelectedPage(pathname)
+  const selectedPage = (pathname)
 
   return (
     <div className="bg-theme min-h-screen overflow-x-hidden transition-colors duration-300">
