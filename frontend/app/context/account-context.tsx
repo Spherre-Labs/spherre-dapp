@@ -23,7 +23,8 @@ export const SpherreAccountProvider = ({
   const [accountAddress, setAccountAddress] = useState<`0x${string}` | null>(
     SPHERRE_CONTRACTS.SPHERRE_ACCOUNT,
   )
-
+  // TODO: Create a functionality to check if the provided accountAddress 
+  // is a valid spherre account address.
   return (
     <SpherreAccountContext.Provider
       value={{
