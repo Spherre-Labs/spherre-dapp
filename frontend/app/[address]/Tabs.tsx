@@ -14,6 +14,9 @@ import strk from '../../public/Images/strk.png'
 import { useTheme } from '@/app/context/theme-context-provider'
 import Loader from '../components/modals/Loader'
 import { getTokenImage } from '@/lib/utils/token_image'
+import { useAccountInfo } from '../../hooks/useSpherreHooks'
+import { useContext } from 'react'
+import { SpherreAccountContext } from '../context/account-context'
 
 export default function Tabs({
   loadingTokenData,
@@ -83,6 +86,12 @@ export default function Tabs({
       image: nft8,
     },
   ]
+
+  const { accountAddress } = useContext(SpherreAccountContext)
+  const { members, isLoading } = useAccountInfo(accountAddress || '0x0')
+
+  if (isLoading) return <div>Loading...</div>
+  if (!members || members.length === 0) return <div>No members found.</div>
 
   return (
     <div className="text-theme transition-colors duration-300">

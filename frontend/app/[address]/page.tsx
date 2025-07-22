@@ -14,9 +14,14 @@ import { SpherreAccountContext } from '../context/account-context'
 export default function DashboardPage() {
   useTheme()
   const [open, setOpen] = useState(false)
+  const [mounted, setMounted] = useState(false)
   const { accountAddress } = useContext(SpherreAccountContext)
   const { tokensDisplay, loadingTokenData } = useTokenBalances()
   const info = useAccountInfo(accountAddress || '0x0')
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   useEffect(() => {
     console.log(tokensDisplay)
@@ -43,6 +48,8 @@ export default function DashboardPage() {
     console.log('Selected option:', option)
     // Handle the selected option
   }
+
+  if (!mounted) return null
 
   return (
     <div className="py-4 sm:py-6 lg:py-8 px-1 sm:px-4 lg:px-6 rounded-[10px] flex flex-col gap-y-4 sm:gap-y-6 lg:gap-y-8 border-theme-border border-2 mx-1 sm:mx-4 overflow-x-hidden w-full min-h-[90vh] bg-theme-bg-secondary transition-colors duration-300">

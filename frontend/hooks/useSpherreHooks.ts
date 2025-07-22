@@ -489,7 +489,7 @@ export function useExecuteTransaction(accountAddress: `0x${string}`) {
 // Utility hooks that combine multiple operations
 export function useAccountInfo(accountAddress: `0x${string}`) {
   const {
-    data: members,
+    data: membersRaw,
     isLoading: membersLoading,
     error: membersError,
   } = useGetAccountMembers(accountAddress)
@@ -508,6 +508,11 @@ export function useAccountInfo(accountAddress: `0x${string}`) {
     isLoading: countLoading,
     error: countError,
   } = useGetMembersCount(accountAddress)
+
+  // Filter out placeholder addresses (like '0x0') and only count valid addresses
+  const members = Array.isArray(membersRaw)
+    ? membersRaw.filter((addr) => addr && addr !== '0x0' && addr !== '')
+    : []
 
   return {
     members,

@@ -8,7 +8,7 @@ import { useAccount } from '@starknet-react/core'
 import { InvokeFunctionResponse } from 'starknet'
 import { useGlobalModal } from '@/app/components/modals/GlobalModalProvider'
 import { useOnboarding } from '@/context/OnboardingContext'
-import { useContext, useEffect } from 'react'
+import { useContext, useEffect, useCallback } from 'react'
 import { SpherreAccountContext } from '@/app/context/account-context'
 import { routes } from '@/app/[address]/layout'
 import { useScaffoldEventHistory } from '@/hooks/useScaffoldEventHistory'
@@ -43,13 +43,15 @@ export default function ConfirmSetup() {
     watch: true,
   })
 
-  const fetchEventData = () => {
+  const fetchEventData = useCallback(() => {
     console.log('Fetching event data...')
     console.log(eventData)
     console.log('Address', address)
+    if (!eventData || !address) return
+
     for (const event of eventData) {
       console.log(event.parsedArgs.owner)
-      if (event.parsedArgs.owner.toLowerCase() == address) {
+      if (event.parsedArgs.owner.toLowerCase() === address) {
         const accountAddress = event.parsedArgs.account_address as `0x${string}`
         setAccountAddress(accountAddress)
         console.log('Account retrieved from event:', accountAddress)
@@ -58,7 +60,7 @@ export default function ConfirmSetup() {
         return
       }
     }
-  }
+  }, [eventData, address, setAccountAddress, hideModal, router])
 
   const onSuccessfulAccountCreation = (data: InvokeFunctionResponse) => {
     console.log('Account created successfully', data)
@@ -67,6 +69,7 @@ export default function ConfirmSetup() {
       subtitle: 'Please wait while we fetch your account information.',
     })
   }
+
   const handleClick = async () => {
     if (!account) {
       console.error('Connect your wallet')
@@ -109,7 +112,7 @@ export default function ConfirmSetup() {
 
   useEffect(() => {
     fetchEventData()
-  }, [eventData])
+  }, [fetchEventData])
 
   return (
     <div className="text-theme">

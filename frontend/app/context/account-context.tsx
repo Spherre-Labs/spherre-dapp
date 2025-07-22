@@ -9,7 +9,6 @@ import {
 import { isValidStarknetAddress, SPHERRE_CONTRACTS } from '@/lib'
 import { validateAndParseAddress } from 'starknet'
 import { useParams } from 'next/navigation'
-import { useLocalStorage } from 'usehooks-ts'
 
 export const SpherreAccountContext = createContext<{
   accountAddress: `0x${string}` | null
@@ -31,30 +30,34 @@ export const SpherreAccountProvider = ({
     SPHERRE_CONTRACTS.SPHERRE_ACCOUNT,
   )
 
-  const [value, setValue, removeValue] = useLocalStorage<`0x${string}` | null>(
-    'SpherreAccountAddress',
-    null,
-  )
-  // TODO: Create a functionality to check if the provided accountAddress
-  // is a valid spherre account address.
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const value = window.localStorage.getItem('SpherreAccountAddress')
+      if (value && isValidStarknetAddress(value)) {
+        _setAccountAddress(value as `0x${string}`)
+      } else if (value) {
+        console.error('Invalid address in local storage:', value)
+        if (typeof window !== 'undefined') {
+          window.localStorage.removeItem('SpherreAccountAddress')
+        }
+      }
+    }
+  }, [])
+
   const setAccountAddress = (address: `0x${string}` | null) => {
     if (address && !isValidStarknetAddress(address)) {
       console.error('Invalid Starknet address provided:', address)
       return
     }
     _setAccountAddress(address)
-    setValue(address)
-  }
-  useEffect(() => {
-    if (value) {
-      if (isValidStarknetAddress(value)) {
-        _setAccountAddress(value)
+    if (typeof window !== 'undefined') {
+      if (address) {
+        window.localStorage.setItem('SpherreAccountAddress', address)
       } else {
-        console.error('Invalid address in local storage:', value)
-        removeValue()
+        window.localStorage.removeItem('SpherreAccountAddress')
       }
     }
-  }, [])
+  }
   return (
     <SpherreAccountContext.Provider
       value={{
@@ -77,11 +80,7 @@ export const useSpherreAccount = () => {
       'useSpherreAccount must be used within a SpherreAccountProvider',
     )
   }
-  useEffect(() => {
-    if (params.address) {
-      context.setAccountAddress(params.address as `0x${string}`)
-    }
-  }, [params.address])
-
-  return context
+  // Remove direct setAccountAddress call from render phase
+  // Instead, use a useEffect in the component that uses this hook, or provide a custom hook for this logic
+  return { ...context, params }
 }
