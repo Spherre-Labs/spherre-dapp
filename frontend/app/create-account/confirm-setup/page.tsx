@@ -53,16 +53,6 @@ export default function ConfirmSetup() {
     watch: true,
   });
 
-  const setAccountFromEvent = () => {
-    for (const event of eventData ?? []) {
-      if (event.parsedArgs.owner === address) {
-        const accountAddress = event.parsedArgs.account_address as `0x${string}`;
-        setAccountAddress(accountAddress);
-        router.push(routes(accountAddress).dashboard);
-        return;
-      }
-    }
-  }
 
   const fetchEventData = () =>{
     console.log("Fetching event data...");
