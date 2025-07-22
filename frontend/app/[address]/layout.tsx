@@ -169,7 +169,7 @@ export default function DappLayout({ children, params }: DappLayoutProps) {
 
   return (
     <div className="bg-theme min-h-screen overflow-x-hidden transition-colors duration-300">
-      <div className="flex">
+      <div className="flex min-h-screen">
         <Sidebar
           accountName={accountName ?? 'Spherre Account'}
           navItems={navItems}

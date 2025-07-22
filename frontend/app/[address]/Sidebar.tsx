@@ -136,7 +136,7 @@ const Sidebar = ({
             ? `fixed top-0 left-0 h-screen w-64 transform transition-transform duration-300 z-30 ${
                 isExpanded ? 'translate-x-0' : '-translate-x-full'
               }`
-            : `h-screen ${isExpanded ? 'w-64' : 'w-16'}`
+            : `flex-shrink-0 transition-all duration-300 ${isExpanded ? 'w-64' : 'w-16'}`
         } sidebar-bg text-theme border-r border-theme sidebar-transition`}
         onMouseEnter={() => !isMobile && setExpanded(true)}
         onMouseLeave={() => !isMobile && setExpanded(false)}
