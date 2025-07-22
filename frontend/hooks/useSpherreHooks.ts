@@ -20,6 +20,7 @@ import type {
   SmartTokenLockTransaction,
 } from '@/lib/contracts/types'
 import { useMemo } from 'react'
+import { feltToAddress } from '@/lib/utils/validation'
 
 // Factory Contract Hooks
 export function useDeployAccount() {
@@ -511,10 +512,22 @@ export function useAccountInfo(accountAddress: `0x${string}`) {
   } = useGetMembersCount(accountAddress)
 
   // Filter out placeholder addresses (like '0x0') and only count valid addresses
+  // Convert felt values to proper Starknet addresses
   const members = useMemo(() => {
-    return Array.isArray(membersRaw)
-      ? membersRaw.filter((addr) => addr && addr !== '0x0' && addr !== '')
-      : []
+    if (!Array.isArray(membersRaw)) return []
+    
+    return membersRaw
+      .map(member => {
+        try {
+          // Convert felt to address format
+          const address = feltToAddress(member)
+          return address
+        } catch (error) {
+          console.warn('Failed to convert felt to address:', member, error)
+          return null
+        }
+      })
+      .filter((addr) => addr && addr !== '0x0' && addr !== '0x0000000000000000000000000000000000000000000000000000000000000000')
   }, [membersRaw])
 
   return useMemo(
