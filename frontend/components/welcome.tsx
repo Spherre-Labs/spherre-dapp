@@ -36,8 +36,11 @@ const Welcome = () => {
   async function checkForAccount() {
     // Check for addresses in localStorage
     const storedAddress = localStorage.getItem('SpherreAddress');
-    if (!storedAddress)
-        return   
+    if (!storedAddress){
+      console.log("No account found in localStorage.");
+      return;
+    }
+           
     router.push(`/${storedAddress[0]}`);
   }
 
