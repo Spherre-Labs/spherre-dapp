@@ -9,10 +9,10 @@ export async function getTokenImage(id: string): Promise<string | null> {
     const res = await fetch(url, {
       signal: controller.signal,
       headers: {
-        'Accept': 'application/json',
-      }
+        Accept: 'application/json',
+      },
     })
-    
+
     clearTimeout(timeoutId)
 
     if (!res.ok) {

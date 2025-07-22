@@ -517,26 +517,29 @@ export function useAccountInfo(accountAddress: `0x${string}`) {
       : []
   }, [membersRaw])
 
-  return useMemo(() => ({
-    members,
-    threshold,
-    details,
-    membersCount,
-    isLoading:
-      membersLoading || thresholdLoading || detailsLoading || countLoading,
-    error: membersError || thresholdError || detailsError || countError,
-  }), [
-    members,
-    threshold,
-    details,
-    membersCount,
-    membersLoading,
-    thresholdLoading,
-    detailsLoading,
-    countLoading,
-    membersError,
-    thresholdError,
-    detailsError,
-    countError,
-  ])
+  return useMemo(
+    () => ({
+      members,
+      threshold,
+      details,
+      membersCount,
+      isLoading:
+        membersLoading || thresholdLoading || detailsLoading || countLoading,
+      error: membersError || thresholdError || detailsError || countError,
+    }),
+    [
+      members,
+      threshold,
+      details,
+      membersCount,
+      membersLoading,
+      thresholdLoading,
+      detailsLoading,
+      countLoading,
+      membersError,
+      thresholdError,
+      detailsError,
+      countError,
+    ],
+  )
 }
