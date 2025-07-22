@@ -37,6 +37,21 @@ export function useIsDeployedAccount(accountAddress: `0x${string}`) {
   })
 }
 
+export function useGetDeploymentFee(address: `0x${string}`) {
+  return useScaffoldReadContract<bigint>({
+    contractConfig: spherreConfig,  
+    functionName: 'get_fee',
+    args: {fees_type: 4, account: address}
+  })
+}
+
+export function useGetFeesTokenAddress() {
+  return useScaffoldReadContract<`0x${string}`>({
+    contractConfig: spherreConfig,
+    functionName: 'get_fees_token',
+  })
+}
+
 export function useGetAccountClassHash() {
   return useScaffoldReadContract<string>({
     contractConfig: spherreConfig,

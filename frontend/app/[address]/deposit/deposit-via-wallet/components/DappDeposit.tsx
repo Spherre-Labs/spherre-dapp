@@ -179,7 +179,6 @@ const DappDeposit = () => {
         title: 'Successful Transaction!',
         message:
           'Deposit completed successfully! Your tokens have been transferred to the Spherre Treasury.',
-        onClose: hideModal,
       })
     } catch (err) {
       hideModal()

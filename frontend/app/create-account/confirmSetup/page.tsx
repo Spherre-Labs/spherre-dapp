@@ -2,15 +2,125 @@
 import StepIndicators from '../../../components/onboarding/StepIndicators'
 import SphereAccountReview from '../../components/SphereAccountReview'
 import MembersThreshold from '../../components/MembersThreshold'
-import Nav from '@/components/onboarding/Nav'
 import { useRouter } from 'next/navigation'
+import { useMulticall } from '@/hooks/useMulticall'
+import { spherreConfig, useGetDeploymentFee, useGetFeesTokenAddress, useScaffoldWriteContract } from '@/lib'
+import { useAccount, useConnect } from '@starknet-react/core'
+import { InvokeFunctionResponse, RpcProvider } from 'starknet'
+import { useGlobalModal } from '@/app/components/modals/GlobalModalProvider'
+import { useOnboarding } from '@/context/OnboardingContext'
+import { ERC20_ABI } from '@/lib/contracts/erc20-contracts'
+import { useContext, useEffect } from 'react'
+import { SpherreAccountContext } from '@/app/context/account-context'
+import { routes } from '@/app/[address]/layout'
+import { useScaffoldEventHistory } from '@/hooks/useScaffoldEventHistory'
+import { set } from 'zod'
 
 export default function ConfirmSetup() {
   const router = useRouter()
+  const {showProcessing, showError, showSuccess, hideModal} = useGlobalModal();
 
-  const handleClick = () => {
-    router.push('/dapp')
+  const fee = useGetDeploymentFee(`0x11`);
+  const feeToken = useGetFeesTokenAddress();
+  const onboarding = useOnboarding();
+  const {setAccountAddress} = useContext(SpherreAccountContext);
+
+  const {writeAsync, data, isLoading, isSuccess, error} = useScaffoldWriteContract({
+    contractConfig: spherreConfig,
+    functionName: 'deploy_account',
+    onSuccess: (data) =>{
+      hideModal();
+      onSuccessfulAccountCreation(data)
+    },
+    onError: (err) =>{
+      hideModal();
+      showError({
+        title: 'Transaction Failed',
+        errorText: err instanceof Error ? err.message : 'Something went wrong.',
+      })
+    }
+  });
+  const {account, address} = useAccount()
+
+
+  const {data: eventData} = useScaffoldEventHistory({
+    contractConfig: spherreConfig,
+    eventName: 'spherre::spherre::Spherre::AccountDeployed',
+    fromBlock: BigInt(0),
+    filters: {owner: address},
+    blockData: true,
+    transactionData: true,
+    receiptData: true,
+    watch: true,
+    format: true,
+    enabled: isSuccess
+  });
+
+  const setAccountFromEvent = () => {
+    for (const event of eventData ?? []) {
+      if (event.parsedArgs.owner === address) {
+        const accountAddress = event.parsedArgs.account_address as `0x${string}`;
+        setAccountAddress(accountAddress);
+        router.push(routes(accountAddress).dashboard);
+        return;
+      }
+    }
   }
+
+
+  const onSuccessfulAccountCreation = (data: InvokeFunctionResponse ) => {
+    showSuccess({
+        title: 'Account Created Successfully',
+        message: 'Your account has been created successfully.',
+        viewLabel: 'View Account',
+        closeLabel: 'Close',
+      })
+      hideModal();
+      console.log("Account created successfully", data);
+      setAccountFromEvent();
+  }
+  const handleClick = async () => {
+    if (!account){
+      console.error("Connect your wallet");
+      alert("Connect your wallet")
+      return
+    }
+    if(!onboarding?.accountName){
+      showError({
+        title: 'Invalid Account name',
+        errorText: 'Enter the account name properly',
+      })
+      return
+    }
+    if(!onboarding?.members || onboarding?.members.length === 0){
+      showError({
+        title: 'Invalid Members',
+        errorText: 'Enter the members properly',
+      })
+      return
+    }
+    if(!onboarding?.approvals){
+      showError({
+        title: 'Invalid Threshold',
+        errorText: 'Enter the threshold properly',
+      })
+      return
+    }
+    showProcessing({
+      title: 'Creating Account',
+      subtitle: 'Please wait while we create your account.',
+    })
+    await writeAsync(
+       {
+          owner: address,
+          name: onboarding.accountName,
+          description: onboarding.description ?? " ",
+          members: onboarding.members,
+          threshold: onboarding.approvals
+      }
+    )
+  }
+
 
   return (
 
@@ -44,6 +154,7 @@ export default function ConfirmSetup() {
                 <MembersThreshold />
                 <button
                   type="button"
+                  disabled={account === undefined || isLoading}
                   onClick={handleClick}
                   className="w-full h-[50px] flex justify-center items-center bg-purple-700 dark:bg-white shadow-[0px_1.08px_2.16px_0px_#1018280A] text-[#101213] font-[500] text-base rounded-[7px] hover:bg-gray-50 dark:hover:bg-gray-100 transition-colors duration-300"
                 >
