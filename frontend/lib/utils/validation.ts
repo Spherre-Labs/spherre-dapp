@@ -12,22 +12,25 @@ export function validateContractAddress(address: string): void {
 
 // Convert felt value to Starknet address
 export function feltToAddress(felt: string | number | bigint): string {
-  // Convert to string and ensure it's a valid number
   const feltStr = felt.toString()
-
-  // Convert to hex and ensure it's 64 characters (32 bytes)
-  const hex = BigInt(feltStr).toString(16)
-  const paddedHex = hex.padStart(64, '0')
-
-  return `0x${paddedHex}`
+  try {
+    // Validate the input can be converted to BigInt
+    const feltBigInt = BigInt(feltStr)
+    // Convert to hex and ensure it's 64 characters (32 bytes)
+    const hex = feltBigInt.toString(16)
+    const paddedHex = hex.padStart(64, '0')
+    return `0x${paddedHex}`
+  } catch (error) {
+    throw new Error(`Invalid felt value: ${feltStr}`)
+  }
 }
 
 // Convert Starknet address to felt value
 export function addressToFelt(address: string): string {
-  if (!address.startsWith('0x')) {
-    throw new Error('Address must start with 0x')
+  // Reuse existing validation
+  if (!isValidStarknetAddress(address)) {
+    throw new Error('Invalid Starknet address format')
   }
-
   const hex = address.slice(2) // Remove 0x prefix
   return BigInt(`0x${hex}`).toString()
 }

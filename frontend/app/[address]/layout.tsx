@@ -53,69 +53,69 @@ export default function DappLayout({ children, params }: DappLayoutProps) {
   const selectedPage = pathname
   const account_address = useSpherreAccount().accountAddress
 
-  // Unwrap params with React.use()
-  const { address } = React.use(params)
+  // Unwrap params directly
+  const { address } = params
   const addressToUse = account_address ?? (address as `0x${string}`)
   const { data: accountName } = useGetAccountName(addressToUse)
   const [title, setTitle] = useState(pathname)
 
-  // Define navigation items
+  // Define navigation items using addressToUse for all routes
   const navItems: NavItem[] = [
-    { name: 'Dashboard', icon: Dashboard, route: `/${account_address}/` },
+    { name: 'Dashboard', icon: Dashboard, route: `/${addressToUse}/` },
     {
       name: 'Trade',
       icon: Trade,
-      route: `/${account_address}/trade`,
+      route: `/${addressToUse}/trade`,
       comingSoon: true,
     },
-    { name: 'Members', icon: Members, route: `/${account_address}/members` },
+    { name: 'Members', icon: Members, route: `/${addressToUse}/members` },
     {
       name: 'Transactions',
       icon: Transactions,
-      route: `/${account_address}/transactions`,
+      route: `/${addressToUse}/transactions`,
     },
     {
       name: 'Stake',
       icon: Stake,
       comingSoon: true,
-      route: `/${account_address}/stake`,
+      route: `/${addressToUse}/stake`,
     },
     {
       name: 'Smart Will',
       icon: Stake,
       comingSoon: true,
-      route: `/${account_address}/smart-will`,
+      route: `/${addressToUse}/smart-will`,
     },
     {
       name: 'Treasury',
       icon: Treasury,
-      route: `/${account_address}/treasury`,
+      route: `/${addressToUse}/treasury`,
       comingSoon: true,
     },
     {
       name: 'Smart Lock',
       icon: SmartLock,
-      route: `/${account_address}/smart`,
+      route: `/${addressToUse}/smart`,
       comingSoon: true,
     },
     {
       name: 'Payments',
       icon: Payments,
       comingSoon: true,
-      route: `/${account_address}/payments`,
+      route: `/${addressToUse}/payments`,
     },
     {
       name: 'Apps',
       icon: Apps,
       comingSoon: true,
-      route: `/${account_address}/apps`,
+      route: `/${addressToUse}/apps`,
     },
-    { name: 'Settings', icon: Settings, route: `/${account_address}/settings` },
+    { name: 'Settings', icon: Settings, route: `/${addressToUse}/settings` },
     {
       name: 'Support',
       icon: Support,
       comingSoon: true,
-      route: `/${account_address}/support`,
+      route: `/${addressToUse}/support`,
     },
   ]
 
