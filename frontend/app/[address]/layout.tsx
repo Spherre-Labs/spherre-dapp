@@ -18,6 +18,8 @@ import SmartLock from '@/public/Images/Smart-lock.png'
 import { NavItem } from './navigation'
 import { usePathname } from 'next/navigation'
 import { useSpherreAccount } from '../context/account-context'
+import { spherreAccountConfig, useGetAccountName } from '@/lib'
+
 
 interface DappLayoutProps {
   children: ReactNode,
@@ -49,7 +51,11 @@ export default function DappLayout({ children, params }: DappLayoutProps) {
   // State to track sidebar expansion
   const [sidebarExpanded, setSidebarExpanded] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
+  const pathname = usePathname()
+  const selectedPage = (pathname)
   const account_address = useSpherreAccount().accountAddress;
+  const {data: accountName} = useGetAccountName(account_address ?? spherreAccountConfig.address as `0x${string}`)
+  const [title, setTitle] = useState(pathname);
 
   // Define navigation items
   const navItems: NavItem[] = [
@@ -136,14 +142,22 @@ export default function DappLayout({ children, params }: DappLayoutProps) {
     }
   }, [isMobile])
 
-  const pathname = usePathname()
-  const selectedPage = (pathname)
+  useEffect(() => {
+    if(accountName) {
+      setTitle(accountName)
+    }
+
+  }, [accountName])
+  
+  
 
   return (
     <div className="bg-theme min-h-screen overflow-x-hidden transition-colors duration-300">
       <Sidebar
+        accountName={accountName ?? "Spherre Account"}
         navItems={navItems}
         selectedPage={selectedPage}
+
         isMobile={isMobile}
         sidebarExpanded={sidebarExpanded}
         setSidebarExpanded={setSidebarExpanded}
@@ -155,7 +169,7 @@ export default function DappLayout({ children, params }: DappLayoutProps) {
       >
         <div className="flex flex-col min-h-screen">
           <Navbar
-            title={selectedPage}
+            title={title}
             isMobile={isMobile}
             setSidebarExpanded={setSidebarExpanded}
           />
