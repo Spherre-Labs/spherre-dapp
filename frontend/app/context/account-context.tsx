@@ -9,7 +9,6 @@ import {
 import { isValidStarknetAddress, SPHERRE_CONTRACTS } from '@/lib'
 import { validateAndParseAddress } from 'starknet'
 import { useParams } from 'next/navigation'
-import { useLocalStorage } from 'usehooks-ts'
 
 export const SpherreAccountContext = createContext<{
   accountAddress: `0x${string}` | null
