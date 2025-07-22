@@ -31,14 +31,6 @@ export const getSelectedPage = (pathname: string, address: string): string => {
     : 'Dashboard'
 }
 
-// Function to check if a route is active
-// export const isActiveRoute = (pathname: string, route: string): boolean => {
-//   if (route === '/dapp/') {
-//     // Special case for dashboard to avoid matching all routes
-//     return pathname === '/dapp/' || pathname === '/dapp'
-//   }
-//   return pathname === route || pathname.startsWith(`${route}/`)
-// }
 
 export interface NavItem {
   name: string

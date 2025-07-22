@@ -7,6 +7,7 @@ import SidebarProfile from './Profile'
 import { NavItem } from './navigation'
 import Link from 'next/link'
 import { X } from 'lucide-react'
+import { useSpherreAccount } from '../context/account-context'
 
 interface SidebarProps {
   navItems: NavItem[]
@@ -32,6 +33,8 @@ const Sidebar = ({
     }
     return false
   })
+
+  const {accountAddress} = useSpherreAccount();
 
   // Store expanded state in localStorage when it changes
   useEffect(() => {
@@ -176,7 +179,7 @@ const Sidebar = ({
               >
                 {isExpanded ? (
                   <Link
-                    href={item?.route ?? '/dapp/'}
+                    href={item?.route ?? `/${accountAddress}/`}
                     className={`flex items-center p-3 rounded-lg sidebar-transition sidebar-menu-item ${
                       selectedPage === item.name
                         ? 'active'
@@ -208,7 +211,7 @@ const Sidebar = ({
                 ) : (
                   <Tooltip content={item.name}>
                     <Link
-                      href={item?.route ?? '/dapp/'}
+                      href={item?.route ?? `/${accountAddress}/`}
                       className={`flex items-center justify-center p-3 rounded-lg sidebar-transition sidebar-menu-item ${
                         selectedPage === item.name
                           ? 'active'
