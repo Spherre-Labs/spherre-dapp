@@ -7,12 +7,16 @@ import AddMemberModal from './components/add-modal'
 import EditMemberRolesModal from './components/edit-roles-modal'
 import { useTheme } from '@/app/context/theme-context-provider'
 import { useGlobalModal } from '../../components/modals/useGlobalModal'
+import { useAccountInfo } from '../../../hooks/useSpherreHooks'
+import { useContext } from 'react'
+import { SpherreAccountContext } from '../../context/account-context'
 
 const nunito = Nunito_Sans({
   subsets: ['latin'],
   weight: ['200', '300', '400', '500', '600', '700', '800', '900'],
 })
 
+// Keep the hardcoded data for fallback/default styling
 const initialMembers = [
   {
     id: 1,
@@ -83,11 +87,15 @@ const Members = () => {
   const [activeTab, setActiveTab] = useState('members')
   const [dropdownOpen, setDropdownOpen] = useState<number | null>(null)
   const [copiedMessage, setCopiedMessage] = useState<string | null>(null)
-  const [members, setMembers] = useState(initialMembers)
+  const [members, setMembers] = useState<Member[]>([])
   const [editingId, setEditingId] = useState<number | null>(null)
   const [editName, setEditName] = useState('')
   const [borderPosition, setBorderPosition] = useState(0)
   const animationRef = useRef<number>(0)
+
+  // Get account info from contract
+  const { accountAddress } = useContext(SpherreAccountContext)
+  const { members: contractMembers, isLoading } = useAccountInfo(accountAddress || '0x0')
 
   // Modal state
   const [isRemoveModalOpen, setIsRemoveModalOpen] = useState(false)
@@ -95,6 +103,40 @@ const Members = () => {
   const [isAddMemberModalOpen, setIsAddMemberModalOpen] = useState(false)
   const [isEditRolesModalOpen, setIsEditRolesModalOpen] = useState(false)
   const [editRolesMember, setEditRolesMember] = useState<Member | null>(null)
+
+  // Transform contract members to UI format
+  useEffect(() => {
+    if (contractMembers && contractMembers.length > 0) {
+      const transformedMembers: Member[] = contractMembers.map((memberAddress, index) => {
+        // Generate a truncated address for display
+        const truncatedAddress = memberAddress.length > 10 
+          ? `${memberAddress.slice(0, 6)}...${memberAddress.slice(-4)}`
+          : memberAddress
+
+        // Assign default roles and styling based on index
+        let roles: string[] = ['Voter']
+        if (index === 0) roles = ['Voter', 'Proposer', 'Executer']
+        else if (index === 1) roles = ['Voter', 'Proposer']
+
+        // Assign avatar based on index (cycle through available images)
+        const avatarIndex = (index % 3) + 1
+        const image = `/member${avatarIndex}.svg`
+
+        return {
+          id: index + 1,
+          name: `Member ${index + 1}`,
+          address: truncatedAddress,
+          fullAddress: memberAddress,
+          roles,
+          dateAdded: '24 Mar 2025', // You might want to get this from contract
+          image,
+        }
+      })
+      setMembers(transformedMembers)
+    } else {
+      setMembers([])
+    }
+  }, [contractMembers])
 
   const handleCopy = (address: string) => {
     navigator.clipboard.writeText(address)
@@ -228,6 +270,16 @@ const Members = () => {
   const handleProposeEditRoles = (roles: string[]) => {
     // TODO: Implement your logic to update roles
     console.log('Propose Edit Roles:', editRolesMember, roles)
+  }
+
+  if (isLoading) {
+    return (
+      <div className={`${nunito.className} bg-theme min-h-screen p-3 sm:p-4 lg:p-5 py-6 sm:py-8 lg:py-10 overflow-x-hidden transition-colors duration-300`}>
+        <div className="flex items-center justify-center h-64">
+          <div className="text-theme text-lg">Loading members...</div>
+        </div>
+      </div>
+    )
   }
 
   return (

@@ -511,7 +511,9 @@ export function useAccountInfo(accountAddress: `0x${string}`) {
 
   // Filter out placeholder addresses (like '0x0') and only count valid addresses
   const members = Array.isArray(membersRaw)
-    ? membersRaw.filter((addr) => addr && addr !== '0x0' && addr !== '')
+    ? membersRaw.filter(
+        (addr) => addr && addr !== '0x0' && addr !== ''
+      )
     : []
 
   return {
