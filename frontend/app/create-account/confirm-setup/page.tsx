@@ -10,7 +10,7 @@ import { InvokeFunctionResponse, RpcProvider } from 'starknet'
 import { useGlobalModal } from '@/app/components/modals/GlobalModalProvider'
 import { useOnboarding } from '@/context/OnboardingContext'
 import { ERC20_ABI } from '@/lib/contracts/erc20-contracts'
-import { useContext, useEffect } from 'react'
+import { use, useContext, useEffect } from 'react'
 import { SpherreAccountContext } from '@/app/context/account-context'
 import { routes } from '@/app/[address]/layout'
 import { useScaffoldEventHistory } from '@/hooks/useScaffoldEventHistory'
@@ -20,16 +20,19 @@ export default function ConfirmSetup() {
   const router = useRouter()
   const {showProcessing, showError, showSuccess, hideModal} = useGlobalModal();
 
-  const fee = useGetDeploymentFee(`0x11`);
+  const {data: fee} = useGetDeploymentFee(`0x11`);
   const feeToken = useGetFeesTokenAddress();
   const onboarding = useOnboarding();
   const {setAccountAddress} = useContext(SpherreAccountContext);
+
+  const provider = new RpcProvider({
+    nodeUrl: process.env.NEXT_PUBLIC_RPC_URL || 'https://free-rpc.nethermind.io/sepolia-juno'
+  });
 
   const {writeAsync, data, isLoading, isSuccess, error} = useScaffoldWriteContract({
     contractConfig: spherreConfig,
     functionName: 'deploy_account',
     onSuccess: (data) =>{
-      hideModal();
       onSuccessfulAccountCreation(data)
     },
     onError: (err) =>{
@@ -45,15 +48,9 @@ export default function ConfirmSetup() {
 
   const {data: eventData} = useScaffoldEventHistory({
     contractConfig: spherreConfig,
-    eventName: 'spherre::spherre::Spherre::AccountDeployed',
+    eventName: 'AccountDeployed',
     fromBlock: BigInt(0),
-    filters: {owner: address},
-    blockData: true,
-    transactionData: true,
-    receiptData: true,
     watch: true,
-    format: true,
-    enabled: isSuccess
   });
 
   const setAccountFromEvent = () => {
@@ -67,17 +64,31 @@ export default function ConfirmSetup() {
     }
   }
 
+  const fetchEventData = () =>{
+    console.log("Fetching event data...");
+    console.log(eventData)
+    console.log("Address",address)
+    for (const event of eventData) {
+      console.log(event.parsedArgs.owner)
+        if (event.parsedArgs.owner.toLowerCase() == address) {
+          const accountAddress = event.parsedArgs.account_address as `0x${string}`;
+          setAccountAddress(accountAddress);
+          console.log("Account retrieved from event:", accountAddress)
+          hideModal();
+          router.push(routes(accountAddress).dashboard);
+          return;
+        }
+    }
+    
+  }
+
 
   const onSuccessfulAccountCreation = (data: InvokeFunctionResponse ) => {
-    showSuccess({
-        title: 'Account Created Successfully',
-        message: 'Your account has been created successfully.',
-        viewLabel: 'View Account',
-        closeLabel: 'Close',
-      })
-      hideModal();
       console.log("Account created successfully", data);
-      setAccountFromEvent();
+      showProcessing({
+        title: 'Account Created Successfully',
+        subtitle: 'Please wait while we fetch your account information.',
+      })
   }
   const handleClick = async () => {
     if (!account){
@@ -121,6 +132,10 @@ export default function ConfirmSetup() {
     )
   }
 
+  useEffect(() => {
+    fetchEventData();
+  }
+,[eventData])
 
   return (
 
@@ -150,7 +165,7 @@ export default function ConfirmSetup() {
                 </h4>
               </div>
               <div className="w-full flex flex-col gap-6 py-4 md:px-[26px] px-4">
-                <SphereAccountReview />
+                <SphereAccountReview deployFee='' />
                 <MembersThreshold />
                 <button
                   type="button"

@@ -69,9 +69,9 @@ export const useScaffoldEventHistory = ({
 
   const publicClient = useMemo(() => {
     return new RpcProvider({
-      nodeUrl: targetNetwork.rpcUrls.public.http[0],
+      nodeUrl: process.env.NEXT_PUBLIC_RPC_URL,
     });
-  }, [targetNetwork.rpcUrls.public.http]);
+  }, [process.env.NEXT_PUBLIC_RPC_URL]);
 
   // Get back event full name
   const matchingAbiEvents = useMemo(() => {

@@ -123,7 +123,7 @@ const StepTwo = () => {
   const handleSubmitStepTwo = async (data: StepTwoData) => {
     setMembers(data.members.map((m) => m.address))
     setApprovals(data.approvals)
-    router.push('/create-account/confirmSetup')
+    router.push('/create-account/confirm-setup')
   }
 
   return (
