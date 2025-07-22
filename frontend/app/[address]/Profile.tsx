@@ -16,7 +16,7 @@ const SidebarProfile: React.FC<ProfileProps> = ({
   useTheme()
 
   return (
-    <div className="absolute bottom-0 left-0 w-full border-t border-theme bg-theme-secondary transition-colors duration-300">
+    <div className="border-t border-theme bg-theme-secondary transition-colors duration-300">
       <div className="flex items-center justify-between p-4">
         <div className="flex items-center gap-3">
           <div className="relative w-10 h-10 rounded-full overflow-hidden bg-red-500">
