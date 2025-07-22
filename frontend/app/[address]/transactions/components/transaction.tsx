@@ -47,7 +47,7 @@ export default function Transaction({
   const getTypeIcon = (type: TransactionType): ReactNode => {
     // Map transaction type to appropriate icon based on the transaction title
     const title = transactionInfo.title.toLowerCase()
-    
+
     // Check title first for accurate mapping (since title includes the actual transaction type)
     if (title.startsWith('withdraw')) {
       return <Image src={withdraw} width={20} height={20} alt="withdraw" />
@@ -56,7 +56,7 @@ export default function Transaction({
     } else if (title.startsWith('swap')) {
       return <Image src={swap} width={20} height={20} alt="swap" />
     }
-    
+
     // Fallback to contract type mapping for other transaction types
     switch (type) {
       case TransactionType.TOKEN_SEND:
