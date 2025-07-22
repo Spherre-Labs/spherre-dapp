@@ -7,6 +7,8 @@ import { useRouter } from 'next/navigation'
 import AddEmailModal from '../AddEmailModal'
 import { Info } from 'lucide-react'
 import { useTheme } from '@/app/context/theme-context-provider'
+import { routes } from '../../layout'
+import { useSpherreAccount } from '@/app/context/account-context'
 
 /**
  * Renders the user's profile information.
@@ -16,6 +18,7 @@ import { useTheme } from '@/app/context/theme-context-provider'
 const ProfileContent = () => {
   const router = useRouter()
   useTheme()
+  const {accountAddress} = useSpherreAccount();
 
   // State management for profile data and UI controls.
   const [displayName, setDisplayName] = useState('')
@@ -168,7 +171,7 @@ const ProfileContent = () => {
       <div className="flex gap-3 sm:gap-4 mt-6 sm:mt-8">
         <button
           className="bg-primary text-white px-6 sm:px-8 py-2 sm:py-3 rounded-lg font-semibold text-base sm:text-lg hover:opacity-90 transition-all duration-200"
-          onClick={() => router.push('/dapp/settings/edit-profile')}
+          onClick={() => router.push(routes(accountAddress).editProfile)}
         >
           Edit Profile
         </button>

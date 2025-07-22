@@ -6,6 +6,8 @@ import capture_icon from '@/public/Images/capture.png'
 import argent_wallet from '@/public/Images/argent_logo.png'
 import { useRouter } from 'next/navigation'
 import { useTheme } from '@/app/context/theme-context-provider'
+import { routes } from '../../layout'
+import { useSpherreAccount } from '@/app/context/account-context'
 
 // Validation utility for display name (must be at least 3 characters).
 const validateDisplayName = (name: string) => name.trim().length >= 3
@@ -28,6 +30,8 @@ const EditProfileContent = () => {
   const [editingEmail, setEditingEmail] = useState(false)
   const [walletId] = useState('352By...wtuya') // Hardcoded wallet ID.
   const [showSuccess, setShowSuccess] = useState(false)
+
+  const {accountAddress} = useSpherreAccount();
 
   // On mount, load existing profile data from sessionStorage to pre-fill the form.
   useEffect(() => {
@@ -63,7 +67,7 @@ const EditProfileContent = () => {
     setShowSuccess(true)
     setTimeout(() => {
       setShowSuccess(false)
-      router.push('/dapp/settings/profile')
+      router.push('settings/profile')
     }, 1200)
   }
 
@@ -196,7 +200,7 @@ const EditProfileContent = () => {
         <button
           className="bg-theme-bg-secondary text-theme px-8 py-3 rounded-lg font-semibold text-lg hover:bg-theme-bg-tertiary transition-colors duration-200 border border-theme-border"
           type="button"
-          onClick={() => router.push('/dapp/settings/profile')}
+          onClick={() => router.push(routes(accountAddress).settings)}
         >
           Cancel
         </button>

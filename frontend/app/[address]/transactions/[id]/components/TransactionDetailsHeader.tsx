@@ -8,6 +8,7 @@ import {
   useRejectTransaction,
   useExecuteTransaction,
 } from '@/hooks/useSpherreHooks'
+import { routes } from '@/app/[address]/layout'
 
 interface TransactionDetailsHeaderProps {
   status: 'Pending' | 'Executed' | 'Rejected'
@@ -87,7 +88,7 @@ export const TransactionDetailsHeader = ({
   return (
     <>
       <Link
-        href="/dapp/transactions"
+        href={routes(accountAddress).transactions}
         className="flex items-center gap-2 text-theme-secondary hover:text-theme mb-6 transition-colors duration-200"
       >
         <ArrowLeft size={20} />

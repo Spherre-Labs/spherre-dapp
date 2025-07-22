@@ -11,6 +11,8 @@ import group from '../../../../public/Images/group-profile.png'
 import starkneticon from '../../../../public/Images/starknet-icon.png'
 import { useRouter } from 'next/navigation'
 import { useTheme } from '@/app/context/theme-context-provider'
+import { routes } from '../../layout'
+import { useSpherreAccount } from '@/app/context/account-context'
 
 export default function MultisigWalletUI() {
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -18,6 +20,7 @@ export default function MultisigWalletUI() {
   const totalMembers = 3
   const router = useRouter()
   const { actualTheme } = useTheme()
+  const {accountAddress} = useSpherreAccount();
 
   const openModal = () => setIsModalOpen(true)
   const closeModal = () => setIsModalOpen(false)
@@ -157,7 +160,7 @@ export default function MultisigWalletUI() {
               </div>
 
               <button
-                onClick={() => router.push('/dapp/members')}
+                onClick={() => router.push(routes(accountAddress).members)}
                 className="w-full bg-theme-bg-tertiary hover:bg-theme-bg-tertiary/80 text-theme py-2 sm:py-3 rounded-lg font-medium transition-all text-xs sm:text-base border border-theme-border"
               >
                 Manage Members

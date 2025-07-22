@@ -4,11 +4,15 @@ import { Button } from '@/components/shared/Button'
 import { useState, useEffect, useRef } from 'react'
 import { createPortal } from 'react-dom'
 import Link from 'next/link'
+import { routes } from '../[address]/layout'
+import { useSpherreAccount } from '../context/account-context'
 
 export default function DepositModal() {
   const [isOpen, setIsOpen] = useState(false)
   const [portalElement, setPortalElement] = useState<HTMLElement | null>(null)
   const modalRef = useRef<HTMLDivElement>(null)
+
+  const {accountAddress} = useSpherreAccount();
 
   useEffect(() => {
     // Create portal element for the modal
@@ -106,7 +110,7 @@ export default function DepositModal() {
 
                 <div className="space-y-3">
                   {/* first button */}
-                  <Link href="/dapp/deposit/deposit-via-address">
+                  <Link href={routes(accountAddress).depositViaAddress}>
                     <button
                       className="w-full flex items-center gap-3 p-3 rounded-lg transition-colors text-left border-[#292929] border-2"
                       onClick={() => {
@@ -165,7 +169,7 @@ export default function DepositModal() {
                     </button>
                   </Link>
 
-                  <Link href="/dapp/deposit/deposit-via-wallet">
+                  <Link href={routes(accountAddress).depositViaWallet}>
                     <button
                       className="w-full my-3 flex items-center gap-3 p-3 rounded-lg  transition-colors text-left border-[#292929] border-2"
                       onClick={() => {

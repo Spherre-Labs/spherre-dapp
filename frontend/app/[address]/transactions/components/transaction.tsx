@@ -17,6 +17,7 @@ import {
   type TransactionDisplayInfo,
 } from '@/lib/contracts/types'
 import { formatTimestamp, formatTime } from '@/lib/utils/transaction-utils'
+import { routes } from '../../layout'
 
 interface TransactionProps {
   transactionInfo: TransactionDisplayInfo
@@ -416,7 +417,7 @@ export default function Transaction({
                 </div>
               )}
             </div>
-            <Link href={`/dapp/transactions/${transaction.id}`}>
+            <Link href={routes(accountAddress).transactionDetails(transaction.id.toString())}>
               <button className="mt-3 sm:mt-4 w-full bg-theme-bg-tertiary hover:bg-theme-border text-theme py-2 rounded-lg transition-colors text-sm sm:text-base border border-theme-border">
                 See transaction details
               </button>
