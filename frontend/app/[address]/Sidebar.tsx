@@ -27,24 +27,35 @@ const Sidebar = ({
   sidebarExpanded,
   setSidebarExpanded,
 }: SidebarProps) => {
+  // State to track if component is mounted (for hydration safety)
+  const [mounted, setMounted] = useState(false)
+  
   // State to track sidebar expansion
-  const [expanded, setExpanded] = useState(() => {
-    // Check localStorage for saved preference if in browser environment
-    if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('sidebarExpanded')
-      return saved !== null ? JSON.parse(saved) : false
-    }
-    return false
-  })
+  const [expanded, setExpanded] = useState(false) // Start with false for SSR
 
   const { accountAddress } = useSpherreAccount()
 
+  // Set mounted state after hydration
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  // Load saved preference after mount
+  useEffect(() => {
+    if (mounted && typeof window !== 'undefined') {
+      const saved = localStorage.getItem('sidebarExpanded')
+      if (saved !== null) {
+        setExpanded(JSON.parse(saved))
+      }
+    }
+  }, [mounted])
+
   // Store expanded state in localStorage when it changes
   useEffect(() => {
-    if (typeof window !== 'undefined') {
+    if (mounted && typeof window !== 'undefined') {
       localStorage.setItem('sidebarExpanded', JSON.stringify(expanded))
     }
-  }, [expanded])
+  }, [expanded, mounted])
 
   // References for staggered animations
   const itemsRef = useRef<(HTMLLIElement | null)[]>([])
@@ -151,18 +162,18 @@ const Sidebar = ({
           {/* Logo */}
           <div
             className={`flex items-center sidebar-transition ${
-              isExpanded ? 'gap-4 mb-14' : 'justify-center mb-14'
+              mounted && isExpanded ? 'gap-4 mb-14' : 'justify-center mb-14'
             }`}
           >
             <Image
               src={logo}
               alt="logo"
-              width={isExpanded ? 24 : 40}
-              height={isExpanded ? 24 : 40}
+              width={mounted && isExpanded ? 24 : 40}
+              height={mounted && isExpanded ? 24 : 40}
               className="sidebar-transition"
             />
             <div
-              className={`overflow-hidden transition-all ${isExpanded ? 'w-auto opacity-100' : 'w-0 opacity-0'}`}
+              className={`overflow-hidden transition-all ${mounted && isExpanded ? 'w-auto opacity-100' : 'w-0 opacity-0'}`}
             >
               <h2 className="text-[24px] font-semibold whitespace-nowrap text-theme">
                 Spherre
@@ -180,7 +191,7 @@ const Sidebar = ({
                 }}
                 className="staggered-item menu-item-animation"
               >
-                {isExpanded ? (
+                {mounted && isExpanded ? (
                   <Link
                     href={item?.route ?? `/${accountAddress}/`}
                     className={`flex items-center p-3 rounded-lg sidebar-transition sidebar-menu-item ${

@@ -7,6 +7,7 @@ import BrowserPreview from './components/browser-preview'
 import { Monitor, Moon, Sun } from 'lucide-react'
 import SignMessageModal from '../../../components/modals/SignMessageModal'
 import { useGlobalModal } from '../../../components/modals/useGlobalModal'
+import { useTheme } from '@/app/context/theme-context-provider'
 
 type ToggleType = 'email' | 'browser' | null
 
