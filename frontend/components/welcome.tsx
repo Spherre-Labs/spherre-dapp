@@ -10,6 +10,7 @@ import { StarknetkitConnector, useStarknetkitConnectModal } from 'starknetkit'
 import { useTheme } from '@/app/context/theme-context-provider'
 import { Sun, Moon, Monitor } from 'lucide-react'
 import { useState, useEffect, useRef } from 'react'
+import { useSpherreAccount } from '@/app/context/account-context'
 
 const Welcome = () => {
   // for navigation
@@ -32,6 +33,7 @@ const Welcome = () => {
   }
 
   const { address } = useAccount()
+  const {accountAddress} = useSpherreAccount();
 
   async function checkForAccount() {
     // Check for addresses in localStorage
@@ -155,6 +157,7 @@ const Welcome = () => {
 
             {/* Responsive Button */}
             {address ? (
+            
               <button
                 onClick={() => router.push('/create-account/step-1')}
                 className={`w-full sm:w-72 flex items-center justify-center gap-1 px-6 py-2 rounded-lg mx-auto my-3 transition-all duration-200 ${
@@ -172,6 +175,7 @@ const Welcome = () => {
                   Create Spherre
                 </p>
               </button>
+
             ) : (
               <button
                 onClick={connectWallet}
@@ -190,6 +194,23 @@ const Welcome = () => {
                 </p>
               </button>
             )}
+            <button
+                onClick={() => router.push(`/${accountAddress}`)}
+                className={`w-full sm:w-72 flex items-center justify-center gap-1 px-6 py-2 rounded-lg mx-auto my-3 transition-all duration-200 ${
+                  actualTheme === 'dark'
+                    ? 'bg-white text-black hover:bg-gray-200'
+                    : 'bg-gray-900 text-white hover:bg-gray-800'
+                }`}
+              >
+                <Image src={add} height={30} width={24} alt={'add'} />
+                <p
+                  className={
+                    actualTheme === 'dark' ? 'text-black' : 'text-white'
+                  }
+                >
+                  Go to default account
+                </p>
+              </button>
           </div>
         </div>
 
