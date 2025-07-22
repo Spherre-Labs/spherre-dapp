@@ -33,23 +33,34 @@ export default function Tabs({
     id: string
   }[]
 }) {
+  const [mounted, setMounted] = useState(false)
   useTheme()
   const [activeTab, setActiveTab] = useState('Tokens')
   const [tokenImages, setTokenImages] = useState<Record<string, string>>({})
 
   useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  useEffect(() => {
+    if (!mounted) return
+
     const fetchImages = async () => {
       const images: Record<string, string> = {}
 
-      for (const token of tokens) {
-        const imageUrl = await getTokenImage(token.id)
-        if (imageUrl) images[token.coin] = imageUrl
+      try {
+        for (const token of tokens) {
+          const imageUrl = await getTokenImage(token.id)
+          if (imageUrl) images[token.coin] = imageUrl
+        }
+        setTokenImages(images)
+      } catch (error) {
+        console.error('Error fetching token images:', error)
       }
-      setTokenImages(images)
     }
 
     fetchImages()
-  }, [tokens])
+  }, [tokens, mounted])
 
   // NFT data with correctly imported image objects
   const nfts = [
@@ -88,84 +99,89 @@ export default function Tabs({
   ]
 
   const { accountAddress } = useContext(SpherreAccountContext)
-  const { members, isLoading } = useAccountInfo(accountAddress || '0x0')
 
-  if (isLoading) return <div>Loading...</div>
-  if (!members || members.length === 0) return <div>No members found.</div>
+  if (!mounted) {
+    return (
+      <div className="bg-theme-bg-secondary border border-theme-border rounded-lg transition-colors duration-300">
+        <div className="animate-pulse p-4">
+          <div className="h-8 bg-theme-bg-tertiary rounded w-1/3 mb-4"></div>
+          <div className="space-y-3">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="h-12 bg-theme-bg-tertiary rounded"></div>
+            ))}
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   return (
-    <div className="text-theme transition-colors duration-300">
+    <div className="bg-theme-bg-secondary border border-theme-border rounded-lg transition-colors duration-300">
       <div className="flex border-b border-theme-border">
-        <button
-          onClick={() => setActiveTab('Tokens')}
-          className={`px-4 py-2 relative transition-colors duration-200 ${
-            activeTab === 'Tokens'
-              ? 'font-bold text-theme'
-              : 'text-theme-secondary hover:text-theme'
-          }`}
-        >
-          Tokens
-          {activeTab === 'Tokens' && (
-            <div className="absolute bottom-0 left-0 right-0 h-[.5px] bg-black dark:bg-white transition-colors duration-300"></div>
-          )}
-        </button>
-        <button
-          onClick={() => setActiveTab('NFT')}
-          className={`px-4 py-2 relative transition-colors duration-200 ${
-            activeTab === 'NFT'
-              ? 'font-bold text-theme'
-              : 'text-theme-secondary hover:text-theme'
-          }`}
-        >
-          NFT Token Vaults
-          {activeTab === 'NFT' && (
-            <div className="absolute bottom-0 left-0 right-0 h-[0.5px] bg-black dark:bg-white transition-colors duration-300"></div>
-          )}
-        </button>
+        {['Tokens', 'NFT'].map((tab) => (
+          <button
+            key={tab}
+            onClick={() => setActiveTab(tab)}
+            className={`px-6 py-3 font-medium text-sm transition-all duration-300 ${
+              activeTab === tab
+                ? 'text-primary border-b-2 border-primary bg-theme-bg-tertiary'
+                : 'text-theme-secondary hover:text-theme hover:bg-theme-bg-tertiary'
+            }`}
+          >
+            {tab}
+          </button>
+        ))}
       </div>
 
       {activeTab === 'Tokens' &&
         (loadingTokenData ? (
-          <Loader />
+          <div className="p-4 flex justify-center">
+            <Loader />
+          </div>
         ) : (
-          <div className="my-2 px-2 sm:px-4 md:px-8 py-2 sm:py-4 rounded-lg overflow-x-auto">
-            <div className="min-w-[600px]">
-              <div className="flex text-xs sm:text-sm text-theme-secondary font-semibold mb-1 gap-6 transition-colors duration-300">
-                <div className="w-1/5">Coin</div>
-                <div className="w-1/5">Price</div>
-                <div className="w-1/5">Balance</div>
-                <div className="w-1/5">Value</div>
-                <div className="w-1/5">Size</div>
-              </div>
+          <div className="p-4">
+            <div className="space-y-4">
               {tokens.map((token, index) => (
                 <div
                   key={index}
-                  className="flex items-center gap-6 rounded-lg px-3 py-3 hover:bg-theme-bg-tertiary transition-colors duration-200"
+                  className="flex items-center justify-between p-4 rounded-lg bg-theme-bg-tertiary transition-colors duration-300"
                 >
-                  <div className="flex items-center gap-1 w-1/5">
-                    <Image
-                      src={tokenImages[token.coin] || strk}
-                      width={18}
-                      height={18}
-                      alt="starknet token icon"
-                    />
-                    <span className="text-theme transition-colors duration-300">
-                      {token.coin}
-                    </span>
-                  </div>
-                  <div className="w-1/5 text-theme transition-colors duration-300">
-                    {token.price}
-                  </div>
-                  <div className="w-1/5 text-theme transition-colors duration-300">
-                    {token.balance}
-                  </div>
-                  <div className="w-1/5 text-theme transition-colors duration-300">
-                    {token.value}
-                  </div>
-                  <div className="w-1/5 flex flex-col items-start gap-[3px]">
-                    <div className="text-[10px] sm:text-sm mt-1 text-left text-theme-secondary transition-colors duration-300">
-                      {token.size}
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full overflow-hidden bg-gray-200">
+                      {tokenImages[token.coin] ? (
+                        <Image
+                          src={tokenImages[token.coin]}
+                          alt={token.coin}
+                          width={40}
+                          height={40}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <Image
+                          src={strk}
+                          alt={token.coin}
+                          width={40}
+                          height={40}
+                          className="w-full h-full object-cover"
+                        />
+                      )}
                     </div>
+                    <div>
+                      <p className="font-medium text-theme transition-colors duration-300">
+                        {token.coin}
+                      </p>
+                      <p className="text-sm text-theme-secondary transition-colors duration-300">
+                        ${token.price}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <p className="font-medium text-theme transition-colors duration-300">
+                      {token.balance}
+                    </p>
+                    <p className="text-sm text-theme-secondary transition-colors duration-300">
+                      {token.value}
+                    </p>
                     <div className="relative w-full h-1 rounded-full">
                       <div
                         className="absolute top-0 left-0 h-1 bg-gray-900 dark:bg-white rounded-full transition-colors duration-300"

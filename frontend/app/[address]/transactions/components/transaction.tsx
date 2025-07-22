@@ -83,7 +83,6 @@ export default function Transaction({
         accountAddress,
         errorMessage: error instanceof Error ? error.message : 'Unknown error',
       })
-      // You could add a toast notification here in the future
     }
   }
 
@@ -102,7 +101,6 @@ export default function Transaction({
         accountAddress,
         errorMessage: error instanceof Error ? error.message : 'Unknown error',
       })
-      // You could add a toast notification here in the future
     }
   }
 
@@ -121,7 +119,6 @@ export default function Transaction({
         accountAddress,
         errorMessage: error instanceof Error ? error.message : 'Unknown error',
       })
-      // You could add a toast notification here in the future
     }
   }
 
@@ -418,7 +415,7 @@ export default function Transaction({
               )}
             </div>
             <Link
-              href={routes(accountAddress).transactionDetails(
+              href={routes(accountAddress || '0x0').transactionDetails(
                 transaction.id.toString(),
               )}
             >
