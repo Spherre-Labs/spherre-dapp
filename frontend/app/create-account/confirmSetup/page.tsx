@@ -1,7 +1,7 @@
 'use client'
-import StepIndicators from '../../components/onboarding/StepIndicators'
-import SphereAccountReview from '../components/SphereAccountReview'
-import MembersThreshold from '../components/MembersThreshold'
+import StepIndicators from '../../../components/onboarding/StepIndicators'
+import SphereAccountReview from '../../components/SphereAccountReview'
+import MembersThreshold from '../../components/MembersThreshold'
 import Nav from '@/components/onboarding/Nav'
 import { useRouter } from 'next/navigation'
 
@@ -13,13 +13,13 @@ export default function ConfirmSetup() {
   }
 
   return (
-    <div className="w-full lg:px-[50px] md:px-6 px-4 md:py-[50px] py-4 overflow-x-hidden bg-theme transition-colors duration-300 text-theme">
-      <Nav />
+
       <div className="text-theme">
         {/* Main Container */}
-        <div className="flex flex-col items-center px-4 pt-16 sm:pt-20 md:pt-24 pb-6 sm:pb-8">
+         <StepIndicators currentStep={3} />
+        <div className="flex flex-col items-center px-4  pb-6 sm:pb-8">
           <div className="max-w-[672px] w-full pt-[1rem]">
-            <StepIndicators currentStep={3} />
+           
 
             {/* Heading & Description */}
             <div className="max-w-sm mx-auto my-12 text-center pb-8">
@@ -54,6 +54,5 @@ export default function ConfirmSetup() {
           </div>
         </div>
       </div>
-    </div>
   )
 }

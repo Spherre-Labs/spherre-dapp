@@ -10,6 +10,7 @@ import { useTheme } from '@/app/context/theme-context-provider'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm, useFieldArray } from 'react-hook-form'
 import * as z from 'zod'
+import StepIndicator from './StepIndicators'
 
 const isValidStarknetAddress = (address: string) => {
   const addressRegex = /^0x[0-9a-fA-F]{64}$/
@@ -122,16 +123,19 @@ const StepTwo = () => {
   const handleSubmitStepTwo = async (data: StepTwoData) => {
     setMembers(data.members.map((m) => m.address))
     setApprovals(data.approvals)
-    router.push('/confirmSetup')
+    router.push('/create-account/confirmSetup')
   }
 
   return (
     <>
       {/* Writeup */}
-      <div className="max-w-sm my-12 ">
+      <StepIndicator currentStep={2} />
+      <div className="max-w-sm my-1 ">
+        
         <h1 className="text-center text-theme font-[700] text-2xl sm:text-3xl lg:text-[40px] leading-tight sm:leading-[47.42px] transition-colors duration-300">
           Add Members to a Multisig Vault
         </h1>
+        
         <p className="text-sm sm:text-base leading-[25px] text-center text-theme-secondary lg:px-8 mt-3 transition-colors duration-300">
           Add your team members & customize security settings to fit your
           team&apos;s needs.
