@@ -158,7 +158,7 @@ export default function TransactionsPage() {
 
       <div className="space-y-4">
         {/* TODO: Replace with real smart contract data when available */}
-        {transactions.map((transaction: MockTransactionType, index: number) => {
+        {transactions.map((transaction: MockTransactionType) => {
           const transactionInfo =
             convertMockToTransactionDisplayInfo(transaction)
           return (

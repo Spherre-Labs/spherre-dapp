@@ -12,11 +12,7 @@ import nft7 from '../../public/Images/nft7.png'
 import nft8 from '../../public/Images/nft8.png'
 import strk from '../../public/Images/strk.png'
 import { useTheme } from '@/app/context/theme-context-provider'
-import Loader from '../components/modals/Loader'
 import { getTokenImage } from '@/lib/utils/token_image'
-import { useAccountInfo } from '../../hooks/useSpherreHooks'
-import { useContext } from 'react'
-import { SpherreAccountContext } from '../context/account-context'
 
 export default function Tabs({
   loadingTokenData,
@@ -98,8 +94,6 @@ export default function Tabs({
     },
   ]
 
-  const { accountAddress } = useContext(SpherreAccountContext)
-
   if (!mounted) {
     return (
       <div className="bg-theme-bg-secondary border border-theme-border rounded-lg transition-colors duration-300">
@@ -148,7 +142,9 @@ export default function Tabs({
 
       {activeTab === 'Tokens' &&
         (loadingTokenData ? (
-          <Loader />
+          <div className="p-8 flex justify-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-4 border-theme-border border-t-theme transition-colors duration-300"></div>
+          </div>
         ) : (
           <div className="my-2 px-2 sm:px-4 md:px-8 py-2 sm:py-4 rounded-lg overflow-x-auto">
             <div className="min-w-[600px]">
@@ -159,9 +155,9 @@ export default function Tabs({
                 <div className="w-1/5">Value</div>
                 <div className="w-1/5">Size</div>
               </div>
-              {tokens.map((token, index) => (
+              {tokens.map((token) => (
                 <div
-                  key={index}
+                  key={token.coin}
                   className="flex items-center gap-6 rounded-lg px-3 py-3 hover:bg-theme-bg-tertiary transition-colors duration-200"
                 >
                   <div className="flex items-center gap-1 w-1/5">
