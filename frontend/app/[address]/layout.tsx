@@ -19,9 +19,7 @@ import { NavItem } from './navigation'
 import { usePathname } from 'next/navigation'
 import { useSpherreAccount } from '../context/account-context'
 import {
-  spherreAccountConfig,
   useGetAccountName,
-  useGetAccountDetails,
 } from '@/lib'
 import React from 'react'
 
