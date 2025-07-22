@@ -16,55 +16,6 @@ const nunito = Nunito_Sans({
   weight: ['200', '300', '400', '500', '600', '700', '800', '900'],
 })
 
-// Keep the hardcoded data for fallback/default styling
-const initialMembers = [
-  {
-    id: 1,
-    name: 'Member 1',
-    address: '22yquq...qyqiia',
-    fullAddress: '22yquq92812xmnw2qyqiia',
-    roles: ['Voter', 'Proposer', 'Executer'],
-    dateAdded: '24 Mar 2025',
-    image: '/member1.svg',
-  },
-  {
-    id: 2,
-    name: 'Member 2',
-    address: '98sjdl...qwopsa',
-    fullAddress: '98sjdl0293ksdlaqwopsa',
-    roles: ['Voter', 'Proposer'],
-    dateAdded: '24 Mar 2025',
-    image: '/member2.svg',
-  },
-  {
-    id: 3,
-    name: 'Member 3',
-    address: '88abck...zzzzzx',
-    fullAddress: '88abckqwertyuizzzzzx',
-    roles: ['Voter'],
-    dateAdded: '24 Mar 2025',
-    image: '/member3.svg',
-  },
-  {
-    id: 4,
-    name: 'Member 4',
-    address: '88abck...zzzzzx',
-    fullAddress: '88abckqwertyuizzzzzx',
-    roles: ['Voter'],
-    dateAdded: '24 Mar 2025',
-    image: '/member3.svg',
-  },
-  {
-    id: 5,
-    name: 'Member 5',
-    address: '88abck...zzzzzx',
-    fullAddress: '88abckqwertyuizzzzzx',
-    roles: ['Voter'],
-    dateAdded: '24 Mar 2025',
-    image: '/member3.svg',
-  },
-]
-
 const roleColors: Record<string, string> = {
   Voter: 'text-[#FF7BE9] border-[#FF7BE9] bg-[#FF7BE9]/10',
   Proposer: 'text-[#FF8A25] border-[#FF8A25] bg-[#FF8A25]/10',
