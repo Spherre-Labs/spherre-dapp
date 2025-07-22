@@ -131,15 +131,13 @@ const Sidebar = ({
 
       <aside
         id="sidebar"
-        className={`fixed top-0 left-0 h-screen sidebar-bg text-theme border-r border-theme z-30 sidebar-transition ${
+        className={`${
           isMobile
-            ? `w-64 transform transition-transform duration-300 ${
+            ? `fixed top-0 left-0 h-screen w-64 transform transition-transform duration-300 z-30 ${
                 isExpanded ? 'translate-x-0' : '-translate-x-full'
               }`
-            : isExpanded
-              ? 'w-64'
-              : 'w-16'
-        }`}
+            : `h-screen ${isExpanded ? 'w-64' : 'w-16'}`
+        } sidebar-bg text-theme border-r border-theme sidebar-transition`}
         onMouseEnter={() => !isMobile && setExpanded(true)}
         onMouseLeave={() => !isMobile && setExpanded(false)}
       >

@@ -169,20 +169,16 @@ export default function DappLayout({ children, params }: DappLayoutProps) {
 
   return (
     <div className="bg-theme min-h-screen overflow-x-hidden transition-colors duration-300">
-      <Sidebar
-        accountName={accountName ?? 'Spherre Account'}
-        navItems={navItems}
-        selectedPage={selectedPage}
-        isMobile={isMobile}
-        sidebarExpanded={sidebarExpanded}
-        setSidebarExpanded={setSidebarExpanded}
-      />
-      <div
-        className={`transition-all duration-300 ${
-          isMobile ? 'ml-0' : sidebarExpanded ? 'ml-64' : 'ml-16'
-        }`}
-      >
-        <div className="flex flex-col min-h-screen">
+      <div className="flex">
+        <Sidebar
+          accountName={accountName ?? 'Spherre Account'}
+          navItems={navItems}
+          selectedPage={selectedPage}
+          isMobile={isMobile}
+          sidebarExpanded={sidebarExpanded}
+          setSidebarExpanded={setSidebarExpanded}
+        />
+        <div className="flex-1 flex flex-col min-h-screen">
           <Navbar
             title={title}
             isMobile={isMobile}
