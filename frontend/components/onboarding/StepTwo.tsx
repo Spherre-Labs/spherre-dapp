@@ -131,11 +131,10 @@ const StepTwo = () => {
       {/* Writeup */}
       <StepIndicator currentStep={2} />
       <div className="max-w-sm my-1 ">
-        
         <h1 className="text-center text-theme font-[700] text-2xl sm:text-3xl lg:text-[40px] leading-tight sm:leading-[47.42px] transition-colors duration-300">
           Add Members to a Multisig Vault
         </h1>
-        
+
         <p className="text-sm sm:text-base leading-[25px] text-center text-theme-secondary lg:px-8 mt-3 transition-colors duration-300">
           Add your team members & customize security settings to fit your
           team&apos;s needs.

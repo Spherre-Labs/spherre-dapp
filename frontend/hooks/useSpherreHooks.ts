@@ -39,9 +39,9 @@ export function useIsDeployedAccount(accountAddress: `0x${string}`) {
 
 export function useGetDeploymentFee(address: `0x${string}`) {
   return useScaffoldReadContract<bigint>({
-    contractConfig: spherreConfig,  
+    contractConfig: spherreConfig,
     functionName: 'get_fee',
-    args: {fees_type: 4, account: address}
+    args: { fees_type: 4, account: address },
   })
 }
 

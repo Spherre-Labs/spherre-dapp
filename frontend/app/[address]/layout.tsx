@@ -20,16 +20,15 @@ import { usePathname } from 'next/navigation'
 import { useSpherreAccount } from '../context/account-context'
 import { spherreAccountConfig, useGetAccountName } from '@/lib'
 
-
 interface DappLayoutProps {
-  children: ReactNode,
-  params: {address: string}
+  children: ReactNode
+  params: { address: string }
 }
 
 export const routes = (address: `0x${string}` | null) => ({
   dashboard: `/${address}/`,
-  depositViaAddress:  `/${address}/deposit/deposit-via-address`,
-  depositViaWallet:  `/${address}/deposit/deposit-via-wallet`,
+  depositViaAddress: `/${address}/deposit/deposit-via-address`,
+  depositViaWallet: `/${address}/deposit/deposit-via-wallet`,
   trade: `/${address}/trade`,
   members: `/${address}/members`,
   transactions: `/${address}/transactions`,
@@ -45,29 +44,39 @@ export const routes = (address: `0x${string}` | null) => ({
   support: `/${address}/support`,
 })
 
-
 export default function DappLayout({ children, params }: DappLayoutProps) {
-  
   // State to track sidebar expansion
   const [sidebarExpanded, setSidebarExpanded] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
   const pathname = usePathname()
-  const selectedPage = (pathname)
-  const account_address = useSpherreAccount().accountAddress;
-  const {data: accountName} = useGetAccountName(account_address ?? spherreAccountConfig.address as `0x${string}`)
-  const [title, setTitle] = useState(pathname);
+  const selectedPage = pathname
+  const account_address = useSpherreAccount().accountAddress
+  const { data: accountName } = useGetAccountName(
+    account_address ?? (spherreAccountConfig.address as `0x${string}`),
+  )
+  const [title, setTitle] = useState(pathname)
 
   // Define navigation items
   const navItems: NavItem[] = [
     { name: 'Dashboard', icon: Dashboard, route: `/${account_address}/` },
-    { name: 'Trade', icon: Trade, route: `/${account_address}/trade`, comingSoon: true },
+    {
+      name: 'Trade',
+      icon: Trade,
+      route: `/${account_address}/trade`,
+      comingSoon: true,
+    },
     { name: 'Members', icon: Members, route: `/${account_address}/members` },
     {
       name: 'Transactions',
       icon: Transactions,
       route: `/${account_address}/transactions`,
     },
-    { name: 'Stake', icon: Stake, comingSoon: true, route: `/${account_address}/stake` },
+    {
+      name: 'Stake',
+      icon: Stake,
+      comingSoon: true,
+      route: `/${account_address}/stake`,
+    },
     {
       name: 'Smart Will',
       icon: Stake,
@@ -92,7 +101,12 @@ export default function DappLayout({ children, params }: DappLayoutProps) {
       comingSoon: true,
       route: `/${account_address}/payments`,
     },
-    { name: 'Apps', icon: Apps, comingSoon: true, route: `/${account_address}/apps` },
+    {
+      name: 'Apps',
+      icon: Apps,
+      comingSoon: true,
+      route: `/${account_address}/apps`,
+    },
     { name: 'Settings', icon: Settings, route: `/${account_address}/settings` },
     {
       name: 'Support',
@@ -143,21 +157,17 @@ export default function DappLayout({ children, params }: DappLayoutProps) {
   }, [isMobile])
 
   useEffect(() => {
-    if(accountName) {
+    if (accountName) {
       setTitle(accountName)
     }
-
   }, [accountName])
-  
-  
 
   return (
     <div className="bg-theme min-h-screen overflow-x-hidden transition-colors duration-300">
       <Sidebar
-        accountName={accountName ?? "Spherre Account"}
+        accountName={accountName ?? 'Spherre Account'}
         navItems={navItems}
         selectedPage={selectedPage}
-
         isMobile={isMobile}
         sidebarExpanded={sidebarExpanded}
         setSidebarExpanded={setSidebarExpanded}

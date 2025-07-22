@@ -1,5 +1,11 @@
 'use client'
-import { createContext, useState, ReactNode, useContext, useEffect } from 'react'
+import {
+  createContext,
+  useState,
+  ReactNode,
+  useContext,
+  useEffect,
+} from 'react'
 import { isValidStarknetAddress, SPHERRE_CONTRACTS } from '@/lib'
 import { validateAndParseAddress } from 'starknet'
 import { useParams } from 'next/navigation'
@@ -25,24 +31,27 @@ export const SpherreAccountProvider = ({
     SPHERRE_CONTRACTS.SPHERRE_ACCOUNT,
   )
 
-  const  [value, setValue, removeValue] = useLocalStorage<`0x${string}` | null>('SpherreAccountAddress', null);
-  // TODO: Create a functionality to check if the provided accountAddress 
+  const [value, setValue, removeValue] = useLocalStorage<`0x${string}` | null>(
+    'SpherreAccountAddress',
+    null,
+  )
+  // TODO: Create a functionality to check if the provided accountAddress
   // is a valid spherre account address.
   const setAccountAddress = (address: `0x${string}` | null) => {
-    if(address && !isValidStarknetAddress(address)) {
-      console.error('Invalid Starknet address provided:', address);
-      return;
+    if (address && !isValidStarknetAddress(address)) {
+      console.error('Invalid Starknet address provided:', address)
+      return
     }
-    _setAccountAddress(address);
-    setValue(address);
+    _setAccountAddress(address)
+    setValue(address)
   }
   useEffect(() => {
-    if (value){
+    if (value) {
       if (isValidStarknetAddress(value)) {
-        _setAccountAddress(value);
+        _setAccountAddress(value)
       } else {
-        console.error('Invalid address in local storage:', value);
-        removeValue();
+        console.error('Invalid address in local storage:', value)
+        removeValue()
       }
     }
   }, [])
@@ -62,14 +71,14 @@ export const SpherreAccountProvider = ({
 
 export const useSpherreAccount = () => {
   const context = useContext(SpherreAccountContext)
-  const params = useParams();
+  const params = useParams()
   if (!context) {
     throw new Error(
       'useSpherreAccount must be used within a SpherreAccountProvider',
     )
   }
   if (params.address) {
-    context.setAccountAddress(params.address as `0x${string}`);
+    context.setAccountAddress(params.address as `0x${string}`)
   }
   return context
 }

@@ -15,7 +15,7 @@ export default function EditProfile({ onCancel }: EditProfileProps) {
   const [editingEmail, setEditingEmail] = useState(false)
 
   const router = useRouter()
-  const {accountAddress} = useSpherreAccount()
+  const { accountAddress } = useSpherreAccount()
 
   // Image sources - make sure these paths exist in your public folder
   const profile_image = '/images/placeholder-profile.jpg'

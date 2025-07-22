@@ -37,7 +37,7 @@ const Sidebar = ({
     return false
   })
 
-  const {accountAddress} = useSpherreAccount();
+  const { accountAddress } = useSpherreAccount()
 
   // Store expanded state in localStorage when it changes
   useEffect(() => {

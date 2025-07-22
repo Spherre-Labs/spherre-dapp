@@ -20,7 +20,7 @@ export default function MultisigWalletUI() {
   const totalMembers = 3
   const router = useRouter()
   const { actualTheme } = useTheme()
-  const {accountAddress} = useSpherreAccount();
+  const { accountAddress } = useSpherreAccount()
 
   const openModal = () => setIsModalOpen(true)
   const closeModal = () => setIsModalOpen(false)

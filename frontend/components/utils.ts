@@ -6,8 +6,12 @@ export function isValidStarknetAddress(address: string) {
   return addressRegex.test(address)
 }
 
-export function sliceWalletAddress(address: `0x${string}` | null, start: number = 6, end: number = 4): string  {
-  if(!address) return "null"
+export function sliceWalletAddress(
+  address: `0x${string}` | null,
+  start: number = 6,
+  end: number = 4,
+): string {
+  if (!address) return 'null'
   if (address.length <= start + end) return address
   return `${address.slice(0, start)}...${address.slice(-end)}`
 }

@@ -14,7 +14,7 @@ export const routeToPageMap = (address: string) => ({
   [`/${address}/settings`]: 'Settings',
   [`/${address}/support`]: 'Support',
   [`/${address}/smart`]: 'Smart Lock',
-});
+})
 
 export type PageName = keyof typeof routeToPageMap
 
@@ -30,7 +30,6 @@ export const getSelectedPage = (pathname: string, address: string): string => {
     ? routeToPageMap(address)[route as keyof typeof routeToPageMap]
     : 'Dashboard'
 }
-
 
 export interface NavItem {
   name: string

@@ -33,19 +33,18 @@ const Welcome = () => {
   }
 
   const { address } = useAccount()
-  const {accountAddress} = useSpherreAccount();
+  const { accountAddress } = useSpherreAccount()
 
   async function checkForAccount() {
     // Check for addresses in localStorage
-    const storedAddress = localStorage.getItem('SpherreAddress');
-    if (!storedAddress){
-      console.log("No account found in localStorage.");
-      return;
+    const storedAddress = localStorage.getItem('SpherreAddress')
+    if (!storedAddress) {
+      console.log('No account found in localStorage.')
+      return
     }
-           
-    router.push(`/${storedAddress[0]}`);
-  }
 
+    router.push(`/${storedAddress[0]}`)
+  }
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -88,10 +87,10 @@ const Welcome = () => {
     { value: 'dark', label: 'Dark', icon: <Moon size={16} /> },
     { value: 'system', label: 'System', icon: <Monitor size={16} /> },
   ]
-  useEffect(()=>{
+  useEffect(() => {
     // check for accont and navigate to the first account
-    checkForAccount();
-  },[address])
+    checkForAccount()
+  }, [address])
   return (
     <div className="flex flex-col lg:flex-row bg-theme transition-colors duration-300 min-h-screen">
       {/* Left Section with Image */}
@@ -157,7 +156,6 @@ const Welcome = () => {
 
             {/* Responsive Button */}
             {address ? (
-            
               <button
                 onClick={() => router.push('/create-account/step-1')}
                 className={`w-full sm:w-72 flex items-center justify-center gap-1 px-6 py-2 rounded-lg mx-auto my-3 transition-all duration-200 ${
@@ -175,7 +173,6 @@ const Welcome = () => {
                   Create Spherre
                 </p>
               </button>
-
             ) : (
               <button
                 onClick={connectWallet}
@@ -195,22 +192,20 @@ const Welcome = () => {
               </button>
             )}
             <button
-                onClick={() => router.push(`/${accountAddress}`)}
-                className={`w-full sm:w-72 flex items-center justify-center gap-1 px-6 py-2 rounded-lg mx-auto my-3 transition-all duration-200 ${
-                  actualTheme === 'dark'
-                    ? 'bg-white text-black hover:bg-gray-200'
-                    : 'bg-gray-900 text-white hover:bg-gray-800'
-                }`}
+              onClick={() => router.push(`/${accountAddress}`)}
+              className={`w-full sm:w-72 flex items-center justify-center gap-1 px-6 py-2 rounded-lg mx-auto my-3 transition-all duration-200 ${
+                actualTheme === 'dark'
+                  ? 'bg-white text-black hover:bg-gray-200'
+                  : 'bg-gray-900 text-white hover:bg-gray-800'
+              }`}
+            >
+              <Image src={add} height={30} width={24} alt={'add'} />
+              <p
+                className={actualTheme === 'dark' ? 'text-black' : 'text-white'}
               >
-                <Image src={add} height={30} width={24} alt={'add'} />
-                <p
-                  className={
-                    actualTheme === 'dark' ? 'text-black' : 'text-white'
-                  }
-                >
-                  Go to default account
-                </p>
-              </button>
+                Go to default account
+              </p>
+            </button>
           </div>
         </div>
 

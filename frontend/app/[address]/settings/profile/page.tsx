@@ -18,7 +18,7 @@ import { useSpherreAccount } from '@/app/context/account-context'
 const ProfileContent = () => {
   const router = useRouter()
   useTheme()
-  const {accountAddress} = useSpherreAccount();
+  const { accountAddress } = useSpherreAccount()
 
   // State management for profile data and UI controls.
   const [displayName, setDisplayName] = useState('')

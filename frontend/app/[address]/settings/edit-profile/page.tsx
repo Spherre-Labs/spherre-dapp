@@ -31,7 +31,7 @@ const EditProfileContent = () => {
   const [walletId] = useState('352By...wtuya') // Hardcoded wallet ID.
   const [showSuccess, setShowSuccess] = useState(false)
 
-  const {accountAddress} = useSpherreAccount();
+  const { accountAddress } = useSpherreAccount()
 
   // On mount, load existing profile data from sessionStorage to pre-fill the form.
   useEffect(() => {

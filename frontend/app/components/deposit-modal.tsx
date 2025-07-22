@@ -12,7 +12,7 @@ export default function DepositModal() {
   const [portalElement, setPortalElement] = useState<HTMLElement | null>(null)
   const modalRef = useRef<HTMLDivElement>(null)
 
-  const {accountAddress} = useSpherreAccount();
+  const { accountAddress } = useSpherreAccount()
 
   useEffect(() => {
     // Create portal element for the modal
