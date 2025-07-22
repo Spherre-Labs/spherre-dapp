@@ -19,6 +19,7 @@ import type {
   ThresholdChangeData,
   SmartTokenLockTransaction,
 } from '@/lib/contracts/types'
+import { useMemo } from 'react'
 
 // Factory Contract Hooks
 export function useDeployAccount() {
@@ -510,11 +511,13 @@ export function useAccountInfo(accountAddress: `0x${string}`) {
   } = useGetMembersCount(accountAddress)
 
   // Filter out placeholder addresses (like '0x0') and only count valid addresses
-  const members = Array.isArray(membersRaw)
-    ? membersRaw.filter((addr) => addr && addr !== '0x0' && addr !== '')
-    : []
+  const members = useMemo(() => {
+    return Array.isArray(membersRaw)
+      ? membersRaw.filter((addr) => addr && addr !== '0x0' && addr !== '')
+      : []
+  }, [membersRaw])
 
-  return {
+  return useMemo(() => ({
     members,
     threshold,
     details,
@@ -522,5 +525,18 @@ export function useAccountInfo(accountAddress: `0x${string}`) {
     isLoading:
       membersLoading || thresholdLoading || detailsLoading || countLoading,
     error: membersError || thresholdError || detailsError || countError,
-  }
+  }), [
+    members,
+    threshold,
+    details,
+    membersCount,
+    membersLoading,
+    thresholdLoading,
+    detailsLoading,
+    countLoading,
+    membersError,
+    thresholdError,
+    detailsError,
+    countError,
+  ])
 }
