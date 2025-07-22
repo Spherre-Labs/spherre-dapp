@@ -1,6 +1,9 @@
+import { useSpherreAccount } from '@/app/context/account-context';
 import { redirect } from 'next/navigation'
 
 export default function Page() {
-  redirect('/dapp/settings/profile')
+  // Get the current address from the hook
+  const {accountAddress} = useSpherreAccount();
+  redirect(`/${accountAddress}/settings/profile`)
   return null
 }
