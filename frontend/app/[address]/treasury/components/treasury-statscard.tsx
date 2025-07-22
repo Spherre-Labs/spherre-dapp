@@ -1,10 +1,16 @@
 import React from 'react'
 import Image from 'next/image'
 
-const TreasuryStatscard = ({ totalTokens, totalStakes, totalNFTs }) => {
+type TreasuryStatscardProps = {
+  totalTokens: number | string;
+  totalStakes: number | string;
+  totalNFTs: number | string;
+};
+
+const TreasuryStatscard: React.FC<TreasuryStatscardProps> = ({ totalTokens, totalStakes, totalNFTs }) => {
   return (
     <div className="grid grid-cols-3 gap-4 mb-6 w-[70%] mt-4">
-       <div className="bg-[#1C1D1F] flex items-center rounded-lg p-4 border-4 border-[#292929]">
+       <div className="bg-[#1C1D1F] flex items-center rounded-lg p-4 border-4 border-theme-border">
         <div className="flex items-center justify-center rounded-xl  w-12 h-12  bg-[#29292A]">
           <Image
             src={'/totaltokenIcon.png'}
@@ -19,7 +25,7 @@ const TreasuryStatscard = ({ totalTokens, totalStakes, totalNFTs }) => {
           <div className="text-2xl font-bold text-white">{totalTokens}</div>
         </div>
       </div>
-      <div className="bg-[#1C1D1F] flex items-center rounded-lg p-4 border-4 border-[#292929]">
+      <div className="bg-[#1C1D1F] flex items-center rounded-lg p-4 border-4 border-theme-border">
         <div className="flex items-center justify-center rounded-xl  w-12 h-12  bg-[#29292A]">
           <Image
             src={'/totalStakeIcon.png'}
@@ -34,7 +40,7 @@ const TreasuryStatscard = ({ totalTokens, totalStakes, totalNFTs }) => {
           <div className="text-2xl font-bold text-white">{totalStakes}</div>
         </div>
       </div>
-      <div className="bg-[#1C1D1F] flex items-center rounded-lg p-4 border-4 border-[#292929]">
+      <div className="bg-[#1C1D1F] flex items-center rounded-lg p-4 border-4 border-theme-border">
         <div className="flex items-center justify-center rounded-xl  w-12 h-12  bg-[#29292A]">
           <Image
             src={'/totalNftIcon.png'}

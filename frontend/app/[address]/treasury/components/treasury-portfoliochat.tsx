@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Calendar, ChevronDown } from "lucide-react";
+import { Calendar } from "lucide-react";
 import dynamic from "next/dynamic";
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip } from "chart.js";
 import Image from "next/image";
@@ -20,13 +20,12 @@ const Bar = dynamic(() => import("react-chartjs-2").then((mod) => mod.Bar), {
 });
 
 interface TreasuryPortfoliochatProps {
-  data: any; 
+  data: import("chart.js").ChartData<"bar">;
   onPeriodChange: (date: string) => void;
 }
 
 const TreasuryPortfoliochat = ({ data, onPeriodChange }: TreasuryPortfoliochatProps) => {
   const [isClient, setIsClient] = useState(false);
-  const [error, setError] = useState<Error | null>(null);
 
   // Ensure client-side rendering
   useEffect(() => {
@@ -55,7 +54,7 @@ const TreasuryPortfoliochat = ({ data, onPeriodChange }: TreasuryPortfoliochatPr
     },
     scales: {
       x: {
-        type: "category", // Explicitly specify category scale
+        type: "category" as const, // Use string literal type
         grid: {
           display: false,
         },
@@ -64,7 +63,7 @@ const TreasuryPortfoliochat = ({ data, onPeriodChange }: TreasuryPortfoliochatPr
         },
       },
       y: {
-        type: "linear", 
+        type: "linear" as const, // Use string literal type
         grid: {
           color: "#374151",
         },
@@ -82,31 +81,27 @@ const TreasuryPortfoliochat = ({ data, onPeriodChange }: TreasuryPortfoliochatPr
     year: "",
   });
 
-  if (error) {
-    return <div className="text-red-500">Error rendering chart: {error.message ?? String(error)}</div>;
-  }
-
   // Sample date options (you can expand these)
-  const days = Array.from({ length: 31 }, (_, i) => String(i + 1).padStart(2, "0"));
-  const months = [
-    "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12",
-  ];
-  const years = Array.from({ length: 5 }, (_, i) => String(2025 - i));
-
-  // Handle date changes
-  const handleDateChange = (field: string) => (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const newDate = { ...selectedDate, [field]: e.target.value };
-    setSelectedDate(newDate);
-    // Call onPeriodChange with a formatted date (e.g., "DD-MM-YYYY" or custom format)
-    const formattedDate = `${newDate.day}-${newDate.month}-${newDate.year}`;
-    if (newDate.day && newDate.month && newDate.year) {
-      onPeriodChange(formattedDate);
-    }
-  };
-
-  return (
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
-      <div className="lg:col-span-2 bg-[#1C1D1F] rounded-lg p-4 border-4 border-[#292929]">
+    const days = Array.from({ length: 31 }, (_, i) => String(i + 1).padStart(2, "0"));
+    const months = [
+      "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12",
+    ];
+    const years = Array.from({ length: 5 }, (_, i) => String(2025 - i));
+  
+    // Handle date changes
+    const handleDateChange = (field: string) => (e: React.ChangeEvent<HTMLSelectElement>) => {
+      const newDate = { ...selectedDate, [field]: e.target.value };
+      setSelectedDate(newDate);
+      // Call onPeriodChange with a formatted date (e.g., "DD-MM-YYYY" or custom format)
+      const formattedDate = `${newDate.day}-${newDate.month}-${newDate.year}`;
+      if (newDate.day && newDate.month && newDate.year) {
+        onPeriodChange(formattedDate);
+      }
+    };
+  
+    return (
+    <div className="grid grid-cols-1 lg:grid-cols-3 lg:h-[445px] gap-6 mb-6">
+      <div className="lg:col-span-2 h-full bg-[#1C1D1F] rounded-lg p-4 border-4 border-[#292929]">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2">
@@ -160,12 +155,11 @@ const TreasuryPortfoliochat = ({ data, onPeriodChange }: TreasuryPortfoliochatPr
             </div>
           </div>
         </div>
-        <div className="h-64">
+        <div className="h-96">
           {isClient ? (
             <Bar
               data={data}
               options={chartOptions}
-              onError={(err) => setError(err)} // Note: Bar may not support onError; used for debugging
             />
           ) : (
             <div>Loading chart...</div>
@@ -173,13 +167,13 @@ const TreasuryPortfoliochat = ({ data, onPeriodChange }: TreasuryPortfoliochatPr
         </div>
       </div>
 
-      <div className="bg-[#1C1D1F] rounded-lg p-4 border-4 border-[#292929]">
+      <div className="bg-[#1C1D1F] h-full rounded-lg p-4 border-4 border-[#292929]">
         <h3 className="text-lg font-semibold text-white mb-4">Top Tokens</h3>
-        <div className="space-y-3">
+        <div className="space-y-3 h-full justify-between ">
           {topTokens.map((token, index) => (
             <div key={index} className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center">
+                <div className="w-8 h-8 rounded-full flex items-center justify-center">
                   <Image src={token.logo} width={24} height={24} alt={`${token.symbol} logo`} />
                 </div>
                 <div>

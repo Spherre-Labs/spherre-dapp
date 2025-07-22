@@ -50,7 +50,6 @@ const TreasuryPage = () => {
 
        <TreasuryPortfoliochat
         data={portfolioData}
-        selectedPeriod={selectedPeriod}
         onPeriodChange={setSelectedPeriod}
        />
 

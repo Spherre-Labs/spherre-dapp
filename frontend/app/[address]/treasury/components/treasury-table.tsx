@@ -26,7 +26,7 @@ const TreasuryTable = ({ tokens }: { tokens: Token[] }) => {
       <div className="overflow-x-auto">
         <table className="w-full">
           <thead>
-            <tr className="border-b border-gray-800">
+            <tr className="">
               <th className="text-left py-3 px-6 text-gray-400 font-medium">Coin</th>
               <th className="text-left py-3 px-6 text-gray-400 font-medium">Price</th>
               <th className="text-left py-3 px-6 text-gray-400 font-medium">Balance</th>
@@ -36,7 +36,7 @@ const TreasuryTable = ({ tokens }: { tokens: Token[] }) => {
           </thead>
           <tbody>
             {tokens.map((token, index) => (
-              <tr key={index} className="border-b border-gray-800 hover:bg-gray-800/50">
+              <tr key={index} className=" hover:bg-gray-800/50">
                 <td className="py-4 px-6">
                   <div className="flex items-center gap-3">
                     <div className="w-8 h-8 rounded-full  flex items-center justify-center text-sm font-bold text-white">

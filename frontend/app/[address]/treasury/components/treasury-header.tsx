@@ -2,7 +2,13 @@ import React from 'react'
 import Image from 'next/image'
 import { Eye, EyeOff } from 'lucide-react'
 
-const TreasuryHeader = ({ balance, isBalanceVisible, toggleBalance }) => {
+type TreasuryHeaderProps = {
+  balance: number | string;
+  isBalanceVisible: boolean;
+  toggleBalance: () => void;
+};
+
+const TreasuryHeader = ({ balance, isBalanceVisible, toggleBalance }: TreasuryHeaderProps) => {
   return (
     <div className="bg-[#6F2FCE] h-44 flex  justify-between rounded-lg p-6 text-white relative overflow-hidden">
       {/* wallet balance */}
