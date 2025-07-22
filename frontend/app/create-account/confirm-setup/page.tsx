@@ -48,7 +48,7 @@ export default function ConfirmSetup() {
     console.log(eventData)
     console.log('Address', address)
     if (!eventData || !address) return
-    
+
     for (const event of eventData) {
       console.log(event.parsedArgs.owner)
       if (event.parsedArgs.owner.toLowerCase() === address) {
@@ -69,7 +69,7 @@ export default function ConfirmSetup() {
       subtitle: 'Please wait while we fetch your account information.',
     })
   }
-  
+
   const handleClick = async () => {
     if (!account) {
       console.error('Connect your wallet')
