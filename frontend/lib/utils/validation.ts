@@ -21,7 +21,7 @@ export function feltToAddress(felt: string | number | bigint): string {
     const paddedHex = hex.padStart(64, '0')
     return `0x${paddedHex}`
   } catch (error) {
-    throw new Error(`Invalid felt value: ${feltStr}`)
+    throw new Error(`Invalid felt value: ${feltStr}. Error: ${error}`)
   }
 }
 
