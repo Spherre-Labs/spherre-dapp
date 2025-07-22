@@ -515,9 +515,9 @@ export function useAccountInfo(accountAddress: `0x${string}`) {
   // Convert felt values to proper Starknet addresses
   const members = useMemo(() => {
     if (!Array.isArray(membersRaw)) return []
-    
+
     return membersRaw
-      .map(member => {
+      .map((member) => {
         try {
           // Convert felt to address format
           const address = feltToAddress(member)
@@ -527,7 +527,13 @@ export function useAccountInfo(accountAddress: `0x${string}`) {
           return null
         }
       })
-      .filter((addr) => addr && addr !== '0x0' && addr !== '0x0000000000000000000000000000000000000000000000000000000000000000')
+      .filter(
+        (addr) =>
+          addr &&
+          addr !== '0x0' &&
+          addr !==
+            '0x0000000000000000000000000000000000000000000000000000000000000000',
+      )
   }, [membersRaw])
 
   return useMemo(

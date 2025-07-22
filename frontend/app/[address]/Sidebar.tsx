@@ -29,7 +29,7 @@ const Sidebar = ({
 }: SidebarProps) => {
   // State to track if component is mounted (for hydration safety)
   const [mounted, setMounted] = useState(false)
-  
+
   // State to track sidebar expansion
   const [expanded, setExpanded] = useState(false) // Start with false for SSR
 
