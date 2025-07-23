@@ -9,10 +9,10 @@ import {
 } from '@/lib/contracts/spherre-contracts'
 import type {
   AccountDetails,
-  SpherreTransaction,
-  U256,
-  TokenTransactionData,
   NFTTransactionData,
+  SpherreTransaction,
+  TokenTransactionData,
+  U256,
   MemberAddData,
   MemberRemoveData,
   EditPermissionTransaction,
@@ -540,6 +540,7 @@ export function useExecuteTransaction(accountAddress: `0x${string}`) {
     functionName: 'execute_transaction',
   })
 }
+
 
 // Utility hooks that combine multiple operations
 export function useAccountInfo(accountAddress: `0x${string}`) {
