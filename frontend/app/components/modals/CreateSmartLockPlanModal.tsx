@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { X, ChevronDown, Calendar } from 'lucide-react'
 import Image from 'next/image'
+import { useTheme } from '@/app/context/theme-context-provider'
 
 interface CreateSmartLockPlanModalProps {
   isOpen: boolean
@@ -55,6 +56,7 @@ export default function CreateSmartLockPlanModal({
   onClose,
   onSubmit,
 }: CreateSmartLockPlanModalProps) {
+  useTheme() // Initialize theme context
   const [formData, setFormData] = useState<SmartLockPlanData>({
     name: '',
     token: 'USDT',
@@ -188,28 +190,28 @@ export default function CreateSmartLockPlanModal({
   }
 
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm m-0"
-      onClick={handleBackdropClick}
-    >
-      <div
-        className="relative bg-[#1C1C1E] border border-[#2C2C2E] rounded-2xl shadow-xl w-full max-w-md md:max-w-xl"
+          <div
+        className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm m-0"
+        onClick={handleBackdropClick}
+      >
+        <div
+          className="relative bg-theme-bg-secondary border border-theme-border rounded-2xl shadow-xl w-full max-w-md md:max-w-xl transition-colors duration-300"
         onClick={handleModalContentClick}
       >
         {/* Header */}
         <div className="flex flex-col items-end justify-between p-6 pb-[30px]">
           <button
             onClick={onClose}
-            className="p-2 rounded-full bg-gray-800/50 hover:bg-gray-700/50 transition-colors"
+            className="p-2 rounded-full bg-theme-bg-tertiary hover:bg-theme-bg-secondary transition-colors"
             disabled={isSubmitting}
           >
-            <X className="w-5 h-5 text-gray-400" />
+            <X className="w-5 h-5 text-theme-secondary" />
           </button>
           <div className="text-center">
-            <h2 className="text-2xl md:text-3xl font-bold text-white">
+            <h2 className="text-2xl md:text-3xl font-bold text-theme transition-colors duration-300">
               Create Smart Lock Plan
             </h2>
-            <p className="text-sm md:text-base text-gray-400 mt-1">
+            <p className="text-sm md:text-base text-theme-secondary mt-1 transition-colors duration-300">
               Simply input the correct information to create a new smart lock
               plan.
             </p>
@@ -220,7 +222,7 @@ export default function CreateSmartLockPlanModal({
         <form onSubmit={handleSubmit} className="px-6 pb-6 space-y-6">
           {/* Name of Plan */}
           <div>
-            <label className="block text-sm font-medium text-white mb-2">
+            <label className="block text-sm font-medium text-theme mb-2 transition-colors duration-300">
               Name of Plan
             </label>
             <input
@@ -230,7 +232,7 @@ export default function CreateSmartLockPlanModal({
                 setFormData((prev) => ({ ...prev, name: e.target.value }))
               }
               placeholder="Enter name for this smart lock"
-              className={`w-full bg-[#2C2C2E] text-white rounded-lg px-4 py-3 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[#6F2FCE] border ${
+              className={`w-full bg-theme-bg-tertiary text-theme rounded-lg px-4 py-3 placeholder:text-theme-secondary focus:outline-none focus:ring-2 focus:ring-primary border transition-colors duration-300 ${
                 errors.name ? 'border-red-500' : 'border-transparent'
               }`}
               disabled={isSubmitting}
@@ -242,7 +244,7 @@ export default function CreateSmartLockPlanModal({
 
           {/* Select Token */}
           <div>
-            <label className="block text-sm font-medium text-white mb-2">
+            <label className="block text-sm font-medium text-theme mb-2 transition-colors duration-300">
               Select Token
             </label>
             <div className="relative">
@@ -253,7 +255,7 @@ export default function CreateSmartLockPlanModal({
                   setShowTokenDropdown(!showTokenDropdown)
                   setShowDurationDropdown(false)
                 }}
-                className="token-dropdown-button w-full bg-[#2C2C2E] text-white rounded-lg px-4 py-3 flex items-center justify-between focus:outline-none focus:ring-2 focus:ring-[#6F2FCE] hover:bg-[#3C3C3E] transition-colors"
+                className="token-dropdown-button w-full bg-theme-bg-tertiary text-theme rounded-lg px-4 py-3 flex items-center justify-between focus:outline-none focus:ring-2 focus:ring-primary hover:bg-theme-bg-secondary transition-colors duration-300"
                 disabled={isSubmitting}
               >
                 <div className="flex items-center gap-3">
@@ -271,12 +273,12 @@ export default function CreateSmartLockPlanModal({
                   <span>{selectedToken?.symbol || 'Select Token'}</span>
                 </div>
                 <ChevronDown
-                  className={`w-4 h-4 text-gray-400 transition-transform ${showTokenDropdown ? 'rotate-180' : ''}`}
+                  className={`w-4 h-4 text-theme-secondary transition-transform ${showTokenDropdown ? 'rotate-180' : ''}`}
                 />
               </button>
 
               {showTokenDropdown && (
-                <div className="token-dropdown absolute top-full left-0 right-0 mt-1 bg-[#2C2C2E] border border-[#3C3C3E] rounded-lg shadow-lg z-10">
+                <div className="token-dropdown absolute top-full left-0 right-0 mt-1 bg-theme-bg-tertiary border border-theme-border rounded-lg shadow-lg z-10 transition-colors duration-300">
                   {AVAILABLE_TOKENS.map((token) => (
                     <button
                       key={token.symbol}
@@ -289,7 +291,7 @@ export default function CreateSmartLockPlanModal({
                         }))
                         setShowTokenDropdown(false)
                       }}
-                      className="w-full px-4 py-3 flex items-center gap-3 hover:bg-[#3C3C3E] text-left transition-colors"
+                      className="w-full px-4 py-3 flex items-center gap-3 hover:bg-theme-bg-secondary text-left transition-colors"
                     >
                       <div className="w-6 h-6 rounded-full overflow-hidden">
                         <Image
@@ -301,10 +303,10 @@ export default function CreateSmartLockPlanModal({
                         />
                       </div>
                       <div>
-                        <div className="text-white font-medium">
+                        <div className="text-theme font-medium transition-colors duration-300">
                           {token.symbol}
                         </div>
-                        <div className="text-gray-400 text-xs">
+                        <div className="text-theme-secondary text-xs transition-colors duration-300">
                           {token.name}
                         </div>
                       </div>
@@ -317,7 +319,7 @@ export default function CreateSmartLockPlanModal({
 
           {/* Enter Amount */}
           <div>
-            <label className="block text-sm font-medium text-white mb-2">
+            <label className="block text-sm font-medium text-theme mb-2 transition-colors duration-300">
               Enter Amount
             </label>
             <input
@@ -327,7 +329,7 @@ export default function CreateSmartLockPlanModal({
                 setFormData((prev) => ({ ...prev, amount: e.target.value }))
               }
               placeholder="Enter amount to lock"
-              className={`w-full bg-[#2C2C2E] text-white rounded-lg px-4 py-3 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[#6F2FCE] border ${
+              className={`w-full bg-theme-bg-tertiary text-theme rounded-lg px-4 py-3 placeholder:text-theme-secondary focus:outline-none focus:ring-2 focus:ring-primary border transition-colors duration-300 ${
                 errors.amount ? 'border-red-500' : 'border-transparent'
               }`}
               disabled={isSubmitting}
@@ -339,7 +341,7 @@ export default function CreateSmartLockPlanModal({
 
           {/* Duration */}
           <div>
-            <label className="block text-sm font-medium text-white mb-2">
+            <label className="block text-sm font-medium text-theme mb-2 transition-colors duration-300">
               Duration
             </label>
             <div className="relative">
@@ -350,17 +352,17 @@ export default function CreateSmartLockPlanModal({
                   setShowDurationDropdown(!showDurationDropdown)
                   setShowTokenDropdown(false)
                 }}
-                className="duration-dropdown-button w-full bg-[#2C2C2E] text-white rounded-lg px-4 py-3 flex items-center justify-between focus:outline-none focus:ring-2 focus:ring-[#6F2FCE] hover:bg-[#3C3C3E] transition-colors"
+                className="duration-dropdown-button w-full bg-theme-bg-tertiary text-theme rounded-lg px-4 py-3 flex items-center justify-between focus:outline-none focus:ring-2 focus:ring-primary hover:bg-theme-bg-secondary transition-colors duration-300"
                 disabled={isSubmitting}
               >
                 <span>{selectedDurationPreset}</span>
                 <Calendar
-                  className={`w-4 h-4 text-gray-400 transition-transform ${showDurationDropdown ? 'rotate-180' : ''}`}
+                  className={`w-4 h-4 text-theme-secondary transition-transform ${showDurationDropdown ? 'rotate-180' : ''}`}
                 />
               </button>
 
               {showDurationDropdown && (
-                <div className="duration-dropdown absolute top-full left-0 right-0 mt-1 bg-[#2C2C2E] border border-[#3C3C3E] rounded-lg shadow-lg z-10">
+                <div className="duration-dropdown absolute top-full left-0 right-0 mt-1 bg-theme-bg-tertiary border border-theme-border rounded-lg shadow-lg z-10 transition-colors duration-300">
                   {DURATION_PRESETS.map((preset) => (
                     <button
                       key={preset.label}
@@ -369,7 +371,7 @@ export default function CreateSmartLockPlanModal({
                         e.stopPropagation()
                         handleDurationSelect(preset)
                       }}
-                      className="w-full px-4 py-3 text-left hover:bg-[#3C3C3E] text-white transition-colors"
+                      className="w-full px-4 py-3 text-left hover:bg-theme-bg-secondary text-theme transition-colors"
                     >
                       {preset.label}
                     </button>
@@ -385,7 +387,7 @@ export default function CreateSmartLockPlanModal({
                   value={customDuration}
                   onChange={(e) => setCustomDuration(e.target.value)}
                   placeholder="Enter custom duration (e.g., 10 days)"
-                  className={`w-full bg-[#2C2C2E] text-white rounded-lg px-4 py-3 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[#6F2FCE] border ${
+                  className={`w-full bg-theme-bg-tertiary text-theme rounded-lg px-4 py-3 placeholder:text-theme-secondary focus:outline-none focus:ring-2 focus:ring-primary border transition-colors duration-300 ${
                     errors.duration ? 'border-red-500' : 'border-transparent'
                   }`}
                   disabled={isSubmitting}
@@ -402,7 +404,7 @@ export default function CreateSmartLockPlanModal({
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 bg-[#2C2C2E] text-white py-3 rounded-lg font-medium hover:bg-[#3C3C3E] transition-colors"
+              className="flex-1 bg-theme-bg-tertiary text-theme py-3 rounded-lg font-medium hover:bg-theme-bg-secondary transition-colors"
               disabled={isSubmitting}
             >
               Cancel
@@ -410,7 +412,7 @@ export default function CreateSmartLockPlanModal({
             <button
               type="submit"
               disabled={isSubmitting}
-              className="flex-1 bg-[#6F2FCE] text-white py-3 rounded-lg font-medium hover:bg-[#5B28B8] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex-1 bg-primary text-white py-3 rounded-lg font-medium hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isSubmitting ? 'Creating...' : 'Propose Transaction'}
             </button>

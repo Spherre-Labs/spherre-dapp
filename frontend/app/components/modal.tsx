@@ -8,26 +8,9 @@ import CloseIcon from '@mui/icons-material/Close'
 import AccountBalanceWalletOutlinedIcon from '@mui/icons-material/AccountBalanceWalletOutlined'
 import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined'
 import QrCodeScannerOutlinedIcon from '@mui/icons-material/QrCodeScannerOutlined'
+import { useTheme } from '@/app/context/theme-context-provider'
 
-const style = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  width: '90%',
-  maxWidth: 583,
-  minWidth: 320,
-  bgcolor: '#1e1e1e',
-  boxShadow: 24,
-  borderRadius: '12px',
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
-  p: 0,
-  zIndex: 1300,
-  maxHeight: '90vh',
-  overflow: 'auto',
-}
+// Removed static style object - will be created dynamically in component
 
 const headerStyle = {
   width: '100%',
@@ -45,24 +28,9 @@ const optionsContainerStyle = {
   gap: 2,
 }
 
-const optionStyle = {
-  width: '100%',
-  bgcolor: '#272727',
-  borderRadius: '8px',
-  p: 2,
-  cursor: 'pointer',
-  display: 'flex',
-  alignItems: 'center',
-  '&:hover': {
-    bgcolor: '#333333',
-  },
-}
+// Removed static optionStyle - will be created dynamically in component
 
-const iconStyle = {
-  color: 'white',
-  fontSize: 20,
-  mr: 2,
-}
+// Removed static iconStyle - will be created dynamically in component
 
 const iconContainerStyle = {
   width: 24,
@@ -90,7 +58,48 @@ export default function WithdrawalModal({
   handleClose,
   onSelectOption,
 }: WithdrawalModalProps) {
-  const handleOptionClick = (option: string) => {
+  const { theme } = useTheme()
+  
+  const style = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: '90%',
+    maxWidth: 583,
+    minWidth: 320,
+    bgcolor: theme === 'dark' ? '#1e1e1e' : '#f8f9fa',
+    boxShadow: 24,
+    borderRadius: '12px',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    p: 0,
+    zIndex: 1300,
+    maxHeight: '90vh',
+    overflow: 'auto',
+  }
+  
+  const optionStyle = {
+    width: '100%',
+    bgcolor: theme === 'dark' ? '#272727' : '#e9ecef',
+    borderRadius: '8px',
+    p: 2,
+    cursor: 'pointer',
+    display: 'flex',
+    alignItems: 'center',
+    '&:hover': {
+      bgcolor: theme === 'dark' ? '#333333' : '#d4d8db',
+         },
+   }
+   
+   const iconStyle = {
+     color: theme === 'dark' ? 'white' : '#1a1a1a',
+     fontSize: 20,
+     mr: 2,
+   }
+   
+   const handleOptionClick = (option: string) => {
     onSelectOption(option)
     handleClose()
   }
@@ -120,7 +129,7 @@ export default function WithdrawalModal({
         >
           <CloseIcon
             onClick={handleClose}
-            sx={{ cursor: 'pointer', color: 'gray' }}
+            sx={{ cursor: 'pointer', color: theme === 'dark' ? 'gray' : '#6c757d' }}
           />
         </Box>
 
@@ -130,7 +139,7 @@ export default function WithdrawalModal({
             variant="h4"
             component="h2"
             sx={{
-              color: 'white',
+              color: theme === 'dark' ? 'white' : '#1a1a1a',
               fontWeight: 'bold',
               fontSize: { xs: 24, sm: 28, md: 36 },
               lineHeight: 1.2,
@@ -142,7 +151,7 @@ export default function WithdrawalModal({
           <Typography
             variant="subtitle1"
             sx={{
-              color: 'gray',
+              color: theme === 'dark' ? 'gray' : '#6c757d',
               mt: 1.5,
               fontSize: { xs: 14, sm: 16 },
               px: 1,
@@ -160,7 +169,7 @@ export default function WithdrawalModal({
             <Box sx={{ minWidth: 0, flex: 1 }}>
               <Typography
                 sx={{
-                  color: 'white',
+                  color: theme === 'dark' ? 'white' : '#1a1a1a',
                   fontWeight: 'medium',
                   mb: 0.5,
                   fontSize: { xs: 14, sm: 16 },
@@ -171,7 +180,7 @@ export default function WithdrawalModal({
               <Typography
                 variant="body2"
                 sx={{
-                  color: 'gray',
+                  color: theme === 'dark' ? 'gray' : '#6c757d',
                   fontSize: { xs: 12, sm: 14 },
                 }}
               >
@@ -187,7 +196,7 @@ export default function WithdrawalModal({
             <Box sx={{ minWidth: 0, flex: 1 }}>
               <Typography
                 sx={{
-                  color: 'white',
+                  color: theme === 'dark' ? 'white' : '#1a1a1a',
                   fontWeight: 'medium',
                   mb: 0.5,
                   fontSize: { xs: 14, sm: 16 },
@@ -198,7 +207,7 @@ export default function WithdrawalModal({
               <Typography
                 variant="body2"
                 sx={{
-                  color: 'gray',
+                  color: theme === 'dark' ? 'gray' : '#6c757d',
                   fontSize: { xs: 12, sm: 14 },
                 }}
               >
@@ -214,7 +223,7 @@ export default function WithdrawalModal({
             <Box sx={{ minWidth: 0, flex: 1 }}>
               <Typography
                 sx={{
-                  color: 'white',
+                  color: theme === 'dark' ? 'white' : '#1a1a1a',
                   fontWeight: 'medium',
                   mb: 0.5,
                   fontSize: { xs: 14, sm: 16 },
@@ -225,7 +234,7 @@ export default function WithdrawalModal({
               <Typography
                 variant="body2"
                 sx={{
-                  color: 'gray',
+                  color: theme === 'dark' ? 'gray' : '#6c757d',
                   fontSize: { xs: 12, sm: 14 },
                 }}
               >
