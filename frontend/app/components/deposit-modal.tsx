@@ -6,14 +6,11 @@ import Link from 'next/link'
 import { routes } from '../[address]/layout'
 import { useSpherreAccount } from '../context/account-context'
 
-
-
 // Add props for controlled modal
 interface DepositModalProps {
   open: boolean
   onClose: () => void
 }
-
 
 export default function DepositModal({ open, onClose }: DepositModalProps) {
   const [portalElement, setPortalElement] = React.useState<HTMLElement | null>(
@@ -51,7 +48,6 @@ export default function DepositModal({ open, onClose }: DepositModalProps) {
   }, [open, onClose])
 
   if (!open || !portalElement) return null
-
 
   return createPortal(
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">

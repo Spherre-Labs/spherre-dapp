@@ -56,7 +56,6 @@ export default function DashboardPage() {
     setDepositOpen(false)
   }
 
-
   const handleSelectOption = () => {
     router.push(`/${accountAddress}/withdraw`)
     // Handle the selected option
