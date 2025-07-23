@@ -19,6 +19,8 @@ import type {
   ThresholdChangeData,
   SmartTokenLockTransaction,
 } from '@/lib/contracts/types'
+import { useMemo } from 'react'
+import { feltToAddress, byteArrayToString } from '@/lib/utils/validation'
 
 // Factory Contract Hooks
 export function useDeployAccount() {
@@ -34,6 +36,21 @@ export function useIsDeployedAccount(accountAddress: `0x${string}`) {
     functionName: 'is_deployed_account',
     args: accountAddress ? { account: accountAddress } : undefined,
     enabled: !!accountAddress,
+  })
+}
+
+export function useGetDeploymentFee(address: `0x${string}`) {
+  return useScaffoldReadContract<bigint>({
+    contractConfig: spherreConfig,
+    functionName: 'get_fee',
+    args: { fees_type: 4, account: address },
+  })
+}
+
+export function useGetFeesTokenAddress() {
+  return useScaffoldReadContract<`0x${string}`>({
+    contractConfig: spherreConfig,
+    functionName: 'get_fees_token',
   })
 }
 
@@ -79,7 +96,10 @@ export function useGetThreshold(accountAddress: `0x${string}`) {
 }
 
 export function useGetAccountName(accountAddress: `0x${string}`) {
-  return useScaffoldReadContract<string>({
+  console.log('useGetAccountName called with address:', accountAddress)
+
+  // Expect the struct: { data: string[], pending_word: string, pending_word_len: string }
+  const result = useScaffoldReadContract<any>({
     contractConfig: {
       address: accountAddress,
       abi: spherreAccountConfig.abi,
@@ -87,6 +107,56 @@ export function useGetAccountName(accountAddress: `0x${string}`) {
     functionName: 'get_name',
     enabled: !!accountAddress,
   })
+
+  console.log('useGetAccountName result:', result)
+
+  // Convert struct to ByteArray and then to string
+  const accountName = useMemo(() => {
+    if (typeof result.data === 'string') {
+      // If the contract returns a plain string, use it directly
+      return result.data
+    }
+    if (result.data && typeof result.data === 'object') {
+      // Log the full struct for debugging
+      console.log(
+        'Raw get_name struct from contract:',
+        JSON.stringify(result.data, null, 2),
+      )
+      // Try to destructure possible field names (handle both camelCase and snake_case)
+      const dataArr =
+        result.data.data || result.data.Data || result.data.byteArray || []
+      const pending_word =
+        result.data.pending_word ||
+        result.data.pendingWord ||
+        result.data.pending_word_len ||
+        result.data.pendingWordLen
+      const pending_word_len =
+        result.data.pending_word_len ||
+        result.data.pendingWordLen ||
+        result.data.pending_word ||
+        result.data.pendingWord
+      if (Array.isArray(dataArr) && pending_word && pending_word_len) {
+        const byteArray = [
+          String(dataArr.length),
+          ...dataArr,
+          pending_word,
+          pending_word_len,
+        ]
+        console.log('Composed ByteArray for name:', byteArray)
+        const converted = byteArrayToString(byteArray)
+        console.log('Converted account name:', converted)
+        return converted
+      }
+    }
+    return ''
+  }, [result.data])
+
+  console.log('Final account name:', accountName)
+
+  return {
+    ...result,
+    data: accountName,
+  }
 }
 
 export function useGetAccountDescription(accountAddress: `0x${string}`) {
@@ -474,7 +544,7 @@ export function useExecuteTransaction(accountAddress: `0x${string}`) {
 // Utility hooks that combine multiple operations
 export function useAccountInfo(accountAddress: `0x${string}`) {
   const {
-    data: members,
+    data: membersRaw,
     isLoading: membersLoading,
     error: membersError,
   } = useGetAccountMembers(accountAddress)
@@ -494,13 +564,54 @@ export function useAccountInfo(accountAddress: `0x${string}`) {
     error: countError,
   } = useGetMembersCount(accountAddress)
 
-  return {
-    members,
-    threshold,
-    details,
-    membersCount,
-    isLoading:
-      membersLoading || thresholdLoading || detailsLoading || countLoading,
-    error: membersError || thresholdError || detailsError || countError,
-  }
+  // Filter out placeholder addresses (like '0x0') and only count valid addresses
+  // Convert felt values to proper Starknet addresses
+  const members = useMemo(() => {
+    if (!Array.isArray(membersRaw)) return []
+
+    return membersRaw
+      .map((member) => {
+        try {
+          // Convert felt to address format
+          const address = feltToAddress(member)
+          return address
+        } catch (error) {
+          console.warn('Failed to convert felt to address:', member, error)
+          return null
+        }
+      })
+      .filter(
+        (addr) =>
+          addr &&
+          addr !== '0x0' &&
+          addr !==
+            '0x0000000000000000000000000000000000000000000000000000000000000000',
+      )
+  }, [membersRaw])
+
+  return useMemo(
+    () => ({
+      members,
+      threshold,
+      details,
+      membersCount,
+      isLoading:
+        membersLoading || thresholdLoading || detailsLoading || countLoading,
+      error: membersError || thresholdError || detailsError || countError,
+    }),
+    [
+      members,
+      threshold,
+      details,
+      membersCount,
+      membersLoading,
+      thresholdLoading,
+      detailsLoading,
+      countLoading,
+      membersError,
+      thresholdError,
+      detailsError,
+      countError,
+    ],
+  )
 }
