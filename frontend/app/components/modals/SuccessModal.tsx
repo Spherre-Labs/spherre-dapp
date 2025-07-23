@@ -1,5 +1,6 @@
 import React from 'react'
 import Image from 'next/image'
+import { useTheme } from '@/app/context/theme-context-provider'
 
 interface SuccessModalProps {
   isOpen: boolean
@@ -20,6 +21,8 @@ const SuccessModal: React.FC<SuccessModalProps> = ({
   closeLabel = 'Close',
   viewLabel = 'View Transaction',
 }) => {
+  useTheme() // Initialize theme context
+
   if (!isOpen) return null
 
   return (
@@ -28,20 +31,21 @@ const SuccessModal: React.FC<SuccessModalProps> = ({
         className="absolute inset-0 bg-black bg-opacity-50 backdrop-blur-sm"
         onClick={onClose}
       ></div>
-      <div className="relative bg-[#232326] rounded-2xl shadow-lg p-8 w-full max-w-xl mx-4 text-center flex flex-col items-center">
+      <div className="relative bg-theme-bg-secondary rounded-2xl shadow-lg p-8 w-full max-w-xl mx-4 text-center flex flex-col items-center transition-colors duration-300">
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 bg-[#35353A] rounded-full p-2 hover:bg-[#444] focus:outline-none"
+          className="absolute top-4 right-4 bg-theme-bg-tertiary rounded-full p-2 hover:bg-theme-bg-secondary focus:outline-none transition-colors duration-300"
           aria-label="Close"
         >
           <svg width="24" height="24" fill="none" viewBox="0 0 24 24">
             <path
-              stroke="#A1A1AA"
+              stroke="currentColor"
               strokeWidth="2"
               strokeLinecap="round"
               strokeLinejoin="round"
               d="M18 6L6 18M6 6l12 12"
+              className="text-theme-secondary"
             />
           </svg>
         </button>
@@ -53,18 +57,22 @@ const SuccessModal: React.FC<SuccessModalProps> = ({
             height={80}
           />
         </div>
-        <h2 className="text-3xl font-bold text-white mb-2">{title}</h2>
-        <p className="text-[#8E9BAE] text-lg mb-8">{message}</p>
+        <h2 className="text-3xl font-bold text-theme mb-2 transition-colors duration-300">
+          {title}
+        </h2>
+        <p className="text-theme-secondary text-lg mb-8 transition-colors duration-300">
+          {message}
+        </p>
         <div className="flex w-full gap-4 mt-2">
           <button
             onClick={onClose}
-            className="flex-1 bg-[#35353A] text-white py-3 rounded-lg hover:bg-[#444] transition-colors font-medium"
+            className="flex-1 bg-theme-bg-tertiary text-theme py-3 rounded-lg hover:bg-theme-bg-secondary transition-colors font-medium"
           >
             {closeLabel}
           </button>
           <button
             onClick={onViewTransaction}
-            className="flex-1 bg-[#A259FF] text-white py-3 rounded-lg hover:bg-[#934de6] transition-colors font-medium"
+            className="flex-1 bg-primary text-white py-3 rounded-lg hover:bg-primary/90 transition-colors font-medium"
           >
             {viewLabel}
           </button>

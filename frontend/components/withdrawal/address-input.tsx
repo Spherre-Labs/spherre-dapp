@@ -78,7 +78,7 @@ export default function AddressInput({
         <div className="flex mb-3 sm:mb-0 space-x-2 sm:ml-2">
           <button
             onClick={handlePaste}
-            className="bg-white dark:bg-gray-900 text-black dark:text-white hover:bg-gray-200 dark:hover:bg-gray-800 px-3 sm:px-4 py-1 rounded-lg transition-colors duration-200 text-xs sm:text-sm"
+            className="bg-theme-bg-secondary text-theme hover:bg-theme-bg-tertiary px-3 sm:px-4 py-1 rounded-lg transition-colors duration-200 text-xs sm:text-sm"
           >
             Paste
           </button>

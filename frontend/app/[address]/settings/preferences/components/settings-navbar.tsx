@@ -15,7 +15,6 @@ export default function SettingsNavbar() {
     { name: 'Wallet & Account', href: `/${accountAddress}/settings/wallet` },
     { name: 'Preferences', href: `/${accountAddress}/settings/preferences` },
     { name: 'Security', href: `/${accountAddress}/settings/security` },
-    { name: 'Smart Lock', href: `/${accountAddress}/settings/smart-lock` },
   ]
 
   const isActive = (href: string) => pathname === href

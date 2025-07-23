@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { useTheme } from '@/app/context/theme-context-provider'
 
 interface EmailModalProps {
   open: boolean
@@ -15,6 +16,7 @@ const EmailModal: React.FC<EmailModalProps> = ({
   title = 'Add Email Address',
   initialEmail = '',
 }) => {
+  useTheme() // Initialize theme context
   const [email, setEmail] = useState(initialEmail)
   const [isValidEmail, setIsValidEmail] = useState(true)
 
@@ -57,30 +59,32 @@ const EmailModal: React.FC<EmailModalProps> = ({
       className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60"
       onClick={(e) => e.target === e.currentTarget && onClose()}
     >
-      <div className="bg-[#232325] rounded-xl p-8 w-full max-w-md relative shadow-lg">
+      <div className="bg-theme-bg-secondary rounded-xl p-8 w-full max-w-md relative shadow-lg transition-colors duration-300">
         <button
-          className="absolute top-4 right-4 text-gray-400 hover:text-white text-2xl transition-colors"
+          className="absolute top-4 right-4 text-theme-secondary hover:text-theme text-2xl transition-colors"
           onClick={onClose}
           aria-label="Close modal"
         >
           &times;
         </button>
 
-        <h2 className="text-2xl font-bold text-white mb-2 text-center">
+        <h2 className="text-2xl font-bold text-theme mb-2 text-center transition-colors duration-300">
           {title}
         </h2>
 
-        <p className="text-[#8E9BAE] text-center mb-6">
+        <p className="text-theme-secondary text-center mb-6 transition-colors duration-300">
           Please provide your email address and sign the message to{' '}
           {title === 'Edit Email Address' ? 'update' : 'add'} it.
         </p>
 
         <div className="mb-6">
-          <label className="block text-white mb-2">Email Address</label>
+          <label className="block text-theme mb-2 transition-colors duration-300">
+            Email Address
+          </label>
           <input
             type="email"
-            className={`w-full px-4 py-3 rounded-lg bg-[#29292A] text-white border focus:outline-none focus:ring-2 focus:ring-[#6F2FCE] transition-colors ${
-              isValidEmail ? 'border-gray-700' : 'border-red-500'
+            className={`w-full px-4 py-3 rounded-lg bg-theme-bg-tertiary text-theme border focus:outline-none focus:ring-2 focus:ring-primary transition-colors duration-300 ${
+              isValidEmail ? 'border-theme-border' : 'border-red-500'
             }`}
             placeholder="johndoe@gmail.com"
             value={email}
@@ -97,15 +101,15 @@ const EmailModal: React.FC<EmailModalProps> = ({
 
         <div className="flex gap-4">
           <button
-            className="flex-1 bg-[#272729] text-white rounded-[7px] px-6 py-3 font-semibold hover:bg-[#2f2f31] transition-colors"
+            className="flex-1 bg-theme-bg-tertiary text-theme rounded-[7px] px-6 py-3 font-semibold hover:bg-theme-bg-secondary transition-colors"
             onClick={onClose}
           >
             Close
           </button>
           <button
-            className={`flex-1 bg-[#6F2FCE] text-white rounded-[7px] px-6 py-3 font-semibold transition-colors ${
+            className={`flex-1 bg-primary text-white rounded-[7px] px-6 py-3 font-semibold transition-colors ${
               email && isValidEmail
-                ? 'hover:bg-[#7d5fff] cursor-pointer'
+                ? 'hover:bg-primary/90 cursor-pointer'
                 : 'opacity-50 cursor-not-allowed'
             }`}
             onClick={handleSign}
