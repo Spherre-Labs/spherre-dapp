@@ -4,13 +4,19 @@ import { useState, useMemo } from 'react'
 import Transaction from './components/transaction'
 import { useTheme } from '@/app/context/theme-context-provider'
 import { useAccount } from '@starknet-react/core'
-import { useTokenTransactionList, useGetAccountDetails } from '@/hooks/useSpherreHooks'
+import {
+  useTokenTransactionList,
+  useGetAccountDetails,
+  useGetThreshold,
+} from '@/hooks/useSpherreHooks'
 import type { SpherreTransaction } from '@/lib/contracts/types'
 import { TransactionType } from '@/lib/contracts/types'
 import type { Transaction as UITransaction } from './data'
 
 // Transaction type mapping
-const getTransactionTypeDisplay = (txType: TransactionType): 'withdraw' | 'swap' | 'limitSwap' => {
+const getTransactionTypeDisplay = (
+  txType: TransactionType,
+): 'withdraw' | 'swap' | 'limitSwap' => {
   switch (txType) {
     case TransactionType.TOKEN_SEND:
       return 'withdraw'
@@ -27,60 +33,82 @@ const formatDateGroup = (dateCreated: bigint): string => {
   const today = new Date()
   const yesterday = new Date(today)
   yesterday.setDate(yesterday.getDate() - 1)
-  
+
   if (date.toDateString() === today.toDateString()) {
     return 'Today'
   } else if (date.toDateString() === yesterday.toDateString()) {
     return 'Yesterday'
   } else {
-    return date.toLocaleDateString('en-US', { 
-      month: 'long', 
+    return date.toLocaleDateString('en-US', {
+      month: 'long',
       day: 'numeric',
-      year: date.getFullYear() !== today.getFullYear() ? 'numeric' : undefined
+      year: date.getFullYear() !== today.getFullYear() ? 'numeric' : undefined,
     })
   }
 }
 
 // Convert SpherreTransaction to UI Transaction
-const mapToUITransaction = (spherreTransaction: SpherreTransaction): UITransaction => {
+const mapToUITransaction = (
+  spherreTransaction: SpherreTransaction,
+  accountAddress?: string,
+  thresholdData?: bigint[],
+): UITransaction => {
   const date = new Date(Number(spherreTransaction.date_created) * 1000)
-  
+
   // Create Member objects for UI compatibility
   const createMemberFromAddress = (address: string) => ({
     name: `${address.slice(0, 6)}...${address.slice(-4)}`,
     avatar: '/Images/avatar.png', // Default avatar
-    address: address
+    address: address,
   })
-  
+
+  // Improved status mapping based on actual transaction status enum
+  const getStatusFromTransaction = (
+    tx: SpherreTransaction,
+  ): 'Pending' | 'Executed' | 'Rejected' => {
+    // TransactionStatus: 0=VOID, 1=INITIATED, 2=REJECTED, 3=APPROVED, 4=EXECUTED
+    switch (tx.tx_status) {
+      case 4:
+        return 'Executed'
+      case 2:
+        return 'Rejected'
+      case 3:
+        return 'Pending' // Approved but not executed is still pending
+      case 1:
+        return 'Pending'
+      default:
+        return 'Pending' // Fallback to Pending for unknown statuses
+    }
+  }
+
   return {
     id: Number(spherreTransaction.id),
     date: date.toLocaleDateString(),
     type: getTransactionTypeDisplay(spherreTransaction.tx_type),
-    amount: '0.00', // Will be fetched from transaction details
-    toAddress: 'Unknown', // Will be fetched from transaction details
+    amount: 'Loading...', // NOTE: Requires individual transaction detail fetch for exact amount
+    toAddress: 'Loading...', // NOTE: Requires individual transaction detail fetch for recipient
     time: date.toLocaleTimeString(),
-    status: spherreTransaction.tx_status === 2 ? 'Executed' : 
-            spherreTransaction.rejected.length > 0 ? 'Rejected' : 'Pending',
+    status: getStatusFromTransaction(spherreTransaction),
     initiator: createMemberFromAddress(spherreTransaction.proposer),
     dateInitiated: date.toLocaleDateString(),
     account: {
       name: 'Spherre Account',
-      address: '0x0000000000000000000000000000000000000000', // Placeholder
-      avatar: '/Images/spherrelogo.png'
+      address: accountAddress || '0x0000000000000000000000000000000000000000',
+      avatar: '/Images/spherrelogo.png',
     },
-    to: createMemberFromAddress('0x0000000000000000000000000000000000000000'), // Placeholder
+    to: createMemberFromAddress('0x0000000000000000000000000000000000000000'), // NOTE: Requires individual transaction detail fetch
     threshold: {
       current: spherreTransaction.approved.length,
-      required: 2 // Default threshold, will be overridden by blockchain data
+      required: thresholdData?.[0] ? Number(thresholdData[0]) : 2, // Use actual threshold if available
     },
-    approvals: spherreTransaction.approved.map(addr => ({
+    approvals: spherreTransaction.approved.map((addr) => ({
       member: createMemberFromAddress(addr),
-      status: 'Confirmed' as const
+      status: 'Confirmed' as const,
     })),
-    rejections: spherreTransaction.rejected.map(addr => ({
+    rejections: spherreTransaction.rejected.map((addr) => ({
       member: createMemberFromAddress(addr),
-      status: 'Rejected' as const
-    }))
+      status: 'Rejected' as const,
+    })),
   }
 }
 
@@ -90,16 +118,25 @@ export default function TransactionPage() {
   const [expandedId, setExpandedId] = useState<number | null>(null)
 
   // Fetch transactions and account details (only if wallet is connected)
-  const { 
-    data: transactions, 
-    isLoading: transactionsLoading, 
-    error: transactionsError 
-  } = useTokenTransactionList(accountAddress as `0x${string}`)
-  
-  const { 
-    data: accountDetails, 
-    isLoading: accountLoading 
-  } = useGetAccountDetails(accountAddress as `0x${string}`)
+  const {
+    data: transactions,
+    isLoading: transactionsLoading,
+    error: transactionsError,
+  } = useTokenTransactionList(
+    (accountAddress ||
+      '0x0000000000000000000000000000000000000000') as `0x${string}`,
+  )
+
+  const { isLoading: accountLoading } = useGetAccountDetails(
+    (accountAddress ||
+      '0x0000000000000000000000000000000000000000') as `0x${string}`,
+  )
+
+  // Fetch threshold data to improve transaction mapping
+  const { data: thresholdData } = useGetThreshold(
+    (accountAddress ||
+      '0x0000000000000000000000000000000000000000') as `0x${string}`,
+  )
 
   const handleToggle = (id: number) => {
     setExpandedId(expandedId === id ? null : id)
@@ -108,17 +145,24 @@ export default function TransactionPage() {
   // Group transactions by date and convert to UI format
   const groupedTransactions = useMemo(() => {
     if (!transactions) return {}
-    
-    return transactions.reduce((acc, spherreTransaction) => {
-      const uiTransaction = mapToUITransaction(spherreTransaction)
-      const dateGroup = formatDateGroup(spherreTransaction.date_created)
-      if (!acc[dateGroup]) {
-        acc[dateGroup] = []
-      }
-      acc[dateGroup].push(uiTransaction)
-      return acc
-    }, {} as Record<string, UITransaction[]>)
-  }, [transactions])
+
+    return transactions.reduce(
+      (acc, spherreTransaction) => {
+        const uiTransaction = mapToUITransaction(
+          spherreTransaction,
+          accountAddress,
+          thresholdData,
+        )
+        const dateGroup = formatDateGroup(spherreTransaction.date_created)
+        if (!acc[dateGroup]) {
+          acc[dateGroup] = []
+        }
+        acc[dateGroup].push(uiTransaction)
+        return acc
+      },
+      {} as Record<string, UITransaction[]>,
+    )
+  }, [transactions, accountAddress, thresholdData])
 
   // Loading state
   if (transactionsLoading || accountLoading) {
@@ -143,12 +187,26 @@ export default function TransactionPage() {
         <div className="p-4 sm:p-6 lg:p-10 bg-theme-bg-secondary border border-theme-border rounded-xl transition-colors duration-300">
           <div className="flex flex-col items-center justify-center h-64 text-center">
             <div className="w-12 h-12 bg-red-500/10 rounded-full flex items-center justify-center mb-4">
-              <svg className="w-6 h-6 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              <svg
+                className="w-6 h-6 text-red-500"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
               </svg>
             </div>
-            <h3 className="text-theme font-medium mb-2">Failed to load transactions</h3>
-            <p className="text-theme-secondary text-sm">Please check your wallet connection and try again.</p>
+            <h3 className="text-theme font-medium mb-2">
+              Failed to load transactions
+            </h3>
+            <p className="text-theme-secondary text-sm">
+              Please check your wallet connection and try again.
+            </p>
           </div>
         </div>
       </div>
@@ -162,12 +220,24 @@ export default function TransactionPage() {
         <div className="p-4 sm:p-6 lg:p-10 bg-theme-bg-secondary border border-theme-border rounded-xl transition-colors duration-300">
           <div className="flex flex-col items-center justify-center h-64 text-center">
             <div className="w-12 h-12 bg-orange-500/10 rounded-full flex items-center justify-center mb-4">
-              <svg className="w-6 h-6 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+              <svg
+                className="w-6 h-6 text-orange-500"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                />
               </svg>
             </div>
             <h3 className="text-theme font-medium mb-2">Wallet Required</h3>
-            <p className="text-theme-secondary text-sm">Connect your wallet to view transactions.</p>
+            <p className="text-theme-secondary text-sm">
+              Connect your wallet to view transactions.
+            </p>
           </div>
         </div>
       </div>
@@ -181,12 +251,24 @@ export default function TransactionPage() {
         <div className="p-4 sm:p-6 lg:p-10 bg-theme-bg-secondary border border-theme-border rounded-xl transition-colors duration-300">
           <div className="flex flex-col items-center justify-center h-64 text-center">
             <div className="w-12 h-12 bg-theme-bg-tertiary rounded-full flex items-center justify-center mb-4">
-              <svg className="w-6 h-6 text-theme-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+              <svg
+                className="w-6 h-6 text-theme-secondary"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+                />
               </svg>
             </div>
             <h3 className="text-theme font-medium mb-2">No transactions yet</h3>
-            <p className="text-theme-secondary text-sm">Transaction proposals will appear here once created.</p>
+            <p className="text-theme-secondary text-sm">
+              Transaction proposals will appear here once created.
+            </p>
           </div>
         </div>
       </div>

@@ -236,7 +236,7 @@ export function useExecuteThresholdChange(accountAddress: `0x${string}`) {
   })
 }
 
-export function useExecuteTransaction(accountAddress: string) {
+export function useExecuteTransaction(accountAddress: `0x${string}`) {
   return useScaffoldWriteContract({
     contractConfig: {
       address: accountAddress,
@@ -246,7 +246,7 @@ export function useExecuteTransaction(accountAddress: string) {
   })
 }
 
-export function useTokenTransactionList(accountAddress: string) {
+export function useTokenTransactionList(accountAddress: `0x${string}`) {
   return useScaffoldReadContract<SpherreTransaction[]>({
     contractConfig: {
       address: accountAddress,
@@ -257,7 +257,7 @@ export function useTokenTransactionList(accountAddress: string) {
   })
 }
 
-export function useGetTokenTransaction(accountAddress: string, id: U256) {
+export function useGetTokenTransaction(accountAddress: `0x${string}`, id: U256) {
   return useScaffoldReadContract<TokenTransactionData>({
     contractConfig: {
       address: accountAddress,
@@ -269,7 +269,7 @@ export function useGetTokenTransaction(accountAddress: string, id: U256) {
   })
 }
 
-export function useGetNFTTransaction(accountAddress: string, id: U256) {
+export function useGetNFTTransaction(accountAddress: `0x${string}`, id: U256) {
   return useScaffoldReadContract<NFTTransactionData>({
     contractConfig: {
       address: accountAddress,
