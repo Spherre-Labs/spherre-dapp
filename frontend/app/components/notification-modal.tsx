@@ -69,12 +69,14 @@ export default function NotificationModal({
 }: {
   onClose?: () => void
 }) {
+  const [mounted, setMounted] = useState(false)
+  useEffect(() => setMounted(true), [])
   // Initialize with default data to prevent hydration mismatch.
   const [notifications, setNotifications] =
     useState<Notification[]>(defaultNotifications)
 
-  // After mount on the client, synchronize the read state from localStorage.
   useEffect(() => {
+    if (!mounted) return
     const saved = localStorage.getItem('spherre-notifications')
     if (saved) {
       try {
@@ -83,25 +85,22 @@ export default function NotificationModal({
           read: boolean
         }[]
         const readStatusMap = new Map(readStatuses.map((n) => [n.id, n.read]))
-
         setNotifications((prev) =>
-          prev.map((n) => ({
-            ...n,
-            read: readStatusMap.get(n.id) ?? n.read,
-          })),
+          prev.map((n) => ({ ...n, read: readStatusMap.get(n.id) ?? n.read })),
         )
       } catch {
-        // If localStorage is corrupt, we'll just use the defaults.
         console.error('Could not parse notifications from localStorage.')
       }
     }
-  }, []) // Empty dependency array ensures this runs only once on the client.
+  }, [mounted])
 
-  // Persist the 'read' state to localStorage whenever notifications change.
   useEffect(() => {
+    if (!mounted) return
     const toSave = notifications.map(({ id, read }) => ({ id, read }))
     localStorage.setItem('spherre-notifications', JSON.stringify(toSave))
-  }, [notifications])
+  }, [notifications, mounted])
+
+  if (!mounted) return null
 
   /**
    * Marks all notifications as read by updating their `read` status.

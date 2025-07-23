@@ -19,8 +19,10 @@ interface ThemeContextType {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined)
 
 export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
+  // Initialize with safe defaults to prevent hydration mismatch
   const [theme, setTheme] = useState<Theme>('system')
   const [actualTheme, setActualTheme] = useState<'light' | 'dark'>('dark')
+  const [mounted, setMounted] = useState(false)
 
   const getSystemTheme = () => {
     if (typeof window !== 'undefined') {
@@ -32,6 +34,8 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
   }
 
   const applyTheme = (resolvedTheme: 'light' | 'dark') => {
+    if (typeof document === 'undefined') return
+
     const root = document.documentElement
 
     if (resolvedTheme === 'dark') {
@@ -52,13 +56,37 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
     return themeToResolve
   }, [])
 
+  // Handle initial theme setup after mount
   useEffect(() => {
+    setMounted(true)
+
+    if (typeof window === 'undefined') return
+
     const savedTheme = localStorage.getItem('spherre-theme') as Theme
     const initialTheme = savedTheme || 'system'
 
     setTheme(initialTheme)
     const resolved = resolveTheme(initialTheme)
     applyTheme(resolved)
+
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
+    const handleSystemThemeChange = () => {
+      if (initialTheme === 'system') {
+        const newSystemTheme = getSystemTheme()
+        applyTheme(newSystemTheme)
+      }
+    }
+
+    mediaQuery.addEventListener('change', handleSystemThemeChange)
+    return () =>
+      mediaQuery.removeEventListener('change', handleSystemThemeChange)
+  }, [resolveTheme])
+
+  // Handle theme changes after initial setup
+  useEffect(() => {
+    if (!mounted) return
+
+    if (typeof window === 'undefined') return
 
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
     const handleSystemThemeChange = () => {
@@ -71,11 +99,14 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
     mediaQuery.addEventListener('change', handleSystemThemeChange)
     return () =>
       mediaQuery.removeEventListener('change', handleSystemThemeChange)
-  }, [resolveTheme, theme])
+  }, [theme, mounted])
 
   const updateTheme = (newTheme: Theme) => {
     setTheme(newTheme)
-    localStorage.setItem('spherre-theme', newTheme)
+
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('spherre-theme', newTheme)
+    }
 
     const resolved = resolveTheme(newTheme)
     applyTheme(resolved)
@@ -86,15 +117,15 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
     updateTheme(newTheme)
   }
 
-  // TODO: This feels redundant, maybe we can optimize later
+  // Handle system theme changes
   useEffect(() => {
-    if (theme === 'system') {
-      const resolved = resolveTheme(theme)
-      if (resolved !== actualTheme) {
-        applyTheme(resolved)
-      }
+    if (!mounted || theme !== 'system') return
+
+    const resolved = resolveTheme(theme)
+    if (resolved !== actualTheme) {
+      applyTheme(resolved)
     }
-  }, [actualTheme, resolveTheme, theme])
+  }, [actualTheme, resolveTheme, theme, mounted])
 
   return (
     <ThemeContext.Provider

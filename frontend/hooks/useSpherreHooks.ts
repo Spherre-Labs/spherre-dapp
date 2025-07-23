@@ -1,5 +1,6 @@
 'use client'
 
+import { CairoOption, CairoOptionVariant } from 'starknet'
 import { useScaffoldReadContract } from './useScaffoldReadContract'
 import { useScaffoldWriteContract } from './useScaffoldWriteContract'
 import {
@@ -12,7 +13,14 @@ import type {
   SpherreTransaction,
   TokenTransactionData,
   U256,
+  MemberAddData,
+  MemberRemoveData,
+  EditPermissionTransaction,
+  ThresholdChangeData,
+  SmartTokenLockTransaction,
 } from '@/lib/contracts/types'
+import { useMemo } from 'react'
+import { feltToAddress, byteArrayToString } from '@/lib/utils/validation'
 
 // Factory Contract Hooks
 export function useDeployAccount() {
@@ -28,6 +36,21 @@ export function useIsDeployedAccount(accountAddress: `0x${string}`) {
     functionName: 'is_deployed_account',
     args: accountAddress ? { account: accountAddress } : undefined,
     enabled: !!accountAddress,
+  })
+}
+
+export function useGetDeploymentFee(address: `0x${string}`) {
+  return useScaffoldReadContract<bigint>({
+    contractConfig: spherreConfig,
+    functionName: 'get_fee',
+    args: { fees_type: 4, account: address },
+  })
+}
+
+export function useGetFeesTokenAddress() {
+  return useScaffoldReadContract<`0x${string}`>({
+    contractConfig: spherreConfig,
+    functionName: 'get_fees_token',
   })
 }
 
@@ -73,7 +96,10 @@ export function useGetThreshold(accountAddress: `0x${string}`) {
 }
 
 export function useGetAccountName(accountAddress: `0x${string}`) {
-  return useScaffoldReadContract<string>({
+  console.log('useGetAccountName called with address:', accountAddress)
+
+  // Expect the struct: { data: string[], pending_word: string, pending_word_len: string }
+  const result = useScaffoldReadContract<any>({
     contractConfig: {
       address: accountAddress,
       abi: spherreAccountConfig.abi,
@@ -81,6 +107,56 @@ export function useGetAccountName(accountAddress: `0x${string}`) {
     functionName: 'get_name',
     enabled: !!accountAddress,
   })
+
+  console.log('useGetAccountName result:', result)
+
+  // Convert struct to ByteArray and then to string
+  const accountName = useMemo(() => {
+    if (typeof result.data === 'string') {
+      // If the contract returns a plain string, use it directly
+      return result.data
+    }
+    if (result.data && typeof result.data === 'object') {
+      // Log the full struct for debugging
+      console.log(
+        'Raw get_name struct from contract:',
+        JSON.stringify(result.data, null, 2),
+      )
+      // Try to destructure possible field names (handle both camelCase and snake_case)
+      const dataArr =
+        result.data.data || result.data.Data || result.data.byteArray || []
+      const pending_word =
+        result.data.pending_word ||
+        result.data.pendingWord ||
+        result.data.pending_word_len ||
+        result.data.pendingWordLen
+      const pending_word_len =
+        result.data.pending_word_len ||
+        result.data.pendingWordLen ||
+        result.data.pending_word ||
+        result.data.pendingWord
+      if (Array.isArray(dataArr) && pending_word && pending_word_len) {
+        const byteArray = [
+          String(dataArr.length),
+          ...dataArr,
+          pending_word,
+          pending_word_len,
+        ]
+        console.log('Composed ByteArray for name:', byteArray)
+        const converted = byteArrayToString(byteArray)
+        console.log('Converted account name:', converted)
+        return converted
+      }
+    }
+    return ''
+  }, [result.data])
+
+  console.log('Final account name:', accountName)
+
+  return {
+    ...result,
+    data: accountName,
+  }
 }
 
 export function useGetAccountDescription(accountAddress: `0x${string}`) {
@@ -131,6 +207,224 @@ export function useGetTransaction(
     },
     functionName: 'get_transaction',
     args: transactionId ? { transaction_id: transactionId } : undefined,
+    enabled: !!(accountAddress && transactionId),
+  })
+}
+
+// Transaction List Hooks
+export function useTransactionList(
+  accountAddress: `0x${string}`,
+  start?: bigint,
+  limit?: bigint,
+) {
+  // Use proper CairoOption class for Option types
+  const args = {
+    start:
+      start !== undefined
+        ? new CairoOption<bigint>(CairoOptionVariant.Some, start)
+        : new CairoOption<bigint>(CairoOptionVariant.None),
+    limit:
+      limit !== undefined
+        ? new CairoOption<bigint>(CairoOptionVariant.Some, limit)
+        : new CairoOption<bigint>(CairoOptionVariant.None),
+  }
+
+  return useScaffoldReadContract<SpherreTransaction[]>({
+    contractConfig: {
+      address: accountAddress,
+      abi: spherreAccountConfig.abi,
+    },
+    functionName: 'transaction_list',
+    args,
+    enabled: !!accountAddress,
+  })
+}
+
+export function useTokenTransactionList(accountAddress: `0x${string}`) {
+  return useScaffoldReadContract<TokenTransactionData[]>({
+    contractConfig: {
+      address: accountAddress,
+      abi: spherreAccountConfig.abi,
+    },
+    functionName: 'token_transaction_list',
+    enabled: !!accountAddress,
+  })
+}
+
+export function useNftTransactionList(accountAddress: `0x${string}`) {
+  return useScaffoldReadContract<NFTTransactionData[]>({
+    contractConfig: {
+      address: accountAddress,
+      abi: spherreAccountConfig.abi,
+    },
+    functionName: 'nft_transaction_list',
+    enabled: !!accountAddress,
+  })
+}
+
+export function useMemberAddTransactionList(accountAddress: `0x${string}`) {
+  return useScaffoldReadContract<MemberAddData[]>({
+    contractConfig: {
+      address: accountAddress,
+      abi: spherreAccountConfig.abi,
+    },
+    functionName: 'member_add_transaction_list',
+    enabled: !!accountAddress,
+  })
+}
+
+export function useMemberRemovalTransactionList(accountAddress: `0x${string}`) {
+  return useScaffoldReadContract<MemberRemoveData[]>({
+    contractConfig: {
+      address: accountAddress,
+      abi: spherreAccountConfig.abi,
+    },
+    functionName: 'member_removal_transaction_list',
+    enabled: !!accountAddress,
+  })
+}
+
+export function useEditPermissionTransactionList(
+  accountAddress: `0x${string}`,
+) {
+  return useScaffoldReadContract<EditPermissionTransaction[]>({
+    contractConfig: {
+      address: accountAddress,
+      abi: spherreAccountConfig.abi,
+    },
+    functionName: 'get_edit_permission_transaction_list',
+    enabled: !!accountAddress,
+  })
+}
+
+export function useSmartTokenLockTransactionList(
+  accountAddress: `0x${string}`,
+) {
+  return useScaffoldReadContract<SmartTokenLockTransaction[]>({
+    contractConfig: {
+      address: accountAddress,
+      abi: spherreAccountConfig.abi,
+    },
+    functionName: 'smart_token_lock_transaction_list',
+    enabled: !!accountAddress,
+  })
+}
+
+export function useAllThresholdChangeTransactions(
+  accountAddress: `0x${string}`,
+) {
+  return useScaffoldReadContract<ThresholdChangeData[]>({
+    contractConfig: {
+      address: accountAddress,
+      abi: spherreAccountConfig.abi,
+    },
+    functionName: 'get_all_threshold_change_transactions',
+    enabled: !!accountAddress,
+  })
+}
+
+// Individual Transaction Getter Hooks
+export function useGetTokenTransaction(
+  accountAddress: `0x${string}`,
+  transactionId: U256,
+) {
+  return useScaffoldReadContract<TokenTransactionData>({
+    contractConfig: {
+      address: accountAddress,
+      abi: spherreAccountConfig.abi,
+    },
+    functionName: 'get_token_transaction',
+    args: transactionId ? { id: transactionId } : undefined,
+    enabled: !!(accountAddress && transactionId),
+  })
+}
+
+export function useGetNftTransaction(
+  accountAddress: `0x${string}`,
+  transactionId: U256,
+) {
+  return useScaffoldReadContract<NFTTransactionData>({
+    contractConfig: {
+      address: accountAddress,
+      abi: spherreAccountConfig.abi,
+    },
+    functionName: 'get_nft_transaction',
+    args: transactionId ? { id: transactionId } : undefined,
+    enabled: !!(accountAddress && transactionId),
+  })
+}
+
+export function useGetMemberAddTransaction(
+  accountAddress: `0x${string}`,
+  transactionId: U256,
+) {
+  return useScaffoldReadContract<MemberAddData>({
+    contractConfig: {
+      address: accountAddress,
+      abi: spherreAccountConfig.abi,
+    },
+    functionName: 'get_member_add_transaction',
+    args: transactionId ? { transaction_id: transactionId } : undefined,
+    enabled: !!(accountAddress && transactionId),
+  })
+}
+
+export function useGetMemberRemovalTransaction(
+  accountAddress: `0x${string}`,
+  transactionId: U256,
+) {
+  return useScaffoldReadContract<MemberRemoveData>({
+    contractConfig: {
+      address: accountAddress,
+      abi: spherreAccountConfig.abi,
+    },
+    functionName: 'get_member_removal_transaction',
+    args: transactionId ? { transaction_id: transactionId } : undefined,
+    enabled: !!(accountAddress && transactionId),
+  })
+}
+
+export function useGetEditPermissionTransaction(
+  accountAddress: `0x${string}`,
+  transactionId: U256,
+) {
+  return useScaffoldReadContract<EditPermissionTransaction>({
+    contractConfig: {
+      address: accountAddress,
+      abi: spherreAccountConfig.abi,
+    },
+    functionName: 'get_edit_permission_transaction',
+    args: transactionId ? { transaction_id: transactionId } : undefined,
+    enabled: !!(accountAddress && transactionId),
+  })
+}
+
+export function useGetSmartTokenLockTransaction(
+  accountAddress: `0x${string}`,
+  transactionId: U256,
+) {
+  return useScaffoldReadContract<SmartTokenLockTransaction>({
+    contractConfig: {
+      address: accountAddress,
+      abi: spherreAccountConfig.abi,
+    },
+    functionName: 'get_smart_token_lock_transaction',
+    args: transactionId ? { transaction_id: transactionId } : undefined,
+    enabled: !!(accountAddress && transactionId),
+  })
+}
+
+export function useGetThresholdChangeTransaction(
+  accountAddress: `0x${string}`,
+  transactionId: U256,
+) {
+  return useScaffoldReadContract<ThresholdChangeData>({
+    contractConfig: {
+      address: accountAddress,
+      abi: spherreAccountConfig.abi,
+    },
+    functionName: 'get_threshold_change_transaction',
+    args: transactionId ? { id: transactionId } : undefined,
     enabled: !!(accountAddress && transactionId),
   })
 }
@@ -236,6 +530,7 @@ export function useExecuteThresholdChange(accountAddress: `0x${string}`) {
   })
 }
 
+// Add execute_transaction hook
 export function useExecuteTransaction(accountAddress: `0x${string}`) {
   return useScaffoldWriteContract({
     contractConfig: {
@@ -246,45 +541,11 @@ export function useExecuteTransaction(accountAddress: `0x${string}`) {
   })
 }
 
-export function useTokenTransactionList(accountAddress: `0x${string}`) {
-  return useScaffoldReadContract<SpherreTransaction[]>({
-    contractConfig: {
-      address: accountAddress,
-      abi: spherreAccountConfig.abi,
-    },
-    functionName: 'token_transaction_list',
-    enabled: !!accountAddress, //must submit account address
-  })
-}
-
-export function useGetTokenTransaction(accountAddress: `0x${string}`, id: U256) {
-  return useScaffoldReadContract<TokenTransactionData>({
-    contractConfig: {
-      address: accountAddress,
-      abi: spherreAccountConfig.abi,
-    },
-    functionName: 'get_token_transaction',
-    args: id ? { id: id } : undefined,
-    enabled: !!(accountAddress && id),
-  })
-}
-
-export function useGetNFTTransaction(accountAddress: `0x${string}`, id: U256) {
-  return useScaffoldReadContract<NFTTransactionData>({
-    contractConfig: {
-      address: accountAddress,
-      abi: spherreAccountConfig.abi,
-    },
-    functionName: 'get_nft_transaction',
-    args: id ? { id: id } : undefined,
-    enabled: !!(accountAddress && id),
-  })
-}
 
 // Utility hooks that combine multiple operations
 export function useAccountInfo(accountAddress: `0x${string}`) {
   const {
-    data: members,
+    data: membersRaw,
     isLoading: membersLoading,
     error: membersError,
   } = useGetAccountMembers(accountAddress)
@@ -304,13 +565,54 @@ export function useAccountInfo(accountAddress: `0x${string}`) {
     error: countError,
   } = useGetMembersCount(accountAddress)
 
-  return {
-    members,
-    threshold,
-    details,
-    membersCount,
-    isLoading:
-      membersLoading || thresholdLoading || detailsLoading || countLoading,
-    error: membersError || thresholdError || detailsError || countError,
-  }
+  // Filter out placeholder addresses (like '0x0') and only count valid addresses
+  // Convert felt values to proper Starknet addresses
+  const members = useMemo(() => {
+    if (!Array.isArray(membersRaw)) return []
+
+    return membersRaw
+      .map((member) => {
+        try {
+          // Convert felt to address format
+          const address = feltToAddress(member)
+          return address
+        } catch (error) {
+          console.warn('Failed to convert felt to address:', member, error)
+          return null
+        }
+      })
+      .filter(
+        (addr) =>
+          addr &&
+          addr !== '0x0' &&
+          addr !==
+            '0x0000000000000000000000000000000000000000000000000000000000000000',
+      )
+  }, [membersRaw])
+
+  return useMemo(
+    () => ({
+      members,
+      threshold,
+      details,
+      membersCount,
+      isLoading:
+        membersLoading || thresholdLoading || detailsLoading || countLoading,
+      error: membersError || thresholdError || detailsError || countError,
+    }),
+    [
+      members,
+      threshold,
+      details,
+      membersCount,
+      membersLoading,
+      thresholdLoading,
+      detailsLoading,
+      countLoading,
+      membersError,
+      thresholdError,
+      detailsError,
+      countError,
+    ],
+  )
 }
