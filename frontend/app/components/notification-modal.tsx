@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button'
 import type { StaticImageData } from 'next/image'
 import GlennAvatar from '@/public/Images/reviewers1.png'
 import LoisAvatar from '@/public/Images/reviewers2.png'
+import { useTheme } from '@/app/context/theme-context-provider'
 
 // Defines the structure for a single notification item.
 interface Notification {
@@ -69,6 +70,7 @@ export default function NotificationModal({
 }: {
   onClose?: () => void
 }) {
+  useTheme() // Initialize theme context
   const [mounted, setMounted] = useState(false)
   useEffect(() => setMounted(true), [])
   // Initialize with default data to prevent hydration mismatch.
@@ -125,13 +127,13 @@ export default function NotificationModal({
         NOTE: The parent of this modal (the notification icon/button container) MUST have className="relative" for correct dropdown positioning.
         This modal will appear directly below the icon/button.
       */}
-      <Card className="w-full px-2 py-3 bg-[#1C1D1F] text-white shadow-xl rounded-xl overflow-hidden border-0">
+      <Card className="w-full px-2 py-3 bg-theme-bg-secondary text-theme shadow-xl rounded-xl overflow-hidden border-0 transition-colors duration-300">
         {/* Modal Header */}
         <div className="flex justify-between items-center p-3 sm:p-4 relative">
           <h2 className="text-lg sm:text-xl font-bold">Notifications</h2>
           <div className="flex items-center gap-3">
             <Button
-              className="bg-[#272729] text-zinc-400 hover:text-white flex items-center gap-2 px-2 sm:px-3 py-1 sm:py-2 text-xs sm:text-sm"
+              className="bg-theme-bg-tertiary text-theme-secondary hover:text-theme flex items-center gap-2 px-2 sm:px-3 py-1 sm:py-2 text-xs sm:text-sm transition-colors duration-300"
               onClick={markAllAsRead}
               disabled={unreadCount === 0}
             >
@@ -142,7 +144,7 @@ export default function NotificationModal({
             <button
               onClick={onClose}
               aria-label="Close notifications"
-              className="text-gray-400 hover:text-white bg-transparent rounded-full p-1 focus:outline-none focus:ring-2 focus:ring-[#6F2FCE]"
+              className="text-theme-secondary hover:text-theme bg-transparent rounded-full p-1 focus:outline-none focus:ring-2 focus:ring-primary transition-colors duration-300"
             >
               <X className="w-5 h-5" />
             </button>
@@ -154,7 +156,7 @@ export default function NotificationModal({
           {notifications.map((notification) => (
             <div
               key={notification.id}
-              className="p-3 sm:p-4 bg-[#232325] rounded-lg hover:bg-zinc-800/50 transition-colors flex items-start gap-3"
+              className="p-3 sm:p-4 bg-theme-bg-tertiary rounded-lg hover:bg-theme-bg-secondary transition-colors flex items-start gap-3"
             >
               <div className="flex gap-2 sm:gap-3">
                 {/* Unread indicator */}

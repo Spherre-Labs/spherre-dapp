@@ -6,8 +6,10 @@ import { createPortal } from 'react-dom'
 import Link from 'next/link'
 import { routes } from '../[address]/layout'
 import { useSpherreAccount } from '../context/account-context'
+import { useTheme } from '@/app/context/theme-context-provider'
 
 export default function DepositModal() {
+  useTheme() // Initialize theme context
   const [isOpen, setIsOpen] = useState(false)
   const [portalElement, setPortalElement] = useState<HTMLElement | null>(null)
   const modalRef = useRef<HTMLDivElement>(null)
@@ -69,7 +71,7 @@ export default function DepositModal() {
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
             <div
               ref={modalRef}
-              className="bg-[#1C1D1F] border-[4px] py-[28px] px-[15px] border-[#292929] rounded-lg shadow-lg w-full max-w-[583px] mx-4 overflow-hidden text-center relative"
+              className="bg-theme-bg-secondary border-[4px] py-[28px] px-[15px] border-theme-border rounded-lg shadow-lg w-full max-w-[583px] mx-4 overflow-hidden text-center relative transition-colors duration-300"
               role="dialog"
               aria-modal="true"
               aria-labelledby="modal-title"
@@ -77,13 +79,13 @@ export default function DepositModal() {
               <div className="flex items-center justify-between p-4">
                 <h2
                   id="modal-title"
-                  className="text-3xl font-bold mx-auto text-white"
+                  className="text-3xl font-bold mx-auto text-theme transition-colors duration-300"
                 >
                   Deposit
                 </h2>
                 <button
                   onClick={closeModal}
-                  className="text-[#8E9BAE] hover:text-white hover:bg-gray-800 bg-gray-800 rounded-full p-1 transition-colors absolute top-4 right-4"
+                  className="text-theme-secondary hover:text-theme hover:bg-theme-bg-tertiary bg-theme-bg-tertiary rounded-full p-1 transition-colors absolute top-4 right-4"
                   aria-label="Close"
                 >
                   <svg
@@ -159,10 +161,10 @@ export default function DepositModal() {
                         </svg>
                       </div>
                       <div>
-                        <p className="font-medium text-white">
+                        <p className="font-medium text-theme transition-colors duration-300">
                           Deposit Via Address
                         </p>
-                        <p className="text-sm text-[#8E9BAE]">
+                        <p className="text-sm text-theme-secondary transition-colors duration-300">
                           Deposits to Spherre &#39;s internal wallet address.
                         </p>
                       </div>
@@ -218,10 +220,10 @@ export default function DepositModal() {
                         </svg>
                       </div>
                       <div>
-                        <p className="font-medium text-white">
+                        <p className="font-medium text-theme transition-colors duration-300">
                           Deposit Via Connected Wallet
                         </p>
-                        <p className="text-sm text-[#8E9BAE]">
+                        <p className="text-sm text-theme-secondary transition-colors duration-300">
                           Deposit funds through a connected wallet.
                         </p>
                       </div>
