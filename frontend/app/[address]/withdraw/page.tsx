@@ -37,13 +37,24 @@ export default function WithdrawPage() {
   const [selectedToken, setSelectedToken] = useState<string>('STRK')
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
   const [availableTokens, setAvailableTokens] = useState<
-    (TokenInfo & {
+    {
+      symbol: string
+      usdValue: number
+      icon: string
+      address: string
+      name: string
+      decimals: number
       balance: number
-    })[]
+    }[]
   >(
     AVAILABLE_TOKENS.map((token) => ({
-      ...token,
+      address: token.address,
+      name: token.name,
+      symbol: token.symbol,
+      decimals: token.decimals,
       balance: 0,
+      usdValue: 0,
+      icon: token.icon || '/Images/strk.png', // Provide default icon
     })),
   )
 
@@ -83,7 +94,7 @@ export default function WithdrawPage() {
         )
       }
     }
-  }, [data, selectedToken, availableTokens])
+  }, [data, selectedToken])
 
   const onAddressChange = (isValid: boolean) => {
     setIsAddressValid(isValid)
