@@ -1,4 +1,8 @@
 import React, { useState } from 'react'
+import { isValidStarknetAddress } from '@/lib/utils/validation'
+import ProcessingModal from '../../../components/modals/Loader'
+import SuccessModal from '../../../components/modals/SuccessModal'
+import ErrorModal from '../../../components/modals/ErrorModal'
 
 const roles = ['Voter', 'Proposer', 'Executor']
 
@@ -15,6 +19,12 @@ const AddMemberModal: React.FC<AddMemberModalProps> = ({
 }) => {
   const [wallet, setWallet] = useState('')
   const [selectedRoles, setSelectedRoles] = useState<string[]>(['Voter', 'Proposer', 'Executor']) // All roles by default
+  const [walletError, setWalletError] = useState('')
+  
+  // Modal states
+  const [isProcessingModalOpen, setIsProcessingModalOpen] = useState(false)
+  const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false)
+  const [isErrorModalOpen, setIsErrorModalOpen] = useState(false)
 
   const toggleRole = (role: string) => {
     setSelectedRoles(prev => 
@@ -24,11 +34,64 @@ const AddMemberModal: React.FC<AddMemberModalProps> = ({
     )
   }
 
+  const validateWallet = (address: string): boolean => {
+    if (!address.trim()) {
+      setWalletError('Wallet address is required')
+      return false
+    }
+    
+    if (!isValidStarknetAddress(address.trim())) {
+      setWalletError('Invalid StarkNet wallet address format')
+      return false
+    }
+    
+    setWalletError('')
+    return true
+  }
+
   const handleSubmit = () => {
-    if (wallet.trim() && selectedRoles.length > 0) {
+    if (!validateWallet(wallet) || selectedRoles.length === 0) {
+      if (selectedRoles.length === 0) {
+        setWalletError('Please select at least one role')
+      }
+      return
+    }
+
+    // Close the add modal and start processing
+    onClose()
+    setIsProcessingModalOpen(true)
+
+    // Simulate processing delay and success after 5 seconds
+    setTimeout(() => {
+      setIsProcessingModalOpen(false)
+      setIsSuccessModalOpen(true)
+      // Call the original onPropose to maintain functionality
       onPropose(wallet.trim(), selectedRoles)
+      // Reset form
       setWallet('')
-      setSelectedRoles(['Voter', 'Proposer', 'Executor']) // Reset to all roles
+      setSelectedRoles(['Voter', 'Proposer', 'Executor'])
+      setWalletError('')
+    }, 5000)
+  }
+
+  const handleProcessingCancel = () => {
+    setIsProcessingModalOpen(false)
+    setIsErrorModalOpen(true)
+  }
+
+  const handleModalClose = () => {
+    setWallet('')
+    setSelectedRoles(['Voter', 'Proposer', 'Executor'])
+    setWalletError('')
+    onClose()
+  }
+
+  const handleWalletChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value
+    setWallet(value)
+    // Clear error when user starts typing
+    if (walletError) {
+      setWalletError('')
     }
   }
 
@@ -40,7 +103,7 @@ const AddMemberModal: React.FC<AddMemberModalProps> = ({
         {/* Close button */}
         <button
           className="absolute top-5 right-5 text-theme-secondary text-2xl font-bold hover:text-theme transition-colors duration-200"
-          onClick={onClose}
+          onClick={handleModalClose}
           aria-label="Close"
         >
           ×
@@ -59,11 +122,19 @@ const AddMemberModal: React.FC<AddMemberModalProps> = ({
         {/* Wallet Address */}
         <label className="block text-theme mb-3">Wallet Address</label>
         <input
-          className="w-full p-3 mb-6 rounded bg-theme-bg-tertiary text-theme placeholder-theme-muted outline-none border border-theme-border focus:border-primary transition-colors duration-200"
-          placeholder="Enter wallet address"
+          className={`w-full p-3 rounded bg-theme-bg-tertiary text-theme placeholder-theme-muted outline-none border ${
+            walletError ? 'border-red-500' : 'border-theme-border'
+          } ${
+            walletError ? 'focus:border-red-500' : 'focus:border-primary'
+          } transition-colors duration-200`}
+          placeholder="Enter wallet address (0x...)"
           value={wallet}
-          onChange={(e) => setWallet(e.target.value)}
+          onChange={handleWalletChange}
         />
+        {walletError && (
+          <p className="text-red-500 text-sm mt-1 mb-4">{walletError}</p>
+        )}
+        {!walletError && <div className="mb-6" />}
         
         {/* Assign Roles */}
         <div className="mb-8">
@@ -162,6 +233,34 @@ const AddMemberModal: React.FC<AddMemberModalProps> = ({
           </button>
         </div>
       </div>
+      
+      {/* Processing Modal */}
+      <ProcessingModal
+        isOpen={isProcessingModalOpen}
+        onClose={handleProcessingCancel}
+        title="Processing Member Addition!"
+        subtitle="Please wait while we process the member addition proposal..."
+      />
+
+      {/* Success Modal */}
+      <SuccessModal
+        isOpen={isSuccessModalOpen}
+        onClose={() => setIsSuccessModalOpen(false)}
+        onViewTransaction={() => {
+          setIsSuccessModalOpen(false)
+          // Navigate to transactions page if needed
+        }}
+        title="Member Addition Proposed!"
+        message="The member addition proposal has been successfully created and sent to other members for approval."
+      />
+
+      {/* Error Modal */}
+      <ErrorModal
+        isOpen={isErrorModalOpen}
+        onClose={() => setIsErrorModalOpen(false)}
+        title="Transaction Failed"
+        errorText="The member addition proposal was cancelled or failed to process."
+      />
     </div>
   )
 }
