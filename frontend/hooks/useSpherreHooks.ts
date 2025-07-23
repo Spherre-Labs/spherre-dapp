@@ -151,8 +151,6 @@ export function useGetMemberPermissions(
 }
 
 export function useGetAccountName(accountAddress: `0x${string}`) {
-  console.log('useGetAccountName called with address:', accountAddress)
-
   // Expect the struct: { data: string[], pending_word: string, pending_word_len: string }
   const result = useScaffoldReadContract<any>({
     contractConfig: {
@@ -162,8 +160,6 @@ export function useGetAccountName(accountAddress: `0x${string}`) {
     functionName: 'get_name',
     enabled: !!accountAddress,
   })
-
-  console.log('useGetAccountName result:', result)
 
   // Convert struct to ByteArray and then to string
   const accountName = useMemo(() => {
@@ -205,8 +201,6 @@ export function useGetAccountName(accountAddress: `0x${string}`) {
     }
     return ''
   }, [result.data])
-
-  console.log('Final account name:', accountName)
 
   return {
     ...result,
