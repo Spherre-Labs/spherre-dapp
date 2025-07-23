@@ -1,6 +1,7 @@
 'use client'
 import { useState } from 'react'
 import Image from 'next/image'
+import { sliceWalletAddress } from '@/components/utils'
 import Usdt from '@/public/Images/usdt.png'
 import Backstage from '@/public/Images/backstageboys.png'
 import Arrow from '@/public/Images/Arrow.png'
@@ -10,14 +11,7 @@ interface WithdrawalReviewPageProps {
   recipientAddress: string
   amount: string
   selectedToken: string
-  availableTokens: Array<{
-    symbol: string
-    balance: number
-    icon?: string
-    usdValue?: number
-    address?: string
-    decimal?: number
-  }>
+  availableTokens: any[]
   spherreAccountAddress: `0x${string}` | null
 }
 
@@ -39,12 +33,6 @@ export default function WithdrawalReviewPage({
   const usdValue = selectedTokenData?.usdValue || 0
   const amountInUSD = parseFloat(amount) * usdValue
 
-  // Format recipient address for display
-  const formatAddress = (address: string) => {
-    if (!address || address.length <= 10) return address
-    return `${address.slice(0, 6)}...${address.slice(-4)}`
-  }
-
   const { data } = useScaffoldReadContract({
     contractConfig: {
       address: spherreAccountAddress || '',
@@ -62,7 +50,7 @@ export default function WithdrawalReviewPage({
   const transactionData = {
     amount: amount || '0',
     tokenSymbol: selectedToken,
-    recipientAddress: formatAddress(recipientAddress),
+    recipientAddress: sliceWalletAddress(recipientAddress as `0x${string}`),
     recipientFullAddress: recipientAddress,
     fromAccount: {
       name: data || 'Spherre Account', // Use actual account name from contract
@@ -106,7 +94,9 @@ export default function WithdrawalReviewPage({
             <p className="text-sm text-gray-400 mt-3">From</p>
             <p className="font-semibold">{transactionData.fromAccount.name}</p>
             <p className="text-sm text-gray-500 bg-gray-100 bg-opacity-15 p-2 rounded-md mt-3 ">
-              {formatAddress(transactionData.fromAccount.address)}
+              {sliceWalletAddress(
+                transactionData.fromAccount.address as `0x${string}`,
+              )}
             </p>
           </div>
 

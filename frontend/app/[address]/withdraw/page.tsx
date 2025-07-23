@@ -12,6 +12,7 @@ import {
   AVAILABLE_TOKENS,
   SPHERRE_ACCOUNT_ABI,
   TokenInfo,
+  useGetAccountName,
   useScaffoldReadContract,
   useScaffoldWriteContract,
 } from '@/lib'
@@ -21,6 +22,9 @@ import { useGlobalModal } from '@/app/components/modals/GlobalModalProvider'
 
 export default function WithdrawPage() {
   const { accountAddress: spherreAccountAddress } = useSpherreAccount()
+  const { data: spherreAccountName } = useGetAccountName(
+    spherreAccountAddress || '0x0',
+  )
   const { showSuccess, showError } = useGlobalModal()
 
   const [currentStep, setCurrentStep] = useState(1)
@@ -326,6 +330,8 @@ export default function WithdrawPage() {
               onChangeRecipientAddress={setRecipientAddress}
               addressTouched={addressTouched}
               onChangeAddressTouched={setAddressTouched}
+              spherreAccountAddress={spherreAccountAddress}
+              spherreAccountName={spherreAccountName}
             />
           )}
           {currentStep === 2 && (
