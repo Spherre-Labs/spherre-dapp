@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { useTheme } from '@/app/context/theme-context-provider'
 
 interface SignMessageModalProps {
   isOpen: boolean
@@ -15,6 +16,7 @@ const SignMessageModal: React.FC<SignMessageModalProps> = ({
   title,
   description,
 }) => {
+  useTheme() // Initialize theme context
   const [email, setEmail] = useState('')
 
   if (!isOpen) return null
@@ -29,10 +31,10 @@ const SignMessageModal: React.FC<SignMessageModalProps> = ({
         className="absolute inset-0 bg-black bg-opacity-50 backdrop-blur-sm"
         onClick={onClose}
       ></div>
-      <div className="relative bg-[#1E1E1E] rounded-2xl shadow-lg p-8 w-full max-w-md mx-4">
+      <div className="relative bg-theme-bg-secondary rounded-2xl shadow-lg p-8 w-full max-w-md mx-4 transition-colors duration-300">
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 text-gray-400 hover:text-white"
+          className="absolute top-4 right-4 text-theme-secondary hover:text-theme transition-colors"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -50,13 +52,17 @@ const SignMessageModal: React.FC<SignMessageModalProps> = ({
           </svg>
         </button>
         <div className="text-center">
-          <h2 className="text-2xl font-bold text-white mb-4">{title}</h2>
-          <p className="text-gray-400 mb-6">{description}</p>
+          <h2 className="text-2xl font-bold text-theme mb-4 transition-colors duration-300">
+            {title}
+          </h2>
+          <p className="text-theme-secondary mb-6 transition-colors duration-300">
+            {description}
+          </p>
         </div>
         <div className="mb-6">
           <label
             htmlFor="email"
-            className="block text-white text-sm font-medium mb-2"
+            className="block text-theme text-sm font-medium mb-2 transition-colors duration-300"
           >
             Email Address
           </label>
@@ -66,19 +72,19 @@ const SignMessageModal: React.FC<SignMessageModalProps> = ({
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="johndoe@gmail.com"
-            className="w-full bg-[#2E2E2E] border border-[#3E3E3E] text-white rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#a259ff]"
+            className="w-full bg-theme-bg-tertiary border border-theme-border text-theme rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary transition-colors duration-300"
           />
         </div>
         <div className="flex justify-between gap-4">
           <button
             onClick={onClose}
-            className="w-full bg-[#2E2E2E] text-white py-3 rounded-lg hover:bg-[#3E3E3E] transition-colors"
+            className="w-full bg-theme-bg-tertiary text-theme py-3 rounded-lg hover:bg-theme-bg-secondary transition-colors"
           >
             Close
           </button>
           <button
             onClick={handleSign}
-            className="w-full bg-[#a259ff] text-white py-3 rounded-lg hover:bg-[#934de6] transition-colors"
+            className="w-full bg-primary text-white py-3 rounded-lg hover:bg-primary/90 transition-colors"
           >
             Sign Message
           </button>

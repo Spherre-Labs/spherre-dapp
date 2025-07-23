@@ -2,6 +2,7 @@
 
 import type React from 'react'
 import { useTheme } from '@/app/context/theme-context-provider'
+import { useAccount } from '@starknet-react/core'
 
 interface AddressInputProps {
   value: string
@@ -19,6 +20,7 @@ export default function AddressInput({
   showError = false,
 }: AddressInputProps) {
   useTheme()
+  const { address } = useAccount()
 
   // Simple validation for Ethereum-like addresses
   // In a real app, you would use a more robust validation
@@ -53,9 +55,10 @@ export default function AddressInput({
     // This would be implemented in a real app
     console.log('My Spherre Wallet button clicked')
     // For now, we'll just set a dummy valid address
-    const dummyAddress = '0x71C7656EC7ab88b098defB751B7401B5f6d8976F'
-    onChange(dummyAddress)
-    onValidityChange(true)
+    if (address) {
+      onChange(address)
+      onValidityChange(validateAddress(address))
+    }
   }
 
   return (
@@ -75,7 +78,7 @@ export default function AddressInput({
         <div className="flex mb-3 sm:mb-0 space-x-2 sm:ml-2">
           <button
             onClick={handlePaste}
-            className="bg-white dark:bg-gray-900 text-black dark:text-white hover:bg-gray-200 dark:hover:bg-gray-800 px-3 sm:px-4 py-1 rounded-lg transition-colors duration-200 text-xs sm:text-sm"
+            className="bg-theme-bg-secondary text-theme hover:bg-theme-bg-tertiary px-3 sm:px-4 py-1 rounded-lg transition-colors duration-200 text-xs sm:text-sm"
           >
             Paste
           </button>
