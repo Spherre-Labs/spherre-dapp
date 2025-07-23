@@ -11,7 +11,6 @@ import { useAccount } from '@starknet-react/core'
 import {
   AVAILABLE_TOKENS,
   SPHERRE_ACCOUNT_ABI,
-  TokenInfo,
   useGetAccountName,
   useScaffoldReadContract,
   useScaffoldWriteContract,
@@ -76,22 +75,21 @@ export default function WithdrawPage() {
   // Update token balance in UI when contract data changes
   useEffect(() => {
     if (data && selectedToken) {
-      const selectedTokenData = availableTokens.find(
-        (t) => t.symbol === selectedToken,
-      )
-      if (selectedTokenData) {
-        const balanceInWei = Number(data)
-        const balanceInTokens =
-          balanceInWei / Math.pow(10, selectedTokenData.decimals || 18)
+      setAvailableTokens((prev) => {
+        const selectedTokenData = prev.find((t) => t.symbol === selectedToken)
+        if (selectedTokenData) {
+          const balanceInWei = Number(data)
+          const balanceInTokens =
+            balanceInWei / Math.pow(10, selectedTokenData.decimals || 18)
 
-        setAvailableTokens((prev) =>
-          prev.map((token) =>
+          return prev.map((token) =>
             token.symbol === selectedToken
               ? { ...token, balance: balanceInTokens }
               : token,
-          ),
-        )
-      }
+          )
+        }
+        return prev
+      })
     }
   }, [data, selectedToken])
 
