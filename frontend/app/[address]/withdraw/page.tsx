@@ -17,8 +17,10 @@ import {
 } from '@/lib'
 import { useSpherreAccount } from '@/app/context/account-context'
 import { useGlobalModal } from '@/app/components/modals/GlobalModalProvider'
+import { useTheme } from '@/app/context/theme-context-provider'
 
 export default function WithdrawPage() {
+  useTheme() // Initialize theme context
   const { accountAddress: spherreAccountAddress } = useSpherreAccount()
   const { data: spherreAccountName } = useGetAccountName(
     spherreAccountAddress || '0x0',
@@ -299,20 +301,20 @@ export default function WithdrawPage() {
   ]
 
   return (
-    <div className="min-h-screen bg-[#000] text-white pt-16 pl-6">
+    <div className="min-h-screen bg-theme text-theme pt-16 pl-6">
       <div className="flex items-center mb-6 md:mb-0">
         <Button
           className={`p-2 rounded-lg transition duration-200 px-[1.25rem] ${
             address
-              ? 'bg-gray-800 hover:bg-gray-600'
-              : 'bg-gray-600 opacity-50 cursor-not-allowed'
+              ? 'bg-theme-bg-secondary hover:bg-theme-bg-tertiary'
+              : 'bg-theme-bg-tertiary opacity-50 cursor-not-allowed'
           }`}
           onClick={() => handlePrev()}
           disabled={!address || isSubmitting}
         >
-          <ArrowLeft className="h-4 w-4 text-white" />
+                      <ArrowLeft className="h-4 w-4 text-theme" />
         </Button>
-        <span className=" font-semibold text-white ml-4">Go Back</span>
+        <span className=" font-semibold text-theme ml-4">Go Back</span>
       </div>
 
       <WithdrawStepper currentStep={currentStep} steps={steps} />
@@ -322,7 +324,7 @@ export default function WithdrawPage() {
           <h1 className="text-xl sm:text-3xl font-bold text-center mb-1 sm:mb-2">
             Withdraw to Another Wallet
           </h1>
-          <p className="text-ash text-center text-sm sm:text-base mb-6 sm:mb-8">
+          <p className="text-theme-secondary text-center text-sm sm:text-base mb-6 sm:mb-8">
             {currentStep === 1 &&
               'Please select the account you wish to withdraw from Spherre and choose a recipient.'}
             {currentStep === 2 &&
@@ -375,7 +377,7 @@ export default function WithdrawPage() {
           <div className="grid grid-cols-2 gap-2 sm:gap-4">
             <button
               onClick={handleCancel}
-              className="py-2 sm:py-3 px-3 sm:px-4 text-sm sm:text-base bg-[#272729] text-white rounded-lg hover:bg-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="py-2 sm:py-3 px-3 sm:px-4 text-sm sm:text-base bg-theme-bg-secondary text-theme rounded-lg hover:bg-theme-bg-tertiary transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Cancel
             </button>
@@ -400,7 +402,7 @@ export default function WithdrawPage() {
             </button>
           </div>
           {currentStep === 3 && (
-            <p className="text-xs sm:text-sm text-gray-500 mb-6 text-left mt-3">
+            <p className="text-xs sm:text-sm text-theme-secondary mb-6 text-left mt-3">
               By clicking Execute you`re withdrawing funds to an internal
               wallet, please review the details before proceeding with the
               transaction.
