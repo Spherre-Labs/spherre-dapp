@@ -132,6 +132,11 @@ const TreasuryPage = () => {
 
   // Token data
   const { tokensDisplay, loadingTokenData } = useTokenBalances()
+  // Calculate total balance in dollars
+  const totalBalance = tokensDisplay.reduce((acc, token) => {
+    const numericValue = parseFloat(token.value.replace('$', '')) || 0
+    return acc + numericValue
+  }, 0)
   // Account address for NFT hook
   const { accountAddress } = useSpherreAccount()
   // NFT data
@@ -197,7 +202,7 @@ const TreasuryPage = () => {
       >
         <div className="space-y-4 sm:space-y-6 lg:space-y-8 w-full">
           <TreasuryHeader
-            balance="250.35"
+            balance={totalBalance.toFixed(2)}
             isBalanceVisible={isBalanceVisible}
             toggleBalance={toggleBalance}
             onWithdraw={handleWithdraw}
