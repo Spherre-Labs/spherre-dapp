@@ -18,6 +18,7 @@ import {
 import { useSpherreAccount } from '@/app/context/account-context'
 import { useGlobalModal } from '@/app/components/modals/GlobalModalProvider'
 import { useTheme } from '@/app/context/theme-context-provider'
+import { useTokenBalances } from '@/hooks/useTokenBalances'
 
 export default function WithdrawPage() {
   useTheme() // Initialize theme context
@@ -26,6 +27,13 @@ export default function WithdrawPage() {
     spherreAccountAddress || '0x0',
   )
   const { showSuccess, showError, showProcessing, hideModal } = useGlobalModal()
+  const { tokensDisplay, loadingTokenData } = useTokenBalances()
+
+  // Calculate total balance in USD from all tokens
+  const totalBalance = tokensDisplay.reduce((acc, token) => {
+    const numericValue = parseFloat(token.value.replace('$', '')) || 0
+    return acc + numericValue
+  }, 0)
 
   const [currentStep, setCurrentStep] = useState(1)
   const router = useRouter()
@@ -352,6 +360,8 @@ export default function WithdrawPage() {
               onChangeAddressTouched={setAddressTouched}
               spherreAccountAddress={spherreAccountAddress}
               spherreAccountName={spherreAccountName}
+              totalBalance={totalBalance}
+              isLoadingBalance={loadingTokenData}
             />
           )}
           {currentStep === 2 && (

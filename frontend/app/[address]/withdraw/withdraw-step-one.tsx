@@ -11,6 +11,8 @@ interface IWithdrawStepOne {
   onChangeAddressTouched: (touched: boolean) => void
   spherreAccountAddress: `0x${string}` | null
   spherreAccountName: string
+  totalBalance: number
+  isLoadingBalance: boolean
 }
 
 export default function WithdrawalStepOne({
@@ -22,12 +24,14 @@ export default function WithdrawalStepOne({
   onChangeAddressTouched,
   spherreAccountAddress,
   spherreAccountName,
+  totalBalance,
+  isLoadingBalance,
 }: IWithdrawStepOne) {
-  // Dummy data for the account
+  // Account data with real balance
   const accountData = {
     name: spherreAccountName || 'Spherre Account',
     address: sliceWalletAddress(spherreAccountAddress),
-    balance: '$0.00',
+    balance: isLoadingBalance ? 'Loading...' : `$${totalBalance.toFixed(2)}`,
     avatar: '/placeholder.svg?height=40&width=40',
   }
 
