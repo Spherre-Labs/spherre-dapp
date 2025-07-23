@@ -14,7 +14,7 @@ const roleOptions = [
     check: 'bg-[#FF8A25]',
   },
   {
-    name: 'Executer',
+    name: 'Executor',
     color: 'border-[#19B360] text-[#19B360] bg-[#19B360]/10',
     check: 'bg-[#19B360]',
   },
@@ -28,13 +28,14 @@ interface Member {
   roles: string[]
   dateAdded: string
   image: string
+  permissionMask: number
 }
 
 interface EditMemberRolesModalProps {
   isOpen: boolean
   member: Member | null
   onClose: () => void
-  onPropose: (roles: string[]) => void
+  onPropose: (selectedRoles: string[]) => void
 }
 
 const EditMemberRolesModal: React.FC<EditMemberRolesModalProps> = ({
@@ -52,13 +53,19 @@ const EditMemberRolesModal: React.FC<EditMemberRolesModalProps> = ({
     setSelectedRoles(member?.roles || [])
   }, [member])
 
-  if (!isOpen || !member) return null
-
   const toggleRole = (role: string) => {
     setSelectedRoles((prev) =>
       prev.includes(role) ? prev.filter((r) => r !== role) : [...prev, role],
     )
   }
+
+  const handleSubmit = () => {
+    if (selectedRoles.length > 0) {
+      onPropose(selectedRoles)
+    }
+  }
+
+  if (!isOpen || !member) return null
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60 backdrop-blur-sm">
@@ -71,10 +78,12 @@ const EditMemberRolesModal: React.FC<EditMemberRolesModalProps> = ({
         >
           ×
         </button>
+
         {/* Title */}
         <h2 className="text-xl sm:text-3xl font-bold text-theme text-center mb-3 sm:mb-4">
           Edit Member Roles
         </h2>
+
         {/* Avatar */}
         <div className="flex flex-col items-center mb-2">
           <div className="rounded-full border-4 border-primary p-1 mb-2">
@@ -90,63 +99,92 @@ const EditMemberRolesModal: React.FC<EditMemberRolesModalProps> = ({
             {member.name}
           </div>
         </div>
+
         {/* Address */}
-        <div className="w-full bg-theme-bg-tertiary border border-theme-border text-theme-secondary rounded-lg px-3 sm:px-4 py-2 sm:py-3 text-center mb-4 sm:mb-6 break-all text-xs sm:text-base transition-colors duration-300">
-          {member.fullAddress}
+        <div className="text-center mb-6">
+          <p className="text-sm text-theme-secondary">{member.address}</p>
         </div>
-        {/* Assign Roles */}
-        <label className="block text-theme mb-2 text-sm sm:text-base">
-          Assign Roles
-        </label>
-        <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 mb-2">
-          {roleOptions.map((role) => {
-            const checked = selectedRoles.includes(role.name)
-            return (
-              <button
-                key={role.name}
-                type="button"
-                className={`flex items-center gap-2 px-4 sm:px-6 py-2 sm:py-3 rounded-lg border-2 font-semibold text-base sm:text-lg transition-colors duration-200
-                  ${checked ? role.color + ' border-2' : 'border-theme-border text-theme-secondary bg-transparent hover:bg-theme-bg-tertiary/50'}
-                `}
-                onClick={() => toggleRole(role.name)}
-              >
-                {role.name}
-                {checked && (
-                  <span
-                    className={`ml-2 w-4 h-4 sm:w-5 sm:h-5 rounded-full flex items-center justify-center ${role.check}`}
+
+        {/* Role Selection */}
+        <div className="mb-6 sm:mb-8">
+          <p className="text-sm sm:text-base text-theme font-medium mb-4">
+            Assign Roles:
+          </p>
+          <div className="flex flex-wrap items-center gap-3">
+            {roleOptions.map((roleOption) => {
+              const isSelected = selectedRoles.includes(roleOption.name)
+
+              return (
+                <label
+                  key={roleOption.name}
+                  className={`flex items-center gap-3 px-4 py-3 rounded-lg border transition-all duration-200 cursor-pointer ${
+                    isSelected
+                      ? roleOption.color
+                      : 'border-theme-border bg-transparent text-theme-secondary hover:bg-theme-bg-tertiary/50'
+                  }`}
+                  onClick={() => toggleRole(roleOption.name)}
+                >
+                  <input
+                    type="checkbox"
+                    checked={isSelected}
+                    onChange={() => toggleRole(roleOption.name)}
+                    className="sr-only"
+                  />
+
+                  {/* Custom checkbox */}
+                  <div
+                    className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-colors duration-200 ${
+                      isSelected
+                        ? roleOption.check + ' border-current'
+                        : 'border-theme-border bg-transparent'
+                    }`}
                   >
-                    <svg width="14" height="14" viewBox="0 0 20 20" fill="none">
-                      <path
-                        d="M5 10.5L9 14.5L15 7.5"
-                        stroke="white"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                  </span>
-                )}
-              </button>
-            )
-          })}
+                    {isSelected && (
+                      <svg
+                        className="w-3 h-3 text-white"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                    )}
+                  </div>
+
+                  <span className="font-medium">{roleOption.name}</span>
+                </label>
+              )
+            })}
+          </div>
+
+          {/* Helper text */}
+          <p className="text-xs sm:text-sm text-theme-secondary mt-3">
+            Note: Changing member roles will require approval from other members
+            before taking effect.
+          </p>
         </div>
+
         {/* Action Buttons */}
-        <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 mt-6 sm:mt-8">
+        <div className="flex gap-3 sm:gap-4">
           <button
-            className="w-full sm:flex-1 bg-theme-bg-tertiary border border-theme-border text-theme py-2 sm:py-3 rounded-lg font-semibold text-base sm:text-lg hover:bg-theme-bg-secondary transition-colors duration-200"
+            className="flex-1 bg-theme-bg-tertiary text-theme py-2 sm:py-3 rounded-lg hover:bg-theme-bg-tertiary/80 transition-colors font-medium border border-theme-border text-sm sm:text-base"
             onClick={onClose}
           >
             Cancel
           </button>
           <button
-            className="w-full sm:flex-1 bg-primary text-white py-2 sm:py-3 rounded-lg font-semibold text-base sm:text-lg hover:opacity-90 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+            className={`flex-1 py-2 sm:py-3 rounded-lg transition-colors font-medium text-sm sm:text-base ${
+              selectedRoles.length > 0
+                ? 'bg-primary text-white hover:bg-primary/90'
+                : 'bg-theme-bg-tertiary text-theme-secondary cursor-not-allowed'
+            }`}
+            onClick={handleSubmit}
             disabled={selectedRoles.length === 0}
-            onClick={() => {
-              onPropose(selectedRoles)
-              onClose()
-            }}
           >
-            Propose Transaction
+            Propose Changes
           </button>
         </div>
       </div>

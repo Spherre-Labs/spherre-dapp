@@ -18,9 +18,14 @@ import type {
   EditPermissionTransaction,
   ThresholdChangeData,
   SmartTokenLockTransaction,
+  PermissionEnum,
 } from '@/lib/contracts/types'
 import { useMemo } from 'react'
-import { feltToAddress, byteArrayToString } from '@/lib/utils/validation'
+import {
+  feltToAddress,
+  byteArrayToString,
+  extractPermissionsFromMask,
+} from '@/lib/utils/validation'
 
 // Factory Contract Hooks
 export function useDeployAccount() {
@@ -93,6 +98,56 @@ export function useGetThreshold(accountAddress: `0x${string}`) {
     functionName: 'get_threshold',
     enabled: !!accountAddress,
   })
+}
+
+/**
+ * Hook to get member permissions from smart contract
+ * Returns an array of PermissionEnum values for the specified member
+ */
+export function useGetMemberPermissions(
+  accountAddress: `0x${string}`,
+  memberAddress: `0x${string}`,
+) {
+  const result = useScaffoldReadContract<PermissionEnum[]>({
+    contractConfig: {
+      address: accountAddress,
+      abi: spherreAccountConfig.abi,
+    },
+    functionName: 'get_member_permissions',
+    args: memberAddress ? { member: memberAddress } : undefined,
+    enabled: !!(accountAddress && memberAddress),
+  })
+
+  // Convert PermissionEnum array to role names
+  const permissions = useMemo(() => {
+    if (!result.data || !Array.isArray(result.data)) {
+      return ['Voter', 'Proposer', 'Executor'] // Default to all permissions if no data
+    }
+
+    const roles: string[] = []
+
+    // PermissionEnum: PROPOSER = 0, VOTER = 1, EXECUTOR = 2
+    for (const permission of result.data) {
+      switch (permission) {
+        case 0: // PROPOSER
+          roles.push('Proposer')
+          break
+        case 1: // VOTER
+          roles.push('Voter')
+          break
+        case 2: // EXECUTOR
+          roles.push('Executor')
+          break
+      }
+    }
+
+    return roles.length > 0 ? roles : ['Voter', 'Proposer', 'Executor'] // Default fallback
+  }, [result.data])
+
+  return {
+    ...result,
+    permissions,
+  }
 }
 
 export function useGetAccountName(accountAddress: `0x${string}`) {
@@ -538,6 +593,17 @@ export function useExecuteTransaction(accountAddress: `0x${string}`) {
       abi: spherreAccountConfig.abi,
     },
     functionName: 'execute_transaction',
+  })
+}
+
+// Permission management hooks
+export function useProposeEditPermission(accountAddress: `0x${string}`) {
+  return useScaffoldWriteContract({
+    contractConfig: {
+      address: accountAddress,
+      abi: spherreAccountConfig.abi,
+    },
+    functionName: 'propose_edit_permission_transaction',
   })
 }
 
