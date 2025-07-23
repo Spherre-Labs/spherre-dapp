@@ -5,8 +5,10 @@ import QRCode from 'qrcode'
 import { HiMiniArrowPath } from 'react-icons/hi2'
 import { useTokenBalance } from '@/hooks/useTokenBalance'
 import { useSpherreAccount } from '@/app/context/account-context'
+import { useTheme } from '@/app/context/theme-context-provider'
 
 const ManualDeposit = () => {
+  useTheme() // Initialize theme context
   const { accountAddress: spherreAccountAddress } = useSpherreAccount()
 
   const [copied, setCopied] = useState(false)
@@ -51,7 +53,7 @@ const ManualDeposit = () => {
   return (
     <div className="flex-col items-start flex justify-center w-full">
       <p className="pb-5 text-[14px] text-[#8E9BAE]">Account</p>
-      <div className="relative w-full flex px-5 justify-between h-[98px] mb-10 bg-[#0a0a0a] rounded-[10px]">
+      <div className="relative w-full flex px-5 justify-between h-[98px] mb-10 bg-theme-bg-secondary rounded-[10px]">
         <svg
           className="absolute inset-0 w-full h-full pointer-events-none"
           xmlns="http://www.w3.org/2000/svg"
@@ -79,29 +81,29 @@ const ManualDeposit = () => {
             className="rounded-full"
           />
           <div className="flex justify-between flex-col py-5">
-            <p className="font-bold text-white">Backstreet boys</p>
-            <p className="font-medium text-[#8E9BAE]">G252...62teyw</p>
+            <p className="font-bold text-theme">Backstreet boys</p>
+            <p className="font-medium text-theme-secondary">G252...62teyw</p>
           </div>
         </div>
 
         <div className="flex justify-between flex-col h-full">
           <p className="pt-[8px]">
-            <span className="font-medium text-[14px] text-[#8E9BAE]">
+            <span className="font-medium text-[14px] text-theme-secondary">
               Available Balance:{' '}
             </span>{' '}
-            <span className="font-semibold text-[25px] text-white">
+            <span className="font-semibold text-[25px] text-theme">
               {balance.toFixed(2)}
             </span>{' '}
-            <span className="font-normal text-[20px] text-[#8E9BAE]">
+            <span className="font-normal text-[20px] text-theme-secondary">
               {symbol}
             </span>
           </p>
           <p className="text-right pb-[25px]">
             {' '}
-            <span className="font-medium text-[14px] text-[#8E9BAE]">
+            <span className="font-medium text-[14px] text-theme-secondary">
               Threshold:
             </span>{' '}
-            <span className="font-semibold text-[16px] text-white">
+            <span className="font-semibold text-[16px] text-theme">
               2/3
             </span>{' '}
           </p>
@@ -160,9 +162,9 @@ const ManualDeposit = () => {
           </div>
         </div>
 
-        <div className="h-[48px] bg-[#1C1D1F] px-2 mt-5 rounded-[10px] flex justify-between items-center">
-          <span className="text-white text-sm">{spherreAccountAddress}</span>
-          <div className="bg-[#29292A] rounded-[5px] gap-1 w-8 h-8 flex items-center justify-center cursor-pointer">
+        <div className="h-[48px] bg-theme-bg-secondary px-2 mt-5 rounded-[10px] flex justify-between items-center">
+          <span className="text-theme text-sm">{spherreAccountAddress}</span>
+          <div className="bg-theme-bg-tertiary rounded-[5px] gap-1 w-8 h-8 flex items-center justify-center cursor-pointer">
             <Image
               src="/copy-white.svg"
               alt="copy"
