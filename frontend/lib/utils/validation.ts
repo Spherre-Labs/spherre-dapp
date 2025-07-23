@@ -86,6 +86,106 @@ export function byteArrayToString(byteArray: string[]): string {
   }
 }
 
+/**
+ * Convert string to felt252 value (Cairo felt)
+ * This converts a string to its felt representation using ASCII encoding
+ */
+export function stringToFelt(str: string): string {
+  if (!str || typeof str !== 'string') {
+    throw new Error('Invalid string input')
+  }
+  
+  // Convert string to bytes
+  const bytes = new TextEncoder().encode(str)
+  
+  // Convert bytes to hex
+  let hex = '0x'
+  for (const byte of bytes) {
+    hex += byte.toString(16).padStart(2, '0')
+  }
+  
+  // Convert hex to felt (bigint)
+  const felt = BigInt(hex)
+  return felt.toString()
+}
+
+/**
+ * Convert felt252 back to string
+ */
+export function feltToString(felt: string | number | bigint): string {
+  try {
+    const feltBigInt = BigInt(felt)
+    const hex = feltBigInt.toString(16)
+    
+    // Convert hex to bytes
+    const bytes: number[] = []
+    for (let i = 0; i < hex.length; i += 2) {
+      const byte = parseInt(hex.substr(i, 2), 16)
+      if (byte > 0) bytes.push(byte) // Skip null bytes
+    }
+    
+    // Convert bytes to string
+    return new TextDecoder().decode(new Uint8Array(bytes))
+  } catch (error) {
+    console.warn('Failed to convert felt to string:', error)
+    return ''
+  }
+}
+
+// Permission felt constants - these are the felt252 representations of permission strings
+export const PERMISSION_FELTS = {
+  VOTER: stringToFelt('VOTER'),
+  PROPOSER: stringToFelt('PROPOSER'),
+  EXECUTOR: stringToFelt('EXECUTOR'),
+} as const
+
+// Permission enum values (matching Cairo enum)
+export const CAIRO_PERMISSION_ENUM = {
+  PROPOSER: 0,
+  VOTER: 1,
+  EXECUTOR: 2,
+} as const
+
+// Helper function to get permission felt by name
+export function getPermissionFelt(permission: 'VOTER' | 'PROPOSER' | 'EXECUTOR'): string {
+  return PERMISSION_FELTS[permission]
+}
+
+// Helper function to convert permission name to enum value
+export function getPermissionEnumValue(permission: 'VOTER' | 'PROPOSER' | 'EXECUTOR'): number {
+  return CAIRO_PERMISSION_ENUM[permission]
+}
+
+// Helper function to create permission mask from permission array
+export function createPermissionMask(permissions: ('VOTER' | 'PROPOSER' | 'EXECUTOR')[]): number {
+  let mask = 0
+  for (const permission of permissions) {
+    const enumValue = getPermissionEnumValue(permission)
+    mask |= 1 << enumValue
+  }
+  return mask
+}
+
+// Helper function to extract permissions from mask
+export function extractPermissionsFromMask(mask: number): ('VOTER' | 'PROPOSER' | 'EXECUTOR')[] {
+  const permissions: ('VOTER' | 'PROPOSER' | 'EXECUTOR')[] = []
+  
+  if (mask & (1 << CAIRO_PERMISSION_ENUM.VOTER)) {
+    permissions.push('VOTER')
+  }
+  if (mask & (1 << CAIRO_PERMISSION_ENUM.PROPOSER)) {
+    permissions.push('PROPOSER')
+  }
+  if (mask & (1 << CAIRO_PERMISSION_ENUM.EXECUTOR)) {
+    permissions.push('EXECUTOR')
+  }
+  
+  return permissions
+}
+
+// All permissions mask (all three roles)
+export const ALL_PERMISSIONS_MASK = createPermissionMask(['VOTER', 'PROPOSER', 'EXECUTOR'])
+
 export function validatePositiveInteger(
   value: number,
   fieldName: string,

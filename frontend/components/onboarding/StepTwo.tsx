@@ -14,7 +14,6 @@ import StepIndicator from './StepIndicators'
 
 const isValidStarknetAddress = (address: string) => {
   const addressRegex = /^0x[0-9a-fA-F]{64}$/
-
   // Check if the address matches the regex
   return addressRegex.test(address)
 }
@@ -127,214 +126,164 @@ const StepTwo = () => {
   }
 
   return (
-    <>
-      {/* Writeup */}
-      <StepIndicator currentStep={2} />
-      <div className="max-w-sm my-1 ">
-        <h1 className="text-center text-theme font-[700] text-2xl sm:text-3xl lg:text-[40px] leading-tight sm:leading-[47.42px] transition-colors duration-300">
-          Add Members to a Multisig Vault
-        </h1>
-
-        <p className="text-sm sm:text-base leading-[25px] text-center text-theme-secondary lg:px-8 mt-3 transition-colors duration-300">
-          Add your team members & customize security settings to fit your
-          team&apos;s needs.
-        </p>
-      </div>
-
-      {/* form */}
+    <OnboardingCard>
       <form
         onSubmit={handleSubmit(handleSubmitStepTwo)}
-        className="w-full space-y-4"
+        className="bg-theme-bg-primary p-6 sm:p-8 rounded-2xl space-y-6 max-w-2xl mx-auto"
       >
-        <OnboardingCard title="Add Spherre Members">
-          {/* Inputs */}
-          <div className="w-full flex flex-col gap-6 py-4 md:px-[26px] px-4">
-            {/* Display array-level error if any */}
-            {errors.members?.root && (
-              <p className="text-red-500 text-sm">
-                {errors.members.root.message}
-              </p>
-            )}
+        <StepIndicator currentStep={2} totalSteps={3} />
 
-            {/* Display uniqueness error if any */}
-            {errors.members?.message && (
-              <p className="text-red-500 text-sm bg-red-500/10 p-2 rounded">
-                {errors.members.message}
-              </p>
-            )}
+        <div className="text-center space-y-2">
+          <h2 className="text-2xl sm:text-3xl font-bold text-theme">
+            Add Members
+          </h2>
+          <p className="text-theme-secondary text-sm sm:text-base">
+            Add wallet addresses of people you want to include in your multisig account
+          </p>
+        </div>
 
-            {/* Members inputs */}
-            {fields.map((field: { id: string }, index: number) => (
-              <div key={field.id} className="w-full">
-                <label
-                  htmlFor={`members.${index}.address`}
-                  className="font-[400] text-xs sm:text-[14px] leading-[24px] text-theme mb-1 block transition-colors duration-300"
-                >
-                  Member {index + 1}
-                </label>
+        {/* Members Section */}
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <label className="text-theme font-medium">
+              Members ({members.length})
+            </label>
+          </div>
 
-                <div className="relative w-full">
+          <div className="space-y-3">
+            {fields.map((field, index) => (
+              <div key={field.id} className="flex gap-2 items-start">
+                <div className="flex-1">
                   <input
-                    type="text"
-                    id={`members.${index}.address`}
-                    className={`w-full text-theme rounded-[7px] placeholder:text-theme-muted px-3 sm:px-4 py-2 sm:py-3 bg-theme-bg-secondary outline-none pr-10 text-sm sm:text-base transition-colors duration-300 ${
-                      errors.members?.[index]?.address ||
-                      (duplicateAddresses.includes(
-                        watch(`members.${index}.address`).trim(),
-                      ) &&
-                        watch(`members.${index}.address`).trim() !== '')
-                        ? 'border border-red-500'
-                        : 'border border-theme-border focus:border-primary'
-                    }`}
-                    placeholder="Enter team member's address"
                     {...register(`members.${index}.address`)}
+                    placeholder={`Member ${index + 1} wallet address`}
+                    className={`w-full px-4 py-3 rounded-lg border transition-colors bg-theme-bg-secondary text-theme placeholder-theme-muted focus:outline-none focus:ring-2 focus:ring-primary ${
+                      duplicateAddresses.includes(watch(`members.${index}.address`)?.trim())
+                        ? 'border-red-500 focus:border-red-500'
+                        : errors.members?.[index]?.address
+                          ? 'border-red-500 focus:border-red-500'
+                          : 'border-theme-border focus:border-primary'
+                    }`}
                   />
-                  {index === 0 ? (
-                    <LuTrash
-                      onClick={() => setValue(`members.${index}.address`, '')}
-                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-theme-muted cursor-pointer hover:text-theme transition-colors duration-200"
-                    />
-                  ) : (
-                    <LuTrash
-                      onClick={() => remove(index)}
-                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-theme-muted cursor-pointer hover:text-theme transition-colors duration-200"
-                    />
-                  )}
-                </div>
-                {errors.members?.[index]?.address && (
-                  <p className="text-red-500 text-xs sm:text-sm mt-1">
-                    {errors.members[index]?.address?.message}
-                  </p>
-                )}
-                {duplicateAddresses.includes(
-                  watch(`members.${index}.address`).trim(),
-                ) &&
-                  watch(`members.${index}.address`).trim() !== '' && (
-                    <p className="text-red-500 text-xs sm:text-sm mt-1">
-                      This address is already added
+                  {errors.members?.[index]?.address && (
+                    <p className="text-red-500 text-xs mt-1">
+                      {errors.members[index]?.address?.message}
                     </p>
                   )}
+                </div>
+                {members.length > 1 && (
+                  <button
+                    type="button"
+                    onClick={() => remove(index)}
+                    className="p-3 text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                  >
+                    <LuTrash size={18} />
+                  </button>
+                )}
               </div>
             ))}
-
-            <button
-              type="button"
-              className="w-full h-[45px] sm:h-[50px] flex justify-center items-center bg-theme-bg-tertiary shadow-[0px_1.08px_2.16px_0px_#1018280A] text-theme font-[500] text-sm sm:text-base rounded-[7px] border border-theme-border hover:bg-theme-bg-secondary transition-all duration-200"
-              onClick={addNewMember}
-            >
-              <FaPlus className="mr-3" /> Add Member
-            </button>
           </div>
-        </OnboardingCard>
 
-        <OnboardingCard title="Configure Threshold">
-          <div className="w-full flex flex-col gap-6 py-4 md:px-[26px] px-4">
-            <p className="text-theme-secondary text-xs sm:text-sm mt-1 transition-colors duration-300">
-              Please select the amount of approvals needed to confirm a
-              transaction.
-            </p>
+          <button
+            type="button"
+            onClick={addNewMember}
+            className="w-full py-3 border-2 border-dashed border-theme-border text-theme-secondary hover:border-primary hover:text-primary transition-colors rounded-lg flex items-center justify-center gap-2"
+          >
+            <FaPlus size={16} />
+            Add Another Member
+          </button>
 
-            <div className="w-full">
-              <input
-                type="range"
-                min={1}
-                max={members.length}
-                step={1}
-                value={approvals}
-                onChange={handleApprovalsChange}
-                className="w-full appearance-none h-2 bg-theme-bg-tertiary rounded-lg outline-none cursor-pointer transition-all"
-                style={{
-                  background: `linear-gradient(to right, #6f2fcd 0%, #6f2fcd ${percentage}%, var(--theme-bg-tertiary) ${percentage}%, var(--theme-bg-tertiary) 100%)`,
-                }}
-              />
-              <div className="flex items-center justify-between px-1">
-                <span className="text-xs sm:text-sm text-theme transition-colors duration-300">
-                  1
-                </span>
-                <span className="text-xs sm:text-sm text-theme transition-colors duration-300">
-                  {members.length}
-                </span>
-              </div>
-              <p className="text-center text-theme mt-2 text-sm sm:text-base transition-colors duration-300">
-                {approvals} of {members.length} approvals required
-              </p>
+          {errors.members && (
+            <p className="text-red-500 text-sm">{errors.members.message}</p>
+          )}
+        </div>
+
+        {/* Member Permissions Info */}
+        <div className="bg-theme-bg-secondary rounded-lg p-4 border border-theme-border">
+          <div className="flex items-center gap-2 mb-3">
+            <div className="w-5 h-5 rounded-full bg-primary flex items-center justify-center">
+              <span className="text-white text-xs">i</span>
             </div>
-            <button
-              disabled={isSubmitting}
-              className={`w-full h-[45px] sm:h-[50px] flex justify-center items-center shadow-[0px_1.08px_2.16px_0px_#1018280A] font-[500] text-sm sm:text-base rounded-[7px] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed ${
-                actualTheme === 'dark'
-                  ? 'bg-white text-black hover:bg-gray-200'
-                  : 'bg-gray-900 text-white hover:bg-gray-800'
-              }`}
-            >
-              {isSubmitting ? 'Processing...' : 'Continue'}
-            </button>
-
-            <style jsx>{`
-              input[type='range']::-webkit-slider-thumb {
-                appearance: none;
-                margin-top: -6px;
-                height: 20px;
-                width: 20px;
-                border-radius: 50%;
-                background: white;
-                cursor: pointer;
-                border: 3px solid #6f2fcd;
-              }
-
-              input[type='range']::-moz-range-thumb {
-                height: 20px;
-                width: 20px;
-                border-radius: 50%;
-                background: white;
-                cursor: pointer;
-                border: 3px solid #6f2fcd;
-              }
-
-              input[type='range']::-ms-thumb {
-                margin-top: 0;
-                height: 20px;
-                width: 20px;
-                border-radius: 50%;
-                background: white;
-                cursor: pointer;
-                border: 3px solid #6f2fcd;
-              }
-
-              input[type='range']::-webkit-slider-runnable-track {
-                height: 8px;
-                border-radius: 4px;
-                border: none;
-              }
-
-              input[type='range']::-moz-range-track {
-                height: 8px;
-                border-radius: 4px;
-                border: none;
-              }
-
-              input[type='range']::-ms-track {
-                height: 8px;
-                border-radius: 4px;
-                border: none;
-                background: transparent;
-                color: transparent;
-              }
-
-              input[type='range']::-ms-fill-lower {
-                background: #6f2fcd;
-                border-radius: 4px;
-              }
-
-              input[type='range']::-ms-fill-upper {
-                background: var(--theme-bg-tertiary);
-                border-radius: 4px;
-              }
-            `}</style>
+            <h3 className="font-semibold text-theme">Member Permissions</h3>
           </div>
-        </OnboardingCard>
+          <div className="space-y-2 text-sm text-theme-secondary">
+            <p>All members will be assigned the following roles by default:</p>
+            <div className="flex flex-wrap gap-2 mt-2">
+              <span className="px-2 py-1 rounded-full text-xs font-medium border bg-[#FF7BE9]/10 text-[#FF7BE9] border-[#FF7BE9]">
+                Voter
+              </span>
+              <span className="px-2 py-1 rounded-full text-xs font-medium border bg-[#FF8A25]/10 text-[#FF8A25] border-[#FF8A25]">
+                Proposer
+              </span>
+              <span className="px-2 py-1 rounded-full text-xs font-medium border bg-[#19B360]/10 text-[#19B360] border-[#19B360]">
+                Executor
+              </span>
+            </div>
+            <p className="mt-2">
+              You can modify individual member roles after account creation through the Members page.
+              Role changes will require approval from other members.
+            </p>
+          </div>
+        </div>
+
+        {/* Approvals Section */}
+        <div className="space-y-4">
+          <label className="text-theme font-medium">
+            Required Approvals for Transactions
+          </label>
+
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <span className="text-theme-secondary text-sm">
+                {approvals} out of {members.length} members
+              </span>
+              <span className="text-theme-secondary text-sm">
+                {Math.round(percentage)}%
+              </span>
+            </div>
+
+            <input
+              type="range"
+              min="1"
+              max={members.length}
+              value={approvals}
+              onChange={handleApprovalsChange}
+              className="w-full h-2 bg-theme-bg-secondary rounded-lg appearance-none cursor-pointer slider"
+              style={{
+                background: `linear-gradient(to right, #A259FF 0%, #A259FF ${percentage}%, #374151 ${percentage}%, #374151 100%)`,
+              }}
+            />
+
+            <div className="flex justify-between text-xs text-theme-secondary">
+              <span>1</span>
+              <span>{members.length}</span>
+            </div>
+          </div>
+
+          {errors.approvals && (
+            <p className="text-red-500 text-sm">{errors.approvals.message}</p>
+          )}
+        </div>
+
+        {/* Navigation Buttons */}
+        <div className="flex gap-4 pt-4">
+          <button
+            type="button"
+            onClick={() => router.back()}
+            className="flex-1 py-3 border border-theme-border text-theme rounded-lg hover:bg-theme-bg-secondary transition-colors"
+          >
+            Back
+          </button>
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className="flex-1 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {isSubmitting ? 'Processing...' : 'Continue'}
+          </button>
+        </div>
       </form>
-    </>
+    </OnboardingCard>
   )
 }
 

@@ -1,12 +1,12 @@
 import React, { useState } from 'react'
 
+const roles = ['Voter', 'Proposer', 'Executor']
+
 interface AddMemberModalProps {
   isOpen: boolean
   onClose: () => void
-  onPropose: (wallet: string, role: string) => void
+  onPropose: (wallet: string, selectedRoles: string[]) => void
 }
-
-const roles = ['Voter', 'Proposer', 'Executer']
 
 const AddMemberModal: React.FC<AddMemberModalProps> = ({
   isOpen,
@@ -14,7 +14,23 @@ const AddMemberModal: React.FC<AddMemberModalProps> = ({
   onPropose,
 }) => {
   const [wallet, setWallet] = useState('')
-  const [role, setRole] = useState('')
+  const [selectedRoles, setSelectedRoles] = useState<string[]>(['Voter', 'Proposer', 'Executor']) // All roles by default
+
+  const toggleRole = (role: string) => {
+    setSelectedRoles(prev => 
+      prev.includes(role) 
+        ? prev.filter(r => r !== role)
+        : [...prev, role]
+    )
+  }
+
+  const handleSubmit = () => {
+    if (wallet.trim() && selectedRoles.length > 0) {
+      onPropose(wallet.trim(), selectedRoles)
+      setWallet('')
+      setSelectedRoles(['Voter', 'Proposer', 'Executor']) // Reset to all roles
+    }
+  }
 
   if (!isOpen) return null
 
@@ -29,14 +45,17 @@ const AddMemberModal: React.FC<AddMemberModalProps> = ({
         >
           ×
         </button>
+        
         {/* Title */}
         <h2 className="text-3xl font-bold text-theme text-center mb-2">
           Add Member
         </h2>
+        
         {/* Subtitle */}
         <p className="text-theme-secondary text-center mb-7">
           Simply input the correct information to add a member to your account.
         </p>
+        
         {/* Wallet Address */}
         <label className="block text-theme mb-3">Wallet Address</label>
         <input
@@ -45,68 +64,101 @@ const AddMemberModal: React.FC<AddMemberModalProps> = ({
           value={wallet}
           onChange={(e) => setWallet(e.target.value)}
         />
+        
         {/* Assign Roles */}
         <div className="mb-8">
-          <label className="block text-theme mb-2">Assign Roles</label>
-          <div className="flex gap-4">
-            {roles.map((r) => {
+          <label className="block text-theme mb-4">Assign Roles</label>
+          <div className="flex flex-wrap items-center gap-3">
+            {roles.map((role) => {
+              const isSelected = selectedRoles.includes(role)
               let borderColor = ''
-              let accentColor = ''
-              if (role === r) {
-                if (r === 'Voter') {
+              let bgColor = ''
+              let textColor = ''
+              
+              if (isSelected) {
+                if (role === 'Voter') {
                   borderColor = 'border-[#FF7BE9]'
-                  accentColor = 'accent-[#FF7BE9]'
-                } else if (r === 'Executer') {
+                  bgColor = 'bg-[#FF7BE9]/10'
+                  textColor = 'text-[#FF7BE9]'
+                } else if (role === 'Executor') {
                   borderColor = 'border-[#19B360]'
-                  accentColor = 'accent-[#19B360]'
-                } else if (r === 'Proposer') {
+                  bgColor = 'bg-[#19B360]/10'
+                  textColor = 'text-[#19B360]'
+                } else if (role === 'Proposer') {
                   borderColor = 'border-[#FF8A25]'
-                  accentColor = 'accent-[#FF8A25]'
+                  bgColor = 'bg-[#FF8A25]/10'
+                  textColor = 'text-[#FF8A25]'
                 }
               } else {
                 borderColor = 'border-theme-border'
-                accentColor = 'accent-primary'
+                bgColor = 'bg-transparent'
+                textColor = 'text-theme-secondary'
               }
+              
               return (
                 <label
-                  key={r}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-lg border transition-colors duration-200 cursor-pointer text-sm font-medium ${borderColor} ${
-                    role === r
-                      ? 'text-theme bg-theme-bg-tertiary'
-                      : 'text-theme-secondary bg-transparent hover:bg-theme-bg-tertiary/50'
+                  key={role}
+                  className={`flex items-center gap-3 px-4 py-3 rounded-lg border transition-all duration-200 cursor-pointer ${borderColor} ${bgColor} ${
+                    isSelected
+                      ? textColor
+                      : 'hover:bg-theme-bg-tertiary/50'
                   }`}
+                  onClick={() => toggleRole(role)}
                 >
                   <input
-                    type="radio"
-                    name="role"
-                    value={r}
-                    checked={role === r}
-                    onChange={() => setRole(r)}
-                    className={`${accentColor}`}
+                    type="checkbox"
+                    checked={isSelected}
+                    onChange={() => toggleRole(role)}
+                    className="sr-only"
                   />
-                  {r}
+                  
+                  {/* Custom checkbox */}
+                  <div className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-colors duration-200 ${
+                    isSelected 
+                      ? role === 'Voter' 
+                        ? 'bg-[#FF7BE9] border-[#FF7BE9]'
+                        : role === 'Proposer'
+                        ? 'bg-[#FF8A25] border-[#FF8A25]'
+                        : 'bg-[#19B360] border-[#19B360]'
+                      : 'border-theme-border bg-transparent'
+                  }`}>
+                    {isSelected && (
+                      <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                      </svg>
+                    )}
+                  </div>
+                  
+                  <span className="font-medium">{role}</span>
                 </label>
               )
             })}
           </div>
+          
+          {/* Helper text */}
+          <p className="text-sm text-theme-secondary mt-3">
+            By default, all members are assigned all three roles. You can modify individual roles by unchecking them above.
+          </p>
         </div>
+        
         {/* Action Buttons */}
-        <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 mt-8">
+        <div className="flex gap-4">
           <button
-            className="w-full sm:flex-1 bg-theme-bg-tertiary border border-theme-border text-theme text-sm sm:text-base font-medium py-2 sm:py-3 rounded-[8px] sm:rounded-lg hover:bg-theme-bg-secondary transition-colors duration-200"
+            className="flex-1 bg-theme-bg-tertiary text-theme py-3 rounded-lg hover:bg-theme-bg-tertiary/80 transition-colors font-medium border border-theme-border"
             onClick={onClose}
           >
             Cancel
           </button>
           <button
-            className="w-full sm:flex-1 bg-primary text-white text-sm sm:text-base font-medium py-2 sm:py-3 rounded-[8px] sm:rounded-lg hover:opacity-90 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-            disabled={!wallet || !role}
-            onClick={() => {
-              onPropose(wallet, role)
-              onClose()
-            }}
+            className={`flex-1 py-3 rounded-lg transition-colors font-medium ${
+              wallet.trim() && selectedRoles.length > 0
+                ? 'bg-primary text-white hover:bg-primary/90'
+                : 'bg-theme-bg-tertiary text-theme-secondary cursor-not-allowed'
+            }`}
+            onClick={handleSubmit}
+            disabled={!wallet.trim() || selectedRoles.length === 0}
           >
-            Propose Transaction
+            Propose Addition
           </button>
         </div>
       </div>
