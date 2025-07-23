@@ -1,29 +1,73 @@
 'use client'
 import { useState } from 'react'
 import Image from 'next/image'
+import { sliceWalletAddress } from '@/components/utils'
 import Usdt from '@/public/Images/usdt.png'
 import Backstage from '@/public/Images/backstageboys.png'
 import Arrow from '@/public/Images/Arrow.png'
+import { SPHERRE_ACCOUNT_ABI, useScaffoldReadContract } from '@/lib'
 
-export default function WithdrawalReviewPage() {
+interface Token {
+  symbol: string
+  usdValue: number
+  icon: string
+}
+
+interface WithdrawalReviewPageProps {
+  recipientAddress: string
+  amount: string
+  selectedToken: string
+  availableTokens: Token[]
+  spherreAccountAddress: `0x${string}` | null
+}
+
+export default function WithdrawalReviewPage({
+  recipientAddress,
+  amount,
+  selectedToken,
+  availableTokens,
+  spherreAccountAddress,
+}: WithdrawalReviewPageProps) {
   const [note, setNote] = useState<string>('')
 
-  // Dummy data for the transaction
+  // Get selected token data
+  const selectedTokenData = availableTokens.find(
+    (t) => t.symbol === selectedToken,
+  )
+
+  // Calculate USD value
+  const usdValue = selectedTokenData?.usdValue || 0
+  const amountInUSD = parseFloat(amount) * usdValue
+
+  const { data } = useScaffoldReadContract({
+    contractConfig: {
+      address: spherreAccountAddress || '',
+      abi: SPHERRE_ACCOUNT_ABI,
+    },
+    functionName: 'get_name',
+    args: {},
+    watch: true,
+    enabled: !!spherreAccountAddress,
+  })
+
+  // Transaction data using real values
   const transactionData = {
-    amount: '245.6783447',
-    recipientAddress: 'TY4g...Him',
-    recipientFullAddress: 'USDT0x05hgfst...62teyw',
+    amount: amount || '0',
+    tokenSymbol: selectedToken,
+    recipientAddress: sliceWalletAddress(recipientAddress as `0x${string}`),
+    recipientFullAddress: recipientAddress,
     fromAccount: {
-      name: 'Backstage Boys',
-      address: 'G252JGH5hgfst...62teyw',
+      name: data || 'Spherre Account', // Use actual account name from contract
+      address: spherreAccountAddress || '',
       avatar: Backstage,
     },
     toAccount: {
-      name: 'USDT Chain',
-      avatar: Usdt,
+      name: `${selectedToken} Chain`,
+      avatar: selectedTokenData?.icon || Usdt,
     },
     fee: '$0.0',
-    total: '$245.6783447',
+    total: `$${amountInUSD.toFixed(2)}`,
+    usdAmount: amountInUSD,
   }
 
   return (
@@ -32,6 +76,9 @@ export default function WithdrawalReviewPage() {
         <div className="flex items-center justify-center gap-1 mb-6">
           <span className="text-gray-400 text-lg font-bold">Send</span>
           <span className="text-xl font-bold">{transactionData.amount}</span>
+          <span className="text-xl font-bold text-gray-400">
+            {transactionData.tokenSymbol}
+          </span>
           <span className="text-gray-400 text-lg font-bold">to</span>
           <span className="text-xl font-bold">
             {transactionData.recipientAddress}
@@ -51,7 +98,9 @@ export default function WithdrawalReviewPage() {
             <p className="text-sm text-gray-400 mt-3">From</p>
             <p className="font-semibold">{transactionData.fromAccount.name}</p>
             <p className="text-sm text-gray-500 bg-gray-100 bg-opacity-15 p-2 rounded-md mt-3 ">
-              {transactionData.fromAccount.address}
+              {sliceWalletAddress(
+                transactionData.fromAccount.address as `0x${string}`,
+              )}
             </p>
           </div>
 
@@ -78,7 +127,7 @@ export default function WithdrawalReviewPage() {
             <p className="font-semibold">{transactionData.toAccount.name}</p>
             <div className="flex items-center gap-1 text-xs text-gray-500 bg-gray-100 bg-opacity-15 p-2 rounded-md mt-3">
               <span className="text-white text-sm">
-                {transactionData.recipientFullAddress}
+                {transactionData.recipientAddress}
               </span>
               <svg
                 width="12"
@@ -106,17 +155,26 @@ export default function WithdrawalReviewPage() {
 
           <div className="flex justify-between items-center mb-2">
             <span className="text-gray-400">Amount</span>
-            <span>{transactionData.amount}</span>
+            <span>
+              {transactionData.amount} {transactionData.tokenSymbol}
+            </span>
           </div>
 
           <div className="flex justify-between items-center mb-2 ">
+            <span className="text-gray-400">USD Value</span>
+            <span className="text-lg font-bold">
+              ${transactionData.usdAmount.toFixed(2)}
+            </span>
+          </div>
+
+          <div className="flex justify-between items-center mb-2">
             <span className="text-gray-400">Transaction Fee</span>
             <span className="text-lg font-bold">{transactionData.fee}</span>
           </div>
 
-          <div className="flex justify-between items-center">
-            <span className="text-white">Transaction Fee</span>
-            <span className=" text-lg font-bold">{transactionData.total}</span>
+          <div className="flex justify-between items-center border-t border-gray-700 pt-2">
+            <span className="text-white font-semibold">Total</span>
+            <span className="text-lg font-bold">{transactionData.total}</span>
           </div>
         </div>
 

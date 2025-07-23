@@ -10,6 +10,7 @@ import { useTheme } from '@/app/context/theme-context-provider'
 import { useTokenBalances } from '@/hooks/useTokenBalances'
 import { useAccountInfo } from '../../hooks/useSpherreHooks'
 import { SpherreAccountContext } from '../context/account-context'
+import { useRouter } from 'next/navigation'
 
 export default function DashboardPage() {
   useTheme()
@@ -18,6 +19,8 @@ export default function DashboardPage() {
   const { accountAddress } = useContext(SpherreAccountContext)
   const { tokensDisplay, loadingTokenData } = useTokenBalances()
   const info = useAccountInfo(accountAddress || '0x0')
+
+  const router = useRouter()
 
   useEffect(() => {
     setMounted(true)
@@ -44,8 +47,8 @@ export default function DashboardPage() {
     setOpen(false)
   }
 
-  const handleSelectOption = (option: string) => {
-    console.log('Selected option:', option)
+  const handleSelectOption = () => {
+    router.push(`/${accountAddress}/withdraw`)
     // Handle the selected option
   }
 

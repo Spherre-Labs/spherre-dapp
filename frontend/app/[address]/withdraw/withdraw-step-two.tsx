@@ -1,14 +1,14 @@
 'use client'
 import { Input } from '@/components/shared/Input'
 import { Select } from '@/components/shared/Select'
-import { Token } from './page'
+import { TokenInfo } from '@/lib'
 
 interface WithdrawAmountProps {
   amount: string
   onChangeAmount: (e: React.ChangeEvent<HTMLInputElement>) => void
   selectedToken: string
   onChangeSelectedToken: (e: React.ChangeEvent<HTMLSelectElement>) => void
-  availableTokens: Token[]
+  availableTokens: (TokenInfo & { balance: number; usdValue?: number })[]
 }
 
 export default function WithdrawStepTwo({

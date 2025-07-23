@@ -132,6 +132,7 @@ export interface TokenInfo {
   name: string
   symbol: string
   decimals: number
+  icon?: string
 }
 
 export interface TokenBalance {
