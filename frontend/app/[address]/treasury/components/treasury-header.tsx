@@ -28,9 +28,7 @@ const TreasuryHeader = ({
   const name = info.details?.name || 'Unnamed Account'
   const displayAddress = sliceWalletAddress(accountAddress)
 
-
-  
-  const avatarSrc = '/Images/avatar.png' 
+  const avatarSrc = '/Images/avatar.png'
 
   // Track which action button is active
   const [activeAction, setActiveAction] = useState<string | null>(null)
