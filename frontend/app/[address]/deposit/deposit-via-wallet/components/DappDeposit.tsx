@@ -9,6 +9,7 @@ import { useScaffoldWriteContract } from '@/hooks/useScaffoldWriteContract'
 import { HiMiniArrowPath } from 'react-icons/hi2'
 import { useSpherreAccount } from '@/app/context/account-context'
 import { useGlobalModal } from '../../../../components/modals/useGlobalModal'
+import { useTheme } from '@/app/context/theme-context-provider'
 
 interface TokenInfo {
   symbol: string
@@ -20,6 +21,7 @@ interface TokenInfo {
 }
 
 const DappDeposit = () => {
+  useTheme() // Initialize theme context
   const { address: userAddress } = useAccount()
   const { accountAddress: spherreAccountAddress } = useSpherreAccount()
   const { showProcessing, showSuccess, showError, hideModal } = useGlobalModal()
@@ -236,10 +238,10 @@ const DappDeposit = () => {
 
   return (
     <div className="flex-col items-start flex justify-center w-full">
-      <p className="pb-5 text-[14px] text-[#8E9BAE]">Dapp Deposit</p>
+      <p className="pb-5 text-[14px] text-theme-secondary">Dapp Deposit</p>
 
       {/* Account Info */}
-      <div className="relative w-full flex px-5 justify-between h-[98px] mb-10 bg-[#0a0a0a] rounded-[10px]">
+      <div className="relative w-full flex px-5 justify-between h-[98px] mb-10 bg-theme-bg-secondary rounded-[10px]">
         <svg
           className="absolute inset-0 w-full h-full pointer-events-none"
           xmlns="http://www.w3.org/2000/svg"
@@ -267,29 +269,29 @@ const DappDeposit = () => {
             className="rounded-full"
           />
           <div className="flex justify-between flex-col py-5">
-            <p className="font-bold text-white">Spherre Treasury</p>
-            <p className="font-medium text-[#8E9BAE]">0xcaaf...788</p>
+            <p className="font-bold text-theme">Spherre Treasury</p>
+            <p className="font-medium text-theme-secondary">0xcaaf...788</p>
           </div>
         </div>
 
         <div className="flex justify-between flex-col h-full">
           <p className="pt-[8px]">
-            <span className="font-medium text-[14px] text-[#8E9BAE]">
+            <span className="font-medium text-[14px] text-theme-secondary">
               Your Balance:{' '}
             </span>{' '}
-            <span className="font-semibold text-[25px] text-white">
+            <span className="font-semibold text-[25px] text-theme">
               {selectedTokenInfo?.balance.toFixed(4) || '0.0000'}
             </span>{' '}
-            <span className="font-normal text-[20px] text-[#8E9BAE]">
+            <span className="font-normal text-[20px] text-theme-secondary">
               {selectedToken}
             </span>
           </p>
           <p className="text-right pb-[25px]">
             {' '}
-            <span className="font-medium text-[14px] text-[#8E9BAE]">
+            <span className="font-medium text-[14px] text-theme-secondary">
               Deposit to:
             </span>{' '}
-            <span className="font-semibold text-[16px] text-white">
+            <span className="font-semibold text-[16px] text-theme">
               Treasury
             </span>{' '}
           </p>
@@ -298,13 +300,13 @@ const DappDeposit = () => {
 
       {/* Token Selection */}
       <div className="w-full mb-6">
-        <label className="block text-[14px] text-[#8E9BAE] mb-2">
+        <label className="block text-[14px] text-theme-secondary mb-2">
           Select Token
         </label>
         <select
           value={selectedToken}
           onChange={handleTokenChange}
-          className="w-full h-[50px] bg-[#1C1D1F] border border-[#272729] rounded-[7px] px-4 text-white focus:outline-none focus:border-[#6F2FCE] transition-colors duration-200"
+          className="w-full h-[50px] bg-theme-bg-secondary border border-theme-border rounded-[7px] px-4 text-theme focus:outline-none focus:border-[#6F2FCE] transition-colors duration-200"
           disabled={isLoading}
         >
           {availableTokens.map((token) => (
@@ -317,7 +319,7 @@ const DappDeposit = () => {
 
       {/* Amount Input */}
       <div className="w-full mb-6">
-        <label className="block text-[14px] text-[#8E9BAE] mb-2">
+        <label className="block text-[14px] text-theme-secondary mb-2">
           Amount to Deposit
         </label>
         <div className="relative">
@@ -326,15 +328,15 @@ const DappDeposit = () => {
             value={amount}
             onChange={handleAmountChange}
             placeholder="0.00"
-            className="w-full h-[50px] bg-[#1C1D1F] border border-[#272729] rounded-[7px] px-4 text-white text-[20px] font-semibold focus:outline-none focus:border-[#6F2FCE] transition-colors duration-200"
+            className="w-full h-[50px] bg-theme-bg-secondary border border-theme-border rounded-[7px] px-4 text-theme text-[20px] font-semibold focus:outline-none focus:border-[#6F2FCE] transition-colors duration-200"
             disabled={isLoading}
           />
-          <div className="absolute right-4 top-1/2 transform -translate-y-1/2 text-[#8E9BAE] text-sm">
+          <div className="absolute right-4 top-1/2 transform -translate-y-1/2 text-theme-secondary text-sm">
             {selectedToken}
           </div>
         </div>
         {selectedTokenInfo && (
-          <p className="text-[12px] text-[#8E9BAE] mt-1">
+          <p className="text-[12px] text-theme-secondary mt-1">
             Available: {selectedTokenInfo.balance.toFixed(6)} {selectedToken}
           </p>
         )}
