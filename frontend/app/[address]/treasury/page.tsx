@@ -1,23 +1,108 @@
-"use client"
+'use client'
 import React, { useState } from 'react'
 import TreasuryHeader from './components/treasury-header'
 import TreasuryStatscard from './components/treasury-statscard'
 import TreasuryPortfoliochat from './components/treasury-portfoliochat'
-import TreasuryTable from './components/treasury-table' 
+import { ErrorBoundary } from 'next/dist/client/components/error-boundary'
+import Tabs from '../Tabs'
+import WithdrawalModal from '@/app/components/modal'
+import DepositModal from '@/app/components/deposit-modal'
+import { useTokenBalances } from '@/hooks/useTokenBalances'
+import { useNftTransactionList } from '@/hooks/useSpherreHooks'
+import { useSpherreAccount } from '@/app/context/account-context'
 
-const TreasuryPage = () => {
-  const [isBalanceVisible, setIsBalanceVisible] = useState(true);
-  const [selectedPeriod, setSelectedPeriod] = useState('1Y');
-  
-  const toggleBalance = () => setIsBalanceVisible(!isBalanceVisible);
-  const tokenHoldings = [
-  { symbol: 'STRK', price: '$0.46', balance: '5', value: '$460.43', percentage: 100, logo: '/starknet.png' },
-  { symbol: 'STRK', price: '$0.46', balance: '2', value: '$700.20', percentage: 25, logo: '/starknet.png' },
-  { symbol: 'ETH', price: '$1,800.00', balance: '0.23', value: '$414.00', percentage: 15, logo: '/Eth.png' },
-];
-
-  const portfolioData = {
-    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+const chartDataByPeriod = {
+  '1D': {
+    labels: ['00:00', '04:00', '08:00', '12:00', '16:00', '20:00', '24:00'],
+    datasets: [
+      {
+        label: 'Tokens',
+        data: [2, 3, 4, 3, 5, 4, 6],
+        backgroundColor: '#8b5cf6',
+        borderRadius: 4,
+        barThickness: 16,
+      },
+      {
+        label: 'NFTs',
+        data: [1, 2, 2, 3, 2, 2, 3],
+        backgroundColor: '#ec4899',
+        borderRadius: 4,
+        barThickness: 16,
+      },
+    ],
+  },
+  '7D': {
+    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+    datasets: [
+      {
+        label: 'Tokens',
+        data: [5, 6, 7, 6, 8, 7, 9],
+        backgroundColor: '#8b5cf6',
+        borderRadius: 4,
+        barThickness: 16,
+      },
+      {
+        label: 'NFTs',
+        data: [2, 3, 3, 4, 3, 3, 4],
+        backgroundColor: '#ec4899',
+        borderRadius: 4,
+        barThickness: 16,
+      },
+    ],
+  },
+  '1M': {
+    labels: ['W1', 'W2', 'W3', 'W4'],
+    datasets: [
+      {
+        label: 'Tokens',
+        data: [10, 12, 11, 13],
+        backgroundColor: '#8b5cf6',
+        borderRadius: 4,
+        barThickness: 16,
+      },
+      {
+        label: 'NFTs',
+        data: [4, 5, 4, 6],
+        backgroundColor: '#ec4899',
+        borderRadius: 4,
+        barThickness: 16,
+      },
+    ],
+  },
+  '3M': {
+    labels: ['Jan', 'Feb', 'Mar'],
+    datasets: [
+      {
+        label: 'Tokens',
+        data: [20, 18, 22],
+        backgroundColor: '#8b5cf6',
+        borderRadius: 4,
+        barThickness: 16,
+      },
+      {
+        label: 'NFTs',
+        data: [8, 9, 10],
+        backgroundColor: '#ec4899',
+        borderRadius: 4,
+        barThickness: 16,
+      },
+    ],
+  },
+  '1Y': {
+    labels: [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
+    ],
     datasets: [
       {
         label: 'Tokens',
@@ -32,30 +117,121 @@ const TreasuryPage = () => {
         backgroundColor: '#ec4899',
         borderRadius: 4,
         barThickness: 16,
-      }
+      },
     ],
-  };
+  },
+}
+
+const TreasuryPage = () => {
+  const [isBalanceVisible, setIsBalanceVisible] = useState(true)
+  const [selectedPeriod, setSelectedPeriod] = useState<
+    '1D' | '7D' | '1M' | '3M' | '1Y'
+  >('1Y')
+  const [withdrawOpen, setWithdrawOpen] = useState(false)
+  const [depositOpen, setDepositOpen] = useState(false)
+
+  // Token data
+  const { tokensDisplay, loadingTokenData } = useTokenBalances()
+  // Account address for NFT hook
+  const { accountAddress } = useSpherreAccount()
+  // NFT data
+  const { data: nftList } = useNftTransactionList(accountAddress || '0x0')
+
+  const handleTrade = () => {
+    alert('Trade clicked!')
+  }
+
+  const handleWithdraw = () => setWithdrawOpen(true)
+  const handleDeposit = () => setDepositOpen(true)
+  const handleWithdrawClose = () => setWithdrawOpen(false)
+  const handleDepositClose = () => setDepositOpen(false)
+  const handleWithdrawSelect = () => {
+    setWithdrawOpen(false)
+  }
+
+  const toggleBalance = () => setIsBalanceVisible(!isBalanceVisible)
+
+  // Top tokens: sort by value (as number), take top 5
+  const topTokens = tokensDisplay
+    .slice()
+    .sort((a, b) => {
+      const aValue = parseFloat((a.value || '0').replace('$', ''))
+      const bValue = parseFloat((b.value || '0').replace('$', ''))
+      return bValue - aValue
+    })
+    .slice(0, 5)
+    .map((t) => ({
+      symbol: t.coin,
+      name: t.coin,
+      amount: t.balance,
+      unit: t.coin,
+      change: '+0.00%',
+      logo:
+        t.coin === 'STRK'
+          ? '/starknet.png'
+          : t.coin === 'ETH'
+            ? '/Eth.png'
+            : '/Eth.png',
+    }))
+
+  // Chart data for the selected period
+  const chartData = chartDataByPeriod[selectedPeriod]
+
+  const handlePeriodChange = (period: string) => {
+    setSelectedPeriod(period as '1D' | '7D' | '1M' | '3M' | '1Y')
+  }
+
   return (
-    <div className="p-4 bg-theme-bg-secondary rounded-lg">
-       <TreasuryHeader
-         balance="250.35"
-         isBalanceVisible={isBalanceVisible}
-         toggleBalance={toggleBalance}
-       />
-       <TreasuryStatscard
-          totalTokens={5}
-          totalStakes={0}
-          totalNFTs={12}
-       />
+    <div className="py-4 sm:py-6 lg:py-8 px-1 sm:px-4 lg:px-6 rounded-[10px] flex flex-col gap-y-4 sm:gap-y-6 lg:gap-y-8 border-theme-border border-2 mx-1 sm:mx-4 overflow-x-hidden w-full min-h-[90vh] bg-theme-bg-secondary transition-colors duration-300">
+      <ErrorBoundary
+        errorComponent={({ error }) => (
+          <div className="text-red-500 py-4 sm:py-6 lg:py-8 px-3 sm:px-6 lg:px-[28px]">
+            <h2 className="text-sm sm:text-base lg:text-lg font-semibold">
+              Something went wrong.
+            </h2>
+            <pre className="text-xs sm:text-sm lg:text-base overflow-auto mt-2">
+              {error?.message}
+            </pre>
+          </div>
+        )}
+      >
+        <div className="space-y-4 sm:space-y-6 lg:space-y-8 w-full">
+          <TreasuryHeader
+            balance="250.35"
+            isBalanceVisible={isBalanceVisible}
+            toggleBalance={toggleBalance}
+            onWithdraw={handleWithdraw}
+            onDeposit={handleDeposit}
+            onTrade={handleTrade}
+          />
 
-       <TreasuryPortfoliochat
-        data={portfolioData}
-        onPeriodChange={setSelectedPeriod}
-       />
+          <TreasuryStatscard
+            totalTokens={
+              tokensDisplay.filter((t) => parseFloat(t.balance) > 0).length
+            }
+            totalStakes={0}
+            totalNFTs={nftList?.length ?? 0}
+          />
 
-       <TreasuryTable
-        tokens={tokenHoldings}
-       />
+          <TreasuryPortfoliochat
+            data={chartData}
+            onPeriodChange={handlePeriodChange}
+            topTokens={topTokens}
+          />
+
+          <div className="w-full overflow-x-auto">
+            <Tabs loadingTokenData={loadingTokenData} tokens={tokensDisplay} />
+          </div>
+        </div>
+
+        {/* Modals */}
+        <WithdrawalModal
+          open={withdrawOpen}
+          handleClose={handleWithdrawClose}
+          onSelectOption={handleWithdrawSelect}
+        />
+        <DepositModal open={depositOpen} onClose={handleDepositClose} />
+      </ErrorBoundary>
     </div>
   )
 }
