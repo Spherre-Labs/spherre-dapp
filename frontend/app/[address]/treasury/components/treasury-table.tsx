@@ -13,9 +13,9 @@ interface Token {
 
 const TreasuryTable = ({ tokens }: { tokens: Token[] }) => {
   return (
-    <div className=" rounded-lg">
-      <div className="flex border-b border-gray-800">
-        <button className="px-6 py-3 text-white border-b-2 border-white font-medium">
+    <div className="mt-10">
+      <div className="flex items-start border-b border-gray-800">
+        <button className="px-6 py-3  text-white border-b-2 border-white font-medium">
           Tokens
         </button>
         <button className="px-6 py-3 text-gray-400 hover:text-white transition-colors">
