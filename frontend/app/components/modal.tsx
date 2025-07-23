@@ -59,7 +59,7 @@ export default function WithdrawalModal({
   onSelectOption,
 }: WithdrawalModalProps) {
   const { theme } = useTheme()
-  
+
   const style = {
     position: 'absolute',
     top: '50%',
@@ -79,7 +79,7 @@ export default function WithdrawalModal({
     maxHeight: '90vh',
     overflow: 'auto',
   }
-  
+
   const optionStyle = {
     width: '100%',
     bgcolor: theme === 'dark' ? '#272727' : '#e9ecef',
@@ -90,16 +90,16 @@ export default function WithdrawalModal({
     alignItems: 'center',
     '&:hover': {
       bgcolor: theme === 'dark' ? '#333333' : '#d4d8db',
-         },
-   }
-   
-   const iconStyle = {
-     color: theme === 'dark' ? 'white' : '#1a1a1a',
-     fontSize: 20,
-     mr: 2,
-   }
-   
-   const handleOptionClick = (option: string) => {
+    },
+  }
+
+  const iconStyle = {
+    color: theme === 'dark' ? 'white' : '#1a1a1a',
+    fontSize: 20,
+    mr: 2,
+  }
+
+  const handleOptionClick = (option: string) => {
     onSelectOption(option)
     handleClose()
   }
@@ -129,7 +129,10 @@ export default function WithdrawalModal({
         >
           <CloseIcon
             onClick={handleClose}
-            sx={{ cursor: 'pointer', color: theme === 'dark' ? 'gray' : '#6c757d' }}
+            sx={{
+              cursor: 'pointer',
+              color: theme === 'dark' ? 'gray' : '#6c757d',
+            }}
           />
         </Box>
 

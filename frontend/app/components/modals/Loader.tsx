@@ -15,7 +15,7 @@ const ProcessingModal: React.FC<ProcessingModalProps> = ({
   subtitle = 'Please exercise a little patience as we process your details',
 }) => {
   useTheme() // Initialize theme context
-  
+
   if (!isOpen) return null
 
   return (
@@ -42,8 +42,12 @@ const ProcessingModal: React.FC<ProcessingModalProps> = ({
             />
           </svg>
         </button>
-        <h2 className="text-3xl font-bold text-theme mb-2 mt-2 transition-colors duration-300">{title}</h2>
-        <p className="text-theme-secondary text-lg mb-8 transition-colors duration-300">{subtitle}</p>
+        <h2 className="text-3xl font-bold text-theme mb-2 mt-2 transition-colors duration-300">
+          {title}
+        </h2>
+        <p className="text-theme-secondary text-lg mb-8 transition-colors duration-300">
+          {subtitle}
+        </p>
         {/* Spinner */}
         <div className="flex justify-center items-center mt-2">
           <div className="animate-spin rounded-full h-20 w-20 border-8 border-t-primary border-b-theme-bg-secondary border-l-theme-bg-secondary border-r-theme-bg-secondary mx-auto transition-colors duration-300" />

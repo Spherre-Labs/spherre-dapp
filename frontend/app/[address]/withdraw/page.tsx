@@ -312,7 +312,7 @@ export default function WithdrawPage() {
           onClick={() => handlePrev()}
           disabled={!address || isSubmitting}
         >
-                      <ArrowLeft className="h-4 w-4 text-theme" />
+          <ArrowLeft className="h-4 w-4 text-theme" />
         </Button>
         <span className=" font-semibold text-theme ml-4">Go Back</span>
       </div>

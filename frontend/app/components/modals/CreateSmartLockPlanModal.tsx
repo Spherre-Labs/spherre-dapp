@@ -190,12 +190,12 @@ export default function CreateSmartLockPlanModal({
   }
 
   return (
-          <div
-        className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm m-0"
-        onClick={handleBackdropClick}
-      >
-        <div
-          className="relative bg-theme-bg-secondary border border-theme-border rounded-2xl shadow-xl w-full max-w-md md:max-w-xl transition-colors duration-300"
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm m-0"
+      onClick={handleBackdropClick}
+    >
+      <div
+        className="relative bg-theme-bg-secondary border border-theme-border rounded-2xl shadow-xl w-full max-w-md md:max-w-xl transition-colors duration-300"
         onClick={handleModalContentClick}
       >
         {/* Header */}

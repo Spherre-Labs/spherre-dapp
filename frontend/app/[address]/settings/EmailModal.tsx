@@ -78,7 +78,9 @@ const EmailModal: React.FC<EmailModalProps> = ({
         </p>
 
         <div className="mb-6">
-          <label className="block text-theme mb-2 transition-colors duration-300">Email Address</label>
+          <label className="block text-theme mb-2 transition-colors duration-300">
+            Email Address
+          </label>
           <input
             type="email"
             className={`w-full px-4 py-3 rounded-lg bg-theme-bg-tertiary text-theme border focus:outline-none focus:ring-2 focus:ring-primary transition-colors duration-300 ${

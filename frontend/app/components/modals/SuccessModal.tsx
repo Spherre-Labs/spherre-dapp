@@ -22,7 +22,7 @@ const SuccessModal: React.FC<SuccessModalProps> = ({
   viewLabel = 'View Transaction',
 }) => {
   useTheme() // Initialize theme context
-  
+
   if (!isOpen) return null
 
   return (
@@ -57,8 +57,12 @@ const SuccessModal: React.FC<SuccessModalProps> = ({
             height={80}
           />
         </div>
-        <h2 className="text-3xl font-bold text-theme mb-2 transition-colors duration-300">{title}</h2>
-        <p className="text-theme-secondary text-lg mb-8 transition-colors duration-300">{message}</p>
+        <h2 className="text-3xl font-bold text-theme mb-2 transition-colors duration-300">
+          {title}
+        </h2>
+        <p className="text-theme-secondary text-lg mb-8 transition-colors duration-300">
+          {message}
+        </p>
         <div className="flex w-full gap-4 mt-2">
           <button
             onClick={onClose}

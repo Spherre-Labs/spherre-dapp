@@ -52,8 +52,12 @@ const SignMessageModal: React.FC<SignMessageModalProps> = ({
           </svg>
         </button>
         <div className="text-center">
-          <h2 className="text-2xl font-bold text-theme mb-4 transition-colors duration-300">{title}</h2>
-          <p className="text-theme-secondary mb-6 transition-colors duration-300">{description}</p>
+          <h2 className="text-2xl font-bold text-theme mb-4 transition-colors duration-300">
+            {title}
+          </h2>
+          <p className="text-theme-secondary mb-6 transition-colors duration-300">
+            {description}
+          </p>
         </div>
         <div className="mb-6">
           <label

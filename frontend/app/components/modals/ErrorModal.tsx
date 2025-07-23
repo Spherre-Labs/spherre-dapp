@@ -15,7 +15,7 @@ const ErrorModal: React.FC<ErrorModalProps> = ({
   title = 'Error Occurred!',
 }) => {
   useTheme() // Initialize theme context
-  
+
   if (!isOpen) return null
 
   return (
@@ -51,7 +51,13 @@ const ErrorModal: React.FC<ErrorModalProps> = ({
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
           >
-            <circle cx="40" cy="40" r="40" fill="currentColor" className="text-red-900/20" />
+            <circle
+              cx="40"
+              cy="40"
+              r="40"
+              fill="currentColor"
+              className="text-red-900/20"
+            />
             <path
               d="M28 28L52 52"
               stroke="#FF4D4F"
@@ -66,8 +72,12 @@ const ErrorModal: React.FC<ErrorModalProps> = ({
             />
           </svg>
         </div>
-        <h2 className="text-2xl font-bold text-theme mb-4 mt-2 transition-colors duration-300">{title}</h2>
-        <p className="text-theme-secondary mb-6 transition-colors duration-300">{errorText}</p>
+        <h2 className="text-2xl font-bold text-theme mb-4 mt-2 transition-colors duration-300">
+          {title}
+        </h2>
+        <p className="text-theme-secondary mb-6 transition-colors duration-300">
+          {errorText}
+        </p>
         <button
           onClick={onClose}
           className="w-full bg-theme-bg-tertiary text-theme py-3 rounded-lg hover:bg-theme-bg-secondary transition-colors font-medium"

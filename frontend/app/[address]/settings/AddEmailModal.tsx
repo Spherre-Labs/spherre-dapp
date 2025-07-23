@@ -32,7 +32,9 @@ const AddEmailModal: React.FC<AddEmailModalProps> = ({
         <p className="text-theme-secondary text-center mb-6 transition-colors duration-300">
           Please provide your email address and sign the message to add it.
         </p>
-        <label className="block text-theme mb-2 transition-colors duration-300">Email Address</label>
+        <label className="block text-theme mb-2 transition-colors duration-300">
+          Email Address
+        </label>
         <input
           type="email"
           className="w-full mb-6 px-4 py-3 rounded-lg bg-theme-bg-tertiary text-theme border-theme-border focus:outline-none transition-colors duration-300"
