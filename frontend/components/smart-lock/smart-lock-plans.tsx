@@ -83,7 +83,7 @@ export default function SmartLockPlans({
   // Show SmartEmpty when there are no plans at all (not just filtered results)
   if (!isLoading && plans.length === 0) {
     return (
-      <div className="min-h-screen bg-theme p-6 transition-colors duration-300">
+      <div className="bg-theme p-6 transition-colors duration-300">
         <div className="max-w-7xl mx-auto">
           <SmartHeader onCreateNewPlan={onCreateNewPlan} />
           <SmartEmpty />
@@ -93,7 +93,7 @@ export default function SmartLockPlans({
   }
 
   return (
-    <div className="min-h-screen bg-theme p-6 transition-colors duration-300">
+    <div className="bg-theme p-6 transition-colors duration-300">
       <div className="max-w-7xl mx-auto">
         <SmartHeader onCreateNewPlan={onCreateNewPlan} />
 
