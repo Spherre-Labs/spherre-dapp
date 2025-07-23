@@ -3,19 +3,22 @@ import React, { useState, useEffect, useMemo } from 'react'
 import Image from 'next/image'
 // import { nunito } from '@/app/fonts'
 import { useTheme } from '@/app/context/theme-context-provider'
-import { 
-  useGetAccountMembers, 
+import {
+  useGetAccountMembers,
   useProposeMemberAdd,
-  useProposeMemberRemove, 
+  useProposeMemberRemove,
   useProposeEditPermission,
-  useGetMemberPermissions 
 } from '@/hooks/useSpherreHooks'
 import { useSpherreAccount } from '@/app/context/account-context'
 import AddMemberModal from './components/add-modal'
 import EditMemberRolesModal from './components/edit-roles-modal'
 import ProcessingModal from '../../components/modals/Loader'
 import SuccessModal from '../../components/modals/SuccessModal'
-import { extractPermissionsFromMask, createPermissionMask, ALL_PERMISSIONS_MASK, feltToAddress } from '@/lib/utils/validation'
+import {
+  createPermissionMask,
+  ALL_PERMISSIONS_MASK,
+  feltToAddress,
+} from '@/lib/utils/validation'
 
 interface Member {
   id: number
@@ -29,7 +32,7 @@ interface Member {
 }
 
 const Members = () => {
-  const { actualTheme } = useTheme()
+  useTheme()
   const { accountAddress } = useSpherreAccount()
   const [members, setMembers] = useState<Member[]>([])
   const [borderPosition, setBorderPosition] = useState(0)
@@ -40,14 +43,20 @@ const Members = () => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false)
   const [isEditRolesModalOpen, setIsEditRolesModalOpen] = useState(false)
   const [editRolesMember, setEditRolesMember] = useState<Member | null>(null)
-  
+
   // Transaction modals state
   const [isProcessingModalOpen, setIsProcessingModalOpen] = useState(false)
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false)
-  const [processingTitle, setProcessingTitle] = useState('Processing Transaction!')
-  const [processingSubtitle, setProcessingSubtitle] = useState('Please exercise a little patience as we process your details')
+  const [processingTitle, setProcessingTitle] = useState(
+    'Processing Transaction!',
+  )
+  const [processingSubtitle, setProcessingSubtitle] = useState(
+    'Please exercise a little patience as we process your details',
+  )
   const [successTitle, setSuccessTitle] = useState('Successful Transaction!')
-  const [successMessage, setSuccessMessage] = useState('Congratulations! your transaction has been successfully confirmed and been sent to other members of the team for approval')
+  const [successMessage, setSuccessMessage] = useState(
+    'Congratulations! your transaction has been successfully confirmed and been sent to other members of the team for approval',
+  )
 
   // Smart contract hooks
   const {
@@ -58,8 +67,12 @@ const Members = () => {
   } = useGetAccountMembers(accountAddress!)
 
   const { writeAsync: proposeMemberAdd } = useProposeMemberAdd(accountAddress!)
-  const { writeAsync: proposeMemberRemove } = useProposeMemberRemove(accountAddress!)
-  const { writeAsync: proposeEditPermission } = useProposeEditPermission(accountAddress!)
+  const { writeAsync: proposeMemberRemove } = useProposeMemberRemove(
+    accountAddress!,
+  )
+  const { writeAsync: proposeEditPermission } = useProposeEditPermission(
+    accountAddress!,
+  )
 
   // Transform contract members to UI format with real permissions
   const transformedMembers = useMemo(() => {
@@ -121,17 +134,21 @@ const Members = () => {
             // For now, we'll keep the default permissions
             return member
           } catch (error) {
-            console.warn('Failed to fetch permissions for member:', member.fullAddress, error)
+            console.warn(
+              'Failed to fetch permissions for member:',
+              member.fullAddress,
+              error,
+            )
             return member
           }
-        })
+        }),
       )
-      
+
       setMembers(updatedMembers)
     }
 
     fetchPermissions()
-  }, [accountAddress, members.length]) // Only run when accountAddress or member count changes
+  }, [accountAddress, members.length, members]) // Added members dependency
 
   const handleCopy = (address: string) => {
     navigator.clipboard.writeText(address)
@@ -189,15 +206,21 @@ const Members = () => {
       setIsAddModalOpen(false)
       setIsProcessingModalOpen(true)
       setProcessingTitle('Proposing Member Addition!')
-      setProcessingSubtitle('Please wait while we process the member addition proposal...')
+      setProcessingSubtitle(
+        'Please wait while we process the member addition proposal...',
+      )
 
       // Convert role names to permission mask
-      const permissions = selectedRoles.map(role => {
-        switch(role) {
-          case 'Voter': return 'VOTER'
-          case 'Proposer': return 'PROPOSER'
-          case 'Executor': return 'EXECUTOR'
-          default: return 'VOTER'
+      const permissions = selectedRoles.map((role) => {
+        switch (role) {
+          case 'Voter':
+            return 'VOTER'
+          case 'Proposer':
+            return 'PROPOSER'
+          case 'Executor':
+            return 'EXECUTOR'
+          default:
+            return 'VOTER'
         }
       }) as ('VOTER' | 'PROPOSER' | 'EXECUTOR')[]
 
@@ -205,14 +228,16 @@ const Members = () => {
 
       await proposeMemberAdd({
         member: wallet,
-        permissions: permissionMask
+        permissions: permissionMask,
       })
 
       setIsProcessingModalOpen(false)
       setIsSuccessModalOpen(true)
       setSuccessTitle('Member Addition Proposed!')
-      setSuccessMessage('The member addition proposal has been successfully created and sent to other members for approval.')
-      
+      setSuccessMessage(
+        'The member addition proposal has been successfully created and sent to other members for approval.',
+      )
+
       // Refresh members list
       refetch()
     } catch (error) {
@@ -234,15 +259,21 @@ const Members = () => {
       setIsEditRolesModalOpen(false)
       setIsProcessingModalOpen(true)
       setProcessingTitle('Proposing Role Changes!')
-      setProcessingSubtitle('Please wait while we process the role change proposal...')
+      setProcessingSubtitle(
+        'Please wait while we process the role change proposal...',
+      )
 
       // Convert role names to permission mask
-      const permissions = selectedRoles.map(role => {
-        switch(role) {
-          case 'Voter': return 'VOTER'
-          case 'Proposer': return 'PROPOSER'
-          case 'Executor': return 'EXECUTOR'
-          default: return 'VOTER'
+      const permissions = selectedRoles.map((role) => {
+        switch (role) {
+          case 'Voter':
+            return 'VOTER'
+          case 'Proposer':
+            return 'PROPOSER'
+          case 'Executor':
+            return 'EXECUTOR'
+          default:
+            return 'VOTER'
         }
       }) as ('VOTER' | 'PROPOSER' | 'EXECUTOR')[]
 
@@ -250,14 +281,16 @@ const Members = () => {
 
       await proposeEditPermission({
         member: editRolesMember.fullAddress,
-        new_permissions: newPermissionMask
+        new_permissions: newPermissionMask,
       })
 
       setIsProcessingModalOpen(false)
       setIsSuccessModalOpen(true)
       setSuccessTitle('Role Changes Proposed!')
-      setSuccessMessage('The role change proposal has been successfully created and sent to other members for approval.')
-      
+      setSuccessMessage(
+        'The role change proposal has been successfully created and sent to other members for approval.',
+      )
+
       // Refresh members list
       refetch()
     } catch (error) {
@@ -272,17 +305,21 @@ const Members = () => {
       setDropdownOpen(null)
       setIsProcessingModalOpen(true)
       setProcessingTitle('Proposing Member Removal!')
-      setProcessingSubtitle('Please wait while we process the member removal proposal...')
+      setProcessingSubtitle(
+        'Please wait while we process the member removal proposal...',
+      )
 
       await proposeMemberRemove({
-        member_address: member.fullAddress
+        member_address: member.fullAddress,
       })
 
       setIsProcessingModalOpen(false)
       setIsSuccessModalOpen(true)
       setSuccessTitle('Member Removal Proposed!')
-      setSuccessMessage('The member removal proposal has been successfully created and sent to other members for approval.')
-      
+      setSuccessMessage(
+        'The member removal proposal has been successfully created and sent to other members for approval.',
+      )
+
       // Refresh members list
       refetch()
     } catch (error) {
@@ -316,7 +353,9 @@ const Members = () => {
         className={`bg-theme min-h-screen p-3 sm:p-4 lg:p-5 py-6 sm:py-8 lg:py-10 overflow-x-hidden transition-colors duration-300`}
       >
         <div className="flex items-center justify-center h-64">
-          <div className="text-red-500 text-lg">Error loading members: {error.message}</div>
+          <div className="text-red-500 text-lg">
+            Error loading members: {error.message}
+          </div>
         </div>
       </div>
     )
@@ -328,14 +367,10 @@ const Members = () => {
     >
       <div className="flex flex-col sm:flex-row text-theme justify-between border-b-2 relative border-theme-border gap-4">
         <div className="flex items-center flex-wrap">
-          <p
-            className="cursor-pointer px-3 sm:px-4 py-2 text-sm sm:text-base transition-colors duration-200 border-b-2 border-theme text-theme"
-          >
+          <p className="cursor-pointer px-3 sm:px-4 py-2 text-sm sm:text-base transition-colors duration-200 border-b-2 border-theme text-theme">
             Spherre Members
           </p>
-          <p
-            className="cursor-pointer px-3 sm:px-4 py-2 text-sm sm:text-base transition-colors duration-200 text-theme-secondary hover:text-theme"
-          >
+          <p className="cursor-pointer px-3 sm:px-4 py-2 text-sm sm:text-base transition-colors duration-200 text-theme-secondary hover:text-theme">
             History
           </p>
         </div>
@@ -490,7 +525,7 @@ const Members = () => {
                           >
                             Edit Name
                           </li>
-                          <li 
+                          <li
                             className="px-3 sm:px-4 py-2 rounded-lg hover:bg-theme-bg-secondary cursor-pointer transition-colors duration-200"
                             onClick={() => handleRemoveMember(member)}
                           >
@@ -511,11 +546,14 @@ const Members = () => {
                 {member.roles.map((role) => {
                   let roleStyle = ''
                   if (role === 'Voter') {
-                    roleStyle = 'bg-[#FF7BE9]/10 text-[#FF7BE9] border-[#FF7BE9]'
+                    roleStyle =
+                      'bg-[#FF7BE9]/10 text-[#FF7BE9] border-[#FF7BE9]'
                   } else if (role === 'Proposer') {
-                    roleStyle = 'bg-[#FF8A25]/10 text-[#FF8A25] border-[#FF8A25]'
+                    roleStyle =
+                      'bg-[#FF8A25]/10 text-[#FF8A25] border-[#FF8A25]'
                   } else if (role === 'Executor') {
-                    roleStyle = 'bg-[#19B360]/10 text-[#19B360] border-[#19B360]'
+                    roleStyle =
+                      'bg-[#19B360]/10 text-[#19B360] border-[#19B360]'
                   }
                   return (
                     <div

@@ -64,6 +64,7 @@ export default function RootLayout({
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${nunitoSans.variable} antialiased transition-colors duration-300`}
+        suppressHydrationWarning
       >
         <div id="modal-root"></div>
         <GlobalModalProvider>

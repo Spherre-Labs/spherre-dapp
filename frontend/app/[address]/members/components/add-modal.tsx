@@ -18,19 +18,21 @@ const AddMemberModal: React.FC<AddMemberModalProps> = ({
   onPropose,
 }) => {
   const [wallet, setWallet] = useState('')
-  const [selectedRoles, setSelectedRoles] = useState<string[]>(['Voter', 'Proposer', 'Executor']) // All roles by default
+  const [selectedRoles, setSelectedRoles] = useState<string[]>([
+    'Voter',
+    'Proposer',
+    'Executor',
+  ]) // All roles by default
   const [walletError, setWalletError] = useState('')
-  
+
   // Modal states
   const [isProcessingModalOpen, setIsProcessingModalOpen] = useState(false)
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false)
   const [isErrorModalOpen, setIsErrorModalOpen] = useState(false)
 
   const toggleRole = (role: string) => {
-    setSelectedRoles(prev => 
-      prev.includes(role) 
-        ? prev.filter(r => r !== role)
-        : [...prev, role]
+    setSelectedRoles((prev) =>
+      prev.includes(role) ? prev.filter((r) => r !== role) : [...prev, role],
     )
   }
 
@@ -39,12 +41,12 @@ const AddMemberModal: React.FC<AddMemberModalProps> = ({
       setWalletError('Wallet address is required')
       return false
     }
-    
+
     if (!isValidStarknetAddress(address.trim())) {
       setWalletError('Invalid StarkNet wallet address format')
       return false
     }
-    
+
     setWalletError('')
     return true
   }
@@ -136,7 +138,7 @@ const AddMemberModal: React.FC<AddMemberModalProps> = ({
                 <p className="text-red-500 text-sm mt-1 mb-4">{walletError}</p>
               )}
               {!walletError && <div className="mb-6" />}
-              
+
               {/* Assign Roles */}
               <div className="mb-8">
                 <label className="block text-theme mb-4">Assign Roles</label>
@@ -146,7 +148,7 @@ const AddMemberModal: React.FC<AddMemberModalProps> = ({
                     let borderColor = ''
                     let bgColor = ''
                     let textColor = ''
-                    
+
                     if (isSelected) {
                       if (role === 'Voter') {
                         borderColor = 'border-[#FF7BE9]'
@@ -226,7 +228,7 @@ const AddMemberModal: React.FC<AddMemberModalProps> = ({
           </div>
         </div>
       )}
-      
+
       {/* Processing Modal */}
       <ProcessingModal
         isOpen={isProcessingModalOpen}

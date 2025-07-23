@@ -1,11 +1,6 @@
 import { PermissionEnum } from '@/lib/contracts/types'
 import type { U256 } from '@/lib/contracts/types'
-import { 
-  createPermissionMask, 
-  extractPermissionsFromMask, 
-  getPermissionFelt,
-  ALL_PERMISSIONS_MASK 
-} from './validation'
+import { createPermissionMask } from './validation'
 
 export class ContractArgsResolver {
   /**
@@ -63,7 +58,9 @@ export class ContractArgsResolver {
 
     for (let i = 0; i < bytes.length; i += chunkSize) {
       const chunk = bytes.slice(i, i + chunkSize)
-      const hex = '0x' + Array.from(chunk, (b) => b.toString(16).padStart(2, '0')).join('')
+      const hex =
+        '0x' +
+        Array.from(chunk, (b) => b.toString(16).padStart(2, '0')).join('')
       chunks.push(hex)
     }
 
@@ -73,13 +70,13 @@ export class ContractArgsResolver {
 
     const result = [numFullWords.toString()]
     result.push(...chunks.slice(0, numFullWords))
-    
+
     if (remainingBytes > 0) {
       result.push(chunks[numFullWords] || '0x0')
     } else {
       result.push('0x0')
     }
-    
+
     result.push(remainingBytes.toString())
 
     return result
@@ -133,7 +130,9 @@ export class ContractArgsResolver {
   /**
    * Validates and formats permission mask from permission names
    */
-  static resolvePermissionMask(permissions: ('VOTER' | 'PROPOSER' | 'EXECUTOR')[]): number {
+  static resolvePermissionMask(
+    permissions: ('VOTER' | 'PROPOSER' | 'EXECUTOR')[],
+  ): number {
     if (!Array.isArray(permissions)) {
       throw new Error('Permissions must be an array')
     }
@@ -241,9 +240,13 @@ export const SpherreArgsResolvers = {
           return value
         }
         if (Array.isArray(value)) {
-          return ContractArgsResolver.resolvePermissionMask(value as ('VOTER' | 'PROPOSER' | 'EXECUTOR')[])
+          return ContractArgsResolver.resolvePermissionMask(
+            value as ('VOTER' | 'PROPOSER' | 'EXECUTOR')[],
+          )
         }
-        throw new Error('Permissions must be a number (mask) or array of permission names')
+        throw new Error(
+          'Permissions must be a number (mask) or array of permission names',
+        )
       },
     })
   },
@@ -268,9 +271,13 @@ export const SpherreArgsResolvers = {
           return value
         }
         if (Array.isArray(value)) {
-          return ContractArgsResolver.resolvePermissionMask(value as ('VOTER' | 'PROPOSER' | 'EXECUTOR')[])
+          return ContractArgsResolver.resolvePermissionMask(
+            value as ('VOTER' | 'PROPOSER' | 'EXECUTOR')[],
+          )
         }
-        throw new Error('New permissions must be a number (mask) or array of permission names')
+        throw new Error(
+          'New permissions must be a number (mask) or array of permission names',
+        )
       },
     })
   },

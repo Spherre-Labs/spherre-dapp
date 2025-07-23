@@ -78,12 +78,12 @@ const EditMemberRolesModal: React.FC<EditMemberRolesModalProps> = ({
         >
           ×
         </button>
-        
+
         {/* Title */}
         <h2 className="text-xl sm:text-3xl font-bold text-theme text-center mb-3 sm:mb-4">
           Edit Member Roles
         </h2>
-        
+
         {/* Avatar */}
         <div className="flex flex-col items-center mb-2">
           <div className="rounded-full border-4 border-primary p-1 mb-2">
@@ -99,12 +99,12 @@ const EditMemberRolesModal: React.FC<EditMemberRolesModalProps> = ({
             {member.name}
           </div>
         </div>
-        
+
         {/* Address */}
         <div className="text-center mb-6">
           <p className="text-sm text-theme-secondary">{member.address}</p>
         </div>
-        
+
         {/* Role Selection */}
         <div className="mb-6 sm:mb-8">
           <p className="text-sm sm:text-base text-theme font-medium mb-4">
@@ -113,7 +113,7 @@ const EditMemberRolesModal: React.FC<EditMemberRolesModalProps> = ({
           <div className="flex flex-wrap items-center gap-3">
             {roleOptions.map((roleOption) => {
               const isSelected = selectedRoles.includes(roleOption.name)
-              
+
               return (
                 <label
                   key={roleOption.name}
@@ -130,32 +130,43 @@ const EditMemberRolesModal: React.FC<EditMemberRolesModalProps> = ({
                     onChange={() => toggleRole(roleOption.name)}
                     className="sr-only"
                   />
-                  
+
                   {/* Custom checkbox */}
-                  <div className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-colors duration-200 ${
-                    isSelected 
-                      ? roleOption.check + ' border-current'
-                      : 'border-theme-border bg-transparent'
-                  }`}>
+                  <div
+                    className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-colors duration-200 ${
+                      isSelected
+                        ? roleOption.check + ' border-current'
+                        : 'border-theme-border bg-transparent'
+                    }`}
+                  >
                     {isSelected && (
-                      <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                      <svg
+                        className="w-3 h-3 text-white"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                          clipRule="evenodd"
+                        />
                       </svg>
                     )}
                   </div>
-                  
+
                   <span className="font-medium">{roleOption.name}</span>
                 </label>
               )
             })}
           </div>
-          
+
           {/* Helper text */}
           <p className="text-xs sm:text-sm text-theme-secondary mt-3">
-            Note: Changing member roles will require approval from other members before taking effect.
+            Note: Changing member roles will require approval from other members
+            before taking effect.
           </p>
         </div>
-        
+
         {/* Action Buttons */}
         <div className="flex gap-3 sm:gap-4">
           <button

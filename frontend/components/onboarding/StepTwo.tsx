@@ -52,7 +52,7 @@ type StepTwoData = z.infer<typeof stepTwoSchema>
 
 const StepTwo = () => {
   const router = useRouter()
-  const { actualTheme } = useTheme()
+  useTheme()
   const onboarding = useOnboarding()
   if (!onboarding) throw new Error('OnboardingContext is missing')
   const { setMembers, setApprovals } = onboarding
@@ -138,7 +138,8 @@ const StepTwo = () => {
             Add Members
           </h2>
           <p className="text-theme-secondary text-sm sm:text-base">
-            Add wallet addresses of people you want to include in your multisig account
+            Add wallet addresses of people you want to include in your multisig
+            account
           </p>
         </div>
 
@@ -158,7 +159,9 @@ const StepTwo = () => {
                     {...register(`members.${index}.address`)}
                     placeholder={`Member ${index + 1} wallet address`}
                     className={`w-full px-4 py-3 rounded-lg border transition-colors bg-theme-bg-secondary text-theme placeholder-theme-muted focus:outline-none focus:ring-2 focus:ring-primary ${
-                      duplicateAddresses.includes(watch(`members.${index}.address`)?.trim())
+                      duplicateAddresses.includes(
+                        watch(`members.${index}.address`)?.trim(),
+                      )
                         ? 'border-red-500 focus:border-red-500'
                         : errors.members?.[index]?.address
                           ? 'border-red-500 focus:border-red-500'
@@ -220,8 +223,9 @@ const StepTwo = () => {
               </span>
             </div>
             <p className="mt-2">
-              You can modify individual member roles after account creation through the Members page.
-              Role changes will require approval from other members.
+              You can modify individual member roles after account creation
+              through the Members page. Role changes will require approval from
+              other members.
             </p>
           </div>
         </div>

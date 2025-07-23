@@ -94,16 +94,16 @@ export function stringToFelt(str: string): string {
   if (!str || typeof str !== 'string') {
     throw new Error('Invalid string input')
   }
-  
+
   // Convert string to bytes
   const bytes = new TextEncoder().encode(str)
-  
+
   // Convert bytes to hex
   let hex = '0x'
   for (const byte of bytes) {
     hex += byte.toString(16).padStart(2, '0')
   }
-  
+
   // Convert hex to felt (bigint)
   const felt = BigInt(hex)
   return felt.toString()
@@ -116,14 +116,14 @@ export function feltToString(felt: string | number | bigint): string {
   try {
     const feltBigInt = BigInt(felt)
     const hex = feltBigInt.toString(16)
-    
+
     // Convert hex to bytes
     const bytes: number[] = []
     for (let i = 0; i < hex.length; i += 2) {
       const byte = parseInt(hex.substr(i, 2), 16)
       if (byte > 0) bytes.push(byte) // Skip null bytes
     }
-    
+
     // Convert bytes to string
     return new TextDecoder().decode(new Uint8Array(bytes))
   } catch (error) {
@@ -147,17 +147,23 @@ export const CAIRO_PERMISSION_ENUM = {
 } as const
 
 // Helper function to get permission felt by name
-export function getPermissionFelt(permission: 'VOTER' | 'PROPOSER' | 'EXECUTOR'): string {
+export function getPermissionFelt(
+  permission: 'VOTER' | 'PROPOSER' | 'EXECUTOR',
+): string {
   return PERMISSION_FELTS[permission]
 }
 
 // Helper function to convert permission name to enum value
-export function getPermissionEnumValue(permission: 'VOTER' | 'PROPOSER' | 'EXECUTOR'): number {
+export function getPermissionEnumValue(
+  permission: 'VOTER' | 'PROPOSER' | 'EXECUTOR',
+): number {
   return CAIRO_PERMISSION_ENUM[permission]
 }
 
 // Helper function to create permission mask from permission array
-export function createPermissionMask(permissions: ('VOTER' | 'PROPOSER' | 'EXECUTOR')[]): number {
+export function createPermissionMask(
+  permissions: ('VOTER' | 'PROPOSER' | 'EXECUTOR')[],
+): number {
   let mask = 0
   for (const permission of permissions) {
     const enumValue = getPermissionEnumValue(permission)
@@ -167,9 +173,11 @@ export function createPermissionMask(permissions: ('VOTER' | 'PROPOSER' | 'EXECU
 }
 
 // Helper function to extract permissions from mask
-export function extractPermissionsFromMask(mask: number): ('VOTER' | 'PROPOSER' | 'EXECUTOR')[] {
+export function extractPermissionsFromMask(
+  mask: number,
+): ('VOTER' | 'PROPOSER' | 'EXECUTOR')[] {
   const permissions: ('VOTER' | 'PROPOSER' | 'EXECUTOR')[] = []
-  
+
   if (mask & (1 << CAIRO_PERMISSION_ENUM.VOTER)) {
     permissions.push('VOTER')
   }
@@ -179,12 +187,16 @@ export function extractPermissionsFromMask(mask: number): ('VOTER' | 'PROPOSER' 
   if (mask & (1 << CAIRO_PERMISSION_ENUM.EXECUTOR)) {
     permissions.push('EXECUTOR')
   }
-  
+
   return permissions
 }
 
 // All permissions mask (all three roles)
-export const ALL_PERMISSIONS_MASK = createPermissionMask(['VOTER', 'PROPOSER', 'EXECUTOR'])
+export const ALL_PERMISSIONS_MASK = createPermissionMask([
+  'VOTER',
+  'PROPOSER',
+  'EXECUTOR',
+])
 
 export function validatePositiveInteger(
   value: number,

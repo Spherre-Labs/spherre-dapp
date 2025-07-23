@@ -21,7 +21,11 @@ import type {
   PermissionEnum,
 } from '@/lib/contracts/types'
 import { useMemo } from 'react'
-import { feltToAddress, byteArrayToString, extractPermissionsFromMask } from '@/lib/utils/validation'
+import {
+  feltToAddress,
+  byteArrayToString,
+  extractPermissionsFromMask,
+} from '@/lib/utils/validation'
 
 // Factory Contract Hooks
 export function useDeployAccount() {
@@ -121,7 +125,7 @@ export function useGetMemberPermissions(
     }
 
     const roles: string[] = []
-    
+
     // PermissionEnum: PROPOSER = 0, VOTER = 1, EXECUTOR = 2
     for (const permission of result.data) {
       switch (permission) {
