@@ -50,8 +50,6 @@ export default function WithdrawalReviewPage({
     enabled: !!spherreAccountAddress,
   })
 
-  console.log(data)
-
   // Transaction data using real values
   const transactionData = {
     amount: amount || '0',

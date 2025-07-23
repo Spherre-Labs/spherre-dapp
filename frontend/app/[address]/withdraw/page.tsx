@@ -17,7 +17,6 @@ import {
   useScaffoldWriteContract,
 } from '@/lib'
 import { useSpherreAccount } from '@/app/context/account-context'
-import { HiMiniArrowPath } from 'react-icons/hi2'
 import { useGlobalModal } from '@/app/components/modals/GlobalModalProvider'
 
 export default function WithdrawPage() {
@@ -25,7 +24,7 @@ export default function WithdrawPage() {
   const { data: spherreAccountName } = useGetAccountName(
     spherreAccountAddress || '0x0',
   )
-  const { showSuccess, showError } = useGlobalModal()
+  const { showSuccess, showError, showProcessing, hideModal } = useGlobalModal()
 
   const [currentStep, setCurrentStep] = useState(1)
   const router = useRouter()
@@ -130,6 +129,7 @@ export default function WithdrawPage() {
     functionName: 'propose_token_transaction',
     onSuccess: () => {
       setIsSubmitting(false)
+      hideModal()
       showSuccess({
         title: 'Proposal Created!',
         message: 'Token withdrawal proposal created.',
@@ -137,10 +137,10 @@ export default function WithdrawPage() {
           router.push('dapp/transactions/')
         },
       })
-      // Navigate after a short delay to allow the modal to show
     },
     onError: (error) => {
       setIsSubmitting(false)
+      hideModal()
       showError({
         title: 'Transaction Failed',
         errorText:
@@ -152,8 +152,6 @@ export default function WithdrawPage() {
   })
 
   const handleNext = async () => {
-    // Clear any previous errors
-
     // Check if wallet is connected first
     if (!address) {
       showError({
@@ -167,9 +165,14 @@ export default function WithdrawPage() {
     if (currentStep === 3) {
       try {
         setIsSubmitting(true)
+        showProcessing({
+          title: 'Processing Withdrawal',
+          subtitle: 'Please wait while we process your withdrawal proposal.',
+        })
 
         // Validate required fields
         if (!selectedTokenAddress) {
+          hideModal()
           showError({
             title: 'Token Error',
             errorText: 'Token address not found.',
@@ -179,6 +182,7 @@ export default function WithdrawPage() {
         }
 
         if (!recipientAddress) {
+          hideModal()
           showError({
             title: 'Recipient Required',
             errorText: 'Recipient address is required.',
@@ -188,6 +192,7 @@ export default function WithdrawPage() {
         }
 
         if (!amount || parseFloat(amount) <= 0) {
+          hideModal()
           showError({
             title: 'Invalid Amount',
             errorText: 'Please enter a valid amount.',
@@ -202,6 +207,7 @@ export default function WithdrawPage() {
         )
 
         if (!selectedTokenData) {
+          hideModal()
           showError({
             title: 'Token Not Found',
             errorText: 'Selected token not found.',
@@ -212,6 +218,7 @@ export default function WithdrawPage() {
 
         // Validate amount against balance
         if (parseFloat(amount) > selectedTokenData.balance) {
+          hideModal()
           showError({
             title: 'Insufficient Balance',
             errorText: 'Not enough tokens to propose this withdrawal.',
@@ -233,6 +240,7 @@ export default function WithdrawPage() {
         })
       } catch (error) {
         setIsSubmitting(false)
+        hideModal()
         showError({
           title: 'Transaction Failed',
           errorText:
@@ -275,6 +283,7 @@ export default function WithdrawPage() {
   const handleCancel = () => {
     // Show rejection message if user cancels during submission
     if (isSubmitting) {
+      hideModal()
       showError({
         title: 'Proposal Cancelled',
         errorText: 'Proposal cancelled by user.',
@@ -389,14 +398,7 @@ export default function WithdrawPage() {
                   : 'bg-primary/50 cursor-not-allowed'
               } transition-colors`}
             >
-              {isSubmitting && (
-                <HiMiniArrowPath className="animate-spin" size={20} />
-              )}
-              {isSubmitting
-                ? 'Processing...'
-                : currentStep === 3
-                  ? 'Confirm'
-                  : 'Next'}
+              {currentStep === 3 ? 'Confirm' : 'Next'}
             </button>
           </div>
           {currentStep === 3 && (
