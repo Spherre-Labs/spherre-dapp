@@ -7,11 +7,17 @@ import Backstage from '@/public/Images/backstageboys.png'
 import Arrow from '@/public/Images/Arrow.png'
 import { SPHERRE_ACCOUNT_ABI, useScaffoldReadContract } from '@/lib'
 
+interface Token {
+  symbol: string
+  usdValue: number
+  icon: string
+}
+
 interface WithdrawalReviewPageProps {
   recipientAddress: string
   amount: string
   selectedToken: string
-  availableTokens: any[]
+  availableTokens: Token[]
   spherreAccountAddress: `0x${string}` | null
 }
 
