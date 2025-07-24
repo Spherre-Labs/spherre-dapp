@@ -19,7 +19,7 @@ const nunito = Nunito_Sans({
 const roleColors: Record<string, string> = {
   Voter: 'text-[#FF7BE9] border-[#FF7BE9] bg-[#FF7BE9]/10',
   Proposer: 'text-[#FF8A25] border-[#FF8A25] bg-[#FF8A25]/10',
-  Executer: 'text-[#19B360] border-[#19B360] bg-[#19B360]/10',
+  Executer: 'text-green border-green bg-green/10',
 }
 
 interface Member {
@@ -247,21 +247,19 @@ const Members = () => {
       <div className="flex flex-col sm:flex-row text-theme justify-between border-b-2 relative border-theme-border gap-4">
         <div className="flex items-center flex-wrap">
           <p
-            className={`cursor-pointer px-3 sm:px-4 py-2 text-sm sm:text-base transition-colors duration-200 ${
-              activeTab === 'members'
+            className={`cursor-pointer px-3 sm:px-4 py-2 text-sm sm:text-base transition-colors duration-200 ${activeTab === 'members'
                 ? 'border-b-2 border-theme text-theme'
                 : 'text-theme-secondary hover:text-theme'
-            }`}
+              }`}
             onClick={() => setActiveTab('members')}
           >
             Spherre Members
           </p>
           <p
-            className={`cursor-pointer px-3 sm:px-4 py-2 text-sm sm:text-base transition-colors duration-200 ${
-              activeTab === 'history'
+            className={`cursor-pointer px-3 sm:px-4 py-2 text-sm sm:text-base transition-colors duration-200 ${activeTab === 'history'
                 ? 'border-b-2 border-theme text-theme'
                 : 'text-theme-secondary hover:text-theme'
-            }`}
+              }`}
             onClick={() => setActiveTab('history')}
           >
             History

@@ -127,11 +127,11 @@ export const transactions: Transaction[] = Array.from(
     const rejections =
       i % 5 === 0
         ? [
-            {
-              member: randomFrom(memberList, i + 8),
-              status: 'Rejected' as const,
-            },
-          ]
+          {
+            member: randomFrom(memberList, i + 8),
+            status: 'Rejected' as const,
+          },
+        ]
         : []
     const tokenIn = randomFrom(tokens, i + 9)
     const tokenOut = randomFrom(
@@ -152,10 +152,10 @@ export const transactions: Transaction[] = Array.from(
       time: `${hour}:${minute.toString().padStart(2, '0')} ${ampm}`,
       status,
       initiator,
-      dateInitiated: `${date} 2025 ${hour}:${minute.toString().padStart(2, '0')}${ampm.toUpperCase()}`,
+      dateInitiated: `${date} 2025 ${hour}:${minute.toString().padStart(2, '0')} ${ampm.toUpperCase()}`,
       dateExecuted:
         status === 'Executed'
-          ? `${date} 2025 ${(hour + 1) % 12}:${minute.toString().padStart(2, '0')}${ampm.toUpperCase()}`
+          ? `${date} 2025 ${(hour + 1) % 12}:${minute.toString().padStart(2, '0')} ${ampm.toUpperCase()}`
           : undefined,
       account,
       to,

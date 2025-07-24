@@ -2,10 +2,12 @@
 
 import { useState, useMemo } from 'react'
 import Transaction from './components/transaction'
-import TransactionFilters from './components/TransactionFilters'
+import FilterPopover from './components/FilterModal'
 import { useTheme } from '@/app/context/theme-context-provider'
 import { useTransactionIntegration } from '@/hooks/useTransactionIntegration'
 import { TransactionType, type TransactionDisplayInfo } from '@/lib/contracts/types'
+import { CalendarDays, ChevronDown } from 'lucide-react'
+
 
 const TRANSACTIONS_PER_PAGE = 10
 
@@ -13,10 +15,16 @@ export default function TransactionPage() {
   useTheme()
   const [expandedId, setExpandedId] = useState<string | null>(null)
   const [currentPage, setCurrentPage] = useState(1)
+
   const [filters, setFilters] = useState({
     status: 'All' as 'Pending' | 'Executed' | 'Rejected' | 'All',
     type: 'All' as TransactionType | 'All',
     sort: 'newest' as 'newest' | 'oldest' | 'amount',
+    selectedMembers: [] as string[],
+    selectedTokens: [] as string[],
+    minAmount: '',
+    maxAmount: '',
+    amountToken: 'STRK',
   })
 
   // Fetch real transaction data from smart contract
@@ -42,6 +50,35 @@ export default function TransactionPage() {
     // Apply type filter
     if (filters.type !== 'All') {
       filtered = filtered.filter(tx => tx.transaction.transactionType === filters.type)
+    }
+
+    // Apply member filter
+    if (filters.selectedMembers.length > 0) {
+      filtered = filtered.filter(tx =>
+        filters.selectedMembers.some(memberId =>
+          tx.transaction.proposer?.includes(memberId) ||
+          tx.transaction.approved?.some((approver: string) => approver.includes(memberId))
+        )
+      )
+    }
+
+    // Apply token filter
+    if (filters.selectedTokens.length > 0) {
+      filtered = filtered.filter(tx =>
+        filters.selectedTokens.some(tokenId =>
+          tx.token?.toLowerCase().includes(tokenId.toLowerCase())
+        )
+      )
+    }
+
+    // Apply amount filter
+    if (filters.minAmount || filters.maxAmount) {
+      filtered = filtered.filter(tx => {
+        const amount = parseFloat(tx.amount || '0')
+        const min = filters.minAmount ? parseFloat(filters.minAmount) : 0
+        const max = filters.maxAmount ? parseFloat(filters.maxAmount) : Infinity
+        return amount >= min && amount <= max
+      })
     }
 
     // Apply sorting
@@ -75,7 +112,7 @@ export default function TransactionPage() {
   // Group paginated transactions by date
   const groupedTransactions = useMemo(() => {
     return paginatedTransactions.reduce((acc, txInfo) => {
-      const dateKey = new Date(Number(txInfo.transaction.dateCreated) * 1000).toLocaleDateString()
+      const dateKey = new Date(Number(txInfo.transaction.dateCreated) * 1000).toLocaleDateString('en-GB', { weekday: 'short', day: '2-digit', month: 'short', year: 'numeric' })
       if (!acc[dateKey]) {
         acc[dateKey] = []
       }
@@ -86,21 +123,6 @@ export default function TransactionPage() {
 
   const handleToggle = (id: string) => {
     setExpandedId(expandedId === id ? null : id)
-  }
-
-  const handleFilterStatus = (status: 'Pending' | 'Executed' | 'Rejected' | 'All') => {
-    setFilters(prev => ({ ...prev, status }))
-    setCurrentPage(1) // Reset to first page when filtering
-  }
-
-  const handleFilterType = (type: TransactionType | 'All') => {
-    setFilters(prev => ({ ...prev, type }))
-    setCurrentPage(1) // Reset to first page when filtering
-  }
-
-  const handleSort = (sort: 'newest' | 'oldest' | 'amount') => {
-    setFilters(prev => ({ ...prev, sort }))
-    setCurrentPage(1) // Reset to first page when sorting
   }
 
   const handlePageChange = (page: number) => {
@@ -115,22 +137,21 @@ export default function TransactionPage() {
 
   return (
     <div className="overflow-x-hidden bg-theme transition-colors duration-300">
-      <div className="p-4 sm:p-6 lg:p-10 bg-theme-bg-secondary border border-theme-border rounded-xl transition-colors duration-300">
-        {/* Filters */}
-        <TransactionFilters
-          onFilterStatus={handleFilterStatus}
-          onFilterType={handleFilterType}
-          onSort={handleSort}
-          onPageChange={handlePageChange}
-          currentPage={currentPage}
-          totalPages={totalPages}
-          totalTransactions={filteredAndSortedTransactions.length}
-          currentFilters={{
-            status: filters.status,
-            type: filters.type.toString(),
-            sort: filters.sort,
-          }}
-        />
+      <div className="p-4 sm:p-6 lg:p-6 bg-theme-bg-secondary border border-theme-border rounded-xl transition-colors duration-300">
+        {/* Filter Button and Date Range */}
+        <div className="flex items-center justify-end gap-4 mb-6">
+          <button className="flex items-center gap-2 bg-theme-bg-tertiary border border-theme-border text-theme px-4 py-2 rounded-lg hover:bg-theme-border transition-colors duration-200">
+            <CalendarDays className="w-4 h-4" />
+            Select Dates
+            <ChevronDown className="w-4 h-4" />
+          </button>
+
+          {/* Filter Popover */}
+          <FilterPopover
+            filters={filters}
+            onFiltersChange={setFilters}
+          />
+        </div>
 
         {/* Loading State */}
         {isLoading && (
@@ -168,14 +189,14 @@ export default function TransactionPage() {
         {/* Transactions */}
         {!isLoading && !error && Object.entries(groupedTransactions).map(([date, txns]) => (
           <div key={date} className="mb-4 sm:mb-6">
-            <h2 className="text-theme-secondary text-xs sm:text-sm mb-2 transition-colors duration-300">
+            <h2 className="font-sans font-medium text-theme-secondary mb-2 transition-colors duration-300">
               {date}
             </h2>
-            <div className="space-y-4 sm:space-y-6">
-              {txns.map((txInfo) => (
+            <div className="">
+              {txns.map((txInfo, index) => (
                 <div
                   key={txInfo.transaction.id.toString()}
-                  className="bg-theme-bg-tertiary border border-theme-border rounded-lg overflow-hidden transition-colors duration-300"
+                  className={`bg-theme-bg-tertiary border border-theme-border overflow-hidden transition-colors duration-300 ${index === 0 ? 'rounded-t-lg' : ''} ${index === txns.length - 1 ? 'rounded-b-lg' : ''}`}
                 >
                   <Transaction
                     transactionInfo={txInfo}

@@ -123,15 +123,13 @@ const Sidebar = ({
 
       <aside
         id="sidebar"
-        className={`fixed top-0 left-0 h-screen sidebar-bg text-theme border-r border-theme z-30 sidebar-transition ${
-          isMobile
-            ? `w-64 transform transition-transform duration-300 ${
-                isExpanded ? 'translate-x-0' : '-translate-x-full'
-              }`
+        className={`fixed top-0 left-0 h-screen sidebar-bg text-theme border-r border-theme z-30 sidebar-transition ${isMobile
+            ? `w-64 transform transition-transform duration-300 ${isExpanded ? 'translate-x-0' : '-translate-x-full'
+            }`
             : isExpanded
               ? 'w-64'
               : 'w-16'
-        }`}
+          }`}
         onMouseEnter={() => !isMobile && setExpanded(true)}
         onMouseLeave={() => !isMobile && setExpanded(false)}
       >
@@ -150,9 +148,8 @@ const Sidebar = ({
 
           {/* Logo */}
           <div
-            className={`flex items-center sidebar-transition ${
-              isExpanded ? 'gap-4 mb-14' : 'justify-center mb-14'
-            }`}
+            className={`flex items-center sidebar-transition ${isExpanded ? 'gap-4 mb-14' : 'justify-center mb-14'
+              }`}
           >
             <Image
               src={logo}
@@ -171,7 +168,7 @@ const Sidebar = ({
           </div>
 
           {/* Menu Items */}
-          <ul className="flex flex-col gap-5 text-[16px] flex-1 overflow-y-auto">
+          <ul className="flex flex-col gap-5 text-[16px] flex-1 overflow-y-auto scrollbar-hide">
             {navItems.map((item, index) => (
               <li
                 key={item.name}
@@ -183,11 +180,10 @@ const Sidebar = ({
                 {isExpanded ? (
                   <Link
                     href={item?.route ?? `/${accountAddress}/`}
-                    className={`flex items-center p-3 rounded-lg sidebar-transition sidebar-menu-item ${
-                      selectedPage === item.name
+                    className={`flex items-center p-3 rounded-lg sidebar-transition sidebar-menu-item ${selectedPage === item.name
                         ? 'active'
                         : 'text-theme-secondary hover:text-theme'
-                    }`}
+                      }`}
                     onClick={() => isMobile && setSidebarExpanded(false)}
                   >
                     <div className="relative flex items-center justify-center w-6 h-6 mr-3">
@@ -215,11 +211,10 @@ const Sidebar = ({
                   <Tooltip content={item.name}>
                     <Link
                       href={item?.route ?? `/${accountAddress}/`}
-                      className={`flex items-center justify-center p-3 rounded-lg sidebar-transition sidebar-menu-item ${
-                        selectedPage === item.name
+                      className={`flex items-center justify-center p-3 rounded-lg sidebar-transition sidebar-menu-item ${selectedPage === item.name
                           ? 'active'
                           : 'text-theme-secondary hover:text-theme'
-                      }`}
+                        }`}
                       style={{
                         width: '40px',
                         height: '40px',

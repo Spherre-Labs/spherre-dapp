@@ -32,7 +32,7 @@ const RemoveMemberModal: React.FC<RemoveMemberModalProps> = ({
   const roleColors = {
     Voter: 'text-[#FF7BE9] border-[#FF7BE9] bg-[#FF7BE9]/10',
     Proposer: 'text-[#FF8A25] border-[#FF8A25] bg-[#FF8A25]/10',
-    Executer: 'text-[#19B360] border-[#19B360] bg-[#19B360]/10',
+    Executer: 'text-green border-green bg-green/10',
   }
 
   const handleCancel = () => {

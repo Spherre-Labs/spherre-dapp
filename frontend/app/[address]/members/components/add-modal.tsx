@@ -57,8 +57,8 @@ const AddMemberModal: React.FC<AddMemberModalProps> = ({
                   borderColor = 'border-[#FF7BE9]'
                   accentColor = 'accent-[#FF7BE9]'
                 } else if (r === 'Executer') {
-                  borderColor = 'border-[#19B360]'
-                  accentColor = 'accent-[#19B360]'
+                  borderColor = 'border-green'
+                  accentColor = 'accent-green'
                 } else if (r === 'Proposer') {
                   borderColor = 'border-[#FF8A25]'
                   accentColor = 'accent-[#FF8A25]'
@@ -70,11 +70,10 @@ const AddMemberModal: React.FC<AddMemberModalProps> = ({
               return (
                 <label
                   key={r}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-lg border transition-colors duration-200 cursor-pointer text-sm font-medium ${borderColor} ${
-                    role === r
+                  className={`flex items-center gap-2 px-4 py-2 rounded-lg border transition-colors duration-200 cursor-pointer text-sm font-medium ${borderColor} ${role === r
                       ? 'text-theme bg-theme-bg-tertiary'
                       : 'text-theme-secondary bg-transparent hover:bg-theme-bg-tertiary/50'
-                  }`}
+                    }`}
                 >
                   <input
                     type="radio"

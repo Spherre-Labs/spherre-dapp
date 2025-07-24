@@ -15,8 +15,8 @@ const roleOptions = [
   },
   {
     name: 'Executer',
-    color: 'border-[#19B360] text-[#19B360] bg-[#19B360]/10',
-    check: 'bg-[#19B360]',
+    color: 'border-green text-green bg-green/10',
+    check: 'bg-green',
   },
 ]
 

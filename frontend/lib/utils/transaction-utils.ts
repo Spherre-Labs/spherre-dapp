@@ -165,7 +165,7 @@ export function formatTimestamp(timestamp: bigint): string {
 
 export function formatTime(timestamp: bigint): string {
   const date = new Date(Number(timestamp) * 1000)
-  return date.toLocaleTimeString()
+  return date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true })
 }
 
 // Group transactions by date for UI display
