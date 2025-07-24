@@ -232,7 +232,7 @@ const TreasuryPage = () => {
               paddingBottom: '1rem',
             }}
           >
-            <div className="min-w-0 flex-1">
+            <div className="min-w-0  mt-6 flex-1">
               <Tabs
                 loadingTokenData={loadingTokenData}
                 tokens={tokensDisplay}

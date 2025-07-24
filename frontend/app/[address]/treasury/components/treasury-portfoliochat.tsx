@@ -125,7 +125,7 @@ const TreasuryPortfoliochat = ({
   }
 
   return (
-    <div className="w-full max-w-full overflow-hidden mb-4 md:mb-6">
+    <div className="w-full max-w-full mb-4 md:mb-7">
       {/* Mobile Layout: Stacked */}
       <div className="block lg:hidden w-full space-y-4">
         <div className="w-full flex flex-col items-center justify-center py-4">
