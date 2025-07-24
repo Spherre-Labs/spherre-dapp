@@ -5,6 +5,7 @@ import { createPortal } from 'react-dom'
 import Link from 'next/link'
 import { routes } from '../[address]/layout'
 import { useSpherreAccount } from '../context/account-context'
+import { useTheme } from '@/app/context/theme-context-provider'
 
 // Add props for controlled modal
 interface DepositModalProps {
@@ -13,6 +14,7 @@ interface DepositModalProps {
 }
 
 export default function DepositModal({ open, onClose }: DepositModalProps) {
+  useTheme()
   const [portalElement, setPortalElement] = React.useState<HTMLElement | null>(
     null,
   )
@@ -53,7 +55,7 @@ export default function DepositModal({ open, onClose }: DepositModalProps) {
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
       <div
         ref={modalRef}
-        className="bg-[#1C1D1F] border-[4px] py-[28px] px-[15px] border-[#292929] rounded-lg shadow-lg w-full max-w-[583px] mx-4 overflow-hidden text-center relative"
+        className="bg-theme-bg-secondary border-[4px] py-[28px] px-[15px] border-theme-border rounded-lg shadow-lg w-full max-w-[583px] mx-4 overflow-hidden text-center relative transition-colors duration-300"
         role="dialog"
         aria-modal="true"
         aria-labelledby="modal-title"
@@ -61,13 +63,13 @@ export default function DepositModal({ open, onClose }: DepositModalProps) {
         <div className="flex items-center justify-between p-4">
           <h2
             id="modal-title"
-            className="text-3xl font-bold mx-auto text-white"
+            className="text-3xl font-bold mx-auto text-theme transition-colors duration-300"
           >
             Deposit
           </h2>
           <button
             onClick={onClose}
-            className="text-[#8E9BAE] hover:text-white hover:bg-gray-800 bg-gray-800 rounded-full p-1 transition-colors absolute top-4 right-4"
+            className="text-theme-secondary hover:text-theme hover:bg-theme-bg-tertiary bg-theme-bg-tertiary rounded-full p-1 transition-colors absolute top-4 right-4"
             aria-label="Close"
           >
             <svg
@@ -87,19 +89,21 @@ export default function DepositModal({ open, onClose }: DepositModalProps) {
           </button>
         </div>
         <div className="p-4">
-          <p className=" text-[#8E9BAE] font-semibold text-base mb-4">
+          <p className="text-theme-secondary font-semibold text-base mb-4 transition-colors duration-300">
             Choose a preferred deposit process
           </p>
           <div className="space-y-3">
             <Link href={routes(accountAddress).depositViaAddress}>
               <button
-                className="w-full flex items-center gap-3 p-3 rounded-lg transition-colors text-left border-[#292929] border-2"
+                className="w-full flex items-center gap-3 p-3 rounded-lg transition-colors text-left border-theme-border border-2 bg-theme-bg-tertiary hover:bg-theme-bg-secondary"
                 onClick={onClose}
               >
                 <div className="p-1">{/* Icon can go here */}</div>
                 <div>
-                  <p className="font-medium text-white">Deposit Via Address</p>
-                  <p className="text-sm text-[#8E9BAE]">
+                  <p className="font-medium text-theme transition-colors duration-300">
+                    Deposit Via Address
+                  </p>
+                  <p className="text-sm text-theme-secondary transition-colors duration-300">
                     Deposits to Spherre&apos;s internal wallet address.
                   </p>
                 </div>
@@ -107,15 +111,15 @@ export default function DepositModal({ open, onClose }: DepositModalProps) {
             </Link>
             <Link href={routes(accountAddress).depositViaWallet}>
               <button
-                className="w-full my-3 flex items-center gap-3 p-3 rounded-lg  transition-colors text-left border-[#292929] border-2"
+                className="w-full my-3 flex items-center gap-3 p-3 rounded-lg  transition-colors text-left border-theme-border border-2 bg-theme-bg-tertiary hover:bg-theme-bg-secondary"
                 onClick={onClose}
               >
                 <div className="p-1">{/* Icon can go here */}</div>
                 <div>
-                  <p className="font-medium text-white">
+                  <p className="font-medium text-theme transition-colors duration-300">
                     Deposit Via Connected Wallet
                   </p>
-                  <p className="text-sm text-[#8E9BAE]">
+                  <p className="text-sm text-theme-secondary transition-colors duration-300">
                     Deposit funds through a connected wallet.
                   </p>
                 </div>

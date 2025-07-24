@@ -156,7 +156,6 @@ const TreasuryPage = () => {
 
   const toggleBalance = () => setIsBalanceVisible(!isBalanceVisible)
 
-  // Top tokens: sort by value (as number), take top 5
   const topTokens = tokensDisplay
     .slice()
     .sort((a, b) => {
@@ -224,8 +223,21 @@ const TreasuryPage = () => {
             topTokens={topTokens}
           />
 
-          <div className="w-full overflow-x-auto">
-            <Tabs loadingTokenData={loadingTokenData} tokens={tokensDisplay} />
+          <div
+            className="w-full flex min-w-0"
+            style={{
+              maxWidth: '100vw',
+              overflowX: 'auto',
+              WebkitOverflowScrolling: 'touch',
+              paddingBottom: '1rem',
+            }}
+          >
+            <div className="min-w-0 flex-1">
+              <Tabs
+                loadingTokenData={loadingTokenData}
+                tokens={tokensDisplay}
+              />
+            </div>
           </div>
         </div>
 
