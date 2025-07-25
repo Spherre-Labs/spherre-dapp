@@ -8,7 +8,10 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 import Image from 'next/image'
-import { ListFilter } from 'lucide-react'
+import { ChevronDown, ListFilter } from 'lucide-react'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { cn } from '@/lib/utils'
+import { Input } from '@/components/ui/input'
 
 interface FilterPopoverProps {
   filters: {
@@ -41,9 +44,11 @@ const predefinedTokens = [
 const CollapsibleSection = ({
   title,
   children,
-  defaultOpen = false
+  defaultOpen = false,
+  className
 }: {
   title: string
+  className?: string
   children: React.ReactNode
   defaultOpen?: boolean
 }) => {
@@ -53,21 +58,27 @@ const CollapsibleSection = ({
     <div className="border-b border-theme-border">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full flex items-center justify-between p-4 text-left hover:bg-theme-bg-secondary transition-colors duration-200"
+        className="w-full flex items-center mt-2 mb-0 justify-between p-2 rounded-md text-left hover:bg-theme-bg-secondary transition-colors duration-200"
       >
-        <span className="text-theme font-medium">{title}</span>
-        <svg
+        <span className="text-theme font-semibold text-base">{title}</span>
+        <ChevronDown
           className={`w-4 h-4 text-theme-secondary transition-transform duration-200 ${isOpen ? 'rotate-180' : ''
             }`}
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-        </svg>
+        />
       </button>
-      {isOpen && <div className="px-4 pb-4">{children}</div>}
+      {isOpen && <div className={cn('px-2 pb-4', className)}>{children}</div>}
     </div>
+  )
+}
+
+const FilterButton = ({ title, onClick, isActive }: { title: string, onClick: () => void, isActive: boolean }) => {
+  return (
+    <button className={`px-[14px] mt-2 py-[10px] rounded-lg text-sm text-white font-medium transition-colors bg-theme-bg-secondary duration-200 ${isActive
+      ? 'border-2 border-primary bg-[#8C62F238]'
+      : 'hover:border-primary'
+      }`} onClick={onClick}>
+      {title}
+    </button>
   )
 }
 
@@ -125,14 +136,14 @@ export default function FilterPopover({ filters, onFiltersChange }: FilterPopove
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <button className="flex items-center gap-2 bg-theme-bg-tertiary border border-theme-border text-theme px-4 py-2 rounded-lg hover:bg-theme-border transition-colors duration-200">
+        <button className="flex items-center gap-2 bg-theme-bg-tertiary border border-theme-border text-theme px-4 py-2 rounded-lg hover:bg-theme-border transition-colors duration-200 font-semibold font-sans">
           <ListFilter className="w-4 h-4" />
           Filters
         </button>
       </PopoverTrigger>
-      <PopoverContent className="w-[350px] bg-[#101213] border border-theme-border shadow-2xl" align="end">
+      <PopoverContent className="w-[360px] bg-[#101213] border border-theme-border shadow-2xl font-sans" align="end">
         {/* Header */}
-        <div className="flex items-center justify-between pb-4 border-b border-theme-border">
+        <div className="flex items-center justify-between pb-2">
           <h2 className="text-theme font-semibold text-lg">Filters</h2>
           <button
             onClick={clearAllFilters}
@@ -146,90 +157,86 @@ export default function FilterPopover({ filters, onFiltersChange }: FilterPopove
         <div className="mt-4 max-h-[60vh] overflow-y-auto scrollbar-hide">
           {/* Status Filter */}
           <CollapsibleSection title="Status" defaultOpen>
-            <div className="grid grid-cols-2 gap-2">
+            <div className="flex flex-wrap gap-5">
               {['All', 'Pending', 'Executed', 'Rejected'].map((status) => (
-                <button
+                <FilterButton
                   key={status}
+                  title={status}
                   onClick={() => handleStatusChange(status as typeof filters.status)}
-                  className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-200 ${filters.status === status
-                    ? 'bg-primary text-white'
-                    : 'bg-theme-bg-tertiary text-theme-secondary hover:bg-theme-border'
-                    }`}
-                >
-                  {status}
-                </button>
+                  isActive={filters.status === status}
+                />
               ))}
             </div>
           </CollapsibleSection>
 
           {/* Transaction Type Filter */}
           <CollapsibleSection title="Transaction Type" defaultOpen>
-            <div className="grid grid-cols-2 gap-2">
+            <div className="flex flex-wrap gap-5">
               {[
                 { value: 'All', label: 'All' },
+                { value: TransactionType.TOKEN_SEND, label: 'Withdraw' },
                 { value: TransactionType.MEMBER_ADD, label: 'Add Member' },
                 { value: TransactionType.MEMBER_REMOVE, label: 'Remove Member' },
-                { value: TransactionType.TOKEN_SEND, label: 'Send Token' },
                 { value: TransactionType.NFT_SEND, label: 'Send NFT' },
                 { value: TransactionType.THRESHOLD_CHANGE, label: 'Threshold Change' },
                 { value: TransactionType.SMART_TOKEN_LOCK, label: 'Smart Lock' },
               ].map((type) => (
-                <button
+                <FilterButton
                   key={type.value}
+                  title={type.label}
                   onClick={() => handleTypeChange(type.value as typeof filters.type)}
-                  className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-200 ${filters.type === type.value
-                    ? 'bg-primary text-white'
-                    : 'bg-theme-bg-tertiary text-theme-secondary hover:bg-theme-border'
-                    }`}
-                >
-                  {type.label}
-                </button>
+                  isActive={filters.type === type.value}
+                />
               ))}
             </div>
           </CollapsibleSection>
 
           {/* Amount Filter */}
-          <CollapsibleSection title="Amount">
-            <div className="space-y-3">
+          <CollapsibleSection title="Amount" className="pr-2">
+            <div className="flex flex-col gap-5">
               {/* Token Selector */}
               <div>
-                <select
+                <Select
                   value={filters.amountToken}
-                  onChange={(e) => handleAmountChange('amountToken', e.target.value)}
-                  className="w-full bg-theme-bg-tertiary border border-theme-border rounded-lg px-3 py-2 text-theme focus:outline-none focus:ring-2 focus:ring-primary"
+                  onValueChange={(value) => handleAmountChange('amountToken', value)}
                 >
-                  <option value="STRK">STRK</option>
-                  <option value="ETH">ETH</option>
-                  <option value="USDT">USDT</option>
-                </select>
+                  <SelectTrigger className="w-full border border-theme-border rounded-lg px-4 py-[14px] h-12 text-theme focus:outline-none focus:ring-2 focus:ring-primary">
+                    <SelectValue placeholder="Select a token" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="STRK">STRK</SelectItem>
+                    <SelectItem value="ETH">ETH</SelectItem>
+                    <SelectItem value="USDT">USDT</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
 
               {/* Min/Max Inputs */}
-              <div className="flex gap-2">
-                <input
+              <div className="flex items-center justify-between gap-2 px-1">
+                <Input
                   type="number"
                   placeholder="Min"
                   value={filters.minAmount}
                   onChange={(e) => handleAmountChange('minAmount', e.target.value)}
-                  className="flex-1 bg-theme-bg-tertiary border border-theme-border rounded-lg px-3 py-2 text-theme placeholder-theme-secondary focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="bg-theme-bg-tertiary rounded-lg px-4 py-[14px] text-base text-theme placeholder-theme-secondary focus:outline-none"
                 />
-                <span className="flex items-center text-theme-secondary">to</span>
-                <input
+                <span className="text-theme font-normal text-base">to</span>
+                <Input
                   type="number"
                   placeholder="Max"
                   value={filters.maxAmount}
                   onChange={(e) => handleAmountChange('maxAmount', e.target.value)}
-                  className="flex-1 bg-theme-bg-tertiary border border-theme-border rounded-lg px-3 py-2 text-theme placeholder-theme-secondary focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="bg-theme-bg-tertiary rounded-lg px-4 py-[14px] text-base text-theme placeholder-theme-secondary focus:outline-none"
                 />
               </div>
             </div>
           </CollapsibleSection>
 
           {/* Member Filter */}
-          <CollapsibleSection title="Member">
-            <div className="space-y-3">
+          <CollapsibleSection title="Member" className='px-0 pr-2'>
+            <div className="flex flex-col gap-5">
               {/* Search Input */}
-              <div className="relative">
+              <div className="relative mt-1">
                 <input
                   type="text"
                   placeholder="Search"
@@ -275,8 +282,8 @@ export default function FilterPopover({ filters, onFiltersChange }: FilterPopove
           </CollapsibleSection>
 
           {/* Token Filter */}
-          <CollapsibleSection title="Token">
-            <div className="space-y-3">
+          <CollapsibleSection title="Token" className='px-0 pr-2'>
+            <div className="flex flex-col gap-5">
               {/* Search Input */}
               <div className="relative">
                 <input
