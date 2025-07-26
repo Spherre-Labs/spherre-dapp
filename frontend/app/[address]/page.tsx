@@ -15,6 +15,7 @@ import { useRouter } from 'next/navigation'
 export default function DashboardPage() {
   useTheme()
   const [open, setOpen] = useState(false)
+  const [depositOpen, setDepositOpen] = useState(false)
   const [mounted, setMounted] = useState(false)
   const { accountAddress } = useContext(SpherreAccountContext)
   const { tokensDisplay, loadingTokenData } = useTokenBalances()
@@ -45,6 +46,14 @@ export default function DashboardPage() {
 
   const handleClose = () => {
     setOpen(false)
+  }
+
+  const handleDepositOpen = () => {
+    setDepositOpen(true)
+  }
+
+  const handleDepositClose = () => {
+    setDepositOpen(false)
   }
 
   const handleSelectOption = () => {
@@ -92,9 +101,13 @@ export default function DashboardPage() {
             >
               Withdraw
             </Button>
-
-            <DepositModal />
-
+            <Button
+              variant="primary"
+              icon="/card-recive-linear.svg"
+              onClick={handleDepositOpen}
+            >
+              Deposit
+            </Button>
             <Button variant="secondary" icon="/arrows-exchange.svg">
               Trade
             </Button>
@@ -189,6 +202,7 @@ export default function DashboardPage() {
         handleClose={handleClose}
         onSelectOption={handleSelectOption}
       />
+      <DepositModal open={depositOpen} onClose={handleDepositClose} />
     </div>
   )
 }
