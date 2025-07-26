@@ -32,7 +32,7 @@ export default function WithdrawalStepOne({
       <div className="mb-6">
         <p className="text-gray-400 mb-2">From:</p>
         <AccountSelector account={accountData} />
-        <div className="flex items-center text-ash text-sm mt-2">
+        <div className="flex items-center text-theme-text-secondary text-sm mt-2">
           <svg
             width="16"
             height="16"

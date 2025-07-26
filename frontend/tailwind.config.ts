@@ -1,7 +1,7 @@
 import type { Config } from 'tailwindcss'
 import tailwindcssAnimate from 'tailwindcss-animate'
 import scrollbarHide from 'tailwind-scrollbar-hide'
-import { yellow } from '@mui/material/colors'
+
 
 export default {
   darkMode: ['class'],

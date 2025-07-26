@@ -111,7 +111,7 @@ export default function WithdrawPage() {
           <h1 className="text-xl sm:text-3xl font-bold text-center mb-1 sm:mb-2">
             Withdraw to Another Wallet
           </h1>
-          <p className="text-ash text-center text-sm sm:text-base mb-6 sm:mb-8">
+          <p className="text-theme-text-secondary text-center text-sm sm:text-base mb-6 sm:mb-8">
             {currentStep === 1 &&
               'Please select the account you wish to withdraw from Spherre and choose a recipient.'}
             {currentStep === 2 &&
@@ -156,13 +156,12 @@ export default function WithdrawPage() {
                 (!isValidAmount(amount) && currentStep === 2) ||
                 (currentStep === 3 && !isAddressValid)
               }
-              className={`py-2 sm:py-3 px-3 sm:px-4 text-sm sm:text-base rounded-lg disabled:opacity-50 disabled:cursor-not-allowed ${
-                (isAddressValid && currentStep === 1) ||
-                (isValidAmount(amount) && currentStep === 2) ||
-                (currentStep === 3 && isAddressValid)
+              className={`py-2 sm:py-3 px-3 sm:px-4 text-sm sm:text-base rounded-lg disabled:opacity-50 disabled:cursor-not-allowed ${(isAddressValid && currentStep === 1) ||
+                  (isValidAmount(amount) && currentStep === 2) ||
+                  (currentStep === 3 && isAddressValid)
                   ? 'bg-primary hover:bg-purple-900'
                   : 'bg-primary/50 cursor-not-allowed'
-              } transition-colors`}
+                } transition-colors`}
             >
               {currentStep === 3 ? 'Execute' : 'Next'}
             </button>

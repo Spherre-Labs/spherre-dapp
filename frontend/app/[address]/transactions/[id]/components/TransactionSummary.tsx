@@ -1,7 +1,13 @@
 'use client'
-import React from 'react'
+import React, { ReactNode } from 'react'
 import { useTheme } from '@/app/context/theme-context-provider'
-import { type TransactionDisplayInfo } from '@/lib/contracts/types'
+import { TransactionType, type TransactionDisplayInfo } from '@/lib/contracts/types'
+import Image from 'next/image'
+import withdraw from '../../../../../public/Images/withdraw-1.png'
+import swap from '../../../../../public/Images/swap.png'
+import members from '../../../../../public/Images/Members.png'
+import limit from '../../../../../public/Images/limit.png'
+
 
 export const TransactionSummary = ({
   transactionInfo,
@@ -10,76 +16,85 @@ export const TransactionSummary = ({
 }) => {
   useTheme()
 
+  // Define type-specific elements
+  const getTypeIcon = (type: TransactionType): ReactNode => {
+    switch (type) {
+      case TransactionType.TOKEN_SEND:
+        return (
+          <Image src={withdraw} width={30} height={30} alt="token transfer" />
+        )
+      case TransactionType.NFT_SEND:
+        return <Image src={swap} width={30} height={30} alt="nft transfer" />
+      case TransactionType.MEMBER_ADD:
+      case TransactionType.MEMBER_REMOVE:
+      case TransactionType.MEMBER_PERMISSION_EDIT:
+        return <Image src={members} width={30} height={30} alt="member action" />
+      case TransactionType.THRESHOLD_CHANGE:
+        return (
+          <Image src={limit} width={30} height={30} alt="threshold change" />
+        )
+      case TransactionType.SMART_TOKEN_LOCK:
+        return <Image src={swap} width={30} height={30} alt="smart lock" />
+      default:
+        return <Image src={withdraw} width={30} height={30} alt="transaction" />
+    }
+  }
+
+  const getTransactionStatus = (status: string): ReactNode => {
+
+    switch (status) {
+      case 'Pending':
+        return <p className='text-light-yellow bg-[#FFD7001F] font-medium text-sm w-fit px-2 py-0.5 rounded-full'>
+          {`${status}`}
+        </p>
+      case 'Executed':
+        return <p className='text-green bg-[#19B3601F] font-medium text-sm w-fit px-2 py-0.5 rounded-full'>
+          {`${status}`}
+        </p>
+      case 'Rejected':
+        return <p className='text-red-500 bg-[#FF00001F] font-medium text-sm w-fit px-2 py-0.5 rounded-full'>
+          {`${status}`}
+        </p>
+      default:
+        return <p className='text-gray bg-[#8080801F] font-medium text-sm w-fit px-2 py-0.5 rounded-full'>
+          {`${status}`}
+        </p>
+    }
+  }
+
   return (
-    <section className="mb-6">
-      <h2 className="text-lg font-medium text-theme mb-4 transition-colors duration-300">
-        Transaction Summary
-      </h2>
-      <div className="bg-theme-bg-tertiary border border-theme-border p-4 rounded-lg transition-colors duration-300">
-        <div className="flex items-center mb-3">
-          <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center mr-3">
-            <svg
-              className="w-4 h-4 text-white"
-              fill="currentColor"
-              viewBox="0 0 20 20"
-            >
-              <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-          </div>
-          <div>
-            <h3 className="text-theme font-medium transition-colors duration-300">
-              {transactionInfo.title}
-            </h3>
-            <p className="text-theme-secondary text-sm transition-colors duration-300">
-              {transactionInfo.subtitle}
-            </p>
-          </div>
+    <section className="mb-6 px-[18px] flex justify-between items-center py-6 border-dashed border border-theme-border">
+      <div className="flex items-center gap-3">
+        <div className='w-12 h-12 rounded-full p-2.5 bg-theme-bg-secondary flex items-center justify-center'>
+          {getTypeIcon(transactionInfo.transaction.transactionType)}
+        </div>
+        <div className='flex flex-col gap-1 font-sans'>
+          <p className='text-theme-secondary font-medium'>
+            {transactionInfo.title} {` `}
+            <span className='text-theme font-bold'>{`${transactionInfo.amount} ${transactionInfo.token}`}</span>
+            {` `}
+            {`to`} {` `}
+            <span className='text-theme font-bold'>{`${transactionInfo.recipient}`}</span>
+          </p>
+          {getTransactionStatus(transactionInfo.transaction.status)}
         </div>
 
-        {/* Additional details based on transaction type */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-          {transactionInfo.amount && (
-            <div className="flex justify-between">
-              <span className="text-theme-secondary">Amount:</span>
-              <span className="text-theme font-medium">
-                {transactionInfo.amount}
-              </span>
-            </div>
-          )}
+      </div>
 
-          {transactionInfo.recipient && (
-            <div className="flex justify-between">
-              <span className="text-theme-secondary">Recipient:</span>
-              <span className="text-theme font-medium">
-                {transactionInfo.recipient}
-              </span>
-            </div>
-          )}
 
-          {transactionInfo.token && (
-            <div className="flex justify-between">
-              <span className="text-theme-secondary">Token:</span>
-              <span className="text-theme font-medium">
-                {transactionInfo.token}
-              </span>
+      <div className="">
+        {transactionInfo.amount && (
+          <div className='flex flex-col font-sans'>
+            <div className='text-theme-secondary items-center flex gap-3 font-medium'>
+              <p className='text-theme-secondary font-medium'>{`You send`} {` `}</p>
+              <p><span className='text-theme font-bold text-2xl'>{`${transactionInfo.amount}`}</span>
+                <span className='text-2xl'>{` ${transactionInfo.token}`}</span></p>
             </div>
-          )}
-
-          <div className="flex justify-between">
-            <span className="text-theme-secondary">Status:</span>
-            <span
-              className={`font-medium ${
-                transactionInfo.transaction.status === 'Pending'
-                  ? 'text-yellow-400'
-                  : transactionInfo.transaction.status === 'Executed'
-                    ? 'text-green-400'
-                    : 'text-red-500'
-              }`}
-            >
-              {transactionInfo.transaction.status}
+            <span className=" font-semibold text-xl text-theme-secondary text-right">
+              130 USD
             </span>
           </div>
-        </div>
+        )}
       </div>
     </section>
   )

@@ -60,6 +60,154 @@ interface UseTransactionIntegrationResult {
   rejectedTransactions: TransactionDisplayInfo[]
 }
 
+const mockTransactions: TransactionDisplayInfo[] = [
+  {
+    transaction: {
+      id: BigInt(1),
+      status: 'Pending',
+      proposer: 'a2gjaj...7wyw',
+      executor: undefined,
+      approved: ['hichens'],
+      rejected: [],
+      dateCreated: BigInt(Math.floor(Date.now() / 1000) - 86400),
+      dateExecuted: undefined,
+      transactionType: TransactionType.TOKEN_SEND,
+      data: {
+        recipient: 'a2gjaj...7wyw',
+        amount: BigInt(25000000000000000000),
+        token: '0x123',
+
+      },
+      project: 'Backstage Boys',
+    },
+    title: 'Withdraw',
+    subtitle: 'Send STRK tokens',
+    amount: '25',
+    token: 'STRK',
+    recipient: 'a2gjaj...7wyw',
+  },
+  {
+    transaction: {
+      id: BigInt(2),
+      status: 'Executed',
+      proposer: 'a2gjaj...7wyw',
+      executor: 'denzel',
+      approved: ['hichens', 'denzel'],
+      rejected: [],
+      dateCreated: BigInt(Math.floor(Date.now() / 1000) - 86400),
+      dateExecuted: BigInt(Math.floor(Date.now() / 1000) - 3600),
+      transactionType: TransactionType.NFT_SEND,
+      data: {
+        recipient: 'a2gjaj...7wyw',
+        amount: BigInt(25000000000000000000),
+        token: '0x123',
+      },
+      project: 'Backstage Boys',
+      transaction_id: '433344...7uyrr',
+
+    },
+    title: 'Swap',
+    subtitle: 'Exchange tokens',
+    amount: '25',
+    token: 'STRK',
+    recipient: 'a2gjaj...7wyw',
+  },
+  {
+    transaction: {
+      id: BigInt(3),
+      status: 'Pending',
+      proposer: 'a2gjaj...7wyw',
+      executor: undefined,
+      approved: [],
+      rejected: [],
+      dateCreated: BigInt(Math.floor(Date.now() / 1000) - 172800),
+      dateExecuted: undefined,
+      transactionType: TransactionType.TOKEN_SEND,
+      data: {
+        recipient: 'a2gjaj...7wyw',
+        amount: BigInt(25000000000000000000),
+        token: '0x123',
+      },
+      project: 'Backstage Boys',
+
+    },
+    title: 'Withdraw',
+    subtitle: 'Send STRK tokens',
+    amount: '25',
+    token: 'STRK',
+    recipient: 'a2gjaj...7wyw',
+  },
+  {
+    transaction: {
+      id: BigInt(4),
+      status: 'Executed',
+      proposer: 'a2gjaj...7wyw',
+      executor: 'jives',
+      approved: ['hichens', 'jives'],
+      rejected: [],
+      dateCreated: BigInt(Math.floor(Date.now() / 1000) - 259200),
+      dateExecuted: BigInt(Math.floor(Date.now() / 1000) - 172800),
+      transactionType: TransactionType.TOKEN_SEND,
+      data: {
+        recipient: 'a2gjaj...7wyw',
+        amount: BigInt(25000000000000000000),
+        token: '0x123',
+      },
+      project: 'Backstage Boys',
+      transaction_id: '433344...7uyrr',
+
+    },
+    title: 'Limit Swap',
+    subtitle: 'Automated token exchange',
+    amount: '25',
+    token: 'STRK',
+    recipient: 'a2gjaj...7wyw',
+  },
+  {
+    transaction: {
+      id: BigInt(5),
+      status: 'Executed',
+      proposer: 'a2gjaj...7wyw',
+      executor: 'kerkeze',
+      approved: ['denzel', 'kerkeze'],
+      rejected: [],
+      dateCreated: BigInt(Math.floor(Date.now() / 1000) - 864000),
+      dateExecuted: BigInt(Math.floor(Date.now() / 1000) - 863000),
+      transactionType: TransactionType.MEMBER_ADD,
+      data: {
+        member: 'a2gjaj...7wyw',
+        permissions: 7,
+      },
+      project: 'Backstage Boys',
+      transaction_id: '433344...7uyrr',
+    },
+    title: 'Add Member',
+    subtitle: 'New member added',
+    recipient: 'a2gjaj...7wyw',
+  },
+  {
+    transaction: {
+      id: BigInt(6),
+      status: 'Rejected',
+      proposer: 'a2gjaj...7wyw',
+      executor: undefined,
+      approved: ['hichens'],
+      rejected: ['denzel', 'jives'],
+      dateCreated: BigInt(Math.floor(Date.now() / 1000) - 864000),
+      dateExecuted: undefined,
+      transactionType: TransactionType.MEMBER_REMOVE,
+      data: {
+        member_address: 'a2gjaj...7wyw',
+      },
+      project: 'Backstage Boys',
+      transaction_id: '433344...7uyrr',
+    },
+    title: 'Remove Member',
+    subtitle: 'Member removal request',
+    recipient: 'a2gjaj...7wyw',
+  },
+]
+
 export function useTransactionIntegration(
   options: UseTransactionIntegrationOptions = {},
 ): UseTransactionIntegrationResult {
@@ -405,140 +553,6 @@ export function useTransactionIntegration(
 
   // Return mock data if enabled
   if (USE_MOCK_DATA) {
-    const mockTransactions: TransactionDisplayInfo[] = [
-      {
-        transaction: {
-          id: BigInt(1),
-          status: 'Pending',
-          proposer: 'a2gjaj...7wyw',
-          executor: undefined,
-          approved: ['hichens'],
-          rejected: [],
-          dateCreated: BigInt(Math.floor(Date.now() / 1000) - 86400), // Yesterday
-          dateExecuted: undefined,
-          transactionType: TransactionType.TOKEN_SEND,
-          data: {
-            recipient: 'a2gjaj...7wyw',
-            amount: BigInt(25000000000000000000),
-            token: '0x123',
-          }
-        },
-        title: 'Withdraw',
-        subtitle: 'Send STRK tokens',
-        amount: '25',
-        token: 'STRK',
-        recipient: 'a2gjaj...7wyw',
-      },
-      {
-        transaction: {
-          id: BigInt(2),
-          status: 'Executed',
-          proposer: 'a2gjaj...7wyw',
-          executor: 'denzel',
-          approved: ['hichens', 'denzel'],
-          rejected: [],
-          dateCreated: BigInt(Math.floor(Date.now() / 1000) - 86400), // Yesterday
-          dateExecuted: BigInt(Math.floor(Date.now() / 1000) - 3600),
-          transactionType: TransactionType.NFT_SEND,
-          data: {
-            recipient: 'a2gjaj...7wyw',
-            amount: BigInt(25000000000000000000),
-            token: '0x123',
-          }
-        },
-        title: 'Swap',
-        subtitle: 'Exchange tokens',
-        amount: '25',
-        token: 'STRK',
-        recipient: 'a2gjaj...7wyw',
-      },
-      {
-        transaction: {
-          id: BigInt(3),
-          status: 'Pending',
-          proposer: 'a2gjaj...7wyw',
-          executor: undefined,
-          approved: [],
-          rejected: [],
-          dateCreated: BigInt(Math.floor(Date.now() / 1000) - 172800), // 2 days ago
-          dateExecuted: undefined,
-          transactionType: TransactionType.TOKEN_SEND,
-          data: {
-            recipient: 'a2gjaj...7wyw',
-            amount: BigInt(25000000000000000000),
-            token: '0x123',
-          }
-        },
-        title: 'Withdraw',
-        subtitle: 'Send STRK tokens',
-        amount: '25',
-        token: 'STRK',
-        recipient: 'a2gjaj...7wyw',
-      },
-      {
-        transaction: {
-          id: BigInt(4),
-          status: 'Executed',
-          proposer: 'a2gjaj...7wyw',
-          executor: 'jives',
-          approved: ['hichens', 'jives'],
-          rejected: [],
-          dateCreated: BigInt(Math.floor(Date.now() / 1000) - 259200), // 3 days ago
-          dateExecuted: BigInt(Math.floor(Date.now() / 1000) - 172800),
-          transactionType: TransactionType.TOKEN_SEND,
-          data: {
-            recipient: 'a2gjaj...7wyw',
-            amount: BigInt(25000000000000000000),
-            token: '0x123',
-          }
-        },
-        title: 'Limit Swap',
-        subtitle: 'Automated token exchange',
-        amount: '25',
-        token: 'STRK',
-        recipient: 'a2gjaj...7wyw',
-      },
-      {
-        transaction: {
-          id: BigInt(5),
-          status: 'Executed',
-          proposer: 'a2gjaj...7wyw',
-          executor: 'kerkeze',
-          approved: ['denzel', 'kerkeze'],
-          rejected: [],
-          dateCreated: BigInt(Math.floor(Date.now() / 1000) - 864000), // 10 days ago
-          dateExecuted: BigInt(Math.floor(Date.now() / 1000) - 863000),
-          transactionType: TransactionType.MEMBER_ADD,
-          data: {
-            member: 'a2gjaj...7wyw',
-            permissions: 7,
-          }
-        },
-        title: 'Add Member',
-        subtitle: 'New member added',
-        recipient: 'a2gjaj...7wyw',
-      },
-      {
-        transaction: {
-          id: BigInt(6),
-          status: 'Rejected',
-          proposer: 'a2gjaj...7wyw',
-          executor: undefined,
-          approved: ['hichens'],
-          rejected: ['denzel', 'jives'],
-          dateCreated: BigInt(Math.floor(Date.now() / 1000) - 864000), // 10 days ago
-          dateExecuted: undefined,
-          transactionType: TransactionType.MEMBER_REMOVE,
-          data: {
-            member_address: 'a2gjaj...7wyw',
-          }
-        },
-        title: 'Remove Member',
-        subtitle: 'Member removal request',
-        recipient: 'a2gjaj...7wyw',
-      },
-    ]
-
     const mockGroupedTransactions = mockTransactions.reduce((acc, txInfo) => {
       const dateKey = new Date(Number(txInfo.transaction.dateCreated) * 1000).toLocaleDateString()
       if (!acc[dateKey]) {
@@ -583,6 +597,8 @@ export function useTransactionDetails(transactionId: string | bigint) {
     error: errorBase,
     refetch: refetchBase,
   } = useTransactionList(accountAddress!)
+
+  const USE_MOCK_DATA = true
 
   // Find the specific transaction from the list
   const targetTransaction = useMemo(() => {
@@ -709,6 +725,15 @@ export function useTransactionDetails(transactionId: string | bigint) {
     isLoadingEditPermission ||
     isLoadingSmartLock ||
     isLoadingThreshold
+
+  if (USE_MOCK_DATA) {
+    return {
+      transaction: mockTransactions.find(tx => tx.transaction.id.toString() === transactionId.toString()) || null,
+      isLoading: false,
+      error: null,
+      refetch: () => { },
+    }
+  }
 
   return {
     transaction: processedTransaction,

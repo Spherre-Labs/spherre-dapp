@@ -160,7 +160,7 @@ export function formatTokenAmount(
 
 export function formatTimestamp(timestamp: bigint): string {
   const date = new Date(Number(timestamp) * 1000)
-  return date.toLocaleDateString()
+  return date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true })
 }
 
 export function formatTime(timestamp: bigint): string {

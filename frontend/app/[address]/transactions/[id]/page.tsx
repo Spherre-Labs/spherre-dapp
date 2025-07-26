@@ -71,7 +71,7 @@ export default function TransactionDetailsPage({ params }: PageProps) {
   }
 
   return (
-    <div className="bg-theme-bg-secondary border border-theme-border text-theme p-6 rounded-lg h-[95.5vh] transition-colors duration-300">
+    <div className="p-2 rounded-lg h-[95.5vh] transition-colors duration-300">
       <TransactionDetailsHeader
         status={transactionInfo.transaction.status}
         transactionId={transactionInfo.transaction.id}
