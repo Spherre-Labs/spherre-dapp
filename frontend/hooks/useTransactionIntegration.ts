@@ -259,8 +259,10 @@ export function useTransactionIntegration(
 
           case TransactionType.SMART_TOKEN_LOCK: {
             transactionData = transactionDataArrays.smartLock?.find(
-              (t: SmartTokenLockTransaction) =>
-                t.transaction_id.toString() === baseTransaction.id.toString(),
+              (t: SmartTokenLockTransaction) => {
+                const txId = getTransactionId(t)
+                return txId?.toString() === baseTransaction.id.toString()
+              },
             )
             break
           }
