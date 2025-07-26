@@ -13,7 +13,7 @@ const TreasuryStatscard: React.FC<TreasuryStatscardProps> = ({
   totalNFTs,
 }) => {
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-[15px] w-full">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-[15px] md:w-full mt-4 mx-1">
       <div className="bg-theme-bg-tertiary border border-theme-border flex items-center rounded-[10px] py-4 sm:py-6 lg:py-[25px] px-3 sm:px-6 lg:px-[28px] transition-colors duration-300">
         <div className="flex items-center justify-center rounded-xl w-10 h-10 sm:w-12 sm:h-12 bg-[#29292A] flex-shrink-0">
           <Image

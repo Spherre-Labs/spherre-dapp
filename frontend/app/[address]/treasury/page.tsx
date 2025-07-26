@@ -186,7 +186,7 @@ const TreasuryPage = () => {
   }
 
   return (
-    <div className="py-4 sm:py-6 lg:py-8 px-1 sm:px-4 lg:px-6 rounded-[10px] flex flex-col gap-y-4 sm:gap-y-6 lg:gap-y-8 border-theme-border border-2 mx-1 sm:mx-4 overflow-x-hidden w-full min-h-[90vh] bg-theme-bg-secondary transition-colors duration-300">
+    <div className=" sm:py-6 lg:py-8 p-2 sm:px-4 lg:px-6 rounded-[10px] flex flex-col gap-y-4 sm:gap-y-6 lg:gap-y-8 border-theme-border border-2 mx-1 sm:mx-4 overflow-x-hidden w-full min-h-[90vh] bg-theme-bg-secondary transition-colors duration-300">
       <ErrorBoundary
         errorComponent={({ error }) => (
           <div className="text-red-500 py-4 sm:py-6 lg:py-8 px-3 sm:px-6 lg:px-[28px]">
@@ -199,7 +199,7 @@ const TreasuryPage = () => {
           </div>
         )}
       >
-        <div className="space-y-4 sm:space-y-6 lg:space-y-8 w-full">
+        <div className=" lg:space-y-8 w-full">
           <TreasuryHeader
             balance={totalBalance.toFixed(2)}
             isBalanceVisible={isBalanceVisible}
