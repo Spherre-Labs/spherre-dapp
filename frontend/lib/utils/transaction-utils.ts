@@ -36,19 +36,94 @@ export function transformTransaction(
 ): UnifiedTransaction {
   return {
     id: baseTransaction.id,
-    status: mapTransactionStatus(baseTransaction.tx_status),
-    proposer: baseTransaction.proposer,
-    executor: baseTransaction.executor || undefined,
-    approved: baseTransaction.approved,
-    rejected: baseTransaction.rejected,
+    status: baseTransaction.tx_status.activeVariant(),
+    proposer: contractAddressToHex(baseTransaction.proposer),
+    executor: contractAddressToHex(baseTransaction.executor) || undefined,
+    approved: baseTransaction.approved.map((approver) => contractAddressToHex(approver)),
+    rejected: baseTransaction.rejected.map((rejector) => contractAddressToHex(rejector)),
     dateCreated: baseTransaction.date_created,
     dateExecuted:
       baseTransaction.date_executed > BigInt(0)
         ? baseTransaction.date_executed
         : undefined,
-    transactionType: baseTransaction.tx_type,
-    data: transactionData,
+    transactionType: baseTransaction.tx_type.activeVariant(),
+    data: transactionData, //TODO: Transform this
   }
+}
+
+// TODO: MAKE THIS FUNCTION WORK PROPERLY
+export function transformTransactionData(
+  transactionData: TransactionData
+) {
+
+  switch(transactionData.type) {
+    case TransactionType.TOKEN_SEND: {
+      return {
+        type: transactionData.type,
+        token: contractAddressToHex(transactionData.token),
+        amount: transactionData.amount,
+        recipient: contractAddressToHex(transactionData.recipient),
+      }
+      break;
+    }
+
+    case TransactionType.MEMBER_ADD: {
+      return {
+        type: transactionData.type,
+        member: contractAddressToHex(transactionData.member),
+        permissions: transactionData.permissions,
+      }
+      break;
+    }
+
+    case TransactionType.MEMBER_PERMISSION_EDIT: {
+      return {
+        type: transactionData.type,
+        member: contractAddressToHex(transactionData.member),
+        new_permissions: transactionData.new_permissions,
+      }
+      break;
+    }
+
+    case TransactionType.MEMBER_REMOVE: {
+      return {
+        type: transactionData.type,
+        member_address: contractAddressToHex(transactionData.member_address),
+      }
+      break;
+    }
+
+    case TransactionType.NFT_SEND: {
+      return {
+        type: transactionData.type,
+        nft_contract: contractAddressToHex(transactionData.nft_contract),
+        token_id: transactionData.token_id,
+        recipient: contractAddressToHex(transactionData.recipient),
+      }
+      break;
+    }
+
+    case TransactionType.SMART_TOKEN_LOCK: {
+      return {
+        type: transactionData.type,
+        token: contractAddressToHex(transactionData.token),
+        amount: transactionData.amount,
+        duration: transactionData.duration,
+        transaction_id: transactionData.transaction_id,
+      }
+      break;
+    }
+
+    case TransactionType.THRESHOLD_CHANGE: {
+      return {
+        type: transactionData.type,
+        new_threshold: transactionData.new_threshold,
+      }
+      break;
+    }
+  }
+
+  // return transformedData
 }
 
 // Generate display information for transactions
@@ -65,53 +140,53 @@ export function getTransactionDisplayInfo(
     case TransactionType.TOKEN_SEND: {
       const tokenData = transaction.data as TokenTransactionData
       title = 'Token Transfer'
-      subtitle = `Send ${formatTokenAmount(tokenData.amount)} tokens`
-      amount = formatTokenAmount(tokenData.amount)
-      recipient = formatAddress(tokenData.recipient)
-      token = formatAddress(tokenData.token)
+      subtitle = `Send ${formatTokenAmount(tokenData?.amount)} tokens`
+      amount = formatTokenAmount(tokenData?.amount)
+      recipient = formatAddress(contractAddressToHex(tokenData?.recipient))
+      token = formatAddress(contractAddressToHex(tokenData?.token))
       break
     }
     case TransactionType.NFT_SEND: {
       const nftData = transaction.data as NFTTransactionData
       title = 'NFT Transfer'
-      subtitle = `Send NFT #${nftData.token_id}`
-      recipient = formatAddress(nftData.recipient)
+      subtitle = `Send NFT #${nftData?.token_id}`
+      recipient = formatAddress(contractAddressToHex(nftData?.recipient))
       break
     }
     case TransactionType.MEMBER_ADD: {
       const memberAddData = transaction.data as MemberAddData
       title = 'Add Member'
-      subtitle = `Add ${formatAddress(memberAddData.member)} as member`
-      recipient = formatAddress(memberAddData.member)
+      subtitle = `Add ${formatAddress(contractAddressToHex(memberAddData?.member))} as member`
+      recipient = formatAddress(contractAddressToHex(memberAddData?.member))
       break
     }
     case TransactionType.MEMBER_REMOVE: {
       const memberRemoveData = transaction.data as MemberRemoveData
       title = 'Remove Member'
-      subtitle = `Remove ${formatAddress(memberRemoveData.member_address)}`
-      recipient = formatAddress(memberRemoveData.member_address)
+      subtitle = `Remove ${formatAddress(contractAddressToHex(memberRemoveData?.member_address))}`
+      recipient = formatAddress(contractAddressToHex(memberRemoveData?.member_address))
       break
     }
     case TransactionType.MEMBER_PERMISSION_EDIT: {
       const permissionData = transaction.data as EditPermissionTransaction
       title = 'Edit Permissions'
-      subtitle = `Update permissions for ${formatAddress(permissionData.member)}`
-      recipient = formatAddress(permissionData.member)
+      subtitle = `Update permissions for ${formatAddress(contractAddressToHex(permissionData?.member))}`
+      recipient = formatAddress(contractAddressToHex(permissionData?.member))
       break
     }
     case TransactionType.THRESHOLD_CHANGE: {
       const thresholdData = transaction.data as ThresholdChangeData
       title = 'Change Threshold'
-      subtitle = `Set threshold to ${thresholdData.new_threshold}`
-      amount = thresholdData.new_threshold.toString()
+      subtitle = `Set threshold to ${thresholdData?.new_threshold}`
+      amount = thresholdData?.new_threshold?.toString()
       break
     }
     case TransactionType.SMART_TOKEN_LOCK: {
       const smartLockData = transaction.data as SmartTokenLockTransaction
       title = 'Smart Token Lock'
-      subtitle = `Lock ${formatTokenAmount(smartLockData.amount)} tokens for ${smartLockData.duration} seconds`
-      amount = formatTokenAmount(smartLockData.amount)
-      token = formatAddress(smartLockData.token)
+      subtitle = `Lock ${formatTokenAmount(smartLockData?.amount)} tokens for ${smartLockData?.duration} seconds`
+      amount = formatTokenAmount(smartLockData?.amount)
+      token = formatAddress(contractAddressToHex(smartLockData?.token))
       break
     }
 
@@ -134,8 +209,10 @@ export function getTransactionDisplayInfo(
 // Utility functions for formatting
 export function formatAddress(address: string): string {
   if (!address) return ''
-  if (address.length <= 10) return address
-  return `${address.slice(0, 6)}...${address.slice(-4)}`
+
+  const addressString = address.toString()
+  if (addressString.length <= 10) return addressString
+  return `${addressString.slice(0, 6)}...${addressString.slice(-4)}`
 }
 
 export function formatTokenAmount(
@@ -143,11 +220,11 @@ export function formatTokenAmount(
   decimals: number = 18,
 ): string {
   // Convert from wei to readable format (assuming 18 decimals)
-  const divisor = BigInt(10) ** BigInt(decimals)
-  const whole = amount / divisor
-  const decimal = amount % divisor
+  const divisor = 10 ** decimals
+  const whole = Number(amount) / divisor
+  const decimal = Number(amount) % divisor
 
-  if (decimal === BigInt(0)) {
+  if (decimal === 0) {
     return whole.toString()
   }
 
@@ -208,4 +285,35 @@ export function filterTransactionsByType(
   type: TransactionType,
 ): TransactionDisplayInfo[] {
   return transactions.filter((tx) => tx.transaction.transactionType === type)
+}
+
+export function contractAddressToHex(addressValue: any): `0x${string}` {
+  if (!addressValue) return "0x0" as `0x${string}`;
+  
+  let bigIntValue: bigint;
+  
+  // Handle different input types
+  if (typeof addressValue === 'bigint') {
+    bigIntValue = addressValue;
+  } else if (typeof addressValue === 'number') {
+    bigIntValue = BigInt(addressValue);
+  } else if (typeof addressValue === 'string') {
+    // If it's already a hex string, return as is (with proper formatting)
+    if (addressValue.startsWith('0x')) {
+      return addressValue.toLowerCase().padStart(66, '0') as `0x${string}`; // Ensure 64 chars after 0x
+    }
+    // If it's a decimal string, convert to BigInt
+    bigIntValue = BigInt(addressValue);
+  } else {
+    // Handle objects that might have toString method or valueOf
+    bigIntValue = BigInt(addressValue.toString());
+  }
+  
+  // Convert to hex string
+  const hexString = bigIntValue.toString(16);
+  
+  // Pad to 64 characters (32 bytes) and add 0x prefix
+  const paddedHex = '0x' + hexString.padStart(64, '0');
+  
+  return paddedHex as `0x${string}`;
 }
