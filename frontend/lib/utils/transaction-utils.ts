@@ -39,8 +39,12 @@ export function transformTransaction(
     status: baseTransaction.tx_status.activeVariant(),
     proposer: contractAddressToHex(baseTransaction.proposer),
     executor: contractAddressToHex(baseTransaction.executor) || undefined,
-    approved: baseTransaction.approved.map((approver) => contractAddressToHex(approver)),
-    rejected: baseTransaction.rejected.map((rejector) => contractAddressToHex(rejector)),
+    approved: baseTransaction.approved.map((approver) =>
+      contractAddressToHex(approver),
+    ),
+    rejected: baseTransaction.rejected.map((rejector) =>
+      contractAddressToHex(rejector),
+    ),
     dateCreated: baseTransaction.date_created,
     dateExecuted:
       baseTransaction.date_executed > BigInt(0)
@@ -52,11 +56,8 @@ export function transformTransaction(
 }
 
 // TODO: MAKE THIS FUNCTION WORK PROPERLY
-export function transformTransactionData(
-  transactionData: TransactionData
-) {
-
-  switch(transactionData.type) {
+export function transformTransactionData(transactionData: TransactionData) {
+  switch (transactionData.type) {
     case TransactionType.TOKEN_SEND: {
       return {
         type: transactionData.type,
@@ -157,7 +158,9 @@ export function getTransactionDisplayInfo(
       const memberRemoveData = transaction.data as MemberRemoveData
       title = 'Remove Member'
       subtitle = `Remove ${formatAddress(contractAddressToHex(memberRemoveData?.member_address))}`
-      recipient = formatAddress(contractAddressToHex(memberRemoveData?.member_address))
+      recipient = formatAddress(
+        contractAddressToHex(memberRemoveData?.member_address),
+      )
       break
     }
     case TransactionType.MEMBER_PERMISSION_EDIT: {
@@ -280,31 +283,33 @@ export function filterTransactionsByType(
   return transactions.filter((tx) => tx.transaction.transactionType === type)
 }
 
-export function contractAddressToHex(addressValue: string | bigint | number): `0x${string}` {
-  if (!addressValue) return "0x0" as `0x${string}`;
-  
-  let bigIntValue: bigint;
-  
+export function contractAddressToHex(
+  addressValue: string | bigint | number,
+): `0x${string}` {
+  if (!addressValue) return '0x0' as `0x${string}`
+
+  let bigIntValue: bigint
+
   // Handle different input types
   if (typeof addressValue === 'bigint') {
-    bigIntValue = addressValue;
+    bigIntValue = addressValue
   } else if (typeof addressValue === 'number') {
-    bigIntValue = BigInt(addressValue);
+    bigIntValue = BigInt(addressValue)
   } else {
     // This handles the case where it is already a string
     // If it's already a hex string, return as is (with proper formatting)
     if (addressValue.startsWith('0x')) {
-      return addressValue.toLowerCase().padStart(66, '0') as `0x${string}`; // Ensure 64 chars after 0x
+      return addressValue.toLowerCase().padStart(66, '0') as `0x${string}` // Ensure 64 chars after 0x
     }
     // If it's a decimal string, convert to BigInt
-    bigIntValue = BigInt(addressValue);
+    bigIntValue = BigInt(addressValue)
   }
-  
+
   // Convert to hex string
-  const hexString = bigIntValue.toString(16);
-  
+  const hexString = bigIntValue.toString(16)
+
   // Pad to 64 characters (32 bytes) and add 0x prefix
-  const paddedHex = '0x' + hexString.padStart(64, '0');
-  
-  return paddedHex as `0x${string}`;
+  const paddedHex = '0x' + hexString.padStart(64, '0')
+
+  return paddedHex as `0x${string}`
 }

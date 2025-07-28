@@ -101,7 +101,7 @@ export default function TransactionsPage() {
 
   // TODO: Add smart contract transaction fetching here
   // const { transactions: realTransactions, isLoading, error } = useSmartContractTransactions()
-  const { transactions: realTransactions } = useTransactionIntegration();
+  const { transactions: realTransactions } = useTransactionIntegration()
   console.log(realTransactions)
 
   useEffect(() => {
