@@ -64,7 +64,6 @@ export function transformTransactionData(
         amount: transactionData.amount,
         recipient: contractAddressToHex(transactionData.recipient),
       }
-      break;
     }
 
     case TransactionType.MEMBER_ADD: {
@@ -73,7 +72,6 @@ export function transformTransactionData(
         member: contractAddressToHex(transactionData.member),
         permissions: transactionData.permissions,
       }
-      break;
     }
 
     case TransactionType.MEMBER_PERMISSION_EDIT: {
@@ -82,7 +80,6 @@ export function transformTransactionData(
         member: contractAddressToHex(transactionData.member),
         new_permissions: transactionData.new_permissions,
       }
-      break;
     }
 
     case TransactionType.MEMBER_REMOVE: {
@@ -90,7 +87,6 @@ export function transformTransactionData(
         type: transactionData.type,
         member_address: contractAddressToHex(transactionData.member_address),
       }
-      break;
     }
 
     case TransactionType.NFT_SEND: {
@@ -100,7 +96,6 @@ export function transformTransactionData(
         token_id: transactionData.token_id,
         recipient: contractAddressToHex(transactionData.recipient),
       }
-      break;
     }
 
     case TransactionType.SMART_TOKEN_LOCK: {
@@ -111,7 +106,6 @@ export function transformTransactionData(
         duration: transactionData.duration,
         transaction_id: transactionData.transaction_id,
       }
-      break;
     }
 
     case TransactionType.THRESHOLD_CHANGE: {
@@ -119,7 +113,6 @@ export function transformTransactionData(
         type: transactionData.type,
         new_threshold: transactionData.new_threshold,
       }
-      break;
     }
   }
 
@@ -221,10 +214,10 @@ export function formatTokenAmount(
 ): string {
   // Convert from wei to readable format (assuming 18 decimals)
   const divisor = 10 ** decimals
-  const whole = Number(amount) / divisor
-  const decimal = Number(amount) % divisor
+  const whole = amount / BigInt(divisor)
+  const decimal = amount % BigInt(divisor)
 
-  if (decimal === 0) {
+  if (decimal === BigInt(0)) {
     return whole.toString()
   }
 
@@ -287,7 +280,7 @@ export function filterTransactionsByType(
   return transactions.filter((tx) => tx.transaction.transactionType === type)
 }
 
-export function contractAddressToHex(addressValue: any): `0x${string}` {
+export function contractAddressToHex(addressValue: string | bigint | number): `0x${string}` {
   if (!addressValue) return "0x0" as `0x${string}`;
   
   let bigIntValue: bigint;
@@ -297,16 +290,14 @@ export function contractAddressToHex(addressValue: any): `0x${string}` {
     bigIntValue = addressValue;
   } else if (typeof addressValue === 'number') {
     bigIntValue = BigInt(addressValue);
-  } else if (typeof addressValue === 'string') {
+  } else {
+    // This handles the case where it is already a string
     // If it's already a hex string, return as is (with proper formatting)
     if (addressValue.startsWith('0x')) {
       return addressValue.toLowerCase().padStart(66, '0') as `0x${string}`; // Ensure 64 chars after 0x
     }
     // If it's a decimal string, convert to BigInt
     bigIntValue = BigInt(addressValue);
-  } else {
-    // Handle objects that might have toString method or valueOf
-    bigIntValue = BigInt(addressValue.toString());
   }
   
   // Convert to hex string
