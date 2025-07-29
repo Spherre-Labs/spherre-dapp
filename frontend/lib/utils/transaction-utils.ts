@@ -51,73 +51,8 @@ export function transformTransaction(
         ? baseTransaction.date_executed
         : undefined,
     transactionType: baseTransaction.tx_type.activeVariant(),
-    data: transactionData, //TODO: Transform this
+    data: transactionData,
   }
-}
-
-// TODO: MAKE THIS FUNCTION WORK PROPERLY
-export function transformTransactionData(transactionData: TransactionData) {
-  switch (transactionData.type) {
-    case TransactionType.TOKEN_SEND: {
-      return {
-        type: transactionData.type,
-        token: contractAddressToHex(transactionData.token),
-        amount: transactionData.amount,
-        recipient: contractAddressToHex(transactionData.recipient),
-      }
-    }
-
-    case TransactionType.MEMBER_ADD: {
-      return {
-        type: transactionData.type,
-        member: contractAddressToHex(transactionData.member),
-        permissions: transactionData.permissions,
-      }
-    }
-
-    case TransactionType.MEMBER_PERMISSION_EDIT: {
-      return {
-        type: transactionData.type,
-        member: contractAddressToHex(transactionData.member),
-        new_permissions: transactionData.new_permissions,
-      }
-    }
-
-    case TransactionType.MEMBER_REMOVE: {
-      return {
-        type: transactionData.type,
-        member_address: contractAddressToHex(transactionData.member_address),
-      }
-    }
-
-    case TransactionType.NFT_SEND: {
-      return {
-        type: transactionData.type,
-        nft_contract: contractAddressToHex(transactionData.nft_contract),
-        token_id: transactionData.token_id,
-        recipient: contractAddressToHex(transactionData.recipient),
-      }
-    }
-
-    case TransactionType.SMART_TOKEN_LOCK: {
-      return {
-        type: transactionData.type,
-        token: contractAddressToHex(transactionData.token),
-        amount: transactionData.amount,
-        duration: transactionData.duration,
-        transaction_id: transactionData.transaction_id,
-      }
-    }
-
-    case TransactionType.THRESHOLD_CHANGE: {
-      return {
-        type: transactionData.type,
-        new_threshold: transactionData.new_threshold,
-      }
-    }
-  }
-
-  // return transformedData
 }
 
 // Generate display information for transactions
@@ -134,8 +69,8 @@ export function getTransactionDisplayInfo(
     case TransactionType.TOKEN_SEND: {
       const tokenData = transaction.data as TokenTransactionData
       title = 'Token Transfer'
-      subtitle = `Send ${formatTokenAmount(tokenData?.amount)} tokens`
-      amount = formatTokenAmount(tokenData?.amount)
+      subtitle = `Send ${tokenData?.amount ? formatTokenAmount(tokenData?.amount) : ""} tokens`
+      amount = tokenData?.amount ? formatTokenAmount(tokenData?.amount) : ""
       recipient = formatAddress(contractAddressToHex(tokenData?.recipient))
       token = formatAddress(contractAddressToHex(tokenData?.token))
       break
@@ -180,8 +115,8 @@ export function getTransactionDisplayInfo(
     case TransactionType.SMART_TOKEN_LOCK: {
       const smartLockData = transaction.data as SmartTokenLockTransaction
       title = 'Smart Token Lock'
-      subtitle = `Lock ${formatTokenAmount(smartLockData?.amount)} tokens for ${smartLockData?.duration} seconds`
-      amount = formatTokenAmount(smartLockData?.amount)
+      subtitle = `Lock ${smartLockData?.amount ? formatTokenAmount(smartLockData?.amount!): ""} tokens for ${smartLockData?.duration} seconds`
+      amount = smartLockData?.amount ? formatTokenAmount(smartLockData?.amount) : ""
       token = formatAddress(contractAddressToHex(smartLockData?.token))
       break
     }
@@ -216,9 +151,9 @@ export function formatTokenAmount(
   decimals: number = 18,
 ): string {
   // Convert from wei to readable format (assuming 18 decimals)
-  const divisor = 10 ** decimals
-  const whole = amount / BigInt(divisor)
-  const decimal = amount % BigInt(divisor)
+  const divisor = BigInt(10) ** BigInt(decimals);
+  const whole = amount / divisor
+  const decimal = amount % divisor
 
   if (decimal === BigInt(0)) {
     return whole.toString()
