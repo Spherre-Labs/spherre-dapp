@@ -17,7 +17,7 @@ import {
   type TransactionDisplayInfo,
 } from '@/lib/contracts/types'
 import { formatTimestamp, formatTime } from '@/lib/utils/transaction-utils'
-import { routes } from '../../layout'
+import { routes } from '@/lib/utils/routes'
 
 interface TransactionProps {
   transactionInfo: TransactionDisplayInfo
@@ -44,8 +44,9 @@ export default function Transaction({
   const { transaction } = transactionInfo
 
   // Define type-specific elements with proper icon mapping
-  const getTypeIcon = (type: TransactionType): ReactNode => {
+  const getTypeIcon = (type: string): ReactNode => {
     // Map transaction type to appropriate icon based on the transaction title
+    if (!(type in TransactionType)) return
     const title = transactionInfo.title.toLowerCase()
 
     // Check title first for accurate mapping (since title includes the actual transaction type)

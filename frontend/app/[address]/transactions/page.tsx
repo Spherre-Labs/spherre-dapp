@@ -6,7 +6,9 @@ import type { Transaction as MockTransactionType } from './data'
 import {
   TransactionDisplayInfo,
   TransactionType as ContractTransactionType,
+  TransactionData,
 } from '@/lib/contracts/types'
+import { useTransactionIntegration } from '@/hooks/useTransactionIntegration'
 
 /**
  * TRANSACTIONS PAGE WITH SMART CONTRACT + MOCK FALLBACK
@@ -76,7 +78,7 @@ const convertMockToTransactionDisplayInfo = (
         token: 'STRK',
         amount: BigInt(validAmount * 1e18),
         recipient: transaction.toAddress || '0x0',
-      },
+      } as TransactionData,
     },
     title: `${transaction.type} ${transaction.amount}`,
     subtitle: `To: ${transaction.toAddress}`,
@@ -99,6 +101,8 @@ export default function TransactionsPage() {
 
   // TODO: Add smart contract transaction fetching here
   // const { transactions: realTransactions, isLoading, error } = useSmartContractTransactions()
+  const { transactions: realTransactions } = useTransactionIntegration()
+  console.log(realTransactions)
 
   useEffect(() => {
     setMounted(true)

@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation'
 import AddEmailModal from '../AddEmailModal'
 import { Info } from 'lucide-react'
 import { useTheme } from '@/app/context/theme-context-provider'
-import { routes } from '../../layout'
+import { routes } from '@/lib/utils/routes'
 import { useSpherreAccount } from '@/app/context/account-context'
 
 /**
