@@ -579,7 +579,7 @@ export function useExecuteThresholdChange(accountAddress: `0x${string}`) {
   })
 }
 
-export function useProposeNFTTransaction(accountAddress: `0x${string}`){  
+export function useProposeNFTTransaction(accountAddress: `0x${string}`) {
   return useScaffoldWriteContract({
     contractConfig: {
       address: accountAddress,
@@ -595,37 +595,43 @@ export function useExecuteNFTTransaction(accountAddress: `0x${string}`) {
       address: accountAddress,
       abi: spherreAccountConfig.abi,
     },
-    functionName: 'execute_nft_transaction'
+    functionName: 'execute_nft_transaction',
   })
 }
 
-export function useProposeSmartTokenLockTransaction(accountAddress: `0x${string}`){
+export function useProposeSmartTokenLockTransaction(
+  accountAddress: `0x${string}`,
+) {
   return useScaffoldWriteContract({
     contractConfig: {
       address: accountAddress,
       abi: spherreAccountConfig.abi,
     },
-    functionName: 'propose_smart_token_lock_transaction'
+    functionName: 'propose_smart_token_lock_transaction',
   })
 }
 
-export function useExecuteSmartTokenLockTransaction(accountAddress: `0x${string}`){
+export function useExecuteSmartTokenLockTransaction(
+  accountAddress: `0x${string}`,
+) {
   return useScaffoldWriteContract({
     contractConfig: {
       address: accountAddress,
       abi: spherreAccountConfig.abi,
     },
-    functionName: 'execute_smart_token_lock_transaction'
+    functionName: 'execute_smart_token_lock_transaction',
   })
 }
 
-export function useExecuteEditPermissionTransaction(accountAddress: `0x${string}`){
+export function useExecuteEditPermissionTransaction(
+  accountAddress: `0x${string}`,
+) {
   return useScaffoldWriteContract({
     contractConfig: {
       address: accountAddress,
       abi: spherreAccountConfig.abi,
     },
-    functionName: 'execute_edit_permission_transaction'
+    functionName: 'execute_edit_permission_transaction',
   })
 }
 

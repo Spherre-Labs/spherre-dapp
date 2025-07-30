@@ -69,8 +69,8 @@ export function getTransactionDisplayInfo(
     case TransactionType.TOKEN_SEND: {
       const tokenData = transaction.data as TokenTransactionData
       title = 'Token Transfer'
-      subtitle = `Send ${tokenData?.amount ? formatTokenAmount(tokenData?.amount) : ""} tokens`
-      amount = tokenData?.amount ? formatTokenAmount(tokenData?.amount) : ""
+      subtitle = `Send ${tokenData?.amount ? formatTokenAmount(tokenData?.amount) : ''} tokens`
+      amount = tokenData?.amount ? formatTokenAmount(tokenData?.amount) : ''
       recipient = formatAddress(contractAddressToHex(tokenData?.recipient))
       token = formatAddress(contractAddressToHex(tokenData?.token))
       break
@@ -115,8 +115,10 @@ export function getTransactionDisplayInfo(
     case TransactionType.SMART_TOKEN_LOCK: {
       const smartLockData = transaction.data as SmartTokenLockTransaction
       title = 'Smart Token Lock'
-      subtitle = `Lock ${smartLockData?.amount ? formatTokenAmount(smartLockData?.amount!): ""} tokens for ${smartLockData?.duration} seconds`
-      amount = smartLockData?.amount ? formatTokenAmount(smartLockData?.amount) : ""
+      subtitle = `Lock ${smartLockData?.amount ? formatTokenAmount(smartLockData?.amount!) : ''} tokens for ${smartLockData?.duration} seconds`
+      amount = smartLockData?.amount
+        ? formatTokenAmount(smartLockData?.amount)
+        : ''
       token = formatAddress(contractAddressToHex(smartLockData?.token))
       break
     }
@@ -151,7 +153,7 @@ export function formatTokenAmount(
   decimals: number = 18,
 ): string {
   // Convert from wei to readable format (assuming 18 decimals)
-  const divisor = BigInt(10) ** BigInt(decimals);
+  const divisor = BigInt(10) ** BigInt(decimals)
   const whole = amount / divisor
   const decimal = amount % divisor
 
