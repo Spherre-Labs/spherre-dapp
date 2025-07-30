@@ -2,11 +2,14 @@
 import React, { useState, useEffect } from 'react'
 import { transactions } from './data'
 import Transaction from './components/transaction'
+import FilterPopover from './components/FilterPopover'
 import type { Transaction as MockTransactionType } from './data'
 import {
   TransactionDisplayInfo,
   TransactionType as ContractTransactionType,
+  TransactionType,
 } from '@/lib/contracts/types'
+import { CalendarDays, ChevronDown } from 'lucide-react'
 
 /**
  * TRANSACTIONS PAGE WITH SMART CONTRACT + MOCK FALLBACK
@@ -72,6 +75,8 @@ const convertMockToTransactionDisplayInfo = (
         transaction.rejections?.map((a) => a.member?.name || 'Unknown') || [],
       dateCreated: BigInt(fixedTimestamp),
       dateExecuted: validDateExecuted ? BigInt(validDateExecuted) : undefined,
+      project: transaction.account?.name || 'Unknown',
+      transaction_id: transaction.transactionId || undefined,
       data: {
         token: 'STRK',
         amount: BigInt(validAmount * 1e18),
@@ -93,9 +98,17 @@ const convertMockToTransactionDisplayInfo = (
 
 export default function TransactionsPage() {
   const [mounted, setMounted] = useState(false)
-  const [expandedTransactions, setExpandedTransactions] = useState<Set<number>>(
-    new Set([1]),
-  ) // First transaction expanded by default
+  const [expandedId, setExpandedId] = useState<number | null>(null)
+  const [filters, setFilters] = useState({
+    status: 'All' as 'Pending' | 'Executed' | 'Rejected' | 'All',
+    type: 'All' as TransactionType | 'All',
+    sort: 'newest' as 'newest' | 'oldest' | 'amount',
+    selectedMembers: [] as string[],
+    selectedTokens: [] as string[],
+    minAmount: '',
+    maxAmount: '',
+    amountToken: 'STRK',
+  })
 
   // TODO: Add smart contract transaction fetching here
   // const { transactions: realTransactions, isLoading, error } = useSmartContractTransactions()
@@ -106,15 +119,7 @@ export default function TransactionsPage() {
 
   // Toggle transaction expansion
   const toggleTransaction = (transactionId: number) => {
-    setExpandedTransactions((prev) => {
-      const newSet = new Set(prev)
-      if (newSet.has(transactionId)) {
-        newSet.delete(transactionId)
-      } else {
-        newSet.add(transactionId)
-      }
-      return newSet
-    })
+    setExpandedId(expandedId === transactionId ? null : transactionId)
   }
 
   // DEVELOPMENT NOTE: Log data source for debugging
@@ -154,6 +159,20 @@ export default function TransactionsPage() {
             </span>
           </div>
         </div>
+
+        <div className="flex items-center justify-end gap-4 mb-6">
+          <button className="flex items-center gap-2 bg-theme-bg-tertiary border border-theme-border text-theme px-4 py-2 rounded-lg hover:bg-theme-border transition-colors duration-200">
+            <CalendarDays className="w-4 h-4" />
+            Select Dates
+            <ChevronDown className="w-4 h-4" />
+          </button>
+
+          {/* Filter Popover */}
+          <FilterPopover
+            filters={filters}
+            onFiltersChange={setFilters}
+          />
+        </div>
       </div>
 
       <div className="space-y-4">
@@ -165,7 +184,7 @@ export default function TransactionsPage() {
             <Transaction
               key={transaction.id}
               transactionInfo={transactionInfo}
-              isExpanded={expandedTransactions.has(transaction.id)}
+              isExpanded={expandedId === transaction.id}
               onToggle={() => toggleTransaction(transaction.id)}
             />
           )

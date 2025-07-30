@@ -70,6 +70,8 @@ const convertMockToTransactionDisplayInfo = (
         transaction.rejections?.map((a) => a.member?.name || 'Unknown') || [],
       dateCreated: BigInt(fixedTimestamp),
       dateExecuted: validDateExecuted ? BigInt(validDateExecuted) : undefined,
+      project: transaction.account?.name || 'Unknown',
+      transaction_id: transaction.transactionId || undefined,
       data: {
         token: 'STRK',
         amount: BigInt(validAmount * 1e18),
@@ -196,7 +198,7 @@ export default function TransactionDetailsPage({ params }: PageProps) {
   }
 
   return (
-    <div className="bg-theme-bg-secondary border border-theme-border text-theme p-6 rounded-lg h-[95.5vh] transition-colors duration-300">
+    <div className="p-2 rounded-lg h-[95.5vh] transition-colors duration-300">
       {/* Development indicator (TODO: Remove in production) */}
       {!realTransactionInfo && mockTransactionFallback && (
         <div className="mb-4 p-3 bg-yellow-100 dark:bg-yellow-900 border border-yellow-300 dark:border-yellow-700 rounded-lg">

@@ -155,6 +155,8 @@ export interface BaseTransactionDisplay {
   dateCreated: bigint
   dateExecuted?: bigint
   transactionType: TransactionType
+  project: string
+  transaction_id?: string
 }
 
 // Transaction data union type
