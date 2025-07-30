@@ -6,8 +6,8 @@ import capture_icon from '@/public/Images/capture.png'
 import argent_wallet from '@/public/Images/argent_logo.png'
 import { useRouter } from 'next/navigation'
 import { useTheme } from '@/app/context/theme-context-provider'
-import { routes } from '../../layout'
 import { useSpherreAccount } from '@/app/context/account-context'
+import { routes } from '@/lib/utils/routes'
 
 // Validation utility for display name (must be at least 3 characters).
 const validateDisplayName = (name: string) => name.trim().length >= 3

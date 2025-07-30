@@ -115,7 +115,7 @@ export function getTransactionDisplayInfo(
     case TransactionType.SMART_TOKEN_LOCK: {
       const smartLockData = transaction.data as SmartTokenLockTransaction
       title = 'Smart Token Lock'
-      subtitle = `Lock ${smartLockData?.amount ? formatTokenAmount(smartLockData?.amount!) : ''} tokens for ${smartLockData?.duration} seconds`
+      subtitle = `Lock ${smartLockData?.amount ? formatTokenAmount(smartLockData?.amount) : ''} tokens for ${smartLockData?.duration ? smartLockData.duration : ''} seconds`
       amount = smartLockData?.amount
         ? formatTokenAmount(smartLockData?.amount)
         : ''
