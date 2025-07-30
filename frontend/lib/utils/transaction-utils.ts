@@ -163,6 +163,7 @@ export function formatTimestamp(timestamp: bigint): string {
   return date.toLocaleDateString()
 }
 
+
 export function formatTime(timestamp: bigint): string {
   const date = new Date(Number(timestamp) * 1000)
   return date.toLocaleTimeString()

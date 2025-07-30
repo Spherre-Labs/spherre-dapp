@@ -70,7 +70,6 @@ const convertMockToTransactionDisplayInfo = (
         transaction.rejections?.map((a) => a.member?.name || 'Unknown') || [],
       dateCreated: BigInt(fixedTimestamp),
       dateExecuted: validDateExecuted ? BigInt(validDateExecuted) : undefined,
-      project: transaction.account?.name || 'Unknown',
       transaction_id: transaction.transactionId || undefined,
       data: {
         token: 'STRK',

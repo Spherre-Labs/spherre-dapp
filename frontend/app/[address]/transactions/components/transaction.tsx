@@ -408,7 +408,7 @@ export default function Transaction({
                 <span>Account:</span>
                 <span className="text-theme flex items-center gap-2 truncate transition-colors duration-300">
                   <Image src={backstageboys} alt="backstageboys" width={21} height={21} />
-                  <span className="text-sm">{transaction.project}</span>
+                  <span className="text-sm">Backstage Boys</span>
                 </span>
               </div>
               {transaction.status !== 'Pending' && transaction.transaction_id && (
@@ -429,10 +429,8 @@ export default function Transaction({
             <Link
               href={routes(accountAddress).transactionDetails(
                 transaction.id.toString(),
-              )}
-            >
-              <Button className="mt-3 hover:bg-theme-bg-secondary bg-theme-bg-secondary text-theme text-sm px-4 sm:px-6 py-3.5 rounded-md transition duration-200 w-full disabled:opacity-50"
-              >
+              )}>
+              <Button className="mt-3 hover:bg-theme-bg-secondary bg-theme-bg-secondary text-theme text-sm px-4 sm:px-6 py-3.5 rounded-md transition duration-200 w-full disabled:opacity-50">
                 See transaction details
               </Button>
             </Link>

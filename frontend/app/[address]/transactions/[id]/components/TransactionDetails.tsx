@@ -4,10 +4,6 @@ import { useTheme } from '@/app/context/theme-context-provider'
 import { type TransactionDisplayInfo } from '@/lib/contracts/types'
 import { formatTimestamp, formatTime } from '@/lib/utils/transaction-utils'
 import member2 from '../../../../../public/member2.svg'
-/* import member1 from '../../../../../public/member1.svg'
-import member3 from '../../../../../public/member3.svg'
-import member4 from '../../../../../public/member4.svg'
-import member5 from '../../../../../public/member5.svg' */
 import Image from 'next/image'
 import backstageboys from '../../../../../public/Images/backstageboys.png'
 import { Button } from '@/components/ui/button'
@@ -15,7 +11,7 @@ import { BadgeCheck, CircleX, CircleArrowRight, Copy } from 'lucide-react'
 import Link from 'next/link'
 
 
-const getTransactionStatus = (status: string, dateExecuted: bigint | string) => {
+const getTransactionStatus = (status: string, dateExecuted: bigint) => {
   switch (status) {
     case 'Pending':
       return (
@@ -61,7 +57,7 @@ export const TransactionDetails = ({
   const dateInitiated = formatTimestamp(transaction.dateCreated)
   const dateExecuted = transaction.status === 'Executed' && transaction.dateExecuted
     ? formatTimestamp(transaction.dateExecuted) + ', ' + formatTime(transaction.dateExecuted) : "___"
-  const account = transaction.project || 'Unknown'
+  const account = 'Backstage Boys'
   const transactionLink = transaction.status !== 'Pending' && transaction.transaction_id ? `https://etherscan.io/tx/${transaction.transaction_id}` : undefined
   const transactionId = transaction.id.toString().slice(0, 12)
 
@@ -271,7 +267,7 @@ export const TransactionDetails = ({
                   </div>
                 </div>
                 <div className="flex-1 pt-0">
-                  {getTransactionStatus(transaction.status, transaction.dateExecuted ?? '')}
+                  {getTransactionStatus(transaction.status, transaction.dateExecuted ?? BigInt(0))}
                 </div>
               </div>
             </div>
