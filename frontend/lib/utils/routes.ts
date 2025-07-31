@@ -1,0 +1,18 @@
+export const routes = (address: `0x${string}` | null) => ({
+  dashboard: `/${address}/`,
+  depositViaAddress: `/${address}/deposit/deposit-via-address`,
+  depositViaWallet: `/${address}/deposit/deposit-via-wallet`,
+  trade: `/${address}/trade`,
+  members: `/${address}/members`,
+  transactions: `/${address}/transactions`,
+  transactionDetails: (id: string) => `/${address}/transactions/${id}`,
+  stake: `/${address}/stake`,
+  smartWill: `/${address}/smart-will`,
+  treasury: `/${address}/treasury`,
+  smartLock: `/${address}/smart`,
+  payments: `/${address}/payments`,
+  apps: `/${address}/apps`,
+  settings: `/${address}/settings`,
+  editProfile: `/${address}/settings/edit-profile`,
+  support: `/${address}/support`,
+})

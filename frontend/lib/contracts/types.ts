@@ -1,4 +1,4 @@
-import type { Abi, InvokeFunctionResponse } from 'starknet'
+import type { Abi, CairoCustomEnum, InvokeFunctionResponse } from 'starknet'
 
 // Base contract configuration
 export interface ContractConfig {
@@ -46,20 +46,37 @@ export interface AccountDetails {
 
 // Transaction types from the contract
 export enum TransactionType {
-  VOID = 0,
-  MEMBER_ADD = 1,
-  MEMBER_REMOVE = 2,
-  MEMBER_PERMISSION_EDIT = 3,
-  THRESHOLD_CHANGE = 4,
-  TOKEN_SEND = 5,
-  NFT_SEND = 6,
-  SMART_TOKEN_LOCK = 7,
+  VOID = 'VOID',
+  MEMBER_ADD = 'MEMBER_ADD',
+  MEMBER_REMOVE = 'MEMBER_REMOVE',
+  MEMBER_PERMISSION_EDIT = 'MEMBER_PERMISSION_EDIT',
+  THRESHOLD_CHANGE = 'THRESHOLD_CHANGE',
+  TOKEN_SEND = 'TOKEN_SEND',
+  NFT_SEND = 'NFT_SEND',
+  SMART_TOKEN_LOCK = 'SMART_TOKEN_LOCK',
 }
+
+// type TxTypeVariant = {
+//   VOID: string | undefined,
+//   MEMBER_ADD: string | undefined,
+//   MEMBER_REMOVE: string | undefined
+// }
+
+// export enum TxStatus {
+//   VOID = 'VOID',
+//   MEMBER_ADD = 'MEMBER_ADD',
+//   MEMBER_REMOVE = 'MEMBER_REMOVE',
+//   MEMBER_PERMISSION_EDIT = 'MEMBER_PERMISSION_EDIT',
+//   THRESHOLD_CHANGE = 'THRESHOLD_CHANGE',
+//   TOKEN_SEND = 'TOKEN_SEND',
+//   NFT_SEND = 'NFT_SEND',
+//   SMART_TOKEN_LOCK = 'SMART_TOKEN_LOCK',
+// }
 
 export interface SpherreTransaction {
   id: bigint
-  tx_type: TransactionType
-  tx_status: number // Renamed from TransactionStatus to avoid redeclaration
+  tx_type: CairoCustomEnum
+  tx_status: CairoCustomEnum // Renamed from TransactionStatus to avoid redeclaration
   proposer: string
   executor: string
   approved: string[]
@@ -77,21 +94,25 @@ export enum PermissionEnum {
 
 // Member data structures
 export interface MemberAddData {
+  type: TransactionType.MEMBER_ADD
   member: string
   permissions: number // u8 bitmask
 }
 
 export interface MemberRemoveData {
+  type: TransactionType.MEMBER_REMOVE
   member_address: string
 }
 
 export interface EditPermissionTransaction {
+  type: TransactionType.MEMBER_PERMISSION_EDIT
   member: string
   new_permissions: number // u8 bitmask
 }
 
 // Token transaction data
 export interface TokenTransactionData {
+  type: TransactionType.TOKEN_SEND
   token: string
   amount: bigint
   recipient: string
@@ -99,6 +120,7 @@ export interface TokenTransactionData {
 
 // NFT transaction data
 export interface NFTTransactionData {
+  type: TransactionType.NFT_SEND
   nft_contract: string
   token_id: bigint
   recipient: string
@@ -106,11 +128,13 @@ export interface NFTTransactionData {
 
 // Threshold change data
 export interface ThresholdChangeData {
+  type: TransactionType.THRESHOLD_CHANGE
   new_threshold: bigint
 }
 
 // Smart Token Lock transaction data
 export interface SmartTokenLockTransaction {
+  type: TransactionType.SMART_TOKEN_LOCK
   token: string
   amount: bigint
   duration: bigint
@@ -147,7 +171,7 @@ export type U256 = bigint | string | number
 // Unified transaction types for UI integration
 export interface BaseTransactionDisplay {
   id: string | bigint
-  status: 'Pending' | 'Executed' | 'Rejected'
+  status: string
   proposer: string
   executor?: string
   approved: string[]

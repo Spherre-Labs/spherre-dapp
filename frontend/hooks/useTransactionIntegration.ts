@@ -40,6 +40,7 @@ import {
   filterTransactionsByStatus,
   filterTransactionsByType,
 } from '@/lib/utils/transaction-utils'
+import { CairoCustomEnum } from 'starknet'
 
 interface UseTransactionIntegrationOptions {
   start?: bigint
@@ -63,10 +64,12 @@ interface UseTransactionIntegrationResult {
 export function useTransactionIntegration(
   options: UseTransactionIntegrationOptions = {},
 ): UseTransactionIntegrationResult {
-  const { accountAddress } = useSpherreAccount()
+  // const { accountAddress } = useSpherreAccount()
+  const accountAddress =
+    '0x065f067f0f621ed571a33ee6d5959e342ee5fd3f1df5c7609e54a6e5c29f8080'
   const {
-    start = BigInt(0),
-    limit = BigInt(50),
+    start = BigInt(1),
+    limit = BigInt(1),
     filterStatus,
     filterType,
   } = options
@@ -76,7 +79,8 @@ export function useTransactionIntegration(
     isLoading: isLoadingBase,
     error: errorBase,
     refetch: refetchBase,
-  } = useTransactionList(accountAddress!, start, limit)
+  } = useTransactionList(accountAddress!)
+  // Removed start and limit from here, because they don't seem to work well from the contract
 
   // Only fetch additional lists if we have base transactions
   const shouldFetchDetails = !!baseTransactions && baseTransactions.length > 0
@@ -141,6 +145,7 @@ export function useTransactionIntegration(
   )
 
   // Helper function to get transaction ID from different transaction types
+  // This cannot work, because those transactions don't return id or transaction_id
   const getTransactionId = (transaction: unknown): bigint | string | null => {
     if (
       !transaction ||
@@ -189,114 +194,108 @@ export function useTransactionIntegration(
   const processedTransactions = useMemo(() => {
     if (!baseTransactions || !accountAddress) return []
 
+    const typeCounters: Record<string, number> = {
+      [TransactionType.TOKEN_SEND]: 0,
+      [TransactionType.NFT_SEND]: 0,
+      [TransactionType.MEMBER_ADD]: 0,
+      [TransactionType.MEMBER_REMOVE]: 0,
+      [TransactionType.MEMBER_PERMISSION_EDIT]: 0,
+      [TransactionType.THRESHOLD_CHANGE]: 0,
+      [TransactionType.SMART_TOKEN_LOCK]: 0,
+    }
+
     const unified: UnifiedTransaction[] = []
 
-    baseTransactions.forEach((baseTransaction: SpherreTransaction) => {
-      let transactionData = null
+    baseTransactions.forEach(
+      (baseTransaction: SpherreTransaction, index: number) => {
+        const txType = baseTransaction.tx_type.activeVariant()
+        let transactionData = null
 
-      try {
-        // Find the corresponding transaction data based on type
-        switch (baseTransaction.tx_type) {
-          case TransactionType.TOKEN_SEND: {
-            transactionData = transactionDataArrays.token?.find(
-              (t: TokenTransactionData) => {
-                const txId = getTransactionId(t)
-                return txId?.toString() === baseTransaction.id.toString()
-              },
-            )
-            break
+        try {
+          const currentIndex = typeCounters[txType]
+          // Find the corresponding transaction data based on type
+          switch (baseTransaction.tx_type.activeVariant()) {
+            case TransactionType.TOKEN_SEND: {
+              transactionData = transactionDataArrays.token?.[currentIndex]
+              typeCounters[txType] = currentIndex + 1
+
+              break
+            }
+
+            case TransactionType.NFT_SEND: {
+              transactionData = transactionDataArrays.nft?.[currentIndex]
+              typeCounters[txType] = currentIndex + 1
+              break
+            }
+
+            case TransactionType.MEMBER_ADD: {
+              transactionData = transactionDataArrays.memberAdd?.[currentIndex]
+              typeCounters[txType] = currentIndex + 1
+
+              break
+            }
+
+            case TransactionType.MEMBER_REMOVE: {
+              transactionData =
+                transactionDataArrays.memberRemoval?.[currentIndex]
+              typeCounters[txType] = currentIndex + 1
+              break
+            }
+
+            case TransactionType.MEMBER_PERMISSION_EDIT: {
+              transactionData =
+                transactionDataArrays.editPermission?.[currentIndex]
+              typeCounters[txType] = currentIndex + 1
+              break
+            }
+
+            case TransactionType.THRESHOLD_CHANGE: {
+              transactionData = transactionDataArrays.threshold?.[currentIndex]
+              typeCounters[txType] = currentIndex + 1
+              break
+            }
+
+            case TransactionType.SMART_TOKEN_LOCK: {
+              transactionData = transactionDataArrays.smartLock?.[currentIndex]
+              typeCounters[txType] = currentIndex + 1
+              break
+            }
+
+            default:
+              console.warn(
+                `Unknown transaction type: ${baseTransaction.tx_type}`,
+              )
+              break
           }
 
-          case TransactionType.NFT_SEND: {
-            transactionData = transactionDataArrays.nft?.find(
-              (t: NFTTransactionData) => {
-                const txId = getTransactionId(t)
-                return txId?.toString() === baseTransaction.id.toString()
-              },
+          // Only add if we have the transaction data
+          if (transactionData) {
+            try {
+              const unifiedTransaction = transformTransaction(
+                baseTransaction,
+                transactionData,
+              )
+              unified.push(unifiedTransaction)
+            } catch (transformError) {
+              console.error('Error transforming transaction:', transformError, {
+                baseTransaction: baseTransaction.id,
+                type: baseTransaction.tx_type,
+                hasData: !!transactionData,
+              })
+            }
+          } else {
+            console.warn(
+              `No transaction data found for transaction ${baseTransaction.id} of type ${(baseTransaction.tx_type as any as CairoCustomEnum).activeVariant()}`,
             )
-            break
           }
-
-          case TransactionType.MEMBER_ADD: {
-            transactionData = transactionDataArrays.memberAdd?.find(
-              (t: MemberAddData) => {
-                const txId = getTransactionId(t)
-                return txId?.toString() === baseTransaction.id.toString()
-              },
-            )
-            break
-          }
-
-          case TransactionType.MEMBER_REMOVE: {
-            transactionData = transactionDataArrays.memberRemoval?.find(
-              (t: MemberRemoveData) => {
-                const txId = getTransactionId(t)
-                return txId?.toString() === baseTransaction.id.toString()
-              },
-            )
-            break
-          }
-
-          case TransactionType.MEMBER_PERMISSION_EDIT: {
-            transactionData = transactionDataArrays.editPermission?.find(
-              (t: EditPermissionTransaction) => {
-                const txId = getTransactionId(t)
-                return txId?.toString() === baseTransaction.id.toString()
-              },
-            )
-            break
-          }
-
-          case TransactionType.THRESHOLD_CHANGE: {
-            transactionData = transactionDataArrays.threshold?.find(
-              (t: ThresholdChangeData) => {
-                const txId = getTransactionId(t)
-                return txId?.toString() === baseTransaction.id.toString()
-              },
-            )
-            break
-          }
-
-          case TransactionType.SMART_TOKEN_LOCK: {
-            transactionData = transactionDataArrays.smartLock?.find(
-              (t: SmartTokenLockTransaction) =>
-                t.transaction_id.toString() === baseTransaction.id.toString(),
-            )
-            break
-          }
-
-          default:
-            console.warn(`Unknown transaction type: ${baseTransaction.tx_type}`)
-            break
+        } catch (processingError) {
+          console.error('Error processing transaction:', processingError, {
+            transactionId: baseTransaction.id,
+            type: baseTransaction.tx_type,
+          })
         }
-
-        // Only add if we have the transaction data
-        if (transactionData) {
-          try {
-            const unifiedTransaction = transformTransaction(
-              baseTransaction,
-              transactionData,
-            )
-            unified.push(unifiedTransaction)
-          } catch (transformError) {
-            console.error('Error transforming transaction:', transformError, {
-              baseTransaction: baseTransaction.id,
-              type: baseTransaction.tx_type,
-              hasData: !!transactionData,
-            })
-          }
-        } else {
-          console.warn(
-            `No transaction data found for transaction ${baseTransaction.id} of type ${baseTransaction.tx_type}`,
-          )
-        }
-      } catch (processingError) {
-        console.error('Error processing transaction:', processingError, {
-          transactionId: baseTransaction.id,
-          type: baseTransaction.tx_type,
-        })
-      }
-    })
+      },
+    )
 
     return unified
   }, [baseTransactions, transactionDataArrays, accountAddress])
@@ -433,7 +432,7 @@ export function useTransactionDetails(transactionId: string | bigint) {
   }, [baseTransaction, transactionId])
 
   // Fetch specific transaction data based on type
-  const transactionType = targetTransaction?.tx_type
+  const transactionType = targetTransaction?.tx_type.activeVariant()
 
   const { data: tokenData, isLoading: isLoadingToken } = useGetTokenTransaction(
     accountAddress!,
@@ -494,7 +493,7 @@ export function useTransactionDetails(transactionId: string | bigint) {
     if (!targetTransaction) return null
 
     let transactionData = null
-    switch (targetTransaction.tx_type) {
+    switch (targetTransaction.tx_type.activeVariant()) {
       case TransactionType.TOKEN_SEND:
         transactionData = tokenData
         break

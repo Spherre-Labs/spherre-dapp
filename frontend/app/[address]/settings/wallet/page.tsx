@@ -11,7 +11,7 @@ import group from '../../../../public/Images/group-profile.png'
 import starkneticon from '../../../../public/Images/starknet-icon.png'
 import { useRouter } from 'next/navigation'
 import { useTheme } from '@/app/context/theme-context-provider'
-import { routes } from '../../layout'
+import { routes } from '@/lib/utils/routes'
 import { useSpherreAccount } from '@/app/context/account-context'
 
 export default function MultisigWalletUI() {

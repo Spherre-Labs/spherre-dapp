@@ -148,7 +148,7 @@ const Members = () => {
     }
 
     fetchPermissions()
-  }, [accountAddress, members.length]) // Removed members dependency to prevent infinite loop
+  }, [accountAddress, members]) // Removed members dependency to prevent infinite loop
 
   const handleCopy = (address: string) => {
     navigator.clipboard.writeText(address)

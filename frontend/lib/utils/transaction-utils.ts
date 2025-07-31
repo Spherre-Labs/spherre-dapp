@@ -36,17 +36,21 @@ export function transformTransaction(
 ): UnifiedTransaction {
   return {
     id: baseTransaction.id,
-    status: mapTransactionStatus(baseTransaction.tx_status),
-    proposer: baseTransaction.proposer,
-    executor: baseTransaction.executor || undefined,
-    approved: baseTransaction.approved,
-    rejected: baseTransaction.rejected,
+    status: baseTransaction.tx_status.activeVariant(),
+    proposer: contractAddressToHex(baseTransaction.proposer),
+    executor: contractAddressToHex(baseTransaction.executor) || undefined,
+    approved: baseTransaction.approved.map((approver) =>
+      contractAddressToHex(approver),
+    ),
+    rejected: baseTransaction.rejected.map((rejector) =>
+      contractAddressToHex(rejector),
+    ),
     dateCreated: baseTransaction.date_created,
     dateExecuted:
       baseTransaction.date_executed > BigInt(0)
         ? baseTransaction.date_executed
         : undefined,
-    transactionType: baseTransaction.tx_type,
+    transactionType: baseTransaction.tx_type.activeVariant(),
     data: transactionData,
   }
 }
@@ -65,53 +69,57 @@ export function getTransactionDisplayInfo(
     case TransactionType.TOKEN_SEND: {
       const tokenData = transaction.data as TokenTransactionData
       title = 'Token Transfer'
-      subtitle = `Send ${formatTokenAmount(tokenData.amount)} tokens`
-      amount = formatTokenAmount(tokenData.amount)
-      recipient = formatAddress(tokenData.recipient)
-      token = formatAddress(tokenData.token)
+      subtitle = `Send ${tokenData?.amount ? formatTokenAmount(tokenData?.amount) : ''} tokens`
+      amount = tokenData?.amount ? formatTokenAmount(tokenData?.amount) : ''
+      recipient = formatAddress(contractAddressToHex(tokenData?.recipient))
+      token = formatAddress(contractAddressToHex(tokenData?.token))
       break
     }
     case TransactionType.NFT_SEND: {
       const nftData = transaction.data as NFTTransactionData
       title = 'NFT Transfer'
-      subtitle = `Send NFT #${nftData.token_id}`
-      recipient = formatAddress(nftData.recipient)
+      subtitle = `Send NFT #${nftData?.token_id}`
+      recipient = formatAddress(contractAddressToHex(nftData?.recipient))
       break
     }
     case TransactionType.MEMBER_ADD: {
       const memberAddData = transaction.data as MemberAddData
       title = 'Add Member'
-      subtitle = `Add ${formatAddress(memberAddData.member)} as member`
-      recipient = formatAddress(memberAddData.member)
+      subtitle = `Add ${formatAddress(contractAddressToHex(memberAddData?.member))} as member`
+      recipient = formatAddress(contractAddressToHex(memberAddData?.member))
       break
     }
     case TransactionType.MEMBER_REMOVE: {
       const memberRemoveData = transaction.data as MemberRemoveData
       title = 'Remove Member'
-      subtitle = `Remove ${formatAddress(memberRemoveData.member_address)}`
-      recipient = formatAddress(memberRemoveData.member_address)
+      subtitle = `Remove ${formatAddress(contractAddressToHex(memberRemoveData?.member_address))}`
+      recipient = formatAddress(
+        contractAddressToHex(memberRemoveData?.member_address),
+      )
       break
     }
     case TransactionType.MEMBER_PERMISSION_EDIT: {
       const permissionData = transaction.data as EditPermissionTransaction
       title = 'Edit Permissions'
-      subtitle = `Update permissions for ${formatAddress(permissionData.member)}`
-      recipient = formatAddress(permissionData.member)
+      subtitle = `Update permissions for ${formatAddress(contractAddressToHex(permissionData?.member))}`
+      recipient = formatAddress(contractAddressToHex(permissionData?.member))
       break
     }
     case TransactionType.THRESHOLD_CHANGE: {
       const thresholdData = transaction.data as ThresholdChangeData
       title = 'Change Threshold'
-      subtitle = `Set threshold to ${thresholdData.new_threshold}`
-      amount = thresholdData.new_threshold.toString()
+      subtitle = `Set threshold to ${thresholdData?.new_threshold}`
+      amount = thresholdData?.new_threshold?.toString()
       break
     }
     case TransactionType.SMART_TOKEN_LOCK: {
       const smartLockData = transaction.data as SmartTokenLockTransaction
       title = 'Smart Token Lock'
-      subtitle = `Lock ${formatTokenAmount(smartLockData.amount)} tokens for ${smartLockData.duration} seconds`
-      amount = formatTokenAmount(smartLockData.amount)
-      token = formatAddress(smartLockData.token)
+      subtitle = `Lock ${smartLockData?.amount ? formatTokenAmount(smartLockData?.amount) : ''} tokens for ${smartLockData?.duration ? smartLockData.duration : ''} seconds`
+      amount = smartLockData?.amount
+        ? formatTokenAmount(smartLockData?.amount)
+        : ''
+      token = formatAddress(contractAddressToHex(smartLockData?.token))
       break
     }
 
@@ -134,8 +142,10 @@ export function getTransactionDisplayInfo(
 // Utility functions for formatting
 export function formatAddress(address: string): string {
   if (!address) return ''
-  if (address.length <= 10) return address
-  return `${address.slice(0, 6)}...${address.slice(-4)}`
+
+  const addressString = address.toString()
+  if (addressString.length <= 10) return addressString
+  return `${addressString.slice(0, 6)}...${addressString.slice(-4)}`
 }
 
 export function formatTokenAmount(
@@ -209,4 +219,35 @@ export function filterTransactionsByType(
   type: TransactionType,
 ): TransactionDisplayInfo[] {
   return transactions.filter((tx) => tx.transaction.transactionType === type)
+}
+
+export function contractAddressToHex(
+  addressValue: string | bigint | number,
+): `0x${string}` {
+  if (!addressValue) return '0x0' as `0x${string}`
+
+  let bigIntValue: bigint
+
+  // Handle different input types
+  if (typeof addressValue === 'bigint') {
+    bigIntValue = addressValue
+  } else if (typeof addressValue === 'number') {
+    bigIntValue = BigInt(addressValue)
+  } else {
+    // This handles the case where it is already a string
+    // If it's already a hex string, return as is (with proper formatting)
+    if (addressValue.startsWith('0x')) {
+      return addressValue.toLowerCase().padStart(66, '0') as `0x${string}` // Ensure 64 chars after 0x
+    }
+    // If it's a decimal string, convert to BigInt
+    bigIntValue = BigInt(addressValue)
+  }
+
+  // Convert to hex string
+  const hexString = bigIntValue.toString(16)
+
+  // Pad to 64 characters (32 bytes) and add 0x prefix
+  const paddedHex = '0x' + hexString.padStart(64, '0')
+
+  return paddedHex as `0x${string}`
 }
