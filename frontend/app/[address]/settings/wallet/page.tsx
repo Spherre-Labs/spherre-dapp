@@ -1,8 +1,8 @@
 'use client'
 
-import React from 'react'
+import React, { useMemo } from 'react'
 import { useState } from 'react'
-import { Edit3, HelpCircle, X } from 'lucide-react'
+import { Edit3, HelpCircle, Loader, X } from 'lucide-react'
 import Image from 'next/image'
 import profile from '../../../../public/member2.svg'
 import edit from '../../../../public/Images/edit.png'
@@ -13,6 +13,8 @@ import { useRouter } from 'next/navigation'
 import { useTheme } from '@/app/context/theme-context-provider'
 import { routes } from '@/lib/utils/routes'
 import { useSpherreAccount } from '@/app/context/account-context'
+import { useGetThreshold, useProposeThresholdChange } from '@/lib'
+import { useGlobalModal } from '@/app/components/modals/GlobalModalProvider'
 
 export default function MultisigWalletUI() {
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -27,6 +29,64 @@ export default function MultisigWalletUI() {
 
   const handleThresholdChange = (value: number) => {
     setThreshold(value)
+  }
+
+  const {
+    data: contractTheshold,
+    error: thresholdError,
+    isLoading: readThresholdLoading,
+  } = useGetThreshold(accountAddress || '0x0')
+  const {
+    writeAsync: proposeThreshold,
+    error: propsalError,
+    isLoading: writeThresholdLoading,
+  } = useProposeThresholdChange(accountAddress || '0x0')
+  const { showSuccess, showProcessing, hideModal, showError } = useGlobalModal()
+
+  const isValidThreshold = useMemo(() => {
+    return threshold >= 1 && threshold <= Number(contractTheshold?.[1])
+  }, [threshold, contractTheshold])
+
+  const validationError = useMemo(() => {
+    if (threshold < 1) return 'Threshold must be at least 1'
+    if (threshold > Number(contractTheshold?.[1]))
+      return `Threshold cannot exceed ${contractTheshold?.[1]} members`
+
+    return null
+  }, [threshold, contractTheshold])
+
+  const handleProposeThresholdChange = async () => {
+    if (!accountAddress || !isValidThreshold) return
+
+    try {
+      showProcessing({
+        title: 'Submitting Proposal',
+        subtitle: `Submitting proposal for threshold change to ${threshold}`,
+      })
+
+      const { transaction_hash } = await proposeThreshold({
+        new_threshold: threshold,
+      })
+      showSuccess({
+        title: 'Successful Proposal',
+        message: `Threshold Proposal change to ${threshold} submitted successfully`,
+        viewLabel: 'View on Explorer',
+        onViewTransaction: () => {
+          window.open(
+            `https://sepolia.voyager.online/tx/${transaction_hash}`,
+            '_blank',
+          )
+          hideModal()
+        },
+      })
+
+      closeModal()
+    } catch {
+      showError({
+        title: 'Proposal submission failed',
+        errorText: propsalError?.message || `Failed to submit proposal`,
+      })
+    }
   }
 
   return (
@@ -155,7 +215,15 @@ export default function MultisigWalletUI() {
                   </div>
                 </div>
                 <div className="text-right">
-                  <p className="text-2xl sm:text-5xl font-bold text-theme">5</p>
+                  <p className="text-2xl sm:text-5xl font-bold text-theme">
+                    {readThresholdLoading ? (
+                      <Loader />
+                    ) : thresholdError ? (
+                      thresholdError.message
+                    ) : (
+                      contractTheshold?.[1]
+                    )}
+                  </p>
                 </div>
               </div>
 
@@ -186,7 +254,14 @@ export default function MultisigWalletUI() {
                 </div>
                 <div className="text-right">
                   <p className="text-2xl sm:text-5xl font-bold text-theme">
-                    3/5
+                    {readThresholdLoading ? (
+                      <Loader />
+                    ) : thresholdError ? (
+                      thresholdError.message
+                    ) : (
+                      contractTheshold?.[0]
+                    )}
+                    /{contractTheshold?.[1]}
                   </p>
                 </div>
               </div>
@@ -237,7 +312,7 @@ export default function MultisigWalletUI() {
                   </div>
                 </div>
                 <div className="text-4xl font-bold text-theme mb-2">
-                  {totalMembers}
+                  {contractTheshold?.[1]}
                 </div>
               </div>
 
@@ -246,11 +321,11 @@ export default function MultisigWalletUI() {
                 <div className="flex flex-col items-start gap-8">
                   <Image src={group} width={30} height={30} alt="group" />
                   <div className="text-theme-secondary text-xs sm:text-sm">
-                    Threshold
+                    Threshol
                   </div>
                 </div>
                 <div className="text-4xl font-bold text-theme mb-2">
-                  {threshold}/{totalMembers}
+                  {contractTheshold?.[0]}/{contractTheshold?.[1]}
                 </div>
                 <div className="flex flex-col items-start gap-8"></div>
               </div>
@@ -277,6 +352,10 @@ export default function MultisigWalletUI() {
               </div>
             </div>
 
+            {validationError && (
+              <div className="text-red-400 text-lg">{validationError}</div>
+            )}
+
             {/* Buttons */}
             <div className="flex flex-col sm:flex-row gap-2 sm:gap-4">
               <button
@@ -287,13 +366,16 @@ export default function MultisigWalletUI() {
               </button>
               <button
                 onClick={() => {
-                  // Handle threshold update logic here
+                  handleProposeThresholdChange()
                   console.log('New threshold:', threshold)
                   closeModal()
                 }}
                 className="w-full sm:flex-1 bg-primary text-white py-2 sm:py-3 rounded-lg font-medium hover:opacity-90 transition-all text-xs sm:text-base"
+                disabled={writeThresholdLoading || !isValidThreshold}
               >
-                Propose Transaction
+                {writeThresholdLoading
+                  ? 'Proposing Transaction'
+                  : 'Propose Transaction'}
               </button>
             </div>
           </div>

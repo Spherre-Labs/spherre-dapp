@@ -8,10 +8,10 @@ import {
   useRejectTransaction,
   useExecuteTransaction,
 } from '@/hooks/useSpherreHooks'
-import { routes } from '@/app/[address]/layout'
+import { routes } from '@/lib/utils/routes'
 
 interface TransactionDetailsHeaderProps {
-  status: 'Pending' | 'Executed' | 'Rejected'
+  status: string
   transactionId?: string | bigint
 }
 
@@ -105,25 +105,34 @@ export const TransactionDetailsHeader = ({
           </p>
         </div>
         <div className="flex gap-4">
-          {status === 'Pending' && (
+          {(status.toLowerCase() === 'initiated' ||
+            status.toLowerCase() === 'approved') && (
             <>
               <button
                 onClick={handleApprove}
-                disabled={isApproving}
+                disabled={
+                  isApproving ||
+                  status.toLowerCase() === 'approved' ||
+                  status.toLowerCase() === 'rejected'
+                }
                 className="bg-primary text-white px-6 py-2 rounded-lg hover:opacity-90 transition-all duration-200 disabled:opacity-50"
               >
                 {isApproving ? 'Approving...' : 'Approve'}
               </button>
               <button
                 onClick={handleReject}
-                disabled={isRejecting}
+                disabled={
+                  isRejecting ||
+                  status.toLowerCase() === 'approved' ||
+                  status.toLowerCase() === 'rejected'
+                }
                 className="bg-theme-bg-tertiary border border-theme-border text-theme px-6 py-2 rounded-lg hover:bg-theme-bg-secondary transition-colors duration-200 disabled:opacity-50"
               >
                 {isRejecting ? 'Rejecting...' : 'Reject'}
               </button>
               <button
                 onClick={handleExecute}
-                disabled={isExecuting}
+                disabled={isExecuting || status.toLowerCase() === 'executed'}
                 className="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition-all duration-200 disabled:opacity-50"
               >
                 {isExecuting ? 'Executing...' : 'Execute'}
