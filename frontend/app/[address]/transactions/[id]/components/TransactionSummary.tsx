@@ -69,11 +69,18 @@ export const TransactionSummary = ({
             <span className="text-theme-secondary">Status:</span>
             <span
               className={`font-medium ${
-                transactionInfo.transaction.status === 'Pending'
-                  ? 'text-yellow-400'
-                  : transactionInfo.transaction.status === 'Executed'
-                    ? 'text-green-400'
-                    : 'text-red-500'
+                transactionInfo.transaction.status.toLowerCase() === 'initiated'
+                  ? 'text-yellow-300'
+                  : transactionInfo.transaction.status.toLowerCase() ===
+                      'approved'
+                    ? 'text-[#2dd4bf]'
+                    : transactionInfo.transaction.status.toLowerCase() ===
+                        'executed'
+                      ? 'text-[#22c55e]'
+                      : transactionInfo.transaction.status.toLowerCase() ===
+                          'rejected'
+                        ? 'text-[#ef4444]'
+                        : 'text-[#a78bfa]'
               }`}
             >
               {transactionInfo.transaction.status}

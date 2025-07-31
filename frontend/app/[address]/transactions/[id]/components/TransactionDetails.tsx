@@ -100,8 +100,8 @@ export const TransactionDetails = ({
 }) => {
   useTheme()
   const { transaction } = transactionInfo
-  const isExecuted = transaction.status === 'Executed'
-  const isRejected = transaction.status === 'Rejected'
+  const isExecuted = transaction.status.toLowerCase() === 'executed'
+  const isRejected = transaction.status.toLowerCase() === 'rejected'
 
   const detailItem = (label: string, value: React.ReactNode) => (
     <div className="flex justify-between items-center">
@@ -123,7 +123,7 @@ export const TransactionDetails = ({
           {detailItem(
             'Transaction ID',
             <span className="text-theme text-sm font-mono transition-colors duration-300">
-              {transaction.id.toString().slice(0, 20)}...
+              {transaction.id}
             </span>,
           )}
           {detailItem(

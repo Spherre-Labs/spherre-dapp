@@ -70,7 +70,7 @@ export function getTransactionDisplayInfo(
       const tokenData = transaction.data as TokenTransactionData
       title = 'Token Transfer'
       subtitle = `Send ${tokenData?.amount ? formatTokenAmount(tokenData?.amount) : ''} tokens`
-      amount = tokenData?.amount ? formatTokenAmount(tokenData?.amount) : ''
+      amount = tokenData.amount.toString()
       recipient = formatAddress(contractAddressToHex(tokenData?.recipient))
       token = formatAddress(contractAddressToHex(tokenData?.token))
       break
@@ -78,6 +78,7 @@ export function getTransactionDisplayInfo(
     case TransactionType.NFT_SEND: {
       const nftData = transaction.data as NFTTransactionData
       title = 'NFT Transfer'
+      amount = '0'
       subtitle = `Send NFT #${nftData?.token_id}`
       recipient = formatAddress(contractAddressToHex(nftData?.recipient))
       break
@@ -85,6 +86,7 @@ export function getTransactionDisplayInfo(
     case TransactionType.MEMBER_ADD: {
       const memberAddData = transaction.data as MemberAddData
       title = 'Add Member'
+      amount = '0'
       subtitle = `Add ${formatAddress(contractAddressToHex(memberAddData?.member))} as member`
       recipient = formatAddress(contractAddressToHex(memberAddData?.member))
       break
@@ -92,6 +94,7 @@ export function getTransactionDisplayInfo(
     case TransactionType.MEMBER_REMOVE: {
       const memberRemoveData = transaction.data as MemberRemoveData
       title = 'Remove Member'
+      amount = '0'
       subtitle = `Remove ${formatAddress(contractAddressToHex(memberRemoveData?.member_address))}`
       recipient = formatAddress(
         contractAddressToHex(memberRemoveData?.member_address),
@@ -101,24 +104,25 @@ export function getTransactionDisplayInfo(
     case TransactionType.MEMBER_PERMISSION_EDIT: {
       const permissionData = transaction.data as EditPermissionTransaction
       title = 'Edit Permissions'
+      amount = '0'
       subtitle = `Update permissions for ${formatAddress(contractAddressToHex(permissionData?.member))}`
       recipient = formatAddress(contractAddressToHex(permissionData?.member))
       break
     }
     case TransactionType.THRESHOLD_CHANGE: {
       const thresholdData = transaction.data as ThresholdChangeData
+      recipient = formatAddress('0x0')
       title = 'Change Threshold'
       subtitle = `Set threshold to ${thresholdData?.new_threshold}`
-      amount = thresholdData?.new_threshold?.toString()
+      amount = '0'
       break
     }
     case TransactionType.SMART_TOKEN_LOCK: {
       const smartLockData = transaction.data as SmartTokenLockTransaction
       title = 'Smart Token Lock'
+      recipient = formatAddress('0x0')
       subtitle = `Lock ${smartLockData?.amount ? formatTokenAmount(smartLockData?.amount) : ''} tokens for ${smartLockData?.duration ? smartLockData.duration : ''} seconds`
-      amount = smartLockData?.amount
-        ? formatTokenAmount(smartLockData?.amount)
-        : ''
+      amount = smartLockData?.amount.toString()
       token = formatAddress(contractAddressToHex(smartLockData?.token))
       break
     }

@@ -1,5 +1,4 @@
 import React from 'react'
-import { useTheme } from '@/app/context/theme-context-provider'
 
 interface ProcessingModalProps {
   isOpen: boolean
@@ -14,8 +13,6 @@ const ProcessingModal: React.FC<ProcessingModalProps> = ({
   title = 'Processing Transaction!',
   subtitle = 'Please exercise a little patience as we process your details',
 }) => {
-  useTheme() // Initialize theme context
-
   if (!isOpen) return null
 
   return (
