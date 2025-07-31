@@ -171,14 +171,15 @@ export type U256 = bigint | string | number
 // Unified transaction types for UI integration
 export interface BaseTransactionDisplay {
   id: string | bigint
-  status: string
+  status: 'Pending' | 'Executed' | 'Rejected' | 'Approved'
   proposer: string
   executor?: string
   approved: string[]
   rejected: string[]
   dateCreated: bigint
   dateExecuted?: bigint
-  transactionType: string
+  transactionType: TransactionType
+  transaction_id?: string
 }
 
 // Transaction data union type

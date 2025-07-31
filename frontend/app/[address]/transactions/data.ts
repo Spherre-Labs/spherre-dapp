@@ -127,11 +127,11 @@ export const transactions: Transaction[] = Array.from(
     const rejections =
       i % 5 === 0
         ? [
-            {
-              member: randomFrom(memberList, i + 8),
-              status: 'Rejected' as const,
-            },
-          ]
+          {
+            member: randomFrom(memberList, i + 8),
+            status: 'Rejected' as const,
+          },
+        ]
         : []
     const tokenIn = randomFrom(tokens, i + 9)
     const tokenOut = randomFrom(

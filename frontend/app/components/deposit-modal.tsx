@@ -3,7 +3,7 @@
 import React, { useEffect, useRef } from 'react'
 import { createPortal } from 'react-dom'
 import Link from 'next/link'
-import { routes } from '../[address]/layout'
+import { routes } from '@/lib/utils/routes'
 import { useSpherreAccount } from '../context/account-context'
 import { useTheme } from '@/app/context/theme-context-provider'
 
