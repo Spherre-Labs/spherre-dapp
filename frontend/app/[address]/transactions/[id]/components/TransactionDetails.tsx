@@ -1,14 +1,20 @@
 'use client'
 import React from 'react'
 import { useTheme } from '@/app/context/theme-context-provider'
-import { type TransactionDisplayInfo } from '@/lib/contracts/types'
-import { formatTimestamp, formatTime } from '@/lib/utils/transaction-utils'
+import { TransactionType, type TransactionDisplayInfo } from '@/lib/contracts/types'
+import { formatTimestamp, formatTime, getExplorerUrl } from '@/lib/utils/transaction-utils'
 import member2 from '../../../../../public/member2.svg'
 import Image from 'next/image'
 import backstageboys from '../../../../../public/Images/backstageboys.png'
 import { Button } from '@/components/ui/button'
 import { BadgeCheck, CircleX, CircleArrowRight, Copy } from 'lucide-react'
 import Link from 'next/link'
+import member1 from '../../../../../public/member1.svg'
+import member3 from '../../../../../public/member3.svg'
+import avatar from '../../../../../public/Images/avatar.png'
+
+const images = [member1, member2, member3, avatar]
+
 
 
 const getTransactionStatus = (status: string, dateExecuted: bigint) => {
@@ -55,10 +61,10 @@ export const TransactionDetails = ({
   const { transaction } = transactionInfo
 
   const dateInitiated = formatTimestamp(transaction.dateCreated)
-  const dateExecuted = transaction.status === 'Executed' && transaction.dateExecuted
+  const dateExecuted = transaction.status.toLowerCase() === 'executed' && transaction.dateExecuted
     ? formatTimestamp(transaction.dateExecuted) + ', ' + formatTime(transaction.dateExecuted) : "___"
   const account = 'Backstage Boys'
-  const transactionLink = transaction.status !== 'Pending' && transaction.transaction_id ? `https://etherscan.io/tx/${transaction.transaction_id}` : undefined
+  const transactionLink = transaction.status !== 'Pending' && transaction.transaction_id ? getExplorerUrl('sepolia', transaction.transaction_id) : undefined
   const transactionId = transaction.id.toString().slice(0, 12)
 
   const detailItem = (label: string, value: React.ReactNode) => (
@@ -73,7 +79,7 @@ export const TransactionDetails = ({
   )
 
   return (
-    <div className="space-y-6 font-sans">
+    <div className="space-y-6 pb-10 font-sans">
       <div className="grid grid-cols-1 items-stretch lg:grid-cols-3 gap-7">
         {/* Transaction Details */}
         <section className="flex-1 flex flex-col">
@@ -101,7 +107,7 @@ export const TransactionDetails = ({
                 <span className='font-semibold'>{account}</span>
               </div>
             )}
-            {transaction.status !== 'Pending' && transaction.transaction_id ?
+            {transaction.status.toLowerCase() !== 'pending' && transaction.transaction_id ?
               detailItem('Transaction Link',
                 <div className="flex items-center gap-0">
                   <span className="font-mono">{transactionLink}</span>
@@ -113,83 +119,87 @@ export const TransactionDetails = ({
                   </Link>
                 </div>
               ) : detailItem('Transaction Link', <span className="font-mono">____</span>)}
-            {transaction.status !== 'Pending' && transaction.transaction_id ?
+            {transaction.status.toLowerCase() !== 'pending' && transaction.transaction_id ?
               detailItem('Transaction ID', <span className="font-mono">{transactionId}</span>) :
               detailItem('Transaction ID', <span className="font-mono">____</span>)}
           </div>
         </section>
 
-        {/* From Section */}
-        <section className="flex-1 flex flex-col">
-          <h3 className="text-theme font-medium mb-4 text-lg">
-            From
-          </h3>
-          <div className="flex flex-col gap-4 border border-theme-border px-3 py-4 rounded-lg flex-1">
-            <div className="flex items-center justify-between gap-3">
-              <div className='flex gap-2 items-center'>
-                <div className="w-14 h-14 rounded-full flex items-center justify-center">
-                  <Image src={backstageboys} alt="backstageboys" />
+        {(transaction.transactionType === TransactionType.TOKEN_SEND || transaction.transactionType === TransactionType.NFT_SEND) && (
+          <>
+            {/* From Section */}
+            <section className="flex-1 flex flex-col">
+              <h3 className="text-theme font-medium mb-4 text-lg">
+                From
+              </h3>
+              <div className="flex flex-col gap-4 border border-theme-border px-3 py-4 rounded-lg flex-1">
+                <div className="flex items-center justify-between gap-3">
+                  <div className='flex gap-2 items-center'>
+                    <div className="w-14 h-14 rounded-full flex items-center justify-center">
+                      <Image src={backstageboys} alt="backstageboys" />
+                    </div>
+                    <div>
+                      <h4 className="text-theme text-lg font-medium">Backstage Boys</h4>
+                      <p className="text-theme-text-secondary text-sm font-semibold">0x233r...6574</p>
+                    </div>
+                  </div>
+                  <div className='bg-theme-bg-secondary rounded-xl p-2.5 text-theme text-sm font-medium'>
+                    Team Account
+                  </div>
                 </div>
-                <div>
-                  <h4 className="text-theme text-lg font-medium">Backstage Boys</h4>
-                  <p className="text-theme-text-secondary text-sm font-semibold">0x233r...6574</p>
+                <div className="grid grid-cols-2 gap-4 mt-4">
+                  <div className="bg-theme-bg-secondary p-3 space-y-2 rounded-lg text-center">
+                    <p className="text-theme-text-secondary text-sm">Threshold</p>
+                    <p className="text-theme text-xl font-bold">3/5</p>
+                  </div>
+                  <div className="bg-theme-bg-secondary p-3 space-y-2 rounded-lg text-center">
+                    <p className="text-theme-text-secondary text-sm">Members</p>
+                    <p className="text-theme text-xl font-bold">5</p>
+                  </div>
                 </div>
-              </div>
-              <div className='bg-theme-bg-secondary rounded-xl p-2.5 text-theme text-sm font-medium'>
-                Team Account
-              </div>
-            </div>
-            <div className="grid grid-cols-2 gap-4 mt-4">
-              <div className="bg-theme-bg-secondary p-3 space-y-2 rounded-lg text-center">
-                <p className="text-theme-text-secondary text-sm">Threshold</p>
-                <p className="text-theme text-xl font-bold">3/5</p>
-              </div>
-              <div className="bg-theme-bg-secondary p-3 space-y-2 rounded-lg text-center">
-                <p className="text-theme-text-secondary text-sm">Members</p>
-                <p className="text-theme text-xl font-bold">5</p>
-              </div>
-            </div>
 
-            <div className="flex-1 flex flex-col justify-end">
-              <p className="text-theme-text-secondary text-sm">Last transaction</p>
-              <p className="text-theme text-sm">Wed 27 Feb, 2025</p>
-            </div>
-          </div>
-        </section>
+                <div className="flex-1 flex flex-col justify-end">
+                  <p className="text-theme-text-secondary text-sm">Last transaction</p>
+                  <p className="text-theme text-sm">Wed 27 Feb, 2025</p>
+                </div>
+              </div>
+            </section>
 
-        {/* To Section */}
-        <section className="flex-1 flex flex-col">
-          <h3 className="text-theme font-medium mb-4 text-lg">
-            To
-          </h3>
-          <div className="flex flex-col gap-4 border border-theme-border px-3 py-4 rounded-lg flex-1">
-            <div className="flex items-center justify-between gap-3">
-              <div className='flex gap-2 items-center'>
-                <div className="w-14 h-14 rounded-full flex items-center justify-center">
-                  <Image src={member2} alt="member2" />
+            {/* To Section */}
+            <section className="flex-1 flex flex-col">
+              <h3 className="text-theme font-medium mb-4 text-lg">
+                To
+              </h3>
+              <div className="flex flex-col gap-4 border border-theme-border px-3 py-4 rounded-lg flex-1">
+                <div className="flex items-center justify-between gap-3">
+                  <div className='flex gap-2 items-center'>
+                    <div className="w-14 h-14 rounded-full flex items-center justify-center">
+                      <Image src={member2} alt="member2" />
+                    </div>
+                    <div>
+                      <h4 className="text-theme text-lg font-medium">Denzel Smith</h4>
+                      <p className="text-theme-text-secondary text-sm font-semibold">0x233r...6574</p>
+                    </div>
+                  </div>
                 </div>
-                <div>
-                  <h4 className="text-theme text-lg font-medium">Denzel Smith</h4>
-                  <p className="text-theme-text-secondary text-sm font-semibold">0x233r...6574</p>
+                <div className="space-y-3 pt-2">
+                  <div className="flex justify-between">
+                    <p className="text-theme-text-secondary text-sm">Last transaction</p>
+                    <p className="text-theme text-sm">Wed 27 Feb, 2025</p>
+                  </div>
+                  <div className="flex justify-between">
+                    <p className="text-theme-text-secondary text-sm">Member Number</p>
+                    <p className="text-theme text-sm font-bold">2</p>
+                  </div>
+                  <div className="flex justify-between">
+                    <p className="text-theme-text-secondary text-sm">Email Address</p>
+                    <p className="text-theme text-sm">denziesmith@gmail.com</p>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div className="space-y-3 pt-2">
-              <div className="flex justify-between">
-                <p className="text-theme-text-secondary text-sm">Last transaction</p>
-                <p className="text-theme text-sm">Wed 27 Feb, 2025</p>
-              </div>
-              <div className="flex justify-between">
-                <p className="text-theme-text-secondary text-sm">Member Number</p>
-                <p className="text-theme text-sm font-bold">2</p>
-              </div>
-              <div className="flex justify-between">
-                <p className="text-theme-text-secondary text-sm">Email Address</p>
-                <p className="text-theme text-sm">denziesmith@gmail.com</p>
-              </div>
-            </div>
-          </div>
-        </section>
+            </section>
+          </>
+        )}
 
       </div>
       {/* Updates/Transaction Progress */}
@@ -207,7 +217,7 @@ export const TransactionDetails = ({
               </div>
               <div className="bg-theme-bg-secondary p-4 rounded-lg">
                 <p className="text-theme-text-secondary text-sm mb-2">Confirmed</p>
-                <p className="text-theme text-3xl font-bold">5</p>
+                <p className="text-theme text-3xl font-bold">{transaction.approved.length}</p>
               </div>
               <div className="bg-theme-bg-secondary p-4 rounded-lg">
                 <p className="text-theme-text-secondary text-sm mb-2">Rejections</p>
@@ -241,15 +251,15 @@ export const TransactionDetails = ({
                 <div className="flex flex-col items-center">
                   <div className="w-[9px] h-[9px] bg-white rounded-full flex items-center justify-center">
                   </div>
-                  <div className={`w-[1px] h-16 lg:h-12 mt-0 ${transaction.status === 'Pending' || transaction.status === 'Rejected' ? 'bg-[#55534E]' : 'bg-white'}`}></div>
+                  <div className={`w-[1px] h-16 lg:h-12 mt-0 ${transaction.status.toLowerCase() === 'pending' || transaction.status.toLowerCase() === 'rejected' ? 'bg-[#55534E]' : 'bg-white'}`}></div>
                 </div>
                 <div className="flex-1 pt-0">
                   <h3 className="text-theme flex text-sm items-center gap-1 font-semibold -mt-1.5">
                     Pending
-                    {transaction.status === 'Executed' && (
+                    {transaction.status.toLowerCase() === 'executed' && (
                       <BadgeCheck className="w-5 h-5 text-secondary" fill='#19B360' />
                     )}
-                    {transaction.status === 'Rejected' && (
+                    {transaction.status.toLowerCase() === 'rejected' && (
                       <CircleX className="w-5 h-5 text-secondary" fill='#D44B4B' />
                     )}
                   </h3>
@@ -280,7 +290,7 @@ export const TransactionDetails = ({
                   {transaction.approved.map((addr, index) => (
                     <div key={index} className="flex items-center gap-2">
                       <div className="w-5 h-5 rounded-full flex items-center justify-center">
-                        <Image src={member2} alt="member1" width={20} height={20} />
+                        <Image src={images[Math.floor(Math.random() * images.length)]} alt="member1" width={20} height={20} />
                       </div>
                       <span className="text-theme text-sm">{addr.slice(0, 8)}...{addr.slice(-4)}</span>
                     </div>

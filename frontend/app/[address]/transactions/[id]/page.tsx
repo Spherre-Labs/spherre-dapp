@@ -75,6 +75,7 @@ const convertMockToTransactionDisplayInfo = (
         token: 'STRK',
         amount: BigInt(validAmount * 1e18),
         recipient: transaction.toAddress || '0x0',
+        type: ContractTransactionType.TOKEN_SEND,
       },
     },
     title: `${transaction.type} ${transaction.amount}`,

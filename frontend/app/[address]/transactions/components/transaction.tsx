@@ -26,11 +26,30 @@ import { formatTimestamp, formatTime } from '@/lib/utils/transaction-utils'
 import { BadgeCheck, ChevronDown, CircleArrowRight, CircleX, Copy } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { routes } from '@/lib/utils/routes'
+import { toTitleCase } from '@/lib/utils/text'
+
+
+const images = [member1, member2, member3, avatar]
 
 interface TransactionProps {
   transactionInfo: TransactionDisplayInfo
   isExpanded: boolean
   onToggle: () => void
+}
+
+const displayApprovals = (approved: string[]) => {
+  return (
+    <>
+      {approved.slice(0, 2).map((_, index) => (
+        <Image key={index} src={images[index]} alt="member2" width={21} height={21} className={`rounded-full ${index === 0 ? '' : '-ml-1'}`} />
+      ))}
+      {approved.length > 2 && (
+        <div className="border border-ash w-5 h-5 text-[11px] py-[2px] px-[3px] font-bold text-theme-text-secondary flex items-center justify-center rounded-full ml-2 transition-colors duration-300">
+          +{approved.length - 2}
+        </div>
+      )}
+    </>
+  )
 }
 
 export default function Transaction({
@@ -50,6 +69,7 @@ export default function Transaction({
     useExecuteTransaction(accountAddress || '0x0')
 
   const { transaction } = transactionInfo
+  const transactionStatus = transaction.status.toLowerCase()
 
   // Define type-specific elements with proper icon mapping
   const getTypeIcon = (type: string): ReactNode => {
@@ -182,7 +202,7 @@ export default function Transaction({
                 alt="token"
               />
               <span className='ml-1 text-theme font-semibold'>
-                {`${transactionInfo.amount} ${transactionInfo.token}`}
+                {`${transactionInfo.amount} STRK`}
               </span>
             </span>
           </div>
@@ -204,14 +224,18 @@ export default function Transaction({
         {/* Status */}
         <div className="flex-1 text-center">
           <span
-            className={` px-3 py-1 rounded-full ${transaction.status === 'Pending'
+            className={` px-3 py-1 rounded-full ${transactionStatus === 'pending'
               ? 'text-light-yellow'
-              : transaction.status === 'Executed'
+              : transactionStatus === 'executed'
                 ? 'text-green'
-                : 'text-[#D44B4B]'
+                : transactionStatus === 'approved'
+                  ? 'text-green'
+                  : transactionStatus === 'rejected'
+                    ? 'text-[#D44B4B]'
+                    : 'text-theme-secondary'
               }`}
           >
-            {transaction.status}
+            {toTitleCase(transactionStatus)}
           </span>
         </div>
 
@@ -244,19 +268,31 @@ export default function Transaction({
                 <h4 className="text-xs text-light-yellow font-semibold mr-2 transition-colors duration-300">
                   Pending Approvals
                 </h4>
-                <div className='flex items-center gap-0'>
-                  <Image src={member1} alt="member1" width={21} height={21} className='rounded-full' />
-                  <Image src={member3} alt="member3" width={21} height={21} className='rounded-full -ml-1' />
-                </div>
-                <div className="border border-ash w-5 h-5 text-[11px] py-[2px] px-[3px] font-bold text-theme-text-secondary flex items-center justify-center rounded-full ml-2 transition-colors duration-300">
-                  +2
-                </div>
+                {transactionStatus === 'approved' || transactionStatus === 'executed' || transactionStatus === 'rejected' ? (
+                  <>
+                    <div className='flex items-center gap-0'>
+                      <Image src={member1} alt="member1" width={21} height={21} className='rounded-full' />
+                      <Image src={member3} alt="member3" width={21} height={21} className='rounded-full -ml-1' />
+                    </div>
+                    <div className="border border-ash w-5 h-5 text-[11px] py-[2px] px-[3px] font-bold text-theme-text-secondary flex items-center justify-center rounded-full ml-2 transition-colors duration-300">
+                      +2
+                    </div>
+                  </>
+                ) : (
+                  <></>
+                )}
               </div>
               <div className="flex justify-start gap-2 items-center mb-2">
-                <h4 className="text-xs text-green font-semibold mr-2 transition-colors duration-300">
-                  Confirmed Approvals
+                <h4 className="text-xs text-green font-semibold transition-colors duration-300">
+                  {`Confirmed Approvals (${transaction.approved.length})`}
                 </h4>
-                <Image src={member2} alt="member2" width={21} height={21} className='rounded-full' />
+                {transactionStatus === 'approved' || transactionStatus === 'executed' || transactionStatus === 'rejected' ? (
+                  <div className='flex items-center gap-0'>
+                    {displayApprovals(transaction.approved)}
+                  </div>
+                ) : (
+                  <></>
+                )}
               </div>
 
               {/* Txn Timeline */}
@@ -282,15 +318,15 @@ export default function Transaction({
                   <div className="flex flex-col items-center">
                     <div className="w-[9px] h-[9px] bg-white rounded-full flex items-center justify-center">
                     </div>
-                    <div className={`w-[1px] h-12 mt-0 ${transaction.status === 'Pending' ? 'bg-[#55534E]' : 'bg-white'}`}></div>
+                    <div className={`w-[1px] h-12 mt-0 ${transactionStatus === 'pending' ? 'bg-[#55534E]' : 'bg-white'}`}></div>
                   </div>
                   <div className="flex-1 pt-0">
                     <h3 className="text-theme flex items-center gap-1 font-semibold -mt-1.5">
                       Pending
-                      {transaction.status === 'Executed' && (
+                      {transactionStatus === 'executed' && (
                         <BadgeCheck className="w-5 h-5 text-secondary" fill='#19B360' />
                       )}
-                      {transaction.status === 'Rejected' && (
+                      {transactionStatus === 'rejected' && (
                         <CircleX className="w-5 h-5 text-secondary" fill='#D44B4B' />
                       )}
                     </h3>
@@ -303,11 +339,11 @@ export default function Transaction({
                 <div className="flex items-start mt-0 space-x-2 mb-0">
                   <div className="flex flex-col items-center">
                     <div className={`w-[9px] h-[9px] rounded-full flex items-center justify-center
-                    ${transaction.status !== 'Executed' ? 'border border-[#55534E]' : 'bg-white'}
-                    `}>
+                    ${transactionStatus !== 'executed' ? 'border border-[#55534E]' : 'bg-white'}`}
+                    >
                     </div>
                   </div>
-                  {transaction.status === 'Pending' && (
+                  {transactionStatus === 'pending' && (
                     < div className="flex-1 pt-0">
                       <h3 className="text-theme font-semibold -mt-1.5">
                         Execution
@@ -317,11 +353,11 @@ export default function Transaction({
                       </p>
                     </div>
                   )}
-                  {transaction.status === 'Executed' && transaction.dateExecuted && (
+                  {transactionStatus === 'executed' && transaction.dateExecuted && (
                     <div className="flex-1 pt-0">
                       <h3 className="text-theme flex items-center gap-1 font-semibold -mt-1.5">
                         Executed
-                        {transaction.status === 'Executed' && (
+                        {transactionStatus === 'executed' && (
                           <BadgeCheck className="w-5 h-5 text-secondary" fill='#19B360' />
                         )}
                       </h3>
@@ -330,7 +366,7 @@ export default function Transaction({
                       </p>
                     </div>
                   )}
-                  {transaction.status === 'Rejected' && (
+                  {transactionStatus === 'rejected' && (
                     < div className="flex-1 pt-0">
                       <h3 className="text-theme font-semibold -mt-1.5">Rejected</h3>
                       <p className="text-theme-secondary font-semibold text-xs transition-colors duration-300">
@@ -350,7 +386,7 @@ export default function Transaction({
 
             {/* Action Buttons */}
             <div className="mt-auto pt-3 sm:pt-4">
-              {transaction.status === 'Pending' && (
+              {transactionStatus === 'pending' && (
                 <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
                   <Button
                     onClick={handleApprove}
@@ -375,8 +411,8 @@ export default function Transaction({
                   </Button>
                 </div>
               )}
-              {(transaction.status === 'Executed' ||
-                transaction.status === 'Rejected') && (
+              {(transactionStatus === 'executed' ||
+                transactionStatus === 'rejected') && (
                   <button className="bg-[#6F2FCE] hover:bg-purple-700 text-theme px-4 sm:px-6 py-2 rounded-md transition duration-200 w-full">
                     Download CSV
                   </button>
@@ -395,7 +431,7 @@ export default function Transaction({
               <div className="flex justify-between">
                 <span>Initiator:</span>
                 <span className="text-theme flex items-center gap-2 truncate transition-colors duration-300">
-                  <Image src={avatar} alt="avatar" width={21} height={21} />
+                  <Image src={images[Math.floor(Math.random() * images.length)]} alt="avatar" width={21} height={21} />
                   <span className="text-sm">{transaction.proposer.slice(0, 8)}...{transaction.proposer.slice(-4)}</span>
                 </span>
               </div>
@@ -412,7 +448,7 @@ export default function Transaction({
                   <span className="text-sm">Backstage Boys</span>
                 </span>
               </div>
-              {transaction.status !== 'Pending' && transaction.transaction_id && (
+              {transactionStatus !== 'pending' && transaction.transaction_id && (
                 <div className="flex justify-between">
                   <span>Transaction Link:</span>
                   <div className="text-theme flex items-center gap-0 truncate transition-colors duration-300">

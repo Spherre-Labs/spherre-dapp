@@ -1,12 +1,14 @@
 'use client'
 import React, { ReactNode } from 'react'
 import { useTheme } from '@/app/context/theme-context-provider'
-import { TransactionType, type TransactionDisplayInfo } from '@/lib/contracts/types'
+import { TransactionType, type TransactionDisplayInfo, type TokenTransactionData } from '@/lib/contracts/types'
+import { formatTokenAmount } from '@/lib/utils/transaction-utils'
 import withdraw from '../../../../../public/Images/withdraw-1.png'
 import swap from '../../../../../public/Images/swap.png'
 import members from '../../../../../public/Images/Members.png'
 import limit from '../../../../../public/Images/limit.png'
 import Image from 'next/image'
+import strk from '../../../../../public/Images/strk.png'
 
 export const TransactionSummary = ({
   transactionInfo,
@@ -17,11 +19,11 @@ export const TransactionSummary = ({
 
   const getTypeIcon = (title: string, type: TransactionType): ReactNode => {
     if (title.startsWith('withdraw')) {
-      return <Image src={withdraw} width={20} height={20} alt="withdraw" />
+      return <Image src={withdraw} width={30} height={30} alt="withdraw" />
     } else if (title.startsWith('limitswap')) {
-      return <Image src={limit} width={20} height={20} alt="limit swap" />
+      return <Image src={limit} width={30} height={30} alt="limit swap" />
     } else if (title.startsWith('swap')) {
-      return <Image src={swap} width={20} height={20} alt="swap" />
+      return <Image src={swap} width={30} height={30} alt="swap" />
     }
 
     switch (type) {
@@ -47,19 +49,20 @@ export const TransactionSummary = ({
   }
 
   const getTransactionStatus = (status: string): ReactNode => {
-    switch (status) {
-      case 'Pending':
+    switch (status.toLowerCase()) {
+      case 'pending':
         return <p className='text-light-yellow bg-[#FFD7001F] font-medium text-sm w-fit px-2 py-0.5 rounded-full'>
           {`${status}`}
         </p>
-      case 'Executed':
+      case 'executed':
         return <p className='text-green bg-[#19B3601F] font-medium text-sm w-fit px-2 py-0.5 rounded-full'>
           {`${status}`}
         </p>
-      case 'Rejected':
+      case 'rejected':
         return <p className='text-red-500 bg-[#FF00001F] font-medium text-sm w-fit px-2 py-0.5 rounded-full'>
           {`${status}`}
         </p>
+      case 'approved':
       default:
         return <p className='text-gray bg-[#8080801F] font-medium text-sm w-fit px-2 py-0.5 rounded-full'>
           {`${status}`}
@@ -74,13 +77,25 @@ export const TransactionSummary = ({
           {getTypeIcon(transactionInfo.title, transactionInfo.transaction.transactionType)}
         </div>
         <div className='flex flex-col gap-1 font-sans'>
-          <p className='text-theme-secondary font-medium'>
-            {transactionInfo.title} {` `}
-            <span className='text-theme font-bold'>{`${transactionInfo.amount} ${transactionInfo.token}`}</span>
-            {` `}
-            {`to`} {` `}
-            <span className='text-theme font-bold'>{`${transactionInfo.recipient}`}</span>
-          </p>
+          {transactionInfo.transaction.transactionType === TransactionType.TOKEN_SEND ? (
+            <p className='text-theme-secondary font-medium'>
+              {transactionInfo.title} {` `}
+              <span className='text-theme font-bold'>{`${formatTokenAmount((transactionInfo.transaction.data as TokenTransactionData).amount)} STRK`}</span>
+              {` `}
+              {`to`} {` `}
+              <span className='text-theme font-bold'>{`${transactionInfo.recipient}`}</span>
+            </p>
+          ) : transactionInfo.transaction.transactionType === TransactionType.NFT_SEND ? (
+            <p className='text-theme-secondary font-medium'>
+              {transactionInfo.title} {` `}
+              {`to`} {` `}
+              <span className='text-theme font-bold'>{`${transactionInfo.recipient}`}</span>
+            </p>
+          ) : (
+            <p className='text-theme-secondary font-medium'>
+              {transactionInfo.title}
+            </p>
+          )}
           {getTransactionStatus(transactionInfo.transaction.status)}
         </div>
 
@@ -90,13 +105,38 @@ export const TransactionSummary = ({
         {transactionInfo.amount && (
           <div className='flex flex-col font-sans'>
             <div className='text-theme-secondary items-center flex gap-3 font-medium'>
-              <p className='text-theme-secondary font-medium'>{`You send`} {` `}</p>
-              <p><span className='text-theme font-bold text-2xl'>{`${transactionInfo.amount}`}</span>
-                <span className='text-2xl'>{` ${transactionInfo.token}`}</span></p>
+              {transactionInfo.transaction.transactionType === TransactionType.TOKEN_SEND || transactionInfo.transaction.transactionType === TransactionType.NFT_SEND ? (
+                <>
+                  <p className='text-theme-secondary font-medium'>{`You send`} {` `}</p>
+                  <p><span className='text-theme font-bold text-2xl'>
+                    {`${transactionInfo.amount}`}</span>
+                    <span className='text-2xl ml-1'>STRK</span></p>
+                </>
+              ) : (
+                <>
+                  <p className='text-theme-secondary font-medium'>{`Amount`} {` `}</p>
+                  <p>
+                    <span className="inline-flex items-center">
+                      <Image
+                        src={strk}
+                        width={16}
+                        height={16}
+                        className="sm:w-5 sm:h-5"
+                        alt="token"
+                      />
+                      <span className='ml-1 text-theme font-semibold'>
+                        {`${transactionInfo.amount} STRK`}
+                      </span>
+                    </span>
+                  </p>
+                </>
+              )}
             </div>
-            <span className=" font-semibold text-xl text-theme-secondary text-right">
-              130 USD
-            </span>
+            {transactionInfo.token && (
+              <span className=" font-semibold text-xl text-theme-secondary text-right">
+                {`${transactionInfo.amount} USD`}
+              </span>
+            )}
           </div>
         )}
       </div>

@@ -8,11 +8,11 @@ import {
   useRejectTransaction,
   useExecuteTransaction,
 } from '@/hooks/useSpherreHooks'
-import { routes } from '@/app/[address]/layout'
+import { routes } from '@/lib/utils/routes'
 import { Button } from '@/components/ui/button'
 
 interface TransactionDetailsHeaderProps {
-  status: 'Pending' | 'Executed' | 'Rejected'
+  status: 'Pending' | 'Executed' | 'Rejected' | 'Approved'
   transactionId?: string | bigint
 }
 
@@ -130,7 +130,7 @@ export const TransactionDetailsHeader = ({
               </Button>
             </>
           )}
-          {(status === 'Executed' || status === 'Rejected') && (
+          {(status.toLowerCase() === 'executed' || status.toLowerCase() === 'rejected') && (
             <button className="bg-primary text-white px-6 py-2 rounded-lg hover:opacity-90 transition-all duration-200">
               Download CSV
             </button>

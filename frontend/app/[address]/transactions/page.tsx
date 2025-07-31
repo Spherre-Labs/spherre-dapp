@@ -2,12 +2,12 @@
 import React, { useState, useMemo } from 'react'
 import Transaction from './components/transaction'
 import FilterPopover from './components/FilterPopover'
+import { DateRangePickerPopover, DateRange } from './components/DateRangePickerPopover'
 import { useTransactionIntegration } from '@/hooks/useTransactionIntegration'
 import {
   TransactionDisplayInfo,
   TransactionType,
 } from '@/lib/contracts/types'
-import { CalendarDays, ChevronDown } from 'lucide-react'
 
 const TRANSACTIONS_PER_PAGE = 30
 
@@ -24,6 +24,11 @@ export default function TransactionsPage() {
     minAmount: '',
     maxAmount: '',
     amountToken: 'STRK',
+  })
+
+  const [dateRange, setDateRange] = useState<DateRange>({
+    from: undefined,
+    to: undefined,
   })
 
   // Fetch real transaction data from smart contract
@@ -69,6 +74,32 @@ export default function TransactionsPage() {
       )
     }
 
+    // Apply date range filter
+    if (dateRange.from || dateRange.to) {
+      filtered = filtered.filter(tx => {
+        const txDate = new Date(Number(tx.transaction.dateCreated) * 1000)
+        const startOfDay = (date: Date) => {
+          const d = new Date(date)
+          d.setHours(0, 0, 0, 0)
+          return d
+        }
+        const endOfDay = (date: Date) => {
+          const d = new Date(date)
+          d.setHours(23, 59, 59, 999)
+          return d
+        }
+
+        if (dateRange.from && dateRange.to) {
+          return txDate >= startOfDay(dateRange.from) && txDate <= endOfDay(dateRange.to)
+        } else if (dateRange.from) {
+          return txDate >= startOfDay(dateRange.from)
+        } else if (dateRange.to) {
+          return txDate <= endOfDay(dateRange.to)
+        }
+        return true
+      })
+    }
+
     // Apply amount filter
     if (filters.minAmount || filters.maxAmount) {
       filtered = filtered.filter(tx => {
@@ -97,7 +128,7 @@ export default function TransactionsPage() {
     }
 
     return filtered
-  }, [allTransactions, filters])
+  }, [allTransactions, filters, dateRange])
 
   // Pagination logic
   const totalPages = Math.ceil(filteredAndSortedTransactions.length / TRANSACTIONS_PER_PAGE)
@@ -159,11 +190,10 @@ export default function TransactionsPage() {
         <h1 className="text-2xl font-bold text-theme">Transaction Activity</h1>
 
         <div className="flex items-center justify-end gap-4 mb-6">
-          <button className="flex items-center gap-2 bg-theme-bg-tertiary border border-theme-border text-theme px-4 py-2 rounded-lg hover:bg-theme-border transition-colors duration-200">
-            <CalendarDays className="w-4 h-4" />
-            Select Dates
-            <ChevronDown className="w-4 h-4" />
-          </button>
+          <DateRangePickerPopover
+            dateRange={dateRange}
+            onDateRangeChange={setDateRange}
+          />
 
           {/* Filter Popover */}
           <FilterPopover

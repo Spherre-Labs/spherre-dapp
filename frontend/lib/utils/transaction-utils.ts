@@ -16,7 +16,7 @@ import type {
 // Map contract status to UI status
 export function mapTransactionStatus(
   contractStatus: number,
-): 'Pending' | 'Executed' | 'Rejected' {
+): 'Pending' | 'Executed' | 'Rejected' | 'Approved' {
   switch (contractStatus) {
     case 0:
       return 'Pending'
@@ -24,6 +24,8 @@ export function mapTransactionStatus(
       return 'Executed'
     case 2:
       return 'Rejected'
+    case 3:
+      return 'Approved'
     default:
       return 'Pending'
   }
@@ -36,7 +38,7 @@ export function transformTransaction(
 ): UnifiedTransaction {
   return {
     id: baseTransaction.id,
-    status: baseTransaction.tx_status.activeVariant(),
+    status: baseTransaction.tx_status.activeVariant() as 'Pending' | 'Executed' | 'Rejected' | 'Approved',
     proposer: contractAddressToHex(baseTransaction.proposer),
     executor: contractAddressToHex(baseTransaction.executor) || undefined,
     approved: baseTransaction.approved.map((approver) =>
@@ -50,7 +52,7 @@ export function transformTransaction(
       baseTransaction.date_executed > BigInt(0)
         ? baseTransaction.date_executed
         : undefined,
-    transactionType: baseTransaction.tx_type.activeVariant(),
+    transactionType: baseTransaction.tx_type.activeVariant() as TransactionType,
     data: transactionData,
   }
 }
@@ -250,4 +252,13 @@ export function contractAddressToHex(
   const paddedHex = '0x' + hexString.padStart(64, '0')
 
   return paddedHex as `0x${string}`
+}
+
+
+export function getExplorerUrl(network: string, txHash: string): string {
+  const explorers: Record<string, string> = {
+    'mainnet': 'https://starkscan.co/contract/',
+    'sepolia': 'https://sepolia.starkscan.co/contract/',
+  }
+  return `${explorers[network] || explorers['mainnet']}${txHash}`
 }
