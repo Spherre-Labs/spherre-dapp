@@ -6,10 +6,16 @@ import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover"
+} from '@/components/ui/popover'
 import Image from 'next/image'
 import { ChevronDown, ListFilter } from 'lucide-react'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import { cn } from '@/lib/utils'
 import { Input } from '@/components/ui/input'
 
@@ -45,7 +51,7 @@ const CollapsibleSection = ({
   title,
   children,
   defaultOpen = false,
-  className
+  className,
 }: {
   title: string
   className?: string
@@ -62,8 +68,9 @@ const CollapsibleSection = ({
       >
         <span className="text-theme font-semibold text-base">{title}</span>
         <ChevronDown
-          className={`w-4 h-4 text-theme-secondary transition-transform duration-200 ${isOpen ? 'rotate-180' : ''
-            }`}
+          className={`w-4 h-4 text-theme-secondary transition-transform duration-200 ${
+            isOpen ? 'rotate-180' : ''
+          }`}
         />
       </button>
       {isOpen && <div className={cn('px-2 pb-4', className)}>{children}</div>}
@@ -71,27 +78,42 @@ const CollapsibleSection = ({
   )
 }
 
-const FilterButton = ({ title, onClick, isActive }: { title: string, onClick: () => void, isActive: boolean }) => {
+const FilterButton = ({
+  title,
+  onClick,
+  isActive,
+}: {
+  title: string
+  onClick: () => void
+  isActive: boolean
+}) => {
   return (
-    <button className={`px-[14px] mt-2 py-[10px] rounded-lg text-sm text-white font-medium transition-colors bg-theme-bg-secondary duration-200 ${isActive
-      ? 'border-2 border-primary bg-[#8C62F238]'
-      : 'hover:border-primary'
-      }`} onClick={onClick}>
+    <button
+      className={`px-[14px] mt-2 py-[10px] rounded-lg text-sm text-white font-medium transition-colors bg-theme-bg-secondary duration-200 ${
+        isActive
+          ? 'border-2 border-primary bg-[#8C62F238]'
+          : 'hover:border-primary'
+      }`}
+      onClick={onClick}
+    >
       {title}
     </button>
   )
 }
 
-export default function FilterPopover({ filters, onFiltersChange }: FilterPopoverProps) {
+export default function FilterPopover({
+  filters,
+  onFiltersChange,
+}: FilterPopoverProps) {
   const [memberSearch, setMemberSearch] = useState('')
   const [tokenSearch, setTokenSearch] = useState('')
 
-  const filteredMembers = mockMembers.filter(member =>
-    member.name.toLowerCase().includes(memberSearch.toLowerCase())
+  const filteredMembers = mockMembers.filter((member) =>
+    member.name.toLowerCase().includes(memberSearch.toLowerCase()),
   )
 
-  const filteredTokens = predefinedTokens.filter(token =>
-    token.name.toLowerCase().includes(tokenSearch.toLowerCase())
+  const filteredTokens = predefinedTokens.filter((token) =>
+    token.name.toLowerCase().includes(tokenSearch.toLowerCase()),
   )
 
   const handleStatusChange = (status: typeof filters.status) => {
@@ -104,19 +126,22 @@ export default function FilterPopover({ filters, onFiltersChange }: FilterPopove
 
   const handleMemberToggle = (memberId: string) => {
     const updatedMembers = filters.selectedMembers.includes(memberId)
-      ? filters.selectedMembers.filter(id => id !== memberId)
+      ? filters.selectedMembers.filter((id) => id !== memberId)
       : [...filters.selectedMembers, memberId]
     onFiltersChange({ ...filters, selectedMembers: updatedMembers })
   }
 
   const handleTokenToggle = (tokenId: string) => {
     const updatedTokens = filters.selectedTokens.includes(tokenId)
-      ? filters.selectedTokens.filter(id => id !== tokenId)
+      ? filters.selectedTokens.filter((id) => id !== tokenId)
       : [...filters.selectedTokens, tokenId]
     onFiltersChange({ ...filters, selectedTokens: updatedTokens })
   }
 
-  const handleAmountChange = (field: 'minAmount' | 'maxAmount' | 'amountToken', value: string) => {
+  const handleAmountChange = (
+    field: 'minAmount' | 'maxAmount' | 'amountToken',
+    value: string,
+  ) => {
     onFiltersChange({ ...filters, [field]: value })
   }
 
@@ -141,7 +166,10 @@ export default function FilterPopover({ filters, onFiltersChange }: FilterPopove
           Filters
         </button>
       </PopoverTrigger>
-      <PopoverContent className="w-[360px] bg-[#101213] border border-theme-border shadow-2xl font-sans" align="end">
+      <PopoverContent
+        className="w-[360px] bg-[#101213] border border-theme-border shadow-2xl font-sans"
+        align="end"
+      >
         {/* Header */}
         <div className="flex items-center justify-between pb-2">
           <h2 className="text-theme font-semibold text-lg">Filters</h2>
@@ -162,7 +190,9 @@ export default function FilterPopover({ filters, onFiltersChange }: FilterPopove
                 <FilterButton
                   key={status}
                   title={status}
-                  onClick={() => handleStatusChange(status as typeof filters.status)}
+                  onClick={() =>
+                    handleStatusChange(status as typeof filters.status)
+                  }
                   isActive={filters.status === status}
                 />
               ))}
@@ -176,15 +206,26 @@ export default function FilterPopover({ filters, onFiltersChange }: FilterPopove
                 { value: 'All', label: 'All' },
                 { value: TransactionType.TOKEN_SEND, label: 'Withdraw' },
                 { value: TransactionType.MEMBER_ADD, label: 'Add Member' },
-                { value: TransactionType.MEMBER_REMOVE, label: 'Remove Member' },
+                {
+                  value: TransactionType.MEMBER_REMOVE,
+                  label: 'Remove Member',
+                },
                 { value: TransactionType.NFT_SEND, label: 'Send NFT' },
-                { value: TransactionType.THRESHOLD_CHANGE, label: 'Threshold Change' },
-                { value: TransactionType.SMART_TOKEN_LOCK, label: 'Smart Lock' },
+                {
+                  value: TransactionType.THRESHOLD_CHANGE,
+                  label: 'Threshold Change',
+                },
+                {
+                  value: TransactionType.SMART_TOKEN_LOCK,
+                  label: 'Smart Lock',
+                },
               ].map((type) => (
                 <FilterButton
                   key={type.value}
                   title={type.label}
-                  onClick={() => handleTypeChange(type.value as typeof filters.type)}
+                  onClick={() =>
+                    handleTypeChange(type.value as typeof filters.type)
+                  }
                   isActive={filters.type === type.value}
                 />
               ))}
@@ -198,7 +239,9 @@ export default function FilterPopover({ filters, onFiltersChange }: FilterPopove
               <div>
                 <Select
                   value={filters.amountToken}
-                  onValueChange={(value) => handleAmountChange('amountToken', value)}
+                  onValueChange={(value) =>
+                    handleAmountChange('amountToken', value)
+                  }
                 >
                   <SelectTrigger className="w-full border border-theme-border rounded-lg px-4 py-[14px] h-12 text-theme focus:outline-none focus:ring-2 focus:ring-primary">
                     <SelectValue placeholder="Select a token" />
@@ -217,7 +260,9 @@ export default function FilterPopover({ filters, onFiltersChange }: FilterPopove
                   type="number"
                   placeholder="Min"
                   value={filters.minAmount}
-                  onChange={(e) => handleAmountChange('minAmount', e.target.value)}
+                  onChange={(e) =>
+                    handleAmountChange('minAmount', e.target.value)
+                  }
                   className="bg-theme-bg-tertiary rounded-lg px-4 py-[14px] text-base text-theme placeholder-theme-secondary focus:outline-none"
                 />
                 <span className="text-theme font-normal text-base">to</span>
@@ -225,7 +270,9 @@ export default function FilterPopover({ filters, onFiltersChange }: FilterPopove
                   type="number"
                   placeholder="Max"
                   value={filters.maxAmount}
-                  onChange={(e) => handleAmountChange('maxAmount', e.target.value)}
+                  onChange={(e) =>
+                    handleAmountChange('maxAmount', e.target.value)
+                  }
                   className="bg-theme-bg-tertiary rounded-lg px-4 py-[14px] text-base text-theme placeholder-theme-secondary focus:outline-none"
                 />
               </div>
@@ -233,7 +280,7 @@ export default function FilterPopover({ filters, onFiltersChange }: FilterPopove
           </CollapsibleSection>
 
           {/* Member Filter */}
-          <CollapsibleSection title="Member" className='px-0 pr-2'>
+          <CollapsibleSection title="Member" className="px-0 pr-2">
             <div className="flex flex-col gap-5">
               {/* Search Input */}
               <div className="relative mt-1">
@@ -250,7 +297,12 @@ export default function FilterPopover({ filters, onFiltersChange }: FilterPopove
                   stroke="currentColor"
                   viewBox="0 0 24 24"
                 >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                  />
                 </svg>
               </div>
 
@@ -282,7 +334,7 @@ export default function FilterPopover({ filters, onFiltersChange }: FilterPopove
           </CollapsibleSection>
 
           {/* Token Filter */}
-          <CollapsibleSection title="Token" className='px-0 pr-2'>
+          <CollapsibleSection title="Token" className="px-0 pr-2">
             <div className="flex flex-col gap-5">
               {/* Search Input */}
               <div className="relative">
@@ -299,7 +351,12 @@ export default function FilterPopover({ filters, onFiltersChange }: FilterPopove
                   stroke="currentColor"
                   viewBox="0 0 24 24"
                 >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                  />
                 </svg>
               </div>
 
@@ -327,4 +384,4 @@ export default function FilterPopover({ filters, onFiltersChange }: FilterPopove
       </PopoverContent>
     </Popover>
   )
-} 
+}

@@ -23,11 +23,16 @@ import {
   type TransactionDisplayInfo,
 } from '@/lib/contracts/types'
 import { formatTimestamp, formatTime } from '@/lib/utils/transaction-utils'
-import { BadgeCheck, ChevronDown, CircleArrowRight, CircleX, Copy } from 'lucide-react'
+import {
+  BadgeCheck,
+  ChevronDown,
+  CircleArrowRight,
+  CircleX,
+  Copy,
+} from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { routes } from '@/lib/utils/routes'
 import { toTitleCase } from '@/lib/utils/text'
-
 
 const images = [member1, member2, member3, avatar]
 
@@ -41,7 +46,14 @@ const displayApprovals = (approved: string[]) => {
   return (
     <>
       {approved.slice(0, 2).map((_, index) => (
-        <Image key={index} src={images[index]} alt="member2" width={21} height={21} className={`rounded-full ${index === 0 ? '' : '-ml-1'}`} />
+        <Image
+          key={index}
+          src={images[index]}
+          alt="member2"
+          width={21}
+          height={21}
+          className={`rounded-full ${index === 0 ? '' : '-ml-1'}`}
+        />
       ))}
       {approved.length > 2 && (
         <div className="border border-ash w-5 h-5 text-[11px] py-[2px] px-[3px] font-bold text-theme-text-secondary flex items-center justify-center rounded-full ml-2 transition-colors duration-300">
@@ -97,7 +109,9 @@ export default function Transaction({
       case TransactionType.MEMBER_ADD:
       case TransactionType.MEMBER_REMOVE:
       case TransactionType.MEMBER_PERMISSION_EDIT:
-        return <Image src={members} width={20} height={20} alt="member action" />
+        return (
+          <Image src={members} width={20} height={20} alt="member action" />
+        )
       case TransactionType.THRESHOLD_CHANGE:
         return (
           <Image src={limit} width={20} height={20} alt="threshold change" />
@@ -180,7 +194,6 @@ export default function Transaction({
         onClick={onToggle}
         className="w-full p-4 lg:p-6 flex items-center gap-[85px] bg-theme-bg-tertiary transition-colors duration-200"
       >
-
         {/* Icon + Title - takes more space */}
         <div className="flex items-center space-x-2 flex-[2] min-w-0">
           {getTypeIcon(transaction.transactionType)}
@@ -201,7 +214,7 @@ export default function Transaction({
                 className="sm:w-5 sm:h-5"
                 alt="token"
               />
-              <span className='ml-1 text-theme font-semibold'>
+              <span className="ml-1 text-theme font-semibold">
                 {`${transactionInfo.amount} STRK`}
               </span>
             </span>
@@ -210,10 +223,19 @@ export default function Transaction({
 
         {/* Initiator */}
         <div className="text-theme-secondary truncate transition-colors duration-300 flex-[2] min-w-0">
-          {[TransactionType.MEMBER_ADD, TransactionType.MEMBER_REMOVE, TransactionType.MEMBER_PERMISSION_EDIT].includes(transaction.transactionType) ? null :
-            <span className="text-sm text-theme-secondary mr-1">Initiator:</span>
-          }
-          <span className="text-theme font-medium">{transactionInfo.transaction.proposer.slice(0, 6)}...{transactionInfo.transaction.proposer.slice(-4)}</span>
+          {[
+            TransactionType.MEMBER_ADD,
+            TransactionType.MEMBER_REMOVE,
+            TransactionType.MEMBER_PERMISSION_EDIT,
+          ].includes(transaction.transactionType) ? null : (
+            <span className="text-sm text-theme-secondary mr-1">
+              Initiator:
+            </span>
+          )}
+          <span className="text-theme font-medium">
+            {transactionInfo.transaction.proposer.slice(0, 6)}...
+            {transactionInfo.transaction.proposer.slice(-4)}
+          </span>
         </div>
 
         {/* Time */}
@@ -224,16 +246,17 @@ export default function Transaction({
         {/* Status */}
         <div className="flex-1 text-center">
           <span
-            className={` px-3 py-1 rounded-full ${transactionStatus === 'pending'
-              ? 'text-light-yellow'
-              : transactionStatus === 'executed'
-                ? 'text-green'
-                : transactionStatus === 'approved'
+            className={` px-3 py-1 rounded-full ${
+              transactionStatus === 'pending'
+                ? 'text-light-yellow'
+                : transactionStatus === 'executed'
                   ? 'text-green'
-                  : transactionStatus === 'rejected'
-                    ? 'text-[#D44B4B]'
-                    : 'text-theme-secondary'
-              }`}
+                  : transactionStatus === 'approved'
+                    ? 'text-green'
+                    : transactionStatus === 'rejected'
+                      ? 'text-[#D44B4B]'
+                      : 'text-theme-secondary'
+            }`}
           >
             {toTitleCase(transactionStatus)}
           </span>
@@ -241,11 +264,10 @@ export default function Transaction({
 
         {/* Dropdown Arrow */}
         <div className="flex-shrink-0 ml-auto">
-          <ChevronDown className={`w-4 h-4 sm:w-5 sm:h-5 text-theme-secondary transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`} />
+          <ChevronDown
+            className={`w-4 h-4 sm:w-5 sm:h-5 text-theme-secondary transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`}
+          />
         </div>
-
-
-
       </button>
 
       {/* Expandable content with smooth height transition */}
@@ -261,18 +283,31 @@ export default function Transaction({
               Transaction Progress
             </h3>
 
-            <div className='grid grid-cols-2 gap-2'>
-
+            <div className="grid grid-cols-2 gap-2">
               {/* Approvals */}
               <div className="flex items-center mb-2">
                 <h4 className="text-xs text-light-yellow font-semibold mr-2 transition-colors duration-300">
                   Pending Approvals
                 </h4>
-                {transactionStatus === 'approved' || transactionStatus === 'executed' || transactionStatus === 'rejected' ? (
+                {transactionStatus === 'approved' ||
+                transactionStatus === 'executed' ||
+                transactionStatus === 'rejected' ? (
                   <>
-                    <div className='flex items-center gap-0'>
-                      <Image src={member1} alt="member1" width={21} height={21} className='rounded-full' />
-                      <Image src={member3} alt="member3" width={21} height={21} className='rounded-full -ml-1' />
+                    <div className="flex items-center gap-0">
+                      <Image
+                        src={member1}
+                        alt="member1"
+                        width={21}
+                        height={21}
+                        className="rounded-full"
+                      />
+                      <Image
+                        src={member3}
+                        alt="member3"
+                        width={21}
+                        height={21}
+                        className="rounded-full -ml-1"
+                      />
                     </div>
                     <div className="border border-ash w-5 h-5 text-[11px] py-[2px] px-[3px] font-bold text-theme-text-secondary flex items-center justify-center rounded-full ml-2 transition-colors duration-300">
                       +2
@@ -286,8 +321,10 @@ export default function Transaction({
                 <h4 className="text-xs text-green font-semibold transition-colors duration-300">
                   {`Confirmed Approvals (${transaction.approved.length})`}
                 </h4>
-                {transactionStatus === 'approved' || transactionStatus === 'executed' || transactionStatus === 'rejected' ? (
-                  <div className='flex items-center gap-0'>
+                {transactionStatus === 'approved' ||
+                transactionStatus === 'executed' ||
+                transactionStatus === 'rejected' ? (
+                  <div className="flex items-center gap-0">
                     {displayApprovals(transaction.approved)}
                   </div>
                 ) : (
@@ -299,14 +336,16 @@ export default function Transaction({
               <div className="flex-grow font-sans">
                 <div className="flex items-start mt-2 space-x-2 mb-0">
                   <div className="flex flex-col items-center">
-                    <div className="w-[9px] h-[9px] bg-white rounded-full flex items-center justify-center">
-                    </div>
+                    <div className="w-[9px] h-[9px] bg-white rounded-full flex items-center justify-center"></div>
                     <div className="w-[1px] h-12 bg-white mt-0"></div>
                   </div>
                   <div className="flex-1 pt-0">
                     <h3 className="text-theme flex items-center gap-1 font-semibold -mt-1.5">
                       Initiated Transaction
-                      <BadgeCheck className="w-5 h-5 text-secondary" fill='#19B360' />
+                      <BadgeCheck
+                        className="w-5 h-5 text-secondary"
+                        fill="#19B360"
+                      />
                     </h3>
                     <p className="text-theme-secondary font-semibold text-xs transition-colors duration-300">
                       {formatTimestamp(transaction.dateCreated)}
@@ -316,18 +355,25 @@ export default function Transaction({
 
                 <div className="flex items-start mt-0 space-x-2 mb-0">
                   <div className="flex flex-col items-center">
-                    <div className="w-[9px] h-[9px] bg-white rounded-full flex items-center justify-center">
-                    </div>
-                    <div className={`w-[1px] h-12 mt-0 ${transactionStatus === 'pending' ? 'bg-[#55534E]' : 'bg-white'}`}></div>
+                    <div className="w-[9px] h-[9px] bg-white rounded-full flex items-center justify-center"></div>
+                    <div
+                      className={`w-[1px] h-12 mt-0 ${transactionStatus === 'pending' ? 'bg-[#55534E]' : 'bg-white'}`}
+                    ></div>
                   </div>
                   <div className="flex-1 pt-0">
                     <h3 className="text-theme flex items-center gap-1 font-semibold -mt-1.5">
                       Pending
                       {transactionStatus === 'executed' && (
-                        <BadgeCheck className="w-5 h-5 text-secondary" fill='#19B360' />
+                        <BadgeCheck
+                          className="w-5 h-5 text-secondary"
+                          fill="#19B360"
+                        />
                       )}
                       {transactionStatus === 'rejected' && (
-                        <CircleX className="w-5 h-5 text-secondary" fill='#D44B4B' />
+                        <CircleX
+                          className="w-5 h-5 text-secondary"
+                          fill="#D44B4B"
+                        />
                       )}
                     </h3>
                     <p className="text-theme-secondary font-semibold text-xs transition-colors duration-300">
@@ -338,13 +384,13 @@ export default function Transaction({
 
                 <div className="flex items-start mt-0 space-x-2 mb-0">
                   <div className="flex flex-col items-center">
-                    <div className={`w-[9px] h-[9px] rounded-full flex items-center justify-center
+                    <div
+                      className={`w-[9px] h-[9px] rounded-full flex items-center justify-center
                     ${transactionStatus !== 'executed' ? 'border border-[#55534E]' : 'bg-white'}`}
-                    >
-                    </div>
+                    ></div>
                   </div>
                   {transactionStatus === 'pending' && (
-                    < div className="flex-1 pt-0">
+                    <div className="flex-1 pt-0">
                       <h3 className="text-theme font-semibold -mt-1.5">
                         Execution
                       </h3>
@@ -353,22 +399,28 @@ export default function Transaction({
                       </p>
                     </div>
                   )}
-                  {transactionStatus === 'executed' && transaction.dateExecuted && (
-                    <div className="flex-1 pt-0">
-                      <h3 className="text-theme flex items-center gap-1 font-semibold -mt-1.5">
-                        Executed
-                        {transactionStatus === 'executed' && (
-                          <BadgeCheck className="w-5 h-5 text-secondary" fill='#19B360' />
-                        )}
-                      </h3>
-                      <p className="text-theme-secondary font-semibold text-xs transition-colors duration-300">
-                        {formatTimestamp(transaction.dateExecuted)}
-                      </p>
-                    </div>
-                  )}
+                  {transactionStatus === 'executed' &&
+                    transaction.dateExecuted && (
+                      <div className="flex-1 pt-0">
+                        <h3 className="text-theme flex items-center gap-1 font-semibold -mt-1.5">
+                          Executed
+                          {transactionStatus === 'executed' && (
+                            <BadgeCheck
+                              className="w-5 h-5 text-secondary"
+                              fill="#19B360"
+                            />
+                          )}
+                        </h3>
+                        <p className="text-theme-secondary font-semibold text-xs transition-colors duration-300">
+                          {formatTimestamp(transaction.dateExecuted)}
+                        </p>
+                      </div>
+                    )}
                   {transactionStatus === 'rejected' && (
-                    < div className="flex-1 pt-0">
-                      <h3 className="text-theme font-semibold -mt-1.5">Rejected</h3>
+                    <div className="flex-1 pt-0">
+                      <h3 className="text-theme font-semibold -mt-1.5">
+                        Rejected
+                      </h3>
                       <p className="text-theme-secondary font-semibold text-xs transition-colors duration-300">
                         ---------------------
                       </p>
@@ -377,12 +429,10 @@ export default function Transaction({
                 </div>
               </div>
 
-
               <h4 className="text-xs text-theme-secondary font-semibold mr-2">
                 Rejections: ({transaction.rejected.length})
               </h4>
             </div>
-
 
             {/* Action Buttons */}
             <div className="mt-auto pt-3 sm:pt-4">
@@ -413,14 +463,14 @@ export default function Transaction({
               )}
               {(transactionStatus === 'executed' ||
                 transactionStatus === 'rejected') && (
-                  <button className="bg-[#6F2FCE] hover:bg-purple-700 text-theme px-4 sm:px-6 py-2 rounded-md transition duration-200 w-full">
-                    Download CSV
-                  </button>
-                )}
+                <button className="bg-[#6F2FCE] hover:bg-purple-700 text-theme px-4 sm:px-6 py-2 rounded-md transition duration-200 w-full">
+                  Download CSV
+                </button>
+              )}
             </div>
           </div>
 
-          <div className='bg-[#55534E] w-0.5 my-2 mx-6'></div>
+          <div className="bg-[#55534E] w-0.5 my-2 mx-6"></div>
 
           {/* Right: Transaction Details */}
           <div className="lg:w-2/3 flex flex-col mt-1.5">
@@ -431,8 +481,16 @@ export default function Transaction({
               <div className="flex justify-between">
                 <span>Initiator:</span>
                 <span className="text-theme flex items-center gap-2 truncate transition-colors duration-300">
-                  <Image src={images[Math.floor(Math.random() * images.length)]} alt="avatar" width={21} height={21} />
-                  <span className="text-sm">{transaction.proposer.slice(0, 8)}...{transaction.proposer.slice(-4)}</span>
+                  <Image
+                    src={images[Math.floor(Math.random() * images.length)]}
+                    alt="avatar"
+                    width={21}
+                    height={21}
+                  />
+                  <span className="text-sm">
+                    {transaction.proposer.slice(0, 8)}...
+                    {transaction.proposer.slice(-4)}
+                  </span>
                 </span>
               </div>
               <div className="flex justify-between">
@@ -444,29 +502,49 @@ export default function Transaction({
               <div className="flex justify-between">
                 <span>Account:</span>
                 <span className="text-theme flex items-center gap-2 truncate transition-colors duration-300">
-                  <Image src={backstageboys} alt="backstageboys" width={21} height={21} />
+                  <Image
+                    src={backstageboys}
+                    alt="backstageboys"
+                    width={21}
+                    height={21}
+                  />
                   <span className="text-sm">Backstage Boys</span>
                 </span>
               </div>
-              {transactionStatus !== 'pending' && transaction.transaction_id && (
-                <div className="flex justify-between">
-                  <span>Transaction Link:</span>
-                  <div className="text-theme flex items-center gap-0 truncate transition-colors duration-300">
-                    {transaction.transaction_id}
-                    <Button variant="ghost" size="icon" className="p-0" onClick={() => navigator.clipboard.writeText(transaction.transaction_id ?? "")}>
-                      <Copy className="w-4 h-4 text-theme-secondary" />
-                    </Button>
-                    <Link href={`https://etherscan.io/tx/${transaction.transaction_id}`} target="_blank" className="text-sm">
-                      <CircleArrowRight className="w-4 h-4 text-theme-secondary -rotate-45" />
-                    </Link>
+              {transactionStatus !== 'pending' &&
+                transaction.transaction_id && (
+                  <div className="flex justify-between">
+                    <span>Transaction Link:</span>
+                    <div className="text-theme flex items-center gap-0 truncate transition-colors duration-300">
+                      {transaction.transaction_id}
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="p-0"
+                        onClick={() =>
+                          navigator.clipboard.writeText(
+                            transaction.transaction_id ?? '',
+                          )
+                        }
+                      >
+                        <Copy className="w-4 h-4 text-theme-secondary" />
+                      </Button>
+                      <Link
+                        href={`https://etherscan.io/tx/${transaction.transaction_id}`}
+                        target="_blank"
+                        className="text-sm"
+                      >
+                        <CircleArrowRight className="w-4 h-4 text-theme-secondary -rotate-45" />
+                      </Link>
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
             </div>
             <Link
               href={routes(accountAddress).transactionDetails(
                 transaction.id.toString(),
-              )}>
+              )}
+            >
               <Button className="mt-3 hover:bg-theme-bg-secondary bg-theme-bg-secondary text-theme text-sm px-4 sm:px-6 py-3.5 rounded-md transition duration-200 w-full disabled:opacity-50">
                 See transaction details
               </Button>

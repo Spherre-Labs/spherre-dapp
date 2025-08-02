@@ -2,12 +2,12 @@
 import React, { useState, useMemo } from 'react'
 import Transaction from './components/transaction'
 import FilterPopover from './components/FilterPopover'
-import { DateRangePickerPopover, DateRange } from './components/DateRangePickerPopover'
-import { useTransactionIntegration } from '@/hooks/useTransactionIntegration'
 import {
-  TransactionDisplayInfo,
-  TransactionType,
-} from '@/lib/contracts/types'
+  DateRangePickerPopover,
+  DateRange,
+} from './components/DateRangePickerPopover'
+import { useTransactionIntegration } from '@/hooks/useTransactionIntegration'
+import { TransactionDisplayInfo, TransactionType } from '@/lib/contracts/types'
 
 const TRANSACTIONS_PER_PAGE = 30
 
@@ -47,36 +47,43 @@ export default function TransactionsPage() {
 
     // Apply status filter
     if (filters.status !== 'All') {
-      filtered = filtered.filter(tx => tx.transaction.status === filters.status)
+      filtered = filtered.filter(
+        (tx) => tx.transaction.status === filters.status,
+      )
     }
 
     // Apply type filter
     if (filters.type !== 'All') {
-      filtered = filtered.filter(tx => tx.transaction.transactionType === filters.type)
+      filtered = filtered.filter(
+        (tx) => tx.transaction.transactionType === filters.type,
+      )
     }
 
     // Apply member filter
     if (filters.selectedMembers.length > 0) {
-      filtered = filtered.filter(tx =>
-        filters.selectedMembers.some(memberId =>
-          tx.transaction.proposer?.includes(memberId) ||
-          tx.transaction.approved?.some((approver: string) => approver.includes(memberId))
-        )
+      filtered = filtered.filter((tx) =>
+        filters.selectedMembers.some(
+          (memberId) =>
+            tx.transaction.proposer?.includes(memberId) ||
+            tx.transaction.approved?.some((approver: string) =>
+              approver.includes(memberId),
+            ),
+        ),
       )
     }
 
     // Apply token filter
     if (filters.selectedTokens.length > 0) {
-      filtered = filtered.filter(tx =>
-        filters.selectedTokens.some(tokenId =>
-          tx.token?.toLowerCase().includes(tokenId.toLowerCase())
-        )
+      filtered = filtered.filter((tx) =>
+        filters.selectedTokens.some((tokenId) =>
+          tx.token?.toLowerCase().includes(tokenId.toLowerCase()),
+        ),
       )
     }
 
     // Apply date range filter
     if (dateRange.from || dateRange.to) {
-      filtered = filtered.filter(tx => {
+      filtered = filtered.filter((tx) => {
         const txDate = new Date(Number(tx.transaction.dateCreated) * 1000)
         const startOfDay = (date: Date) => {
           const d = new Date(date)
@@ -90,7 +97,10 @@ export default function TransactionsPage() {
         }
 
         if (dateRange.from && dateRange.to) {
-          return txDate >= startOfDay(dateRange.from) && txDate <= endOfDay(dateRange.to)
+          return (
+            txDate >= startOfDay(dateRange.from) &&
+            txDate <= endOfDay(dateRange.to)
+          )
         } else if (dateRange.from) {
           return txDate >= startOfDay(dateRange.from)
         } else if (dateRange.to) {
@@ -102,7 +112,7 @@ export default function TransactionsPage() {
 
     // Apply amount filter
     if (filters.minAmount || filters.maxAmount) {
-      filtered = filtered.filter(tx => {
+      filtered = filtered.filter((tx) => {
         const amount = parseFloat(tx.amount || '0')
         const min = filters.minAmount ? parseFloat(filters.minAmount) : 0
         const max = filters.maxAmount ? parseFloat(filters.maxAmount) : Infinity
@@ -113,10 +123,14 @@ export default function TransactionsPage() {
     // Apply sorting
     switch (filters.sort) {
       case 'newest':
-        filtered.sort((a, b) => Number(b.transaction.dateCreated - a.transaction.dateCreated))
+        filtered.sort((a, b) =>
+          Number(b.transaction.dateCreated - a.transaction.dateCreated),
+        )
         break
       case 'oldest':
-        filtered.sort((a, b) => Number(a.transaction.dateCreated - b.transaction.dateCreated))
+        filtered.sort((a, b) =>
+          Number(a.transaction.dateCreated - b.transaction.dateCreated),
+        )
         break
       case 'amount':
         filtered.sort((a, b) => {
@@ -131,26 +145,36 @@ export default function TransactionsPage() {
   }, [allTransactions, filters, dateRange])
 
   // Pagination logic
-  const totalPages = Math.ceil(filteredAndSortedTransactions.length / TRANSACTIONS_PER_PAGE)
+  const totalPages = Math.ceil(
+    filteredAndSortedTransactions.length / TRANSACTIONS_PER_PAGE,
+  )
   const startIndex = (currentPage - 1) * TRANSACTIONS_PER_PAGE
   const paginatedTransactions = filteredAndSortedTransactions.slice(
     startIndex,
-    startIndex + TRANSACTIONS_PER_PAGE
+    startIndex + TRANSACTIONS_PER_PAGE,
   )
 
   // Group paginated transactions by date
   const groupedTransactions = useMemo(() => {
-    return paginatedTransactions.reduce((acc, txInfo) => {
-      const dateKey = new Date(Number(txInfo.transaction.dateCreated) * 1000).toLocaleDateString('en-GB', { weekday: 'short', day: '2-digit', month: 'short', year: 'numeric' })
-      if (!acc[dateKey]) {
-        acc[dateKey] = []
-      }
-      acc[dateKey].push(txInfo)
-      return acc
-    }, {} as Record<string, TransactionDisplayInfo[]>)
+    return paginatedTransactions.reduce(
+      (acc, txInfo) => {
+        const dateKey = new Date(
+          Number(txInfo.transaction.dateCreated) * 1000,
+        ).toLocaleDateString('en-GB', {
+          weekday: 'short',
+          day: '2-digit',
+          month: 'short',
+          year: 'numeric',
+        })
+        if (!acc[dateKey]) {
+          acc[dateKey] = []
+        }
+        acc[dateKey].push(txInfo)
+        return acc
+      },
+      {} as Record<string, TransactionDisplayInfo[]>,
+    )
   }, [paginatedTransactions])
-
-
 
   // Toggle transaction expansion
   const toggleTransaction = (transactionId: string) => {
@@ -196,34 +220,35 @@ export default function TransactionsPage() {
           />
 
           {/* Filter Popover */}
-          <FilterPopover
-            filters={filters}
-            onFiltersChange={setFilters}
-          />
+          <FilterPopover filters={filters} onFiltersChange={setFilters} />
         </div>
       </div>
 
-
-      {!isLoading && !error && Object.entries(groupedTransactions).map(([date, txns]) => (
-        <div key={date} className="mb-4 sm:mb-6">
-          <h2 className="font-sans font-medium text-theme-secondary mb-2 transition-colors duration-300">
-            {date}
-          </h2>
-          <div className="">
-            {txns.map((txInfo, index) => (
-              <div
-                key={txInfo.transaction.id.toString()}
-                className={`bg-theme-bg-tertiary border border-theme-border overflow-hidden transition-colors duration-300 ${index === 0 ? 'rounded-t-lg' : ''} ${index === txns.length - 1 ? 'rounded-b-lg' : ''}`}
-              >
-                <Transaction
-                  transactionInfo={txInfo}
-                  isExpanded={expandedId === txInfo.transaction.id.toString()}
-                  onToggle={() => toggleTransaction(txInfo.transaction.id.toString())}
-                />
-              </div>
-            ))}
+      {!isLoading &&
+        !error &&
+        Object.entries(groupedTransactions).map(([date, txns]) => (
+          <div key={date} className="mb-4 sm:mb-6">
+            <h2 className="font-sans font-medium text-theme-secondary mb-2 transition-colors duration-300">
+              {date}
+            </h2>
+            <div className="">
+              {txns.map((txInfo, index) => (
+                <div
+                  key={txInfo.transaction.id.toString()}
+                  className={`bg-theme-bg-tertiary border border-theme-border overflow-hidden transition-colors duration-300 ${index === 0 ? 'rounded-t-lg' : ''} ${index === txns.length - 1 ? 'rounded-b-lg' : ''}`}
+                >
+                  <Transaction
+                    transactionInfo={txInfo}
+                    isExpanded={expandedId === txInfo.transaction.id.toString()}
+                    onToggle={() =>
+                      toggleTransaction(txInfo.transaction.id.toString())
+                    }
+                  />
+                </div>
+              ))}
+            </div>
           </div>
-        </div>))}
+        ))}
 
       {!isLoading && !error && totalPages > 1 && currentPage < totalPages && (
         <div className="flex justify-center mt-8">
@@ -239,7 +264,9 @@ export default function TransactionsPage() {
       {allTransactions.length === 0 && (
         <div className="text-center py-12">
           <div className="text-theme-secondary text-lg">
-            {allTransactions.length === 0 ? 'No transactions found.' : 'No transactions match your filters.'}
+            {allTransactions.length === 0
+              ? 'No transactions found.'
+              : 'No transactions match your filters.'}
           </div>
           <div className="text-theme-secondary text-sm mt-2">
             Transactions will appear here once they are available from the smart
