@@ -188,11 +188,15 @@ export default function Transaction({
             </span>
             <span
               className={`text-xs sm:text-sm ${
-                transaction.status === 'Pending'
-                  ? 'text-yellow-400'
-                  : transaction.status === 'Executed'
-                    ? 'text-green-400'
-                    : 'text-red-500'
+                transaction.status.toLowerCase() === 'initiated'
+                  ? 'text-yellow-300'
+                  : transaction.status.toLowerCase() === 'approved'
+                    ? 'text-[#2dd4bf]'
+                    : transaction.status.toLowerCase() === 'executed'
+                      ? 'text-[#22c55e]'
+                      : transaction.status.toLowerCase() === 'rejected'
+                        ? 'text-[#ef4444]'
+                        : 'text-[#a78bfa]'
               }`}
             >
               {transaction.status}
@@ -309,10 +313,12 @@ export default function Transaction({
                   <div className="flex flex-col items-center mr-3 sm:mr-4">
                     <div
                       className={`w-2 h-2 border border-theme-border ${
-                        transaction.status === 'Executed' ? 'bg-theme' : ''
+                        transaction.status.toLowerCase() === 'executed'
+                          ? 'bg-theme'
+                          : ''
                       } rounded-full flex items-center justify-center mb-1 transition-colors duration-300`}
                     >
-                      {transaction.status === 'Executed' ? (
+                      {transaction.status.toLowerCase() === 'executed' ? (
                         <svg
                           className="w-4 h-4 sm:w-5 sm:h-5 text-theme"
                           viewBox="0 0 20 20"
@@ -329,7 +335,7 @@ export default function Transaction({
                   <div>
                     <p
                       className={`text-sm sm:text-base transition-colors duration-300 ${
-                        transaction.status === 'Executed'
+                        transaction.status.toLowerCase() === 'executed'
                           ? 'text-theme'
                           : 'text-theme-secondary'
                       }`}
@@ -349,25 +355,35 @@ export default function Transaction({
 
             {/* Action Buttons */}
             <div className="mt-auto pt-3 sm:pt-4">
-              {transaction.status === 'Pending' && (
+              {(transaction.status.toLowerCase() === 'initiated' ||
+                transaction.status.toLowerCase() === 'approved') && (
                 <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
                   <button
                     onClick={handleApprove}
-                    disabled={isApproving}
+                    disabled={
+                      isApproving ||
+                      transaction.status.toLowerCase() !== 'initiated'
+                    }
                     className="bg-[#6F2FCE] hover:bg-purple-700 text-white px-4 sm:px-6 py-2 rounded-md transition duration-200 text-sm sm:text-base w-full sm:w-1/3 disabled:opacity-50"
                   >
                     {isApproving ? 'Approving...' : 'Approve'}
                   </button>
                   <button
                     onClick={handleReject}
-                    disabled={isRejecting}
+                    disabled={
+                      isRejecting ||
+                      transaction.status.toLowerCase() !== 'initiated'
+                    }
                     className="bg-theme-bg-tertiary hover:bg-theme-border text-theme px-4 sm:px-6 py-2 rounded-md transition duration-200 text-sm sm:text-base w-full sm:w-1/3 border border-theme-border disabled:opacity-50"
                   >
                     {isRejecting ? 'Rejecting...' : 'Reject'}
                   </button>
                   <button
                     onClick={handleExecute}
-                    disabled={isExecuting}
+                    disabled={
+                      isExecuting ||
+                      transaction.status.toLowerCase() !== 'approved'
+                    }
                     className="bg-green-600 hover:bg-green-700 text-white px-4 sm:px-6 py-2 rounded-md transition duration-200 text-sm sm:text-base w-full sm:w-1/3 disabled:opacity-50"
                   >
                     {isExecuting ? 'Executing...' : 'Execute'}

@@ -1,6 +1,5 @@
 import React from 'react'
 import Image from 'next/image'
-import { useTheme } from '@/app/context/theme-context-provider'
 
 interface SuccessModalProps {
   isOpen: boolean
@@ -21,7 +20,7 @@ const SuccessModal: React.FC<SuccessModalProps> = ({
   closeLabel = 'Close',
   viewLabel = 'View Transaction',
 }) => {
-  useTheme() // Initialize theme context
+  // useTheme() // Initialize theme context
 
   if (!isOpen) return null
 
