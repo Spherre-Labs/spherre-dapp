@@ -25,6 +25,7 @@ export function useTokenBalances() {
   const { accountAddress } = useContext(SpherreAccountContext)
   const [loadingTokenData, setLoadingTokenData] = useState(false)
   const [tokensDisplay, setTokensDisplay] = useState<TokenDisplay[]>([])
+  const [totalValue, setTotalValue] = useState(0)
 
   useEffect(() => {
     if (!accountAddress) return
@@ -110,6 +111,7 @@ export function useTokenBalances() {
         )
 
         const totalValue = tokenWithValues.reduce((acc, t) => acc + t.value, 0)
+        setTotalValue(totalValue)
 
         const finalDisplay: TokenDisplay[] = tokenWithValues.map((t) => ({
           coin: t.coin,
@@ -138,5 +140,6 @@ export function useTokenBalances() {
   return {
     tokensDisplay,
     loadingTokenData,
+    totalValue,
   }
 }

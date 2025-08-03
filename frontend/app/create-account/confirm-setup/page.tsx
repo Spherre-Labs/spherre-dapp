@@ -10,7 +10,7 @@ import { useGlobalModal } from '@/app/components/modals/GlobalModalProvider'
 import { useOnboarding } from '@/context/OnboardingContext'
 import { useContext, useEffect, useCallback } from 'react'
 import { SpherreAccountContext } from '@/app/context/account-context'
-import { routes } from '@/app/[address]/layout'
+import { routes } from '@/lib/utils/routes'
 import { useScaffoldEventHistory } from '@/hooks/useScaffoldEventHistory'
 
 export default function ConfirmSetup() {

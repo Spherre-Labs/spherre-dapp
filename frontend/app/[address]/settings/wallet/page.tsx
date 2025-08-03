@@ -15,6 +15,9 @@ import { routes } from '@/lib/utils/routes'
 import { useSpherreAccount } from '@/app/context/account-context'
 import { useGetThreshold, useProposeThresholdChange } from '@/lib'
 import { useGlobalModal } from '@/app/components/modals/GlobalModalProvider'
+import { useGetAccountName } from '@/lib'
+import { truncateAddress } from '@/lib/utils/utility'
+import { useTokenBalances } from '@/hooks/useTokenBalances'
 
 export default function MultisigWalletUI() {
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -23,7 +26,8 @@ export default function MultisigWalletUI() {
   const router = useRouter()
   const { actualTheme } = useTheme()
   const { accountAddress } = useSpherreAccount()
-
+  const { data: accountName } = useGetAccountName(accountAddress || '0x0')
+  const { totalValue } = useTokenBalances()
   const openModal = () => setIsModalOpen(true)
   const closeModal = () => setIsModalOpen(false)
 
@@ -115,10 +119,10 @@ export default function MultisigWalletUI() {
                   </div>
                   <div>
                     <h2 className="text-base sm:text-xl font-semibold text-white">
-                      Backstage Boys
+                      {accountName}
                     </h2>
                     <p className="text-emerald-100 text-xs sm:text-sm">
-                      G252...62Ievw
+                      {accountAddress ? truncateAddress(accountAddress) : ''}
                     </p>
                   </div>
                 </div>
@@ -171,7 +175,7 @@ export default function MultisigWalletUI() {
                     Available Balance
                   </p>
                   <p className="text-white text-3xl sm:text-5xl font-bold">
-                    $250.00
+                    $ {totalValue}
                   </p>
                 </div>
               </div>
@@ -189,7 +193,10 @@ export default function MultisigWalletUI() {
                 Secure Your Digital Assets Seamlessly. Add Members to your new
                 Multisig Vault.
               </p>
-              <button className="w-full bg-theme-bg-tertiary hover:bg-theme-bg-tertiary/80 text-theme py-2 sm:py-3 rounded-lg font-medium transition-all text-xs sm:text-base border border-theme-border">
+              <button
+                onClick={() => router.push('/create-account')}
+                className="w-full bg-theme-bg-tertiary hover:bg-theme-bg-tertiary/80 text-theme py-2 sm:py-3 rounded-lg font-medium transition-all text-xs sm:text-base border border-theme-border"
+              >
                 Create Now
               </button>
             </div>
