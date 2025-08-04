@@ -148,7 +148,7 @@ const Members = () => {
     }
 
     fetchPermissions()
-  }, [accountAddress, members]) // Removed members dependency to prevent infinite loop
+  }, [accountAddress])
 
   const handleCopy = (address: string) => {
     navigator.clipboard.writeText(address)
@@ -391,11 +391,11 @@ const Members = () => {
       </div>
 
       <div className="text-theme mt-4 sm:mt-6">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 lg:gap-5">
+        <div className="flex flex-wrap gap-2">
           {members.map((member) => (
             <div
               key={member.id}
-              className="min-h-[240px] sm:h-[260px] bg-theme-bg-secondary border border-theme-border rounded-[10px] relative transition-colors duration-300 pt-6 px-6"
+              className="w-full sm:w-[48.8%] lg:w-[32.8%] min-h-[240px] sm:min-h-[260px] bg-theme-bg-secondary border border-theme-border rounded-[10px] relative transition-colors duration-300 pt-6 px-6 mb-2"
               style={{
                 zIndex: dropdownOpen === member.id ? 20 : 10,
               }}
@@ -590,7 +590,7 @@ const Members = () => {
 
           {/* Add Member Box */}
           <div
-            className="min-h-[240px] sm:h-[260px] bg-theme-bg-secondary border border-theme-border flex flex-col gap-4 sm:gap-5 items-center justify-center rounded-[10px] cursor-pointer hover:bg-theme-bg-tertiary transition-colors duration-300"
+            className="w-full sm:w-[48.8%] lg:w-[32.8%] min-h-[240px] sm:h-[260px] bg-theme-bg-secondary border border-theme-border flex flex-col gap-4 sm:gap-5 items-center justify-center rounded-[10px] cursor-pointer hover:bg-theme-bg-tertiary transition-colors duration-300"
             onClick={() => setIsAddModalOpen(true)}
           >
             <div className="size-[40px] sm:size-[51px] rounded-full flex items-center justify-center bg-theme-bg-tertiary border border-theme-border">
