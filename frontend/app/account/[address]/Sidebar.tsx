@@ -7,7 +7,7 @@ import SidebarProfile from './Profile'
 import { NavItem } from './navigation'
 import Link from 'next/link'
 import { X } from 'lucide-react'
-import { useSpherreAccount } from '../context/account-context'
+import { useSpherreAccount } from '../../context/account-context'
 import { sliceWalletAddress } from '@/components/utils'
 
 interface SidebarProps {

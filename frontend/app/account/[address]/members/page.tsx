@@ -12,8 +12,8 @@ import {
 import { useSpherreAccount } from '@/app/context/account-context'
 import AddMemberModal from './components/add-modal'
 import EditMemberRolesModal from './components/edit-roles-modal'
-import ProcessingModal from '../../components/modals/Loader'
-import SuccessModal from '../../components/modals/SuccessModal'
+import ProcessingModal from '../../../components/modals/Loader'
+import SuccessModal from '../../../components/modals/SuccessModal'
 import {
   createPermissionMask,
   ALL_PERMISSIONS_MASK,

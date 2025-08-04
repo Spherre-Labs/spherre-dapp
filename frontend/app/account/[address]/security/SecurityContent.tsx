@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
-import SignMessageModal from '../../components/modals/SignMessageModal'
-import Loader from '../../components/modals/Loader'
-import SuccessModal from '../../components/modals/SuccessModal'
+import SignMessageModal from '../../../components/modals/SignMessageModal'
+import Loader from '../../../components/modals/Loader'
+import SuccessModal from '../../../components/modals/SuccessModal'
 
 const SecurityContent = () => {
   const [mounted, setMounted] = useState(false)

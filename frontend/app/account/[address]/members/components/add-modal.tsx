@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 import { isValidStarknetAddress } from '@/lib/utils/validation'
-import ProcessingModal from '../../../components/modals/Loader'
-import SuccessModal from '../../../components/modals/SuccessModal'
-import ErrorModal from '../../../components/modals/ErrorModal'
+import ProcessingModal from '../../../../components/modals/Loader'
+import SuccessModal from '../../../../components/modals/SuccessModal'
+import ErrorModal from '../../../../components/modals/ErrorModal'
 
 const roles = ['Voter', 'Proposer', 'Executor']
 

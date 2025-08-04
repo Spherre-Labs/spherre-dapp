@@ -8,7 +8,7 @@ import { getERC20ContractConfig } from '@/lib/contracts/erc20-contracts'
 import { useScaffoldWriteContract } from '@/hooks/useScaffoldWriteContract'
 import { HiMiniArrowPath } from 'react-icons/hi2'
 import { useSpherreAccount } from '@/app/context/account-context'
-import { useGlobalModal } from '../../../../components/modals/useGlobalModal'
+import { useGlobalModal } from '../../../../../components/modals/useGlobalModal'
 import { useTheme } from '@/app/context/theme-context-provider'
 
 interface TokenInfo {

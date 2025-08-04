@@ -17,7 +17,7 @@ import Support from '@/public/Images/Support.png'
 import SmartLock from '@/public/Images/Smart-lock.png'
 import { NavItem } from './navigation'
 import { usePathname } from 'next/navigation'
-import { useSpherreAccount } from '../context/account-context'
+import { useSpherreAccount } from '../../context/account-context'
 import { useGetAccountName } from '@/lib'
 import React from 'react'
 
