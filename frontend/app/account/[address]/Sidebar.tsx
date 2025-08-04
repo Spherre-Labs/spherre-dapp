@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useEffect, useRef } from 'react'
-import logo from '../../public/Images/spherrelogo.png'
+import logo from '@/public/Images/spherrelogo.png'
 import Image from 'next/image'
 import SidebarProfile from './Profile'
 import { NavItem } from './navigation'
