@@ -13,6 +13,11 @@ export const routes = (address: `0x${string}` | null) => ({
   payments: `/account/${address}/payments`,
   apps: `/account/${address}/apps`,
   settings: `/account/${address}/settings`,
+  profile: `/account/${address}/settings/profile`,
+  preferences: `/account/${address}/settings/preferences`,
+  wallet: `/account/${address}/settings/wallet`,
   editProfile: `/account/${address}/settings/edit-profile`,
+  security: `/account/${address}/settings/security`,
   support: `/account/${address}/support`,
+
 })

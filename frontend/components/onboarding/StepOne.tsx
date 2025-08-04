@@ -70,18 +70,13 @@ const StepOne = () => {
   }
 
   return (
-    <div className="">
+    <div className="flex flex-col space-y-6">
       {/* Writeup */}
       <StepIndicator currentStep={1} />
       <div>
         <h1 className="text-center text-theme font-[700] text-2xl sm:text-3xl lg:text-[40px] leading-tight sm:leading-[47.42px] px-4 transition-colors duration-300">
           Secure Your Digital Assets Seamlessly
         </h1>
-
-        <p className="text-sm sm:text-base leading-[25px] text-center text-theme-secondary mx-auto w-full max-w-[337px] mt-3 px-4 transition-colors duration-300">
-          Name your Spherre account, Spherre ensures seamless integration,
-          giving you full control over your digital assets.
-        </p>
       </div>
 
       {/* form */}

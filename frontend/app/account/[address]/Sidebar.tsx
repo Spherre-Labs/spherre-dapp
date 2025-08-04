@@ -188,7 +188,7 @@ const Sidebar = ({
               >
                 {mounted && isExpanded ? (
                   <Link
-                    href={item?.route ?? `/${accountAddress}/`}
+                    href={item?.route ?? `/account/${accountAddress}/`}
                     className={`flex items-center p-3 rounded-lg sidebar-transition sidebar-menu-item ${
                       selectedPage === item.name
                         ? 'active'

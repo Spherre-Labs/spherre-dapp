@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useTheme } from '@/app/context/theme-context-provider'
 import { useSpherreAccount } from '@/app/context/account-context'
+import { routes } from '@/lib/utils/routes'
 
 export default function SettingsNavbar() {
   const pathname = usePathname()
@@ -11,10 +12,10 @@ export default function SettingsNavbar() {
   useTheme()
 
   const tabs = [
-    { name: 'Profile', href: `/${accountAddress}/settings/profile` },
-    { name: 'Wallet & Account', href: `/${accountAddress}/settings/wallet` },
-    { name: 'Preferences', href: `/${accountAddress}/settings/preferences` },
-    { name: 'Security', href: `/${accountAddress}/settings/security` },
+    { name: 'Profile', href: routes(accountAddress).profile },
+    { name: 'Wallet & Account', href: routes(accountAddress).wallet },
+    { name: 'Preferences', href: routes(accountAddress).preferences },
+    { name: 'Security', href: routes(accountAddress).security },
   ]
 
   const isActive = (href: string) => pathname === href

@@ -8,8 +8,8 @@ import WithdrawalModal from '@/app/components/modal'
 import DepositModal from '../../components/deposit-modal'
 import { useTheme } from '@/app/context/theme-context-provider'
 import { useTokenBalances } from '@/hooks/useTokenBalances'
-import { useAccountInfo } from '../../../hooks/useSpherreHooks'
-import { SpherreAccountContext } from '../../context/account-context'
+import { useAccountInfo } from '@/hooks/useSpherreHooks'
+import { SpherreAccountContext } from '@/app/context/account-context'
 import { useRouter } from 'next/navigation'
 
 export default function DashboardPage() {

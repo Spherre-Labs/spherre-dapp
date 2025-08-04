@@ -3,7 +3,6 @@
 import { useSpherreAccount } from '@/app/context/account-context'
 import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
-import { routes } from '@/lib/utils/routes'
 
 export default function Page() {
   // Get the current address from the hook
@@ -12,7 +11,7 @@ export default function Page() {
 
   useEffect(() => {
     if (accountAddress) {
-      router.push(routes(accountAddress).profile)
+      router.push('/create-account/step-1')
     }
   }, [accountAddress, router])
 
