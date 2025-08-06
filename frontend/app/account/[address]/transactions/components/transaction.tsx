@@ -11,6 +11,7 @@ import {
   useApproveTransaction,
   useRejectTransaction,
   useExecuteTransaction,
+  useGetThreshold,
 } from '@/hooks/useSpherreHooks'
 import {
   TransactionType,
@@ -35,6 +36,8 @@ interface TransactionInfoProps {
 function TransactionInfo({ transactionInfo }: TransactionInfoProps) {
 
   const explorer = useExplorer()
+  const { accountAddress } = useSpherreAccount()
+  const {data: threshold} = useGetThreshold(accountAddress!)
   return (
     <>
     {transactionInfo.transaction.transactionType == TransactionType.TOKEN_SEND && (
@@ -118,7 +121,7 @@ function TransactionInfo({ transactionInfo }: TransactionInfoProps) {
           Old Threshold:
           <span className="inline-flex items-center ml-1">
               <span className="truncate">
-                
+                {threshold?.[0].toString()}
               </span>
           </span>
           

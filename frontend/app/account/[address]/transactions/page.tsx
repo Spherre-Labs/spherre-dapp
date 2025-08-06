@@ -4,6 +4,8 @@ import Transaction from './components/transaction'
 import { TransactionDisplayInfo } from '@/lib/contracts/types'
 import { useTransactionIntegration } from '@/hooks/useTransactionIntegration'
 import { Loader } from 'lucide-react'
+import { useSpherreAccount } from '@/app/context/account-context'
+import { useGetThreshold } from '@/lib'
 // import { TransactionType } from 'starknet'
 
 /**
@@ -39,6 +41,9 @@ export default function TransactionsPage() {
     isLoading: realTxsLoading,
     error: realTxsError,
   } = useTransactionIntegration()
+
+  const { accountAddress } = useSpherreAccount()
+  const { data: threshold } = useGetThreshold(accountAddress!)
 
   useEffect(() => {
     setMounted(true)
@@ -108,6 +113,7 @@ export default function TransactionsPage() {
                 transactionInfo={transaction}
                 isExpanded={expandedTransactions.has(index)}
                 onToggle={() => toggleTransaction(index)}
+                threshold={threshold?.[0] ?? BigInt(0)}
               />
             )
           },

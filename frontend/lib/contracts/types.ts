@@ -44,6 +44,13 @@ export interface AccountDetails {
   description: string
 }
 
+export interface AccountData {
+  name: string
+  description: string
+  members: string[]
+  threshold: bigint
+}
+
 // Transaction types from the contract
 export enum TransactionType {
   VOID = 'VOID',
