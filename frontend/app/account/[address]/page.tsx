@@ -11,6 +11,7 @@ import { useTokenBalances } from '@/hooks/useTokenBalances'
 import { useAccountInfo } from '@/hooks/useSpherreHooks'
 import { SpherreAccountContext } from '@/app/context/account-context'
 import { useRouter } from 'next/navigation'
+import { routes } from '@/lib/utils/routes'
 
 export default function DashboardPage() {
   useTheme()
@@ -57,7 +58,7 @@ export default function DashboardPage() {
   }
 
   const handleSelectOption = () => {
-    router.push(`/${accountAddress}/withdraw`)
+    router.push(routes(accountAddress).withdraw)
     // Handle the selected option
   }
 

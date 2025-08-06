@@ -16,13 +16,157 @@ import {
   TransactionType,
   type TransactionDisplayInfo,
 } from '@/lib/contracts/types'
-import { formatTimestamp, formatTime } from '@/lib/utils/transaction-utils'
+import { formatTimestamp, formatTime, contractAddressToHex } from '@/lib/utils/transaction-utils'
 import { routes } from '@/lib/utils/routes'
+import { extractPermissionsFromMask, TokenUtils } from '@/lib'
+import { truncateAddress } from '@/lib/utils/utility'
+import { useExplorer } from '@starknet-react/core'
 
 interface TransactionProps {
   transactionInfo: TransactionDisplayInfo
   isExpanded: boolean
   onToggle: () => void
+}
+
+interface TransactionInfoProps {
+  transactionInfo: TransactionDisplayInfo
+}
+
+function TransactionInfo({ transactionInfo }: TransactionInfoProps) {
+
+  const explorer = useExplorer()
+  return (
+    <>
+    {transactionInfo.transaction.transactionType == TransactionType.TOKEN_SEND && (
+      <>
+      <div className="text-theme-secondary flex items-center text-sm sm:text-base transition-colors duration-300">
+          
+        Amount:
+        <span className="inline-flex items-center ml-1">
+          <Image
+            src={strk}
+            width={16}
+            height={16}
+            className="sm:w-5 sm:h-5"
+            alt="token"
+          />
+          <span className="truncate">{TokenUtils.fromWei(transactionInfo.amount!, 18)}</span>
+        </span>
+        
+      </div>
+      <div className="text-theme-secondary truncate text-sm sm:text-base transition-colors duration-300"
+      title={contractAddressToHex(transactionInfo.transaction.data.recipient)}
+      >
+        <a href={explorer.contract(contractAddressToHex(transactionInfo.transaction.data.recipient))} className="inline-flex items-center ml-1" target="_blank">
+          To: {truncateAddress(contractAddressToHex(transactionInfo.transaction.data.recipient))}
+        </a>
+    </div>
+    </>
+    )}
+    {transactionInfo.transaction.transactionType == TransactionType.MEMBER_ADD && (
+      <>
+      <div className="text-theme-secondary text-sm sm:text-base transition-colors duration-300"
+      title={contractAddressToHex(transactionInfo.transaction.data.member)}
+      >
+          
+        <a href={explorer.contract(contractAddressToHex(transactionInfo.transaction.data.member))} className="inline-flex items-center ml-1" target="_blank">
+            {truncateAddress(contractAddressToHex(transactionInfo.transaction.data.member))}
+        </a>
+        
+      </div>
+      <div className="text-theme-secondary text-sm sm:text-base transition-colors duration-300">
+        <span className="inline-flex items-center ml-1 text-[12px]">
+          {extractPermissionsFromMask(transactionInfo.transaction.data.permissions).join(', ')}
+        </span>
+    </div>
+    </>
+    )}
+    {transactionInfo.transaction.transactionType == TransactionType.MEMBER_REMOVE && (
+      <>
+      <div className="text-theme-secondary flex items-center text-sm sm:text-base transition-colors duration-300"
+      title={contractAddressToHex(transactionInfo.transaction.data.member_address)}
+      >      
+          <a href={explorer.contract(contractAddressToHex(transactionInfo.transaction.data.member_address))} className="inline-flex items-center ml-1" target="_blank">
+              {truncateAddress(contractAddressToHex(transactionInfo.transaction.data.member_address))}
+          </a>
+          
+        </div>
+        <div className="text-theme-secondary truncate text-sm sm:text-base transition-colors duration-300">
+       
+        </div>
+      </>
+    )}
+    {transactionInfo.transaction.transactionType == TransactionType.MEMBER_PERMISSION_EDIT && (
+      <>
+      <div className="text-theme-secondary flex items-center text-sm sm:text-base transition-colors duration-300"
+      title={contractAddressToHex(transactionInfo.transaction.data.member)}
+      >
+          <a href={explorer.contract(contractAddressToHex(transactionInfo.transaction.data.member))} className="inline-flex items-center ml-1" target="_blank">
+                {truncateAddress(contractAddressToHex(transactionInfo.transaction.data.member))}
+          </a>
+          
+        </div>
+        <div className="text-theme-secondary truncate text-sm sm:text-base transition-colors duration-300">
+        {extractPermissionsFromMask(transactionInfo.transaction.data.new_permissions).join(', ')}
+      </div>
+      </>
+    )}
+    {transactionInfo.transaction.transactionType == TransactionType.THRESHOLD_CHANGE && (
+      <>
+      <div className="text-theme-secondary flex items-center text-sm sm:text-base transition-colors duration-300">
+          
+          Old Threshold:
+          <span className="inline-flex items-center ml-1">
+              <span className="truncate">
+                
+              </span>
+          </span>
+          
+        </div>
+        <div className="text-theme-secondary truncate text-sm sm:text-base transition-colors duration-300">
+        New Threshold: {transactionInfo.transaction.data.new_threshold}
+      </div>
+      </>
+    )}
+    {transactionInfo.transaction.transactionType == TransactionType.NFT_SEND && (
+      <>
+      <div className="text-theme-secondary flex items-center text-sm sm:text-base transition-colors duration-300">
+          NFT:
+          <a href={explorer.contract(contractAddressToHex(transactionInfo.transaction.data.nft_contract))} className="inline-flex items-center ml-1" target="_blank">
+                {truncateAddress(contractAddressToHex(transactionInfo.transaction.data.nft_contract))}
+          </a>
+          
+        </div>
+        <div className="text-theme-secondary truncate text-sm sm:text-base transition-colors duration-300">
+        Token ID: {transactionInfo.transaction.data.token_id}
+      </div>
+      </>
+    )}
+    {transactionInfo.transaction.transactionType == TransactionType.SMART_TOKEN_LOCK && (
+      <>
+      <div className="text-theme-secondary flex items-center text-sm sm:text-base transition-colors duration-300">
+          
+          Amount:
+          <span className="inline-flex items-center ml-1">
+            <Image
+              src={strk}
+              width={16}
+              height={16}
+              className="sm:w-5 sm:h-5"
+              alt="token"
+            />
+            <span className="truncate">{TokenUtils.fromWei(transactionInfo.transaction.data.amount, 18)}</span>
+          </span>
+          
+        </div>
+        <div className="text-theme-secondary truncate text-sm sm:text-base transition-colors duration-300">
+        Duration: {transactionInfo.transaction.data.duration} day(s)
+      </div>
+      </>
+    )}
+
+    </>
+  )
 }
 
 export default function Transaction({
@@ -156,30 +300,10 @@ export default function Transaction({
             </span>
           </div>
 
-          {transactionInfo.amount && (
-            <div className="text-theme-secondary flex items-center text-sm sm:text-base transition-colors duration-300">
-              Amount:
-              <span className="inline-flex items-center ml-1">
-                <Image
-                  src={strk}
-                  width={16}
-                  height={16}
-                  className="sm:w-5 sm:h-5"
-                  alt="token"
-                />
-                <span className="truncate">{transactionInfo.amount}</span>
-              </span>
-            </div>
-          )}
-
-          {transactionInfo.recipient && (
-            <div className="text-theme-secondary truncate text-sm sm:text-base transition-colors duration-300">
-              To: {transactionInfo.recipient}
-            </div>
-          )}
+          <TransactionInfo transactionInfo={transactionInfo} />
 
           <div className="text-theme-secondary truncate text-sm sm:text-base transition-colors duration-300">
-            Initiated: {transactionInfo.transaction.proposer.slice(0, 8)}...
+            Initiated: {truncateAddress(transactionInfo.transaction.proposer)}
           </div>
 
           <div className="flex items-center justify-end space-x-2 sm:space-x-4">
@@ -358,13 +482,15 @@ export default function Transaction({
               {(transaction.status.toLowerCase() === 'initiated' ||
                 transaction.status.toLowerCase() === 'approved') && (
                 <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
+                  {transaction.status.toLowerCase() === 'initiated' && (
+                    <>
                   <button
                     onClick={handleApprove}
                     disabled={
                       isApproving ||
                       transaction.status.toLowerCase() !== 'initiated'
                     }
-                    className="bg-[#6F2FCE] hover:bg-purple-700 text-white px-4 sm:px-6 py-2 rounded-md transition duration-200 text-sm sm:text-base w-full sm:w-1/3 disabled:opacity-50"
+                    className="flex-grow bg-[#6F2FCE] hover:bg-purple-700 text-white px-4 sm:px-6 py-2 rounded-md transition duration-200 text-sm sm:text-base w-full sm:w-1/3 disabled:opacity-50"
                   >
                     {isApproving ? 'Approving...' : 'Approve'}
                   </button>
@@ -374,20 +500,24 @@ export default function Transaction({
                       isRejecting ||
                       transaction.status.toLowerCase() !== 'initiated'
                     }
-                    className="bg-theme-bg-tertiary hover:bg-theme-border text-theme px-4 sm:px-6 py-2 rounded-md transition duration-200 text-sm sm:text-base w-full sm:w-1/3 border border-theme-border disabled:opacity-50"
+                    className="flex-grow bg-theme-bg-tertiary hover:bg-theme-border text-theme px-4 sm:px-6 py-2 rounded-md transition duration-200 text-sm sm:text-base w-full sm:w-1/3 border border-theme-border disabled:opacity-50"
                   >
                     {isRejecting ? 'Rejecting...' : 'Reject'}
                   </button>
+                  </>
+                  )}
+                  {transaction.status.toLowerCase() === 'approved' && (
                   <button
                     onClick={handleExecute}
                     disabled={
                       isExecuting ||
                       transaction.status.toLowerCase() !== 'approved'
                     }
-                    className="bg-green-600 hover:bg-green-700 text-white px-4 sm:px-6 py-2 rounded-md transition duration-200 text-sm sm:text-base w-full sm:w-1/3 disabled:opacity-50"
+                    className="flex-grow bg-green-600 hover:bg-green-700 text-white px-4 sm:px-6 py-2 rounded-md transition duration-200 text-sm sm:text-base w-full sm:w-1/3 disabled:opacity-50"
                   >
                     {isExecuting ? 'Executing...' : 'Execute'}
                   </button>
+                  )}
                 </div>
               )}
               {(transaction.status === 'Executed' ||

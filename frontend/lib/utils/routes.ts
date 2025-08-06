@@ -2,6 +2,7 @@ export const routes = (address: `0x${string}` | null) => ({
   dashboard: `/account/${address}/`,
   depositViaAddress: `/account/${address}/deposit/deposit-via-address`,
   depositViaWallet: `/account/${address}/deposit/deposit-via-wallet`,
+  withdraw: `/account/${address}/withdraw`,
   trade: `/account/${address}/trade`,
   members: `/account/${address}/members`,
   transactions: `/account/${address}/transactions`,

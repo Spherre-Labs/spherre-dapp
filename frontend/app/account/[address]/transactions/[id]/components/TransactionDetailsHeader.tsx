@@ -139,7 +139,7 @@ export const TransactionDetailsHeader = ({
               </button>
             </>
           )}
-          {(status === 'Executed' || status === 'Rejected') && (
+          {(status.toLowerCase() === 'executed' || status.toLowerCase() === 'rejected') && (
             <button className="bg-primary text-white px-6 py-2 rounded-lg hover:opacity-90 transition-all duration-200">
               Download CSV
             </button>

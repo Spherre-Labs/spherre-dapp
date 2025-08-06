@@ -19,6 +19,7 @@ import { useSpherreAccount } from '@/app/context/account-context'
 import { useGlobalModal } from '@/app/components/modals/GlobalModalProvider'
 import { useTheme } from '@/app/context/theme-context-provider'
 import { useTokenBalances } from '@/hooks/useTokenBalances'
+import { routes } from '@/lib/utils/routes'
 
 export default function WithdrawPage() {
   useTheme() // Initialize theme context
@@ -38,6 +39,7 @@ export default function WithdrawPage() {
   const [currentStep, setCurrentStep] = useState(1)
   const router = useRouter()
   const { address } = useAccount()
+  const { accountAddress } = useSpherreAccount()
   const [isAddressValid, setIsAddressValid] = useState<boolean>(false)
   const [recipientAddress, setRecipientAddress] = useState<string>('')
   const [addressTouched, setAddressTouched] = useState<boolean>(false)
@@ -142,7 +144,7 @@ export default function WithdrawPage() {
         title: 'Proposal Created!',
         message: 'Token withdrawal proposal created.',
         onViewTransaction: () => {
-          router.push('dapp/transactions/')
+          router.push(routes(accountAddress).transactions)
         },
       })
     },
