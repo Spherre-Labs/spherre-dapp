@@ -11,7 +11,6 @@ import {
   useApproveTransaction,
   useRejectTransaction,
   useExecuteTransaction,
-  useGetThreshold,
 } from '@/hooks/useSpherreHooks'
 import {
   TransactionType,
@@ -30,17 +29,17 @@ import { useExplorer } from '@starknet-react/core'
 interface TransactionProps {
   transactionInfo: TransactionDisplayInfo
   isExpanded: boolean
+  threshold: bigint
   onToggle: () => void
 }
 
 interface TransactionInfoProps {
   transactionInfo: TransactionDisplayInfo
+  threshold: bigint
 }
 
-function TransactionInfo({ transactionInfo }: TransactionInfoProps) {
+function TransactionInfo({ transactionInfo, threshold }: TransactionInfoProps) {
   const explorer = useExplorer()
-  const { accountAddress } = useSpherreAccount()
-  const { data: threshold } = useGetThreshold(accountAddress!)
   return (
     <>
       {transactionInfo.transaction.transactionType ==
@@ -178,7 +177,7 @@ function TransactionInfo({ transactionInfo }: TransactionInfoProps) {
           <div className="text-theme-secondary flex items-center text-sm sm:text-base transition-colors duration-300">
             Old Threshold:
             <span className="inline-flex items-center ml-1">
-              <span className="truncate">{threshold?.[0].toString()}</span>
+              <span className="truncate">{threshold}</span>
             </span>
           </div>
           <div className="text-theme-secondary truncate text-sm sm:text-base transition-colors duration-300">
@@ -245,6 +244,7 @@ function TransactionInfo({ transactionInfo }: TransactionInfoProps) {
 export default function Transaction({
   transactionInfo,
   isExpanded,
+  threshold,
   onToggle,
 }: TransactionProps) {
   useTheme()
@@ -373,7 +373,10 @@ export default function Transaction({
             </span>
           </div>
 
-          <TransactionInfo transactionInfo={transactionInfo} />
+          <TransactionInfo
+            transactionInfo={transactionInfo}
+            threshold={threshold}
+          />
 
           <div className="text-theme-secondary truncate text-sm sm:text-base transition-colors duration-300">
             Initiated: {truncateAddress(transactionInfo.transaction.proposer)}
