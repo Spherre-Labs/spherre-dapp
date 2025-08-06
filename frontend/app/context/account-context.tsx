@@ -6,7 +6,7 @@ import {
   useContext,
   useEffect,
 } from 'react'
-import {isValidStarknetAddress, SPHERRE_CONTRACTS } from '@/lib'
+import { isValidStarknetAddress, SPHERRE_CONTRACTS } from '@/lib'
 import { validateAndParseAddress } from 'starknet'
 import { useParams } from 'next/navigation'
 
@@ -15,7 +15,7 @@ export const SpherreAccountContext = createContext<{
   setAccountAddress: (address: `0x${string}` | null) => void
 }>({
   accountAddress: null,
-  setAccountAddress: () => {}
+  setAccountAddress: () => {},
 })
 
 type SpherreAccountProviderProps = {

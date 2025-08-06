@@ -72,7 +72,7 @@ export default function DappLayout({ children, params }: DappLayoutProps) {
     {
       name: 'Treasury',
       icon: Treasury,
-      route: routes(addressToUse).treasury
+      route: routes(addressToUse).treasury,
     },
     {
       name: 'Smart Lock',

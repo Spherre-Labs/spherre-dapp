@@ -20,5 +20,4 @@ export const routes = (address: `0x${string}` | null) => ({
   editProfile: `/account/${address}/settings/edit-profile`,
   security: `/account/${address}/settings/security`,
   support: `/account/${address}/support`,
-
 })
