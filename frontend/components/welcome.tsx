@@ -177,7 +177,7 @@ const Welcome = () => {
               </button>
             )}
             <button
-              onClick={() => router.push(`/${accountAddress}`)}
+              onClick={() => router.push(`/account/${accountAddress}`)}
               className={`w-full sm:w-72 flex items-center justify-center gap-1 px-6 py-2 rounded-lg mx-auto my-3 transition-all duration-200 ${
                 actualTheme === 'dark'
                   ? 'bg-white text-black hover:bg-gray-200'

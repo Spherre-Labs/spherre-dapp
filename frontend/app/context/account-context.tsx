@@ -29,7 +29,6 @@ export const SpherreAccountProvider = ({
   const [accountAddress, _setAccountAddress] = useState<`0x${string}` | null>(
     SPHERRE_CONTRACTS.SPHERRE_ACCOUNT,
   )
-
   // Load from localStorage after mount, but don't block rendering
   useEffect(() => {
     if (typeof window !== 'undefined') {
