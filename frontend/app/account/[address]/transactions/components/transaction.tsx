@@ -11,7 +11,6 @@ import {
   useApproveTransaction,
   useRejectTransaction,
   useExecuteTransaction,
-  useGetThreshold,
 } from '@/hooks/useSpherreHooks'
 import {
   TransactionType,
@@ -41,7 +40,6 @@ interface TransactionInfoProps {
 
 function TransactionInfo({ transactionInfo, threshold }: TransactionInfoProps) {
   const explorer = useExplorer()
-  const { accountAddress } = useSpherreAccount()
   return (
     <>
       {transactionInfo.transaction.transactionType ==
