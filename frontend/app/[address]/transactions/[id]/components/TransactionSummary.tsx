@@ -75,6 +75,11 @@ export const TransactionSummary = ({
           </p>
         )
       case 'approved':
+        return (
+          <p className="text-green bg-[#19B3601F] font-medium text-sm w-fit px-2 py-0.5 rounded-full">
+            {`${status}`}
+          </p>
+        )
       default:
         return (
           <p className="text-gray bg-[#8080801F] font-medium text-sm w-fit px-2 py-0.5 rounded-full">
@@ -95,7 +100,7 @@ export const TransactionSummary = ({
         </div>
         <div className="flex flex-col gap-1 font-sans">
           {transactionInfo.transaction.transactionType ===
-          TransactionType.TOKEN_SEND ? (
+            TransactionType.TOKEN_SEND ? (
             <p className="text-theme-secondary font-medium">
               {transactionInfo.title} {` `}
               <span className="text-theme font-bold">{`${formatTokenAmount((transactionInfo.transaction.data as TokenTransactionData).amount)} STRK`}</span>
@@ -125,7 +130,7 @@ export const TransactionSummary = ({
             <div className="text-theme-secondary items-center flex gap-3 font-medium">
               {transactionInfo.transaction.transactionType ===
                 TransactionType.TOKEN_SEND ||
-              transactionInfo.transaction.transactionType ===
+                transactionInfo.transaction.transactionType ===
                 TransactionType.NFT_SEND ? (
                 <>
                   <p className="text-theme-secondary font-medium">

@@ -4,7 +4,9 @@ import { TransactionDetailsHeader } from './components/TransactionDetailsHeader'
 import { TransactionSummary } from './components/TransactionSummary'
 import { TransactionDetails } from './components/TransactionDetails'
 import { useTheme } from '@/app/context/theme-context-provider'
+import { useSpherreAccount } from '@/app/context/account-context'
 import { useTransactionDetails } from '@/hooks/useTransactionIntegration'
+import { useGetAccountName, useGetThreshold } from '@/hooks/useSpherreHooks'
 import { transactions } from '../data'
 import type { Transaction as MockTransactionType } from '../data'
 import {
@@ -103,7 +105,12 @@ const getMockTransactionFallback = (
 
 export default function TransactionDetailsPage({ params }: PageProps) {
   useTheme()
+  const { accountAddress } = useSpherreAccount()
   const resolvedParams = use(params)
+
+  // Get account name and threshold
+  const { data: accountName } = useGetAccountName(accountAddress || '0x0')
+  const { data: thresholdData } = useGetThreshold(accountAddress || '0x0')
 
   // PRIMARY: Try to fetch real transaction data from smart contract
   const {
@@ -215,7 +222,11 @@ export default function TransactionDetailsPage({ params }: PageProps) {
         transactionId={transactionInfo.transaction.id}
       />
       <TransactionSummary transactionInfo={transactionInfo} />
-      <TransactionDetails transactionInfo={transactionInfo} />
+      <TransactionDetails
+        transactionInfo={transactionInfo}
+        accountName={accountName}
+        thresholdData={thresholdData}
+      />
     </div>
   )
 }

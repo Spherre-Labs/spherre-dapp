@@ -362,7 +362,7 @@ export default function FilterPopover({
                       alt={member.name}
                       width={24}
                       height={24}
-                      className="rounded-full"
+                      className="rounded-full bg-theme-bg-tertiary"
                     />
                     <span className="text-theme text-sm">{member.name}</span>
                   </label>

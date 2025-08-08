@@ -253,14 +253,14 @@ export default function Transaction({
         <div className="flex-1 text-center">
           <span
             className={` px-3 py-1 rounded-full ${transactionStatus === 'pending'
-                ? 'text-light-yellow'
-                : transactionStatus === 'executed'
+              ? 'text-light-yellow'
+              : transactionStatus === 'executed'
+                ? 'text-green'
+                : transactionStatus === 'approved'
                   ? 'text-green'
-                  : transactionStatus === 'approved'
-                    ? 'text-green'
-                    : transactionStatus === 'rejected'
-                      ? 'text-[#D44B4B]'
-                      : 'text-theme-secondary'
+                  : transactionStatus === 'rejected'
+                    ? 'text-[#D44B4B]'
+                    : 'text-theme-secondary'
               }`}
           >
             {toTitleCase(transactionStatus)}
