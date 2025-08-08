@@ -254,16 +254,17 @@ export default function Transaction({
         {/* Status */}
         <div className="flex-1 text-center">
           <span
-            className={` px-3 py-1 rounded-full ${transactionStatus === 'pending'
-              ? 'text-light-yellow'
-              : transactionStatus === 'executed'
-                ? 'text-green'
-                : transactionStatus === 'approved'
+            className={` px-3 py-1 rounded-full ${
+              transactionStatus === 'pending'
+                ? 'text-light-yellow'
+                : transactionStatus === 'executed'
                   ? 'text-green'
-                  : transactionStatus === 'rejected'
-                    ? 'text-[#D44B4B]'
-                    : 'text-theme-secondary'
-              }`}
+                  : transactionStatus === 'approved'
+                    ? 'text-green'
+                    : transactionStatus === 'rejected'
+                      ? 'text-[#D44B4B]'
+                      : 'text-theme-secondary'
+            }`}
           >
             {toTitleCase(transactionStatus)}
           </span>
@@ -297,8 +298,8 @@ export default function Transaction({
                   Pending Approvals
                 </h4>
                 {transactionStatus === 'approved' ||
-                  transactionStatus === 'executed' ||
-                  transactionStatus === 'rejected' ? (
+                transactionStatus === 'executed' ||
+                transactionStatus === 'rejected' ? (
                   <>
                     <div className="flex items-center gap-0">
                       <Image
@@ -329,8 +330,8 @@ export default function Transaction({
                   {`Confirmed Approvals (${transaction.approved.length})`}
                 </h4>
                 {transactionStatus === 'approved' ||
-                  transactionStatus === 'executed' ||
-                  transactionStatus === 'rejected' ? (
+                transactionStatus === 'executed' ||
+                transactionStatus === 'rejected' ? (
                   <div className="flex items-center gap-0">
                     {displayApprovals(transaction.approved)}
                   </div>
@@ -470,10 +471,10 @@ export default function Transaction({
               )}
               {(transactionStatus === 'executed' ||
                 transactionStatus === 'rejected') && (
-                  <button className="bg-[#6F2FCE] hover:bg-purple-700 text-theme px-4 sm:px-6 py-2 rounded-md transition duration-200 w-full">
-                    Download CSV
-                  </button>
-                )}
+                <button className="bg-[#6F2FCE] hover:bg-purple-700 text-theme px-4 sm:px-6 py-2 rounded-md transition duration-200 w-full">
+                  Download CSV
+                </button>
+              )}
             </div>
           </div>
 
@@ -515,7 +516,9 @@ export default function Transaction({
                     width={21}
                     height={21}
                   />
-                  <span className="text-sm">{accountName || 'Backstage Boys'}</span>
+                  <span className="text-sm">
+                    {accountName || 'Backstage Boys'}
+                  </span>
                 </span>
               </div>
               {transactionStatus !== 'pending' &&

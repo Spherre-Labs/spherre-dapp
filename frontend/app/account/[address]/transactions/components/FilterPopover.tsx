@@ -71,8 +71,9 @@ const CollapsibleSection = ({
       >
         <span className="text-theme font-semibold text-base">{title}</span>
         <ChevronDown
-          className={`w-4 h-4 text-theme-secondary transition-transform duration-200 ${isOpen ? 'rotate-180' : ''
-            }`}
+          className={`w-4 h-4 text-theme-secondary transition-transform duration-200 ${
+            isOpen ? 'rotate-180' : ''
+          }`}
         />
       </button>
       {isOpen && <div className={cn('px-2 pb-4', className)}>{children}</div>}
@@ -91,10 +92,11 @@ const FilterButton = ({
 }) => {
   return (
     <button
-      className={`px-[14px] mt-2 py-[10px] rounded-lg text-sm text-white font-medium transition-colors bg-theme-bg-secondary duration-200 ${isActive
-        ? 'border-2 border-primary bg-[#8C62F238]'
-        : 'hover:border-primary'
-        }`}
+      className={`px-[14px] mt-2 py-[10px] rounded-lg text-sm text-white font-medium transition-colors bg-theme-bg-secondary duration-200 ${
+        isActive
+          ? 'border-2 border-primary bg-[#8C62F238]'
+          : 'hover:border-primary'
+      }`}
       onClick={onClick}
     >
       {title}
@@ -112,7 +114,7 @@ export default function FilterPopover({
 
   // Get real members from contract
   const { data: contractMembers } = useGetAccountMembers(
-    accountAddress || '0x0'
+    accountAddress || '0x0',
   )
 
   // Transform contract members to display format
@@ -124,9 +126,10 @@ export default function FilterPopover({
     return contractMembers.map((memberFelt, index) => {
       try {
         const memberAddress = feltToAddress(memberFelt)
-        const truncatedAddress = memberAddress.length > 10
-          ? `${memberAddress.slice(0, 6)}...${memberAddress.slice(-4)}`
-          : memberAddress
+        const truncatedAddress =
+          memberAddress.length > 10
+            ? `${memberAddress.slice(0, 6)}...${memberAddress.slice(-4)}`
+            : memberAddress
 
         // Assign avatar based on index (cycle through available images)
         const avatar = `https://api.dicebear.com/9.x/avataaars/png?seed=${memberAddress}`
@@ -194,7 +197,6 @@ export default function FilterPopover({
     }
     onFiltersChange(next)
   }
-
 
   const clearAllFilters = () => {
     onFiltersChange({

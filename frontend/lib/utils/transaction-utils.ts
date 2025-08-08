@@ -38,7 +38,11 @@ export function transformTransaction(
 ): UnifiedTransaction {
   return {
     id: baseTransaction.id,
-    status: baseTransaction.tx_status.activeVariant() as 'Pending' | 'Executed' | 'Rejected' | 'Approved',
+    status: baseTransaction.tx_status.activeVariant() as
+      | 'Pending'
+      | 'Executed'
+      | 'Rejected'
+      | 'Approved',
     proposer: contractAddressToHex(baseTransaction.proposer),
     executor: contractAddressToHex(baseTransaction.executor) || undefined,
     approved: baseTransaction.approved.map((approver) =>
@@ -179,7 +183,6 @@ export function formatTimestamp(timestamp: bigint): string {
   return date.toLocaleDateString()
 }
 
-
 export function formatTime(timestamp: bigint): string {
   const date = new Date(Number(timestamp) * 1000)
   return date.toLocaleTimeString()
@@ -258,11 +261,10 @@ export function contractAddressToHex(
   return paddedHex as `0x${string}`
 }
 
-
 export function getExplorerUrl(network: string, txHash: string): string {
   const explorers: Record<string, string> = {
-    'mainnet': 'https://starkscan.co/contract/',
-    'sepolia': 'https://sepolia.starkscan.co/contract/',
+    mainnet: 'https://starkscan.co/contract/',
+    sepolia: 'https://sepolia.starkscan.co/contract/',
   }
   return `${explorers[network] || explorers['mainnet']}${txHash}`
 }

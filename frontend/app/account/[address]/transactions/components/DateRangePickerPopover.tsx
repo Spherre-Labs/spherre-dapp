@@ -119,7 +119,7 @@ export function DateRangePickerPopover({
             <span className="text-theme">
               {Math.ceil(
                 (dateRange.to.getTime() - dateRange.from.getTime()) /
-                (1000 * 60 * 60 * 24),
+                  (1000 * 60 * 60 * 24),
               )}{' '}
               days
             </span>
