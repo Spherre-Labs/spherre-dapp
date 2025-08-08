@@ -114,11 +114,10 @@ export default function TransactionFilters({
                   option.value as 'Pending' | 'Executed' | 'Rejected' | 'All',
                 )
               }
-              className={`px-3 py-1 rounded-full text-sm transition-colors duration-200 ${
-                currentFilters.status === option.value
-                  ? 'bg-primary text-white'
-                  : 'bg-theme-bg-tertiary text-theme hover:bg-theme-border'
-              }`}
+              className={`px-3 py-1 rounded-full text-sm transition-colors duration-200 ${currentFilters.status === option.value
+                ? 'bg-primary text-white'
+                : 'bg-theme-bg-tertiary text-theme hover:bg-theme-border'
+                }`}
             >
               {option.label}
             </button>
@@ -140,10 +139,10 @@ export default function TransactionFilters({
                 onChange={(e) =>
                   onFilterStatus(
                     e.target.value as
-                      | 'Pending'
-                      | 'Executed'
-                      | 'Rejected'
-                      | 'All',
+                    | 'Pending'
+                    | 'Executed'
+                    | 'Rejected'
+                    | 'All',
                   )
                 }
                 className="w-full bg-theme-bg-secondary border border-theme-border text-theme p-2 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
@@ -167,7 +166,7 @@ export default function TransactionFilters({
                   onFilterType(
                     e.target.value === 'All'
                       ? 'All'
-                      : (Number(e.target.value) as TransactionType),
+                      : e.target.value as TransactionType,
                   )
                 }
                 className="w-full bg-theme-bg-secondary border border-theme-border text-theme p-2 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
@@ -215,70 +214,72 @@ export default function TransactionFilters({
             </button>
           </div>
         </div>
-      )}
+      )
+      }
 
       {/* Pagination */}
-      {totalPages > 1 && (
-        <div className="flex justify-between items-center">
-          <div className="text-theme-secondary text-sm">
-            Page {currentPage} of {totalPages}
-          </div>
-
-          <div className="flex gap-2">
-            <button
-              onClick={() => onPageChange(currentPage - 1)}
-              disabled={currentPage === 1}
-              className="bg-theme-bg-tertiary border border-theme-border text-theme px-3 py-1 rounded-lg hover:bg-theme-border transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              Previous
-            </button>
-
-            {/* Page Numbers */}
-            <div className="flex gap-1">
-              {(() => {
-                const maxButtons = 5
-                let startPage = Math.max(
-                  1,
-                  currentPage - Math.floor(maxButtons / 2),
-                )
-                const endPage = Math.min(totalPages, startPage + maxButtons - 1)
-
-                if (endPage - startPage + 1 < maxButtons) {
-                  startPage = Math.max(1, endPage - maxButtons + 1)
-                }
-
-                return Array.from(
-                  { length: endPage - startPage + 1 },
-                  (_, i) => {
-                    const pageNumber = startPage + i
-                    return (
-                      <button
-                        key={pageNumber}
-                        onClick={() => onPageChange(pageNumber)}
-                        className={`px-3 py-1 rounded-lg transition-colors duration-200 ${
-                          currentPage === pageNumber
-                            ? 'bg-primary text-white'
-                            : 'bg-theme-bg-tertiary border border-theme-border text-theme hover:bg-theme-border'
-                        }`}
-                      >
-                        {pageNumber}
-                      </button>
-                    )
-                  },
-                )
-              })()}
+      {
+        totalPages > 1 && (
+          <div className="flex justify-between items-center">
+            <div className="text-theme-secondary text-sm">
+              Page {currentPage} of {totalPages}
             </div>
 
-            <button
-              onClick={() => onPageChange(currentPage + 1)}
-              disabled={currentPage === totalPages}
-              className="bg-theme-bg-tertiary border border-theme-border text-theme px-3 py-1 rounded-lg hover:bg-theme-border transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              Next
-            </button>
+            <div className="flex gap-2">
+              <button
+                onClick={() => onPageChange(currentPage - 1)}
+                disabled={currentPage === 1}
+                className="bg-theme-bg-tertiary border border-theme-border text-theme px-3 py-1 rounded-lg hover:bg-theme-border transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Previous
+              </button>
+
+              {/* Page Numbers */}
+              <div className="flex gap-1">
+                {(() => {
+                  const maxButtons = 5
+                  let startPage = Math.max(
+                    1,
+                    currentPage - Math.floor(maxButtons / 2),
+                  )
+                  const endPage = Math.min(totalPages, startPage + maxButtons - 1)
+
+                  if (endPage - startPage + 1 < maxButtons) {
+                    startPage = Math.max(1, endPage - maxButtons + 1)
+                  }
+
+                  return Array.from(
+                    { length: endPage - startPage + 1 },
+                    (_, i) => {
+                      const pageNumber = startPage + i
+                      return (
+                        <button
+                          key={pageNumber}
+                          onClick={() => onPageChange(pageNumber)}
+                          className={`px-3 py-1 rounded-lg transition-colors duration-200 ${currentPage === pageNumber
+                            ? 'bg-primary text-white'
+                            : 'bg-theme-bg-tertiary border border-theme-border text-theme hover:bg-theme-border'
+                            }`}
+                        >
+                          {pageNumber}
+                        </button>
+                      )
+                    },
+                  )
+                })()}
+              </div>
+
+              <button
+                onClick={() => onPageChange(currentPage + 1)}
+                disabled={currentPage === totalPages}
+                className="bg-theme-bg-tertiary border border-theme-border text-theme px-3 py-1 rounded-lg hover:bg-theme-border transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Next
+              </button>
+            </div>
           </div>
-        </div>
-      )}
-    </div>
+        )
+      }
+    </div >
   )
 }

@@ -1,6 +1,7 @@
 'use client'
 
 import { useMemo } from 'react'
+import { useSpherreAccount } from '@/app/context/account-context'
 import {
   useTransactionList,
   useTokenTransactionList,
