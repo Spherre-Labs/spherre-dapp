@@ -2,6 +2,7 @@ from flask import Flask
 
 from spherre.app.config import config
 from spherre.app.extensions import cors, db, jwt, migrate
+from spherre.app.views.accounts import accounts_blueprint
 
 
 def create_app(config_name="development"):
@@ -18,9 +19,8 @@ def create_app(config_name="development"):
 
     # Register blueprints
     # from app.views.auth import auth_bp
-    # from app.views.api import api_bp
 
     # app.register_blueprint(auth_bp, url_prefix='/auth')
-    # app.register_blueprint(api_bp, url_prefix='/api/v1')
+    app.register_blueprint(accounts_blueprint, url_prefix="/api/v1")
 
     return app
