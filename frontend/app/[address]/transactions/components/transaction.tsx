@@ -17,6 +17,8 @@ import {
   useApproveTransaction,
   useRejectTransaction,
   useExecuteTransaction,
+  useGetAccountName,
+  useGetThreshold,
 } from '@/hooks/useSpherreHooks'
 import {
   TransactionType,
@@ -79,6 +81,10 @@ export default function Transaction({
     useRejectTransaction(accountAddress || '0x0')
   const { writeAsync: executeAsync, isLoading: isExecuting } =
     useExecuteTransaction(accountAddress || '0x0')
+
+  // Get account name and threshold
+  const { data: accountName } = useGetAccountName(accountAddress || '0x0')
+  const { data: thresholdData } = useGetThreshold(accountAddress || '0x0')
 
   const { transaction } = transactionInfo
   const transactionStatus = transaction.status.toLowerCase()
@@ -246,8 +252,7 @@ export default function Transaction({
         {/* Status */}
         <div className="flex-1 text-center">
           <span
-            className={` px-3 py-1 rounded-full ${
-              transactionStatus === 'pending'
+            className={` px-3 py-1 rounded-full ${transactionStatus === 'pending'
                 ? 'text-light-yellow'
                 : transactionStatus === 'executed'
                   ? 'text-green'
@@ -256,7 +261,7 @@ export default function Transaction({
                     : transactionStatus === 'rejected'
                       ? 'text-[#D44B4B]'
                       : 'text-theme-secondary'
-            }`}
+              }`}
           >
             {toTitleCase(transactionStatus)}
           </span>
@@ -290,8 +295,8 @@ export default function Transaction({
                   Pending Approvals
                 </h4>
                 {transactionStatus === 'approved' ||
-                transactionStatus === 'executed' ||
-                transactionStatus === 'rejected' ? (
+                  transactionStatus === 'executed' ||
+                  transactionStatus === 'rejected' ? (
                   <>
                     <div className="flex items-center gap-0">
                       <Image
@@ -322,8 +327,8 @@ export default function Transaction({
                   {`Confirmed Approvals (${transaction.approved.length})`}
                 </h4>
                 {transactionStatus === 'approved' ||
-                transactionStatus === 'executed' ||
-                transactionStatus === 'rejected' ? (
+                  transactionStatus === 'executed' ||
+                  transactionStatus === 'rejected' ? (
                   <div className="flex items-center gap-0">
                     {displayApprovals(transaction.approved)}
                   </div>
@@ -377,7 +382,7 @@ export default function Transaction({
                       )}
                     </h3>
                     <p className="text-theme-secondary font-semibold text-xs transition-colors duration-300">
-                      {`Threshold: ${transaction.approved.length} / ${Math.min(5, transaction.approved.length * 5)} approved`}
+                      {`Threshold: ${transaction.approved.length} / ${thresholdData ? Number(thresholdData[0]) : 5} approved`}
                     </p>
                   </div>
                 </div>
@@ -463,10 +468,10 @@ export default function Transaction({
               )}
               {(transactionStatus === 'executed' ||
                 transactionStatus === 'rejected') && (
-                <button className="bg-[#6F2FCE] hover:bg-purple-700 text-theme px-4 sm:px-6 py-2 rounded-md transition duration-200 w-full">
-                  Download CSV
-                </button>
-              )}
+                  <button className="bg-[#6F2FCE] hover:bg-purple-700 text-theme px-4 sm:px-6 py-2 rounded-md transition duration-200 w-full">
+                    Download CSV
+                  </button>
+                )}
             </div>
           </div>
 
@@ -508,7 +513,7 @@ export default function Transaction({
                     width={21}
                     height={21}
                   />
-                  <span className="text-sm">Backstage Boys</span>
+                  <span className="text-sm">{accountName || 'Backstage Boys'}</span>
                 </span>
               </div>
               {transactionStatus !== 'pending' &&

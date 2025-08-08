@@ -63,11 +63,27 @@ export default function TransactionsPage() {
     if (filters.selectedMembers.length > 0) {
       filtered = filtered.filter((tx) =>
         filters.selectedMembers.some(
-          (memberId) =>
-            tx.transaction.proposer?.includes(memberId) ||
-            tx.transaction.approved?.some((approver: string) =>
+          (memberId) => {
+            // Check proposer
+            if (tx.transaction.proposer?.includes(memberId)) return true
+
+            // Check approved members
+            if (tx.transaction.approved?.some((approver: string) =>
               approver.includes(memberId),
-            ),
+            )) return true
+
+            // Check transaction data based on type
+            const data = tx.transaction.data
+            if (data.type === TransactionType.MEMBER_ADD && data.member?.includes(memberId)) return true
+            if (data.type === TransactionType.MEMBER_REMOVE && data.member_address?.includes(memberId)) return true
+            if (data.type === TransactionType.MEMBER_PERMISSION_EDIT && data.member?.includes(memberId)) return true
+
+            // Check other transaction types that might involve members
+            if (data.type === TransactionType.TOKEN_SEND && data.recipient?.includes(memberId)) return true
+            if (data.type === TransactionType.NFT_SEND && data.recipient?.includes(memberId)) return true
+
+            return false
+          },
         ),
       )
     }

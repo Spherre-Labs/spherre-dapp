@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { TransactionType } from '@/lib/contracts/types'
 import {
   Popover,
@@ -18,6 +18,9 @@ import {
 } from '@/components/ui/select'
 import { cn } from '@/lib/utils'
 import { Input } from '@/components/ui/input'
+import { useSpherreAccount } from '@/app/context/account-context'
+import { useGetAccountMembers } from '@/hooks/useSpherreHooks'
+import { feltToAddress } from '@/lib/utils/validation'
 
 interface FilterPopoverProps {
   filters: {
@@ -33,7 +36,7 @@ interface FilterPopoverProps {
   onFiltersChange: (filters: FilterPopoverProps['filters']) => void
 }
 
-// Mock member data
+// Mock member data for fallback
 const mockMembers = [
   { id: 'hichens', name: 'Hichens', avatar: '/Images/reviewers1.png' },
   { id: 'denzel', name: 'Denzel Smith', avatar: '/Images/reviewers2.png' },
@@ -68,9 +71,8 @@ const CollapsibleSection = ({
       >
         <span className="text-theme font-semibold text-base">{title}</span>
         <ChevronDown
-          className={`w-4 h-4 text-theme-secondary transition-transform duration-200 ${
-            isOpen ? 'rotate-180' : ''
-          }`}
+          className={`w-4 h-4 text-theme-secondary transition-transform duration-200 ${isOpen ? 'rotate-180' : ''
+            }`}
         />
       </button>
       {isOpen && <div className={cn('px-2 pb-4', className)}>{children}</div>}
@@ -89,11 +91,10 @@ const FilterButton = ({
 }) => {
   return (
     <button
-      className={`px-[14px] mt-2 py-[10px] rounded-lg text-sm text-white font-medium transition-colors bg-theme-bg-secondary duration-200 ${
-        isActive
-          ? 'border-2 border-primary bg-[#8C62F238]'
-          : 'hover:border-primary'
-      }`}
+      className={`px-[14px] mt-2 py-[10px] rounded-lg text-sm text-white font-medium transition-colors bg-theme-bg-secondary duration-200 ${isActive
+        ? 'border-2 border-primary bg-[#8C62F238]'
+        : 'hover:border-primary'
+        }`}
       onClick={onClick}
     >
       {title}
@@ -105,10 +106,47 @@ export default function FilterPopover({
   filters,
   onFiltersChange,
 }: FilterPopoverProps) {
+  const { accountAddress } = useSpherreAccount()
   const [memberSearch, setMemberSearch] = useState('')
   const [tokenSearch, setTokenSearch] = useState('')
 
-  const filteredMembers = mockMembers.filter((member) =>
+  // Get real members from contract
+  const { data: contractMembers } = useGetAccountMembers(
+    accountAddress || '0x0'
+  )
+
+  // Transform contract members to display format
+  const realMembers = useMemo(() => {
+    if (!contractMembers || contractMembers.length === 0) {
+      return mockMembers // Fallback to mock data
+    }
+
+    return contractMembers.map((memberFelt, index) => {
+      try {
+        const memberAddress = feltToAddress(memberFelt)
+        const truncatedAddress = memberAddress.length > 10
+          ? `${memberAddress.slice(0, 6)}...${memberAddress.slice(-4)}`
+          : memberAddress
+
+        // Assign avatar based on index (cycle through available images)
+        const avatar = `https://api.dicebear.com/9.x/avataaars/png?seed=${memberAddress}`
+        return {
+          id: memberAddress,
+          name: `Member ${index + 1} (${truncatedAddress})`,
+          avatar,
+        }
+      } catch (error) {
+        console.warn('Failed to convert felt to address:', memberFelt, error)
+        return {
+          id: `member-${index}`,
+          name: `Member ${index + 1}`,
+          avatar: `/Images/reviewers${(index % 5) + 1}.png`,
+        }
+      }
+    })
+  }, [contractMembers])
+
+  const filteredMembers = realMembers.filter((member) =>
     member.name.toLowerCase().includes(memberSearch.toLowerCase()),
   )
 
