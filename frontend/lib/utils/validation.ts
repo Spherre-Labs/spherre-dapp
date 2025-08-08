@@ -174,17 +174,17 @@ export function createPermissionMask(
 
 // Helper function to extract permissions from mask
 export function extractPermissionsFromMask(
-  mask: number,
+  mask: bigint,
 ): ('VOTER' | 'PROPOSER' | 'EXECUTOR')[] {
   const permissions: ('VOTER' | 'PROPOSER' | 'EXECUTOR')[] = []
 
-  if (mask & (1 << CAIRO_PERMISSION_ENUM.VOTER)) {
+  if (mask & BigInt(1 << CAIRO_PERMISSION_ENUM.VOTER)) {
     permissions.push('VOTER')
   }
-  if (mask & (1 << CAIRO_PERMISSION_ENUM.PROPOSER)) {
+  if (mask & BigInt(1 << CAIRO_PERMISSION_ENUM.PROPOSER)) {
     permissions.push('PROPOSER')
   }
-  if (mask & (1 << CAIRO_PERMISSION_ENUM.EXECUTOR)) {
+  if (mask & BigInt(1 << CAIRO_PERMISSION_ENUM.EXECUTOR)) {
     permissions.push('EXECUTOR')
   }
 

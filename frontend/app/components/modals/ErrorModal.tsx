@@ -1,5 +1,4 @@
 import React from 'react'
-import { useTheme } from '@/app/context/theme-context-provider'
 
 interface ErrorModalProps {
   isOpen: boolean
@@ -14,8 +13,6 @@ const ErrorModal: React.FC<ErrorModalProps> = ({
   errorText = 'An unexpected error occurred.',
   title = 'Error Occurred!',
 }) => {
-  useTheme() // Initialize theme context
-
   if (!isOpen) return null
 
   return (

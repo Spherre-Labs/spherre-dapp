@@ -63,9 +63,7 @@ interface UseTransactionIntegrationResult {
 export function useTransactionIntegration(
   options: UseTransactionIntegrationOptions = {},
 ): UseTransactionIntegrationResult {
-  // const { accountAddress } = useSpherreAccount()
-  const accountAddress =
-    '0x065f067f0f621ed571a33ee6d5959e342ee5fd3f1df5c7609e54a6e5c29f8080'
+  const { accountAddress } = useSpherreAccount()
   const {
     start = BigInt(1),
     limit = BigInt(1),
@@ -145,6 +143,7 @@ export function useTransactionIntegration(
 
   // Helper function to get transaction ID from different transaction types
   // This cannot work, because those transactions don't return id or transaction_id
+  // It might be used in the future, else I think I will remove
   const getTransactionId = (transaction: unknown): bigint | string | null => {
     if (
       !transaction ||
