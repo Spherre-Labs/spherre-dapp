@@ -17,14 +17,14 @@ def get_member_accounts(member_address):
         accounts = AccountService.get_member_accounts(member_address)
 
         if not accounts:
-            return jsonify([]), 404
+            return jsonify([]), 200
 
         serializer = AccountSerializer(many=True)
         serialized_accounts = serializer.dump(accounts)
 
         return jsonify(serialized_accounts), 200
     except Exception:
-        abort(500, description="Server error")
+        return jsonify({"error": "Server error"}), 500
 
 
 def is_valid_starknet_address(address):

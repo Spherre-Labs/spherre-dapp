@@ -18,9 +18,6 @@ def create_app(config_name="development"):
     from spherre.app import models  # noqa
 
     # Register blueprints
-    # from app.views.auth import auth_bp
-
-    # app.register_blueprint(auth_bp, url_prefix='/auth')
-    app.register_blueprint(accounts_blueprint, url_prefix="/api/v1")
+    app.register_blueprint(accounts_blueprint)
 
     return app

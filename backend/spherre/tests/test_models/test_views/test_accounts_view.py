@@ -43,7 +43,7 @@ class TestAccountViews(unittest.TestCase):
     def test_get_member_accounts_empty(self):
         with patch.object(AccountService, "get_member_accounts", return_value=[]):
             res = self.client.get(f"/api/v1/accounts/member/{self.member.address}")
-            self.assertEqual(res.status_code, 404)
+            self.assertEqual(res.status_code, 200)
             self.assertEqual(res.get_json(), [])
 
     def test_get_member_accounts_server_error(self):
