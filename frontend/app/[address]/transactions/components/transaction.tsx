@@ -88,6 +88,8 @@ export default function Transaction({
 
   const { transaction } = transactionInfo
   const transactionStatus = transaction.status.toLowerCase()
+  const required = thresholdData ? Number(thresholdData[0]) : Infinity
+  const canExecute = transaction.approved.length >= required
 
   // Define type-specific elements with proper icon mapping
   const getTypeIcon = (type: string): ReactNode => {
@@ -452,7 +454,7 @@ export default function Transaction({
                   </Button>
                   <Button
                     onClick={handleExecute}
-                    disabled={isExecuting}
+                    disabled={isExecuting || !canExecute}
                     className="bg-theme-bg-secondary hover:bg-theme-bg-secondary text-theme px-4 sm:px-6 py-3.5 rounded-md transition duration-200 w-full disabled:opacity-50"
                   >
                     {isExecuting ? 'Executing...' : 'Execute'}

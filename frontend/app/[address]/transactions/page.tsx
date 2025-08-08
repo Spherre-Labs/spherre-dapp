@@ -1,5 +1,5 @@
 'use client'
-import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo, useEffect } from 'react'
 import Transaction from './components/transaction'
 import FilterPopover from './components/FilterPopover'
 import {
@@ -202,6 +202,11 @@ export default function TransactionsPage() {
     setExpandedId(null) // Collapse any expanded transactions when changing pages
   }
 
+  useEffect(() => {
+    setCurrentPage(1)
+    setExpandedId(null)
+  }, [filters, dateRange])
+
   // Handle error logging as per requirements
   if (error) {
     console.error('Failed to fetch transactions:', error)
@@ -277,10 +282,10 @@ export default function TransactionsPage() {
         </div>
       )}
 
-      {allTransactions.length === 0 && (
+      {filteredAndSortedTransactions.length === 0 && (
         <div className="text-center py-12">
           <div className="text-theme-secondary text-lg">
-            {allTransactions.length === 0
+            {filteredAndSortedTransactions.length === 0
               ? 'No transactions found.'
               : 'No transactions match your filters.'}
           </div>

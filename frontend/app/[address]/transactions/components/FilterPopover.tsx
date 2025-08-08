@@ -180,8 +180,21 @@ export default function FilterPopover({
     field: 'minAmount' | 'maxAmount' | 'amountToken',
     value: string,
   ) => {
-    onFiltersChange({ ...filters, [field]: value })
+    if (field === 'amountToken') {
+      onFiltersChange({ ...filters, amountToken: value })
+      return
+    }
+    const sanitized = value.replace(/[^\d.]/g, '')
+    const next = { ...filters, [field]: sanitized }
+    const min = parseFloat(next.minAmount || '0')
+    const max = parseFloat(next.maxAmount || '0')
+    if (!isNaN(min) && !isNaN(max) && min > max) {
+      // Swap to maintain min <= max
+      ;[next.minAmount, next.maxAmount] = [next.maxAmount, next.minAmount]
+    }
+    onFiltersChange(next)
   }
+
 
   const clearAllFilters = () => {
     onFiltersChange({
