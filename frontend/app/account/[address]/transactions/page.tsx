@@ -1,76 +1,246 @@
 'use client'
-import React, { useState, useEffect } from 'react'
+import React, { useState, useMemo, useEffect } from 'react'
 import Transaction from './components/transaction'
-import { TransactionDisplayInfo } from '@/lib/contracts/types'
+import FilterPopover from './components/FilterPopover'
+import {
+  DateRangePickerPopover,
+  DateRange,
+} from './components/DateRangePickerPopover'
 import { useTransactionIntegration } from '@/hooks/useTransactionIntegration'
-import { Loader } from 'lucide-react'
+import { TransactionDisplayInfo, TransactionType } from '@/lib/contracts/types'
+import { useGetThreshold } from '@/hooks/useSpherreHooks'
 import { useSpherreAccount } from '@/app/context/account-context'
-import { useGetThreshold } from '@/lib'
-// import { TransactionType } from 'starknet'
 
-/**
- * TRANSACTIONS PAGE WITH SMART CONTRACT + MOCK FALLBACK
- * ====================================================
- *
- * This page is designed to:
- * 1. Try to fetch real transaction data from smart contracts FIRST
- * 2. Fall back to mock data if smart contract data is not available
- * 3. Make it easy for developers to remove mock fallback later
- *
- * DEVELOPMENT WORKFLOW:
- * 1. Current: Uses mock data as fallback when smart contract fails
- * 2. Future: Remove mock fallback once smart contract integration is stable
- *
- * TO REMOVE MOCK FALLBACK (when smart contract is ready):
- * 1. Delete the "MOCK DATA FALLBACK SECTION" below
- * 2. Remove mock data imports at the top
- * 3. Replace the hybrid logic with direct smart contract calls
- * 4. Remove fallback logic marked with "TODO: Remove"
- */
+const TRANSACTIONS_PER_PAGE = 30
 
 export default function TransactionsPage() {
-  const [mounted, setMounted] = useState(false)
-  const [expandedTransactions, setExpandedTransactions] = useState<Set<number>>(
-    new Set([1]),
-  ) // First transaction expanded by default
-
-  // TODO: Add smart contract transaction fetching here
-  // const { transactions: realTransactions, isLoading, error } = useSmartContractTransactions()
-  const {
-    transactions: realTransactions,
-    isLoading: realTxsLoading,
-    error: realTxsError,
-  } = useTransactionIntegration()
+  const [expandedId, setExpandedId] = useState<string | null>(null)
+  const [currentPage, setCurrentPage] = useState(1)
 
   const { accountAddress } = useSpherreAccount()
-  const { data: threshold } = useGetThreshold(accountAddress!)
+  const { data: thresholdData } = useGetThreshold(accountAddress || '0x0')
 
-  useEffect(() => {
-    setMounted(true)
-  }, [])
+  const [filters, setFilters] = useState({
+    status: 'All' as 'Initiated' | 'Approved' | 'Executed' | 'Rejected' | 'All',
+    type: 'All' as TransactionType | 'All',
+    sort: 'newest' as 'newest' | 'oldest' | 'amount',
+    selectedMembers: [] as string[],
+    selectedTokens: [] as string[],
+    minAmount: '',
+    maxAmount: '',
+    amountToken: 'STRK',
+  })
+
+  const [dateRange, setDateRange] = useState<DateRange>({
+    from: undefined,
+    to: undefined,
+  })
+
+  // Fetch real transaction data from smart contract
+  const {
+    transactions: allTransactions,
+    isLoading,
+    error,
+  } = useTransactionIntegration({
+    start: BigInt(0),
+    limit: BigInt(TRANSACTIONS_PER_PAGE),
+  })
+
+  // Apply filters and sorting
+  const filteredAndSortedTransactions = useMemo(() => {
+    let filtered = [...allTransactions]
+
+    console.log(allTransactions)
+
+    // Apply status filter
+    if (filters.status !== 'All') {
+      filtered = filtered.filter(
+        (tx) => tx.transaction.status === filters.status,
+      )
+    }
+
+    // Apply type filter
+    if (filters.type !== 'All') {
+      filtered = filtered.filter(
+        (tx) => tx.transaction.transactionType === filters.type,
+      )
+    }
+
+    // Apply member filter
+    if (filters.selectedMembers.length > 0) {
+      filtered = filtered.filter((tx) =>
+        filters.selectedMembers.some((memberId) => {
+          // Check proposer
+          if (tx.transaction.proposer?.includes(memberId)) return true
+
+          // Check approved members
+          if (
+            tx.transaction.approved?.some((approver: string) =>
+              approver.includes(memberId),
+            )
+          )
+            return true
+
+          // Check transaction data based on type
+          const data = tx.transaction.data
+          if (
+            data.type === TransactionType.MEMBER_ADD &&
+            data.member?.includes(memberId)
+          )
+            return true
+          if (
+            data.type === TransactionType.MEMBER_REMOVE &&
+            data.member_address?.includes(memberId)
+          )
+            return true
+          if (
+            data.type === TransactionType.MEMBER_PERMISSION_EDIT &&
+            data.member?.includes(memberId)
+          )
+            return true
+
+          // Check other transaction types that might involve members
+          if (
+            data.type === TransactionType.TOKEN_SEND &&
+            data.recipient?.includes(memberId)
+          )
+            return true
+          if (
+            data.type === TransactionType.NFT_SEND &&
+            data.recipient?.includes(memberId)
+          )
+            return true
+
+          return false
+        }),
+      )
+    }
+
+    // Apply token filter
+    if (filters.selectedTokens.length > 0) {
+      filtered = filtered.filter((tx) =>
+        filters.selectedTokens.some((tokenId) =>
+          tx.token?.toLowerCase()?.includes(tokenId.toLowerCase()),
+        ),
+      )
+    }
+
+    // Apply date range filter
+    if (dateRange.from || dateRange.to) {
+      filtered = filtered.filter((tx) => {
+        const txDate = new Date(Number(tx.transaction.dateCreated) * 1000)
+        const startOfDay = (date: Date) => {
+          const d = new Date(date)
+          d.setHours(0, 0, 0, 0)
+          return d
+        }
+        const endOfDay = (date: Date) => {
+          const d = new Date(date)
+          d.setHours(23, 59, 59, 999)
+          return d
+        }
+
+        if (dateRange.from && dateRange.to) {
+          return (
+            txDate >= startOfDay(dateRange.from) &&
+            txDate <= endOfDay(dateRange.to)
+          )
+        } else if (dateRange.from) {
+          return txDate >= startOfDay(dateRange.from)
+        } else if (dateRange.to) {
+          return txDate <= endOfDay(dateRange.to)
+        }
+        return true
+      })
+    }
+
+    // Apply amount filter
+    if (filters.minAmount || filters.maxAmount) {
+      filtered = filtered.filter((tx) => {
+        const amount = parseFloat(tx.amount || '0')
+        const min = filters.minAmount ? parseFloat(filters.minAmount) : 0
+        const max = filters.maxAmount ? parseFloat(filters.maxAmount) : Infinity
+        return amount >= min && amount <= max
+      })
+    }
+
+    // Apply sorting
+    switch (filters.sort) {
+      case 'newest':
+        filtered.sort((a, b) =>
+          Number(b.transaction.dateCreated - a.transaction.dateCreated),
+        )
+        break
+      case 'oldest':
+        filtered.sort((a, b) =>
+          Number(a.transaction.dateCreated - b.transaction.dateCreated),
+        )
+        break
+      case 'amount':
+        filtered.sort((a, b) => {
+          const amountA = parseFloat(a.amount || '0')
+          const amountB = parseFloat(b.amount || '0')
+          return amountB - amountA
+        })
+        break
+    }
+
+    return filtered
+  }, [allTransactions, filters, dateRange])
+
+  // Pagination logic
+  const totalPages = Math.ceil(
+    filteredAndSortedTransactions.length / TRANSACTIONS_PER_PAGE,
+  )
+  const startIndex = (currentPage - 1) * TRANSACTIONS_PER_PAGE
+  const paginatedTransactions = filteredAndSortedTransactions.slice(
+    startIndex,
+    startIndex + TRANSACTIONS_PER_PAGE,
+  )
+
+  // Group paginated transactions by date
+  const groupedTransactions = useMemo(() => {
+    return paginatedTransactions.reduce(
+      (acc, txInfo) => {
+        const dateKey = new Date(
+          Number(txInfo.transaction.dateCreated) * 1000,
+        ).toLocaleDateString('en-GB', {
+          weekday: 'short',
+          day: '2-digit',
+          month: 'short',
+          year: 'numeric',
+        })
+        if (!acc[dateKey]) {
+          acc[dateKey] = []
+        }
+        acc[dateKey].push(txInfo)
+        return acc
+      },
+      {} as Record<string, TransactionDisplayInfo[]>,
+    )
+  }, [paginatedTransactions])
 
   // Toggle transaction expansion
-  const toggleTransaction = (transactionId: number) => {
-    setExpandedTransactions((prev) => {
-      const newSet = new Set(prev)
-      if (newSet.has(transactionId)) {
-        newSet.delete(transactionId)
-      } else {
-        newSet.add(transactionId)
-      }
-      return newSet
-    })
+  const toggleTransaction = (transactionId: string) => {
+    setExpandedId(expandedId === transactionId ? null : transactionId)
   }
 
-  // DEVELOPMENT NOTE: Log data source for debugging
-  useEffect(() => {
-    if (mounted) {
-      console.log('🎭 Transactions page using MOCK data as fallback')
-      console.log('📝 TODO: Integrate smart contract transaction fetching')
-    }
-  }, [mounted])
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page)
+    setExpandedId(null) // Collapse any expanded transactions when changing pages
+  }
 
-  if (!mounted) {
+  useEffect(() => {
+    setCurrentPage(1)
+    setExpandedId(null)
+  }, [filters, dateRange])
+
+  // Handle error logging as per requirements
+  if (error) {
+    console.error('Failed to fetch transactions:', error)
+  }
+
+  if (isLoading) {
     return (
       <div className="p-6">
         <h1 className="text-2xl font-bold mb-6 text-theme">
@@ -91,51 +261,62 @@ export default function TransactionsPage() {
     <div className="p-6">
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold text-theme">Transaction Activity</h1>
-        {/* Development indicator (TODO: Remove in production) */}
-        {/* <div className="hidden lg:block">
-          <div className="px-3 py-1 bg-yellow-100 dark:bg-yellow-900 border border-yellow-300 dark:border-yellow-700 rounded-full">
-            <span className="text-yellow-800 dark:text-yellow-200 text-xs">
-              🎭 Mock Data
-            </span>
-          </div>
-        </div> */}
+
+        <div className="flex items-center justify-end gap-4 mb-6">
+          <DateRangePickerPopover
+            dateRange={dateRange}
+            onDateRangeChange={setDateRange}
+          />
+
+          {/* Filter Popover */}
+          <FilterPopover filters={filters} onFiltersChange={setFilters} />
+        </div>
       </div>
 
-      <div className="space-y-4">
-        {/* TODO: Replace with real smart contract data when available */}
-        {realTransactions.map(
-          (transaction: TransactionDisplayInfo, index: number) => {
-            // const transactionInfo =
-            //   convertMockToTransactionDisplayInfo(transaction)
-            return (
-              <Transaction
-                key={index}
-                transactionInfo={transaction}
-                isExpanded={expandedTransactions.has(index)}
-                onToggle={() => toggleTransaction(index)}
-                threshold={threshold?.[0] ?? BigInt(0)}
-              />
-            )
-          },
-        )}
-
-        {realTxsLoading && (
-          <div>
-            <Loader />
+      {!isLoading &&
+        !error &&
+        Object.entries(groupedTransactions).map(([date, txns]) => (
+          <div key={date} className="mb-4 sm:mb-6">
+            <h2 className="font-sans font-medium text-theme-secondary mb-2 transition-colors duration-300">
+              {date}
+            </h2>
+            <div className="">
+              {txns.map((txInfo, index) => (
+                <div
+                  key={txInfo.transaction.id.toString()}
+                  className={`bg-theme-bg-tertiary border border-theme-border overflow-hidden transition-colors duration-300 ${index === 0 ? 'rounded-t-lg' : ''} ${index === txns.length - 1 ? 'rounded-b-lg' : ''}`}
+                >
+                  <Transaction
+                    transactionInfo={txInfo}
+                    isExpanded={expandedId === txInfo.transaction.id.toString()}
+                    onToggle={() =>
+                      toggleTransaction(txInfo.transaction.id.toString())
+                    }
+                    threshold={Number(thresholdData?.[0] || 0)}
+                  />
+                </div>
+              ))}
+            </div>
           </div>
-        )}
-      </div>
+        ))}
 
-      {!realTxsLoading && realTxsError && (
-        <div className="text-theme-secondary text-lg">
-          An error occured in finding transactions. Refresh
+      {!isLoading && !error && totalPages > 1 && currentPage < totalPages && (
+        <div className="flex justify-center mt-8">
+          <button
+            onClick={() => handlePageChange(currentPage + 1)}
+            className="bg-theme-bg-tertiary border border-theme-border text-theme px-6 py-2 rounded-lg hover:bg-theme-border transition-colors duration-200"
+          >
+            Load More Transactions
+          </button>
         </div>
       )}
 
-      {!realTxsLoading && realTransactions.length === 0 && (
+      {filteredAndSortedTransactions.length === 0 && (
         <div className="text-center py-12">
           <div className="text-theme-secondary text-lg">
-            No transactions found
+            {filteredAndSortedTransactions.length === 0
+              ? 'No transactions found.'
+              : 'No transactions match your filters.'}
           </div>
           <div className="text-theme-secondary text-sm mt-2">
             Transactions will appear here once they are available from the smart

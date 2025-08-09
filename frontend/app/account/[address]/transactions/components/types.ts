@@ -5,7 +5,7 @@ export interface Transaction {
   amount: string
   toAddress: string
   time: string
-  status: 'Pending' | 'Executed' | 'Rejected'
+  status: 'Initiated' | 'Approved' | 'Executed' | 'Rejected'
   initiator?: string
   dateInitiated?: string
   account?: string

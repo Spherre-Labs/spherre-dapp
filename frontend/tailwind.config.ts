@@ -1,5 +1,6 @@
 import type { Config } from 'tailwindcss'
 import tailwindcssAnimate from 'tailwindcss-animate'
+import scrollbarHide from 'tailwind-scrollbar-hide'
 
 export default {
   darkMode: ['class'],
@@ -39,6 +40,9 @@ export default {
           DEFAULT: 'hsl(var(--destructive))',
           foreground: 'hsl(var(--destructive-foreground))',
         },
+        'light-green': '#2dd4bf',
+        green: '#19B360',
+        'light-yellow': '#FBD645',
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',
         ring: 'hsl(var(--ring))',
@@ -73,5 +77,5 @@ export default {
       },
     },
   },
-  plugins: [tailwindcssAnimate],
+  plugins: [tailwindcssAnimate, scrollbarHide],
 } satisfies Config

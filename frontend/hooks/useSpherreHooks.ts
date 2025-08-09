@@ -21,11 +21,7 @@ import type {
   PermissionEnum,
 } from '@/lib/contracts/types'
 import { useMemo } from 'react'
-import {
-  feltToAddress,
-  byteArrayToString,
-  extractPermissionsFromMask,
-} from '@/lib/utils/validation'
+import { feltToAddress, byteArrayToString } from '@/lib/utils/validation'
 
 // Factory Contract Hooks
 export function useDeployAccount() {

@@ -103,7 +103,7 @@ export enum PermissionEnum {
 export interface MemberAddData {
   type: TransactionType.MEMBER_ADD
   member: string
-  permissions: number // u8 bitmask
+  permissions: bigint // u8 bitmask
 }
 
 export interface MemberRemoveData {
@@ -114,7 +114,7 @@ export interface MemberRemoveData {
 export interface EditPermissionTransaction {
   type: TransactionType.MEMBER_PERMISSION_EDIT
   member: string
-  new_permissions: number // u8 bitmask
+  new_permissions: bigint // u8 bitmask
 }
 
 // Token transaction data
@@ -178,14 +178,15 @@ export type U256 = bigint | string | number
 // Unified transaction types for UI integration
 export interface BaseTransactionDisplay {
   id: string | bigint
-  status: string
+  status: 'Initiated' | 'Executed' | 'Rejected' | 'Approved'
   proposer: string
   executor?: string
   approved: string[]
   rejected: string[]
   dateCreated: bigint
   dateExecuted?: bigint
-  transactionType: string
+  transactionType: TransactionType
+  transaction_id?: string
 }
 
 // Transaction data union type

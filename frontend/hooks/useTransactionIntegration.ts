@@ -412,7 +412,8 @@ export function useTransactionIntegration(
 
 // Hook for individual transaction details
 export function useTransactionDetails(transactionId: string | bigint) {
-  const { accountAddress } = useSpherreAccount()
+  const accountAddress =
+    '0x065f067f0f621ed571a33ee6d5959e342ee5fd3f1df5c7609e54a6e5c29f8080'
 
   // Fetch the base transaction first
   const {

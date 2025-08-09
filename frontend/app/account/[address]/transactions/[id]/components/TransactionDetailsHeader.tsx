@@ -9,9 +9,10 @@ import {
   useExecuteTransaction,
 } from '@/hooks/useSpherreHooks'
 import { routes } from '@/lib/utils/routes'
+import { Button } from '@/components/ui/button'
 
 interface TransactionDetailsHeaderProps {
-  status: string
+  status: 'Initiated' | 'Approved' | 'Executed' | 'Rejected'
   transactionId?: string | bigint
 }
 
@@ -89,55 +90,47 @@ export const TransactionDetailsHeader = ({
     <>
       <Link
         href={routes(accountAddress).transactions}
-        className="flex items-center gap-2 text-theme-secondary hover:text-theme mb-6 transition-colors duration-200"
+        className="w-fit block gap-2 p-1.5 rounded-[5px] border border-theme-border bg-theme-bg-secondary hover:text-theme mb-5 transition-colors duration-200"
       >
         <ArrowLeft size={20} />
-        <span>Back to Transactions</span>
       </Link>
 
-      <header className="flex justify-between items-center mb-6">
+      <header className="flex justify-between items-center mb-6 font-sans">
         <div>
           <h1 className="text-2xl font-bold text-theme transition-colors duration-300">
             Transaction Details
           </h1>
-          <p className="text-theme-secondary transition-colors duration-300">
+          <p className="text-theme-text-secondary transition-colors duration-300">
             See the full detailed information about this transaction
           </p>
         </div>
         <div className="flex gap-4">
-          {(status.toLowerCase() === 'initiated' ||
-            status.toLowerCase() === 'approved') && (
+          {status.toLowerCase() === 'initiated' && (
             <>
-              <button
+              <Button
                 onClick={handleApprove}
-                disabled={
-                  isApproving ||
-                  status.toLowerCase() === 'approved' ||
-                  status.toLowerCase() === 'rejected'
-                }
-                className="bg-primary text-white px-6 py-2 rounded-lg hover:opacity-90 transition-all duration-200 disabled:opacity-50"
+                disabled={isApproving}
+                className="text-white px-4 min-w-44 font-medium py-2.5 rounded-md transition duration-200 w-full"
               >
                 {isApproving ? 'Approving...' : 'Approve'}
-              </button>
-              <button
+              </Button>
+              <Button
                 onClick={handleReject}
-                disabled={
-                  isRejecting ||
-                  status.toLowerCase() === 'approved' ||
-                  status.toLowerCase() === 'rejected'
-                }
-                className="bg-theme-bg-tertiary border border-theme-border text-theme px-6 py-2 rounded-lg hover:bg-theme-bg-secondary transition-colors duration-200 disabled:opacity-50"
+                disabled={isRejecting}
+                className="bg-theme-bg-secondary hover:bg-theme-bg-secondary text-theme px-4 min-w-44 font-medium py-2.5 rounded-md transition duration-200 w-full"
               >
                 {isRejecting ? 'Rejecting...' : 'Reject'}
-              </button>
-              <button
-                onClick={handleExecute}
-                disabled={isExecuting || status.toLowerCase() === 'executed'}
-                className="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition-all duration-200 disabled:opacity-50"
-              >
-                {isExecuting ? 'Executing...' : 'Execute'}
-              </button>
+              </Button>
             </>
+          )}
+          {status.toLowerCase() === 'approved' && (
+            <Button
+              onClick={handleExecute}
+              disabled={isExecuting}
+              className="bg-light-green text-white px-4 min-w-44 font-medium py-2.5 rounded-md transition duration-200 w-full"
+            >
+              {isExecuting ? 'Executing...' : 'Execute'}
+            </Button>
           )}
           {(status.toLowerCase() === 'executed' ||
             status.toLowerCase() === 'rejected') && (

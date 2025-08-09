@@ -4,7 +4,9 @@ import { TransactionType } from '@/lib/contracts/types'
 import { useTheme } from '@/app/context/theme-context-provider'
 
 interface TransactionFiltersProps {
-  onFilterStatus: (status: 'Pending' | 'Executed' | 'Rejected' | 'All') => void
+  onFilterStatus: (
+    status: 'Initiated' | 'Approved' | 'Executed' | 'Rejected' | 'All',
+  ) => void
   onFilterType: (type: TransactionType | 'All') => void
   onSort: (sort: 'newest' | 'oldest' | 'amount') => void
   onPageChange: (page: number) => void
@@ -33,7 +35,7 @@ export default function TransactionFilters({
 
   const statusOptions = [
     { value: 'All', label: 'All Status' },
-    { value: 'Pending', label: 'Pending' },
+    { value: 'Initiated', label: 'Initiated' },
     { value: 'Executed', label: 'Executed' },
     { value: 'Rejected', label: 'Rejected' },
   ]
@@ -111,7 +113,12 @@ export default function TransactionFilters({
               key={option.value}
               onClick={() =>
                 onFilterStatus(
-                  option.value as 'Pending' | 'Executed' | 'Rejected' | 'All',
+                  option.value as
+                    | 'Initiated'
+                    | 'Approved'
+                    | 'Executed'
+                    | 'Rejected'
+                    | 'All',
                 )
               }
               className={`px-3 py-1 rounded-full text-sm transition-colors duration-200 ${
@@ -140,7 +147,8 @@ export default function TransactionFilters({
                 onChange={(e) =>
                   onFilterStatus(
                     e.target.value as
-                      | 'Pending'
+                      | 'Initiated'
+                      | 'Approved'
                       | 'Executed'
                       | 'Rejected'
                       | 'All',
@@ -167,7 +175,7 @@ export default function TransactionFilters({
                   onFilterType(
                     e.target.value === 'All'
                       ? 'All'
-                      : (Number(e.target.value) as TransactionType),
+                      : (e.target.value as TransactionType),
                   )
                 }
                 className="w-full bg-theme-bg-secondary border border-theme-border text-theme p-2 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
