@@ -166,13 +166,13 @@ export const transactionDisplayData = (
             </span>
           </div>
 
-          <div className="text-theme-secondary flex items-center transition-colors duration-300 flex-[2] min-w-0">
+          <div className="text-theme-secondary flex flex-col items-center transition-colors duration-300 flex-[2] min-w-0">
             <span className="text-sm text-theme-secondary mr-1">
               Permissions:
             </span>
             <span className="inline-flex items-center">
-              <span className="ml-1 text-theme font-semibold">
-                {`${extractPermissionsFromMask((transactionInfo.transaction.data as MemberAddData)['permissions'])}`}
+              <span className="ml-1 text-theme text-[12px] font-semibold">
+                {`${extractPermissionsFromMask((transactionInfo.transaction.data as MemberAddData)['permissions']).join(', ')}`}
               </span>
             </span>
           </div>
