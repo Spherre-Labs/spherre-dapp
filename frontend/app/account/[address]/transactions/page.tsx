@@ -21,7 +21,7 @@ export default function TransactionsPage() {
   const { data: thresholdData } = useGetThreshold(accountAddress || '0x0')
 
   const [filters, setFilters] = useState({
-    status: 'All' as 'Pending' | 'Executed' | 'Rejected' | 'All',
+    status: 'All' as 'Initiated' | 'Approved' | 'Executed' | 'Rejected' | 'All',
     type: 'All' as TransactionType | 'All',
     sort: 'newest' as 'newest' | 'oldest' | 'amount',
     selectedMembers: [] as string[],

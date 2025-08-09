@@ -58,12 +58,7 @@ const convertMockToTransactionDisplayInfo = (
     transaction: {
       id: BigInt(safeId),
       transactionType: ContractTransactionType.TOKEN_SEND, // Default type
-      status:
-        transaction.status === 'Pending'
-          ? 'Pending'
-          : transaction.status === 'Executed'
-            ? 'Executed'
-            : 'Rejected',
+      status: transaction.status,
       proposer: transaction.initiator?.name || 'Unknown',
       executor: transaction.account?.address || '0x0',
       approved:
@@ -225,7 +220,7 @@ export default function TransactionDetailsPage({ params }: PageProps) {
       <TransactionDetails
         transactionInfo={transactionInfo}
         accountName={accountName}
-        thresholdData={thresholdData}
+        threshold={Number(thresholdData?.[0] || 0)}
       />
     </div>
   )

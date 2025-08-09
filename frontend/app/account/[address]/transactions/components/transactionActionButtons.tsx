@@ -23,7 +23,6 @@ export const TransactionActionButtons = ({
 }: TransactionActionButtonsProps) => {
   return (
     <div className="mt-auto pt-3 sm:pt-4">
-      {transactionStatus === 'pending' && null}
       {transactionStatus === 'initiated' && (
         <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
           <Button
@@ -55,10 +54,10 @@ export const TransactionActionButtons = ({
       )}
       {(transactionStatus === 'executed' ||
         transactionStatus === 'rejected') && (
-        <button className="bg-[#6F2FCE] hover:bg-purple-700 text-theme px-4 sm:px-6 py-2 rounded-md transition duration-200 w-full">
-          Download CSV
-        </button>
-      )}
+          <button className="bg-[#6F2FCE] hover:bg-purple-700 text-theme px-4 sm:px-6 py-2 rounded-md transition duration-200 w-full">
+            Download CSV
+          </button>
+        )}
     </div>
   )
 }

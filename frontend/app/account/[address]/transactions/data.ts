@@ -27,7 +27,7 @@ export interface Transaction {
   amount: string
   toAddress: string
   time: string
-  status: 'Pending' | 'Executed' | 'Rejected'
+  status: 'Initiated' | 'Approved' | 'Executed' | 'Rejected'
   initiator: Member
   dateInitiated: string
   dateExecuted?: string
@@ -63,7 +63,7 @@ const members = {
 
 // Generate a large, varied dummy dataset
 const transactionTypes = ['withdraw', 'swap', 'limitSwap'] as const
-const statuses = ['Pending', 'Executed', 'Rejected'] as const
+const statuses = ['Initiated', 'Approved', 'Executed', 'Rejected'] as const
 const dates = [
   'Today (27 Feb)',
   'Wed 26 Feb',
@@ -127,11 +127,11 @@ export const transactions: Transaction[] = Array.from(
     const rejections =
       i % 5 === 0
         ? [
-            {
-              member: randomFrom(memberList, i + 8),
-              status: 'Rejected' as const,
-            },
-          ]
+          {
+            member: randomFrom(memberList, i + 8),
+            status: 'Rejected' as const,
+          },
+        ]
         : []
     const tokenIn = randomFrom(tokens, i + 9)
     const tokenOut = randomFrom(

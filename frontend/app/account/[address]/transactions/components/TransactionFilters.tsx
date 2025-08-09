@@ -4,7 +4,7 @@ import { TransactionType } from '@/lib/contracts/types'
 import { useTheme } from '@/app/context/theme-context-provider'
 
 interface TransactionFiltersProps {
-  onFilterStatus: (status: 'Pending' | 'Executed' | 'Rejected' | 'All') => void
+  onFilterStatus: (status: 'Initiated' | 'Approved' | 'Executed' | 'Rejected' | 'All') => void
   onFilterType: (type: TransactionType | 'All') => void
   onSort: (sort: 'newest' | 'oldest' | 'amount') => void
   onPageChange: (page: number) => void
@@ -33,7 +33,7 @@ export default function TransactionFilters({
 
   const statusOptions = [
     { value: 'All', label: 'All Status' },
-    { value: 'Pending', label: 'Pending' },
+    { value: 'Initiated', label: 'Initiated' },
     { value: 'Executed', label: 'Executed' },
     { value: 'Rejected', label: 'Rejected' },
   ]
@@ -111,14 +111,18 @@ export default function TransactionFilters({
               key={option.value}
               onClick={() =>
                 onFilterStatus(
-                  option.value as 'Pending' | 'Executed' | 'Rejected' | 'All',
+                  option.value as
+                  | 'Initiated'
+                  | 'Approved'
+                  | 'Executed'
+                  | 'Rejected'
+                  | 'All',
                 )
               }
-              className={`px-3 py-1 rounded-full text-sm transition-colors duration-200 ${
-                currentFilters.status === option.value
-                  ? 'bg-primary text-white'
-                  : 'bg-theme-bg-tertiary text-theme hover:bg-theme-border'
-              }`}
+              className={`px-3 py-1 rounded-full text-sm transition-colors duration-200 ${currentFilters.status === option.value
+                ? 'bg-primary text-white'
+                : 'bg-theme-bg-tertiary text-theme hover:bg-theme-border'
+                }`}
             >
               {option.label}
             </button>
@@ -140,10 +144,11 @@ export default function TransactionFilters({
                 onChange={(e) =>
                   onFilterStatus(
                     e.target.value as
-                      | 'Pending'
-                      | 'Executed'
-                      | 'Rejected'
-                      | 'All',
+                    | 'Initiated'
+                    | 'Approved'
+                    | 'Executed'
+                    | 'Rejected'
+                    | 'All',
                   )
                 }
                 className="w-full bg-theme-bg-secondary border border-theme-border text-theme p-2 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
@@ -255,11 +260,10 @@ export default function TransactionFilters({
                       <button
                         key={pageNumber}
                         onClick={() => onPageChange(pageNumber)}
-                        className={`px-3 py-1 rounded-lg transition-colors duration-200 ${
-                          currentPage === pageNumber
-                            ? 'bg-primary text-white'
-                            : 'bg-theme-bg-tertiary border border-theme-border text-theme hover:bg-theme-border'
-                        }`}
+                        className={`px-3 py-1 rounded-lg transition-colors duration-200 ${currentPage === pageNumber
+                          ? 'bg-primary text-white'
+                          : 'bg-theme-bg-tertiary border border-theme-border text-theme hover:bg-theme-border'
+                          }`}
                       >
                         {pageNumber}
                       </button>

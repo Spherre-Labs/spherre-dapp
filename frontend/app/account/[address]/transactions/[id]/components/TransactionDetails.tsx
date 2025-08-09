@@ -11,16 +11,15 @@ import {
   getExplorerUrl,
   getAvatarUrl,
 } from '@/lib/utils/transaction-utils'
-import member2 from '../../../../../public/member2.svg'
 import Image from 'next/image'
-import backstageboys from '../../../../../public/Images/backstageboys.png'
+import backstageboys from '../../../../../../public/Images/backstageboys.png'
 import { Button } from '@/components/ui/button'
 import { BadgeCheck, CircleX, CircleArrowRight, Copy } from 'lucide-react'
 import Link from 'next/link'
 
 const getTransactionStatus = (status: string, dateExecuted: bigint) => {
   switch (status) {
-    case 'Pending':
+    case 'Initiated':
       return (
         <div className="flex-1 pt-0">
           <h3 className="text-theme font-semibold -mt-1.5">Execution</h3>
@@ -29,10 +28,19 @@ const getTransactionStatus = (status: string, dateExecuted: bigint) => {
           </p>
         </div>
       )
+    case 'Approved':
+      return (
+        <div className="flex-1 pt-0">
+          <h3 className="text-theme font-semibold text-sm -mt-1.5">Approved</h3>
+          <p className="text-theme-secondary font-semibold text-xs transition-colors duration-300">
+            ___________________________
+          </p>
+        </div>
+      )
     case 'Executed':
       return (
         <div className="flex-1 pt-0">
-          <h3 className="text-theme font-semibold text-sm -mt-1.5">Executed</h3>
+          <h3 className="text-theme font-semibold -mt-1.5">Executed</h3>
           <p className="text-theme-secondary font-semibold text-xs transition-colors duration-300">
             {formatTimestamp(dateExecuted)} {formatTime(dateExecuted)}
           </p>
@@ -55,11 +63,11 @@ const getTransactionStatus = (status: string, dateExecuted: bigint) => {
 export const TransactionDetails = ({
   transactionInfo,
   accountName,
-  thresholdData,
+  threshold,
 }: {
   transactionInfo: TransactionDisplayInfo
   accountName?: string
-  thresholdData?: [bigint, bigint]
+  threshold?: number
 }) => {
   useTheme()
   const { transaction } = transactionInfo
@@ -68,12 +76,12 @@ export const TransactionDetails = ({
   const dateExecuted =
     transaction.status.toLowerCase() === 'executed' && transaction.dateExecuted
       ? formatTimestamp(transaction.dateExecuted) +
-        ', ' +
-        formatTime(transaction.dateExecuted)
+      ', ' +
+      formatTime(transaction.dateExecuted)
       : '___'
   const account = accountName || 'Backstage Boys'
   const transactionLink =
-    transaction.status !== 'Pending' && transaction.transaction_id
+    transaction.status.toLowerCase() !== 'initiated' && transaction.transaction_id
       ? getExplorerUrl('sepolia', transaction.transaction_id)
       : undefined
   const transactionId = transaction.id.toString().slice(0, 12)
@@ -132,146 +140,146 @@ export const TransactionDetails = ({
                 <span className="font-semibold">{account}</span>
               </div>,
             )}
-            {transaction.status.toLowerCase() !== 'pending' &&
-            transaction.transaction_id
+            {transaction.status.toLowerCase() !== 'initiated' &&
+              transaction.transaction_id
               ? detailItem(
-                  'Transaction Link',
-                  <div className="flex items-center gap-0">
-                    <span className="font-mono">{transactionLink}</span>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="p-0"
-                      onClick={() =>
-                        navigator.clipboard.writeText(
-                          transaction.transaction_id ?? '',
-                        )
-                      }
-                    >
-                      <Copy className="w-4 h-4 text-theme-secondary" />
-                    </Button>
-                    <Link
-                      href={`https://etherscan.io/tx/${transaction.transaction_id}`}
-                      target="_blank"
-                      className="text-sm"
-                    >
-                      <CircleArrowRight className="w-4 h-4 text-theme-secondary -rotate-45" />
-                    </Link>
-                  </div>,
-                )
+                'Transaction Link',
+                <div className="flex items-center gap-0">
+                  <span className="font-mono">{transactionLink}</span>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="p-0"
+                    onClick={() =>
+                      navigator.clipboard.writeText(
+                        transaction.transaction_id ?? '',
+                      )
+                    }
+                  >
+                    <Copy className="w-4 h-4 text-theme-secondary" />
+                  </Button>
+                  <Link
+                    href={`https://etherscan.io/tx/${transaction.transaction_id}`}
+                    target="_blank"
+                    className="text-sm"
+                  >
+                    <CircleArrowRight className="w-4 h-4 text-theme-secondary -rotate-45" />
+                  </Link>
+                </div>,
+              )
               : detailItem(
-                  'Transaction Link',
-                  <span className="font-mono">____</span>,
-                )}
-            {transaction.status.toLowerCase() !== 'pending' &&
-            transaction.transaction_id
+                'Transaction Link',
+                <span className="font-mono">____</span>,
+              )}
+            {transaction.status.toLowerCase() !== 'initiated' &&
+              transaction.transaction_id
               ? detailItem(
-                  'Transaction ID',
-                  <span className="font-mono">{transactionId}</span>,
-                )
+                'Transaction ID',
+                <span className="font-mono">{transactionId}</span>,
+              )
               : detailItem(
-                  'Transaction ID',
-                  <span className="font-mono">____</span>,
-                )}
+                'Transaction ID',
+                <span className="font-mono">____</span>,
+              )}
           </div>
         </section>
 
         {(transaction.transactionType === TransactionType.TOKEN_SEND ||
           transaction.transactionType === TransactionType.NFT_SEND) && (
-          <>
-            {/* From Section */}
-            <section className="flex-1 flex flex-col">
-              <h3 className="text-theme font-medium mb-4 text-lg">From</h3>
-              <div className="flex flex-col gap-4 border border-theme-border px-3 py-4 rounded-lg flex-1">
-                <div className="flex items-center justify-between gap-3">
-                  <div className="flex gap-2 items-center">
-                    <div className="w-14 h-14 rounded-full flex items-center justify-center">
-                      <Image src={backstageboys} alt="backstageboys" />
+            <>
+              {/* From Section */}
+              <section className="flex-1 flex flex-col">
+                <h3 className="text-theme font-medium mb-4 text-lg">From</h3>
+                <div className="flex flex-col gap-4 border border-theme-border px-3 py-4 rounded-lg flex-1">
+                  <div className="flex items-center justify-between gap-3">
+                    <div className="flex gap-2 items-center">
+                      <div className="w-14 h-14 rounded-full flex items-center justify-center">
+                        <Image src={backstageboys} alt="backstageboys" />
+                      </div>
+                      <div>
+                        <h4 className="text-theme text-lg font-medium">
+                          Backstage Boys
+                        </h4>
+                        <p className="text-theme-text-secondary text-sm font-semibold">
+                          0x233r...6574
+                        </p>
+                      </div>
                     </div>
-                    <div>
-                      <h4 className="text-theme text-lg font-medium">
-                        Backstage Boys
-                      </h4>
-                      <p className="text-theme-text-secondary text-sm font-semibold">
-                        0x233r...6574
+                    <div className="bg-theme-bg-secondary rounded-xl p-2.5 text-theme text-sm font-medium">
+                      Team Account
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-4 mt-4">
+                    <div className="bg-theme-bg-secondary p-3 space-y-2 rounded-lg text-center">
+                      <p className="text-theme-text-secondary text-sm">
+                        Threshold
+                      </p>
+                      <p className="text-theme text-xl font-bold">
+                        {threshold
+                          ? `${threshold}/${threshold}`
+                          : '0/0'}
+                      </p>
+                    </div>
+                    <div className="bg-theme-bg-secondary p-3 space-y-2 rounded-lg text-center">
+                      <p className="text-theme-text-secondary text-sm">Members</p>
+                      <p className="text-theme text-xl font-bold">
+                        {threshold ? threshold : 0}
                       </p>
                     </div>
                   </div>
-                  <div className="bg-theme-bg-secondary rounded-xl p-2.5 text-theme text-sm font-medium">
-                    Team Account
-                  </div>
-                </div>
-                <div className="grid grid-cols-2 gap-4 mt-4">
-                  <div className="bg-theme-bg-secondary p-3 space-y-2 rounded-lg text-center">
-                    <p className="text-theme-text-secondary text-sm">
-                      Threshold
-                    </p>
-                    <p className="text-theme text-xl font-bold">
-                      {thresholdData
-                        ? `${Number(thresholdData[0])}/${Number(thresholdData[1])}`
-                        : '0/0'}
-                    </p>
-                  </div>
-                  <div className="bg-theme-bg-secondary p-3 space-y-2 rounded-lg text-center">
-                    <p className="text-theme-text-secondary text-sm">Members</p>
-                    <p className="text-theme text-xl font-bold">
-                      {thresholdData ? Number(thresholdData[1]) : 0}
-                    </p>
-                  </div>
-                </div>
 
-                <div className="flex-1 flex flex-col justify-end">
-                  <p className="text-theme-text-secondary text-sm">
-                    Last transaction
-                  </p>
-                  <p className="text-theme text-sm">Wed 27 Feb, 2025</p>
-                </div>
-              </div>
-            </section>
-
-            {/* To Section */}
-            <section className="flex-1 flex flex-col">
-              <h3 className="text-theme font-medium mb-4 text-lg">To</h3>
-              <div className="flex flex-col gap-4 border border-theme-border px-3 py-4 rounded-lg flex-1">
-                <div className="flex items-center justify-between gap-3">
-                  <div className="flex gap-2 items-center">
-                    <div className="w-14 h-14 rounded-full flex items-center justify-center">
-                      <Image src={member2} alt="member2" />
-                    </div>
-                    <div>
-                      <h4 className="text-theme text-lg font-medium">
-                        Denzel Smith
-                      </h4>
-                      <p className="text-theme-text-secondary text-sm font-semibold">
-                        0x233r...6574
-                      </p>
-                    </div>
-                  </div>
-                </div>
-                <div className="space-y-3 pt-2">
-                  <div className="flex justify-between">
+                  <div className="flex-1 flex flex-col justify-end">
                     <p className="text-theme-text-secondary text-sm">
                       Last transaction
                     </p>
                     <p className="text-theme text-sm">Wed 27 Feb, 2025</p>
                   </div>
-                  <div className="flex justify-between">
-                    <p className="text-theme-text-secondary text-sm">
-                      Member Number
-                    </p>
-                    <p className="text-theme text-sm font-bold">2</p>
+                </div>
+              </section>
+
+              {/* To Section */}
+              <section className="flex-1 flex flex-col">
+                <h3 className="text-theme font-medium mb-4 text-lg">To</h3>
+                <div className="flex flex-col gap-4 border border-theme-border px-3 py-4 rounded-lg flex-1">
+                  <div className="flex items-center justify-between gap-3">
+                    <div className="flex gap-2 items-center">
+                      <div className="w-14 h-14 rounded-full flex items-center justify-center">
+                        {/* <Image src={getAvatarUrl(transaction.data as TransactionData)['recipient']} alt="member2" /> */}
+                      </div>
+                      <div>
+                        <h4 className="text-theme text-lg font-medium">
+                          Denzel Smith
+                        </h4>
+                        <p className="text-theme-text-secondary text-sm font-semibold">
+                          0x233r...6574
+                        </p>
+                      </div>
+                    </div>
                   </div>
-                  <div className="flex justify-between">
-                    <p className="text-theme-text-secondary text-sm">
-                      Email Address
-                    </p>
-                    <p className="text-theme text-sm">denziesmith@gmail.com</p>
+                  <div className="space-y-3 pt-2">
+                    <div className="flex justify-between">
+                      <p className="text-theme-text-secondary text-sm">
+                        Last transaction
+                      </p>
+                      <p className="text-theme text-sm">Wed 27 Feb, 2025</p>
+                    </div>
+                    <div className="flex justify-between">
+                      <p className="text-theme-text-secondary text-sm">
+                        Member Number
+                      </p>
+                      <p className="text-theme text-sm font-bold">2</p>
+                    </div>
+                    <div className="flex justify-between">
+                      <p className="text-theme-text-secondary text-sm">
+                        Email Address
+                      </p>
+                      <p className="text-theme text-sm">denziesmith@gmail.com</p>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </section>
-          </>
-        )}
+              </section>
+            </>
+          )}
       </div>
       {/* Updates/Transaction Progress */}
       <section className="flex flex-col lg:max-w-[50%]">
@@ -287,9 +295,9 @@ export const TransactionDetails = ({
                   Threshold
                 </p>
                 <p className="text-theme text-3xl font-bold">
-                  {thresholdData
-                    ? `${Number(thresholdData[0])}/${Number(thresholdData[1])}`
-                    : '3/5'}
+                  {threshold
+                    ? `${transaction.approved.length}/${threshold}`
+                    : '0/0'}
                 </p>
               </div>
               <div className="bg-theme-bg-secondary p-4 rounded-lg">
@@ -335,7 +343,7 @@ export const TransactionDetails = ({
                 <div className="flex flex-col items-center">
                   <div className="w-[9px] h-[9px] bg-white rounded-full flex items-center justify-center"></div>
                   <div
-                    className={`w-[1px] h-16 lg:h-12 mt-0 ${transaction.status.toLowerCase() === 'pending' || transaction.status.toLowerCase() === 'rejected' ? 'bg-[#55534E]' : 'bg-white'}`}
+                    className={`w-[1px] h-16 lg:h-12 mt-0 ${transaction.status.toLowerCase() === 'initiated' || transaction.status.toLowerCase() === 'rejected' ? 'bg-[#55534E]' : 'bg-white'}`}
                   ></div>
                 </div>
                 <div className="flex-1 pt-0">
@@ -355,7 +363,7 @@ export const TransactionDetails = ({
                     )}
                   </h3>
                   <p className="text-theme-secondary font-semibold text-xs transition-colors duration-300">
-                    {`Threshold: ${transaction.approved.length} / ${thresholdData ? Number(thresholdData[1]) : 0} approved`}
+                    {`Threshold: ${transaction.approved.length} / ${threshold ? threshold : 0} approved`}
                   </p>
                 </div>
               </div>

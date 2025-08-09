@@ -231,15 +231,15 @@ export default function Transaction({
           {/* Status */}
           <div className="flex-1 text-center">
             <span
-              className={` px-3 py-1 rounded-full ${transactionStatus === 'pending'
-                  ? 'text-light-yellow'
-                  : transactionStatus === 'executed'
-                    ? 'text-green'
-                    : transactionStatus === 'approved'
-                      ? 'text-light-green'
-                      : transactionStatus === 'rejected'
-                        ? 'text-[#D44B4B]'
-                        : 'text-theme-secondary'
+              className={` px-3 py-1 rounded-full ${transactionStatus === 'initiated'
+                ? 'text-light-yellow'
+                : transactionStatus === 'executed'
+                  ? 'text-green'
+                  : transactionStatus === 'approved'
+                    ? 'text-light-green'
+                    : transactionStatus === 'rejected'
+                      ? 'text-[#D44B4B]'
+                      : 'text-theme-secondary'
                 }`}
             >
               {toTitleCase(transactionStatus)}
@@ -273,8 +273,7 @@ export default function Transaction({
               <div className="flex items-center mb-2">
                 <h4 className="text-xs text-light-yellow font-semibold mr-2 transition-colors duration-300">
                   Pending Approvals
-                  {transactionStatus === 'pending' ||
-                    transactionStatus === 'initiated' ? (
+                  {transactionStatus === 'initiated' ? (
                     <span>
                       {` `}
                       {`(${threshold - transaction.approved.length})`}
@@ -324,7 +323,7 @@ export default function Transaction({
                   <div className="flex flex-col items-center">
                     <div className="w-[9px] h-[9px] bg-white rounded-full flex items-center justify-center"></div>
                     <div
-                      className={`w-[1px] h-12 mt-0 ${transactionStatus === 'pending' ? 'bg-[#55534E]' : 'bg-white'}`}
+                      className={`w-[1px] h-12 mt-0 ${transactionStatus === 'initiated' ? 'bg-[#55534E]' : 'bg-white'}`}
                     ></div>
                   </div>
                   <div className="flex-1 pt-0">
@@ -356,7 +355,7 @@ export default function Transaction({
                     ${transactionStatus !== 'executed' ? 'border border-[#55534E]' : 'bg-white'}`}
                     ></div>
                   </div>
-                  {transactionStatus === 'pending' && (
+                  {transactionStatus === 'initiated' && (
                     <div className="flex-1 pt-0">
                       <h3 className="text-theme font-semibold -mt-1.5">
                         Execution
@@ -457,7 +456,7 @@ export default function Transaction({
                   </span>
                 </span>
               </div>
-              {transactionStatus !== 'pending' &&
+              {transactionStatus === 'executed' &&
                 transaction.transaction_id && (
                   <div className="flex justify-between">
                     <span>Transaction Link:</span>

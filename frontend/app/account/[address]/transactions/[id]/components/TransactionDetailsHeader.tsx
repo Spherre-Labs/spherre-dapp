@@ -12,7 +12,7 @@ import { routes } from '@/lib/utils/routes'
 import { Button } from '@/components/ui/button'
 
 interface TransactionDetailsHeaderProps {
-  status: 'Pending' | 'Executed' | 'Rejected' | 'Approved'
+  status: 'Initiated' | 'Approved' | 'Executed' | 'Rejected'
   transactionId?: string | bigint
 }
 
@@ -105,7 +105,7 @@ export const TransactionDetailsHeader = ({
           </p>
         </div>
         <div className="flex gap-4">
-          {status.toLowerCase() === 'pending' && (
+          {status.toLowerCase() === 'initiated' && (
             <>
               <Button
                 onClick={handleApprove}
@@ -113,13 +113,6 @@ export const TransactionDetailsHeader = ({
                 className="text-white px-4 min-w-44 font-medium py-2.5 rounded-md transition duration-200 w-full"
               >
                 {isApproving ? 'Approving...' : 'Approve'}
-              </Button>
-              <Button
-                onClick={handleExecute}
-                disabled={isExecuting}
-                className="bg-green text-white px-4 min-w-44 font-medium py-2.5 rounded-md transition duration-200 w-full"
-              >
-                {isExecuting ? 'Executing...' : 'Execute'}
               </Button>
               <Button
                 onClick={handleReject}
@@ -130,12 +123,21 @@ export const TransactionDetailsHeader = ({
               </Button>
             </>
           )}
+          {status.toLowerCase() === 'approved' && (
+            <Button
+              onClick={handleExecute}
+              disabled={isExecuting}
+              className="bg-light-green text-white px-4 min-w-44 font-medium py-2.5 rounded-md transition duration-200 w-full"
+            >
+              {isExecuting ? 'Executing...' : 'Execute'}
+            </Button>
+          )}
           {(status.toLowerCase() === 'executed' ||
             status.toLowerCase() === 'rejected') && (
-            <button className="bg-primary text-white px-6 py-2 rounded-lg hover:opacity-90 transition-all duration-200">
-              Download CSV
-            </button>
-          )}
+              <button className="bg-primary text-white px-6 py-2 rounded-lg hover:opacity-90 transition-all duration-200">
+                Download CSV
+              </button>
+            )}
         </div>
       </header>
     </>
