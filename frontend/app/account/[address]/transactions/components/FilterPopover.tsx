@@ -72,8 +72,9 @@ const CollapsibleSection = ({
       >
         <span className="text-theme font-semibold text-base">{title}</span>
         <ChevronDown
-          className={`w-4 h-4 text-theme-secondary transition-transform duration-200 ${isOpen ? 'rotate-180' : ''
-            }`}
+          className={`w-4 h-4 text-theme-secondary transition-transform duration-200 ${
+            isOpen ? 'rotate-180' : ''
+          }`}
         />
       </button>
       {isOpen && <div className={cn('px-2 pb-4', className)}>{children}</div>}
@@ -92,10 +93,11 @@ const FilterButton = ({
 }) => {
   return (
     <button
-      className={`px-[14px] mt-2 py-[10px] rounded-lg text-sm text-white font-medium transition-colors bg-theme-bg-secondary duration-200 ${isActive
+      className={`px-[14px] mt-2 py-[10px] rounded-lg text-sm text-white font-medium transition-colors bg-theme-bg-secondary duration-200 ${
+        isActive
           ? 'border-2 border-primary bg-[#8C62F238]'
           : 'hover:border-primary'
-        }`}
+      }`}
       onClick={onClick}
     >
       {title}
@@ -238,16 +240,18 @@ export default function FilterPopover({
           {/* Status Filter */}
           <CollapsibleSection title="Status" defaultOpen>
             <div className="flex flex-wrap gap-5">
-              {['All', 'Initiated', 'Approved', 'Executed', 'Rejected'].map((status) => (
-                <FilterButton
-                  key={status}
-                  title={status}
-                  onClick={() =>
-                    handleStatusChange(status as typeof filters.status)
-                  }
-                  isActive={filters.status === status}
-                />
-              ))}
+              {['All', 'Initiated', 'Approved', 'Executed', 'Rejected'].map(
+                (status) => (
+                  <FilterButton
+                    key={status}
+                    title={status}
+                    onClick={() =>
+                      handleStatusChange(status as typeof filters.status)
+                    }
+                    isActive={filters.status === status}
+                  />
+                ),
+              )}
             </div>
           </CollapsibleSection>
 

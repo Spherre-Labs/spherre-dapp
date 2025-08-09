@@ -18,8 +18,8 @@ import { BadgeCheck, CircleX, CircleArrowRight, Copy } from 'lucide-react'
 import Link from 'next/link'
 
 const getTransactionStatus = (status: string, dateExecuted: bigint) => {
-  switch (status) {
-    case 'Initiated':
+  switch (status.toLowerCase()) {
+    case 'initiated':
       return (
         <div className="flex-1 pt-0">
           <h3 className="text-theme font-semibold -mt-1.5">Execution</h3>
@@ -28,7 +28,7 @@ const getTransactionStatus = (status: string, dateExecuted: bigint) => {
           </p>
         </div>
       )
-    case 'Approved':
+    case 'approved':
       return (
         <div className="flex-1 pt-0">
           <h3 className="text-theme font-semibold text-sm -mt-1.5">Approved</h3>
@@ -37,7 +37,7 @@ const getTransactionStatus = (status: string, dateExecuted: bigint) => {
           </p>
         </div>
       )
-    case 'Executed':
+    case 'executed':
       return (
         <div className="flex-1 pt-0">
           <h3 className="text-theme font-semibold -mt-1.5">Executed</h3>
@@ -46,7 +46,7 @@ const getTransactionStatus = (status: string, dateExecuted: bigint) => {
           </p>
         </div>
       )
-    case 'Rejected':
+    case 'rejected':
       return (
         <div className="flex-1 pt-0">
           <h3 className="text-theme font-semibold -mt-1.5">Rejected</h3>
@@ -76,12 +76,13 @@ export const TransactionDetails = ({
   const dateExecuted =
     transaction.status.toLowerCase() === 'executed' && transaction.dateExecuted
       ? formatTimestamp(transaction.dateExecuted) +
-      ', ' +
-      formatTime(transaction.dateExecuted)
+        ', ' +
+        formatTime(transaction.dateExecuted)
       : '___'
   const account = accountName || 'Backstage Boys'
   const transactionLink =
-    transaction.status.toLowerCase() !== 'initiated' && transaction.transaction_id
+    transaction.status.toLowerCase() !== 'initiated' &&
+    transaction.transaction_id
       ? getExplorerUrl('sepolia', transaction.transaction_id)
       : undefined
   const transactionId = transaction.id.toString().slice(0, 12)
@@ -141,145 +142,145 @@ export const TransactionDetails = ({
               </div>,
             )}
             {transaction.status.toLowerCase() !== 'initiated' &&
-              transaction.transaction_id
+            transaction.transaction_id
               ? detailItem(
-                'Transaction Link',
-                <div className="flex items-center gap-0">
-                  <span className="font-mono">{transactionLink}</span>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="p-0"
-                    onClick={() =>
-                      navigator.clipboard.writeText(
-                        transaction.transaction_id ?? '',
-                      )
-                    }
-                  >
-                    <Copy className="w-4 h-4 text-theme-secondary" />
-                  </Button>
-                  <Link
-                    href={`https://etherscan.io/tx/${transaction.transaction_id}`}
-                    target="_blank"
-                    className="text-sm"
-                  >
-                    <CircleArrowRight className="w-4 h-4 text-theme-secondary -rotate-45" />
-                  </Link>
-                </div>,
-              )
+                  'Transaction Link',
+                  <div className="flex items-center gap-0">
+                    <span className="font-mono">{transactionLink}</span>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="p-0"
+                      onClick={() =>
+                        navigator.clipboard.writeText(
+                          transaction.transaction_id ?? '',
+                        )
+                      }
+                    >
+                      <Copy className="w-4 h-4 text-theme-secondary" />
+                    </Button>
+                    <Link
+                      href={`https://etherscan.io/tx/${transaction.transaction_id}`}
+                      target="_blank"
+                      className="text-sm"
+                    >
+                      <CircleArrowRight className="w-4 h-4 text-theme-secondary -rotate-45" />
+                    </Link>
+                  </div>,
+                )
               : detailItem(
-                'Transaction Link',
-                <span className="font-mono">____</span>,
-              )}
+                  'Transaction Link',
+                  <span className="font-mono">____</span>,
+                )}
             {transaction.status.toLowerCase() !== 'initiated' &&
-              transaction.transaction_id
+            transaction.transaction_id
               ? detailItem(
-                'Transaction ID',
-                <span className="font-mono">{transactionId}</span>,
-              )
+                  'Transaction ID',
+                  <span className="font-mono">{transactionId}</span>,
+                )
               : detailItem(
-                'Transaction ID',
-                <span className="font-mono">____</span>,
-              )}
+                  'Transaction ID',
+                  <span className="font-mono">____</span>,
+                )}
           </div>
         </section>
 
         {(transaction.transactionType === TransactionType.TOKEN_SEND ||
           transaction.transactionType === TransactionType.NFT_SEND) && (
-            <>
-              {/* From Section */}
-              <section className="flex-1 flex flex-col">
-                <h3 className="text-theme font-medium mb-4 text-lg">From</h3>
-                <div className="flex flex-col gap-4 border border-theme-border px-3 py-4 rounded-lg flex-1">
-                  <div className="flex items-center justify-between gap-3">
-                    <div className="flex gap-2 items-center">
-                      <div className="w-14 h-14 rounded-full flex items-center justify-center">
-                        <Image src={backstageboys} alt="backstageboys" />
-                      </div>
-                      <div>
-                        <h4 className="text-theme text-lg font-medium">
-                          Backstage Boys
-                        </h4>
-                        <p className="text-theme-text-secondary text-sm font-semibold">
-                          0x233r...6574
-                        </p>
-                      </div>
+          <>
+            {/* From Section */}
+            <section className="flex-1 flex flex-col">
+              <h3 className="text-theme font-medium mb-4 text-lg">From</h3>
+              <div className="flex flex-col gap-4 border border-theme-border px-3 py-4 rounded-lg flex-1">
+                <div className="flex items-center justify-between gap-3">
+                  <div className="flex gap-2 items-center">
+                    <div className="w-14 h-14 rounded-full flex items-center justify-center">
+                      <Image src={backstageboys} alt="backstageboys" />
                     </div>
-                    <div className="bg-theme-bg-secondary rounded-xl p-2.5 text-theme text-sm font-medium">
-                      Team Account
-                    </div>
-                  </div>
-                  <div className="grid grid-cols-2 gap-4 mt-4">
-                    <div className="bg-theme-bg-secondary p-3 space-y-2 rounded-lg text-center">
-                      <p className="text-theme-text-secondary text-sm">
-                        Threshold
-                      </p>
-                      <p className="text-theme text-xl font-bold">
-                        {threshold
-                          ? `${threshold}/${threshold}`
-                          : '0/0'}
-                      </p>
-                    </div>
-                    <div className="bg-theme-bg-secondary p-3 space-y-2 rounded-lg text-center">
-                      <p className="text-theme-text-secondary text-sm">Members</p>
-                      <p className="text-theme text-xl font-bold">
-                        {threshold ? threshold : 0}
+                    <div>
+                      <h4 className="text-theme text-lg font-medium">
+                        Backstage Boys
+                      </h4>
+                      <p className="text-theme-text-secondary text-sm font-semibold">
+                        0x233r...6574
                       </p>
                     </div>
                   </div>
+                  <div className="bg-theme-bg-secondary rounded-xl p-2.5 text-theme text-sm font-medium">
+                    Team Account
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-4 mt-4">
+                  <div className="bg-theme-bg-secondary p-3 space-y-2 rounded-lg text-center">
+                    <p className="text-theme-text-secondary text-sm">
+                      Threshold
+                    </p>
+                    <p className="text-theme text-xl font-bold">
+                      {threshold
+                        ? `${transaction.approved.length}/${threshold}`
+                        : '0/0'}
+                    </p>
+                  </div>
+                  <div className="bg-theme-bg-secondary p-3 space-y-2 rounded-lg text-center">
+                    <p className="text-theme-text-secondary text-sm">Members</p>
+                    <p className="text-theme text-xl font-bold">
+                      {threshold ? threshold : 0}
+                    </p>
+                  </div>
+                </div>
 
-                  <div className="flex-1 flex flex-col justify-end">
+                <div className="flex-1 flex flex-col justify-end">
+                  <p className="text-theme-text-secondary text-sm">
+                    Last transaction
+                  </p>
+                  <p className="text-theme text-sm">Wed 27 Feb, 2025</p>
+                </div>
+              </div>
+            </section>
+
+            {/* To Section */}
+            <section className="flex-1 flex flex-col">
+              <h3 className="text-theme font-medium mb-4 text-lg">To</h3>
+              <div className="flex flex-col gap-4 border border-theme-border px-3 py-4 rounded-lg flex-1">
+                <div className="flex items-center justify-between gap-3">
+                  <div className="flex gap-2 items-center">
+                    <div className="w-14 h-14 rounded-full flex items-center justify-center">
+                      {/* <Image src={getAvatarUrl(transaction.data as TransactionData)['recipient']} alt="member2" /> */}
+                    </div>
+                    <div>
+                      <h4 className="text-theme text-lg font-medium">
+                        Denzel Smith
+                      </h4>
+                      <p className="text-theme-text-secondary text-sm font-semibold">
+                        0x233r...6574
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div className="space-y-3 pt-2">
+                  <div className="flex justify-between">
                     <p className="text-theme-text-secondary text-sm">
                       Last transaction
                     </p>
                     <p className="text-theme text-sm">Wed 27 Feb, 2025</p>
                   </div>
-                </div>
-              </section>
-
-              {/* To Section */}
-              <section className="flex-1 flex flex-col">
-                <h3 className="text-theme font-medium mb-4 text-lg">To</h3>
-                <div className="flex flex-col gap-4 border border-theme-border px-3 py-4 rounded-lg flex-1">
-                  <div className="flex items-center justify-between gap-3">
-                    <div className="flex gap-2 items-center">
-                      <div className="w-14 h-14 rounded-full flex items-center justify-center">
-                        {/* <Image src={getAvatarUrl(transaction.data as TransactionData)['recipient']} alt="member2" /> */}
-                      </div>
-                      <div>
-                        <h4 className="text-theme text-lg font-medium">
-                          Denzel Smith
-                        </h4>
-                        <p className="text-theme-text-secondary text-sm font-semibold">
-                          0x233r...6574
-                        </p>
-                      </div>
-                    </div>
+                  <div className="flex justify-between">
+                    <p className="text-theme-text-secondary text-sm">
+                      Member Number
+                    </p>
+                    <p className="text-theme text-sm font-bold">2</p>
                   </div>
-                  <div className="space-y-3 pt-2">
-                    <div className="flex justify-between">
-                      <p className="text-theme-text-secondary text-sm">
-                        Last transaction
-                      </p>
-                      <p className="text-theme text-sm">Wed 27 Feb, 2025</p>
-                    </div>
-                    <div className="flex justify-between">
-                      <p className="text-theme-text-secondary text-sm">
-                        Member Number
-                      </p>
-                      <p className="text-theme text-sm font-bold">2</p>
-                    </div>
-                    <div className="flex justify-between">
-                      <p className="text-theme-text-secondary text-sm">
-                        Email Address
-                      </p>
-                      <p className="text-theme text-sm">denziesmith@gmail.com</p>
-                    </div>
+                  <div className="flex justify-between">
+                    <p className="text-theme-text-secondary text-sm">
+                      Email Address
+                    </p>
+                    <p className="text-theme text-sm">denziesmith@gmail.com</p>
                   </div>
                 </div>
-              </section>
-            </>
-          )}
+              </div>
+            </section>
+          </>
+        )}
       </div>
       {/* Updates/Transaction Progress */}
       <section className="flex flex-col lg:max-w-[50%]">
@@ -309,10 +310,11 @@ export const TransactionDetails = ({
                 </p>
               </div>
               <div className="bg-theme-bg-secondary p-4 rounded-lg">
-                <p className="text-theme-text-secondary text-sm mb-2">
-                  Rejections
+                <p className="text-theme text-3xl font-bold">
+                  {Array.isArray(transaction.rejected)
+                    ? transaction.rejected.length
+                    : 0}
                 </p>
-                <p className="text-theme text-3xl font-bold">0</p>
               </div>
             </div>
           </div>

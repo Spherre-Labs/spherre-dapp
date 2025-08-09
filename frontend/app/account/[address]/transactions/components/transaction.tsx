@@ -35,6 +35,7 @@ import { routes } from '@/lib/utils/routes'
 import { toTitleCase } from '@/lib/utils/text'
 import { transactionDisplayData } from './transactionDisplayData'
 import { TransactionActionButtons } from './transactionActionButtons'
+import { useAccount } from '@starknet-react/core'
 
 interface TransactionProps {
   transactionInfo: TransactionDisplayInfo
@@ -73,6 +74,7 @@ export default function Transaction({
 }: TransactionProps) {
   useTheme()
   const { accountAddress } = useSpherreAccount()
+  const { isConnected } = useAccount()
 
   // Contract interaction hooks
   const { writeAsync: approveAsync, isLoading: isApproving } =
@@ -231,16 +233,17 @@ export default function Transaction({
           {/* Status */}
           <div className="flex-1 text-center">
             <span
-              className={` px-3 py-1 rounded-full ${transactionStatus === 'initiated'
-                ? 'text-light-yellow'
-                : transactionStatus === 'executed'
-                  ? 'text-green'
-                  : transactionStatus === 'approved'
-                    ? 'text-light-green'
-                    : transactionStatus === 'rejected'
-                      ? 'text-[#D44B4B]'
-                      : 'text-theme-secondary'
-                }`}
+              className={` px-3 py-1 rounded-full ${
+                transactionStatus === 'initiated'
+                  ? 'text-light-yellow'
+                  : transactionStatus === 'executed'
+                    ? 'text-green'
+                    : transactionStatus === 'approved'
+                      ? 'text-light-green'
+                      : transactionStatus === 'rejected'
+                        ? 'text-[#D44B4B]'
+                        : 'text-theme-secondary'
+              }`}
             >
               {toTitleCase(transactionStatus)}
             </span>
@@ -288,8 +291,8 @@ export default function Transaction({
                   {`Confirmed Approvals (${transaction.approved.length})`}
                 </h4>
                 {transactionStatus === 'approved' ||
-                  transactionStatus === 'executed' ||
-                  transactionStatus === 'rejected' ? (
+                transactionStatus === 'executed' ||
+                transactionStatus === 'rejected' ? (
                   <div className="flex items-center gap-0">
                     {displayApprovals(transaction.approved)}
                   </div>
@@ -402,6 +405,7 @@ export default function Transaction({
 
             {/* Action Buttons */}
             <TransactionActionButtons
+              isConnected={isConnected || false}
               transactionStatus={transactionStatus}
               handleApprove={handleApprove}
               handleExecute={handleExecute}

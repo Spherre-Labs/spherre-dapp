@@ -6,7 +6,6 @@ import {
   type TransactionDisplayInfo,
   type TokenTransactionData,
   EditPermissionTransaction,
-  PermissionEnum,
   ThresholdChangeData,
   SmartTokenLockTransaction,
   MemberRemoveData,
@@ -20,7 +19,10 @@ import members from '../../../../../../public/Images/Members.png'
 import limit from '../../../../../../public/Images/limit.png'
 import Image from 'next/image'
 import strk from '../../../../../../public/Images/strk.png'
-import { feltToAddress } from '@/lib/utils/validation'
+import {
+  extractPermissionsFromMask,
+  feltToAddress,
+} from '@/lib/utils/validation'
 import eth from '../../../../../../public/Images/eth.png'
 import { truncateAddress } from '@/lib/utils/utility'
 
@@ -49,19 +51,17 @@ export const TransactionSummary = ({
 }) => {
   useTheme()
 
-  console.log("transacion", transactionInfo)
+  console.log('transacion', transactionInfo)
 
   const tokenInfo =
     transactionInfo.transaction.transactionType ===
       TransactionType.TOKEN_SEND ||
-      transactionInfo.transaction.transactionType === TransactionType.NFT_SEND ||
-      transactionInfo.transaction.transactionType ===
+    transactionInfo.transaction.transactionType === TransactionType.NFT_SEND ||
+    transactionInfo.transaction.transactionType ===
       TransactionType.SMART_TOKEN_LOCK
       ? getTokenInfo(
-        feltToAddress(
           (transactionInfo.transaction.data as TokenTransactionData)['token'],
-        ),
-      )
+        )
       : null
 
   const getTypeIcon = (title: string, type: TransactionType): ReactNode => {
@@ -142,8 +142,8 @@ export const TransactionSummary = ({
           )}
         </div>
         <div className="flex flex-col gap-1 font-sans">
-
-          {transactionInfo.transaction.transactionType === TransactionType.THRESHOLD_CHANGE && (
+          {transactionInfo.transaction.transactionType ===
+            TransactionType.THRESHOLD_CHANGE && (
             <p className="text-theme-secondary font-medium">
               {transactionInfo.title} {` to `}
               <span className="text-theme font-bold">
@@ -152,7 +152,8 @@ export const TransactionSummary = ({
             </p>
           )}
 
-          {transactionInfo.transaction.transactionType === TransactionType.NFT_SEND && (
+          {transactionInfo.transaction.transactionType ===
+            TransactionType.NFT_SEND && (
             <p className="text-theme-secondary font-medium">
               {transactionInfo.title} {` to `}
               <span className="text-theme font-bold">
@@ -161,7 +162,8 @@ export const TransactionSummary = ({
             </p>
           )}
 
-          {transactionInfo.transaction.transactionType === TransactionType.SMART_TOKEN_LOCK && (
+          {transactionInfo.transaction.transactionType ===
+            TransactionType.SMART_TOKEN_LOCK && (
             <p className="text-theme-secondary font-medium">
               {transactionInfo.title} {` for `}
               <span className="text-theme font-bold">
@@ -170,44 +172,65 @@ export const TransactionSummary = ({
             </p>
           )}
 
-          {transactionInfo.transaction.transactionType === TransactionType.MEMBER_REMOVE && (
+          {transactionInfo.transaction.transactionType ===
+            TransactionType.MEMBER_REMOVE && (
             <p className="text-theme-secondary font-medium">
               {transactionInfo.title} {` `}
               <span className="text-theme font-bold">
-                {truncateAddress(feltToAddress((transactionInfo.transaction.data as MemberRemoveData)['member_address']))}
+                {truncateAddress(
+                  feltToAddress(
+                    (transactionInfo.transaction.data as MemberRemoveData)[
+                      'member_address'
+                    ],
+                  ),
+                )}
               </span>
             </p>
           )}
 
-          {transactionInfo.transaction.transactionType === TransactionType.MEMBER_ADD && (
+          {transactionInfo.transaction.transactionType ===
+            TransactionType.MEMBER_ADD && (
             <p className="text-theme-secondary font-medium">
               {transactionInfo.title} {` `}
               <span className="text-theme font-bold">
-                {truncateAddress(feltToAddress((transactionInfo.transaction.data as MemberAddData)['member']))}
+                {truncateAddress(
+                  feltToAddress(
+                    (transactionInfo.transaction.data as MemberAddData)[
+                      'member'
+                    ],
+                  ),
+                )}
               </span>
             </p>
           )}
 
-          {transactionInfo.transaction.transactionType === TransactionType.MEMBER_PERMISSION_EDIT && (
+          {transactionInfo.transaction.transactionType ===
+            TransactionType.MEMBER_PERMISSION_EDIT && (
             <p className="text-theme-secondary font-medium">
               {transactionInfo.title} {` for `}
               <span className="text-theme font-bold">
-                {truncateAddress(feltToAddress((transactionInfo.transaction.data as EditPermissionTransaction)['member']))}
+                {truncateAddress(
+                  feltToAddress(
+                    (
+                      transactionInfo.transaction
+                        .data as EditPermissionTransaction
+                    )['member'],
+                  ),
+                )}
               </span>
             </p>
           )}
 
-          {(transactionInfo.transaction.transactionType ===
-            TransactionType.TOKEN_SEND) && (
-              <p className="text-theme-secondary font-medium">
-                {transactionInfo.title} {` `}
-                <span className="text-theme font-bold">{`${formatTokenAmount((transactionInfo.transaction.data as TokenTransactionData).amount)} STRK`}</span>
-                {` `}
-                {`to`} {` `}
-                <span className="text-theme font-bold">{`${transactionInfo.recipient}`}</span>
-              </p>
-
-            )}
+          {transactionInfo.transaction.transactionType ===
+            TransactionType.TOKEN_SEND && (
+            <p className="text-theme-secondary font-medium">
+              {transactionInfo.title} {` `}
+              <span className="text-theme font-bold">{`${formatTokenAmount((transactionInfo.transaction.data as TokenTransactionData).amount)} STRK`}</span>
+              {` `}
+              {`to`} {` `}
+              <span className="text-theme font-bold">{`${transactionInfo.recipient}`}</span>
+            </p>
+          )}
           {getTransactionStatus(transactionInfo.transaction.status)}
         </div>
       </div>
@@ -216,49 +239,53 @@ export const TransactionSummary = ({
         {transactionInfo.amount && (
           <div className="flex flex-col font-sans">
             <div className="text-theme-secondary items-center flex gap-3 font-medium">
-              {transactionInfo.transaction.transactionType === TransactionType.MEMBER_PERMISSION_EDIT && (
+              {transactionInfo.transaction.transactionType ===
+                TransactionType.MEMBER_PERMISSION_EDIT && (
                 <p className="text-theme-secondary font-medium">
                   {`Permissions:`} {` `}
                   <span className="text-theme font-bold">
-                    {`${PermissionEnum[Number((transactionInfo.transaction.data as EditPermissionTransaction)['new_permissions'])]}`}
+                    {`${extractPermissionsFromMask((transactionInfo.transaction.data as EditPermissionTransaction)['new_permissions'])}`}
                   </span>
                 </p>
               )}
 
-              {transactionInfo.transaction.transactionType === TransactionType.MEMBER_ADD && (
+              {transactionInfo.transaction.transactionType ===
+                TransactionType.MEMBER_ADD && (
                 <p className="text-theme-secondary font-medium">
                   {`Permissions:`} {` `}
                   <span className="text-theme font-bold">
-                    {`${PermissionEnum[Number((transactionInfo.transaction.data as MemberAddData)['permissions'])]}`}
+                    {`${extractPermissionsFromMask((transactionInfo.transaction.data as MemberAddData)['permissions'])}`}
                   </span>
                 </p>
               )}
 
-              {(transactionInfo.transaction.transactionType === TransactionType.SMART_TOKEN_LOCK) && (
+              {transactionInfo.transaction.transactionType ===
+                TransactionType.SMART_TOKEN_LOCK && (
                 <>
                   <p className="text-theme-secondary font-medium">
                     {`You lock`} {` `}
                   </p>
                   <p>
                     <span className="text-theme font-bold text-2xl">
-                      {`${BigInt((transactionInfo.transaction.data as SmartTokenLockTransaction)["amount"])}`}
+                      {`${formatTokenAmount((transactionInfo.transaction.data as SmartTokenLockTransaction)['amount'])}`}
                     </span>
                     <span className="text-2xl ml-1">{tokenInfo?.name}</span>
                   </p>
                 </>
               )}
 
-              {(transactionInfo.transaction.transactionType ===
-                TransactionType.TOKEN_SEND ||
-                transactionInfo.transaction.transactionType ===
-                TransactionType.NFT_SEND) && (
+              {
+                (transactionInfo.transaction.transactionType ===
+                  TransactionType.TOKEN_SEND ||
+                  transactionInfo.transaction.transactionType ===
+                    TransactionType.NFT_SEND) && (
                   <>
                     <p className="text-theme-secondary font-medium">
                       {`You send`} {` `}
                     </p>
                     <p>
                       <span className="text-theme font-bold text-2xl">
-                        {`${BigInt((transactionInfo.transaction.data as TokenTransactionData)["amount"])}`}
+                        {`${formatTokenAmount((transactionInfo.transaction.data as TokenTransactionData)['amount'])}`}
                       </span>
                       <span className="text-2xl ml-1">{tokenInfo?.name}</span>
                     </p>
@@ -290,6 +317,6 @@ export const TransactionSummary = ({
           </div>
         )}
       </div>
-    </section >
+    </section>
   )
 }

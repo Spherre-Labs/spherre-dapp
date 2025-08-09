@@ -5,7 +5,6 @@ import {
   TokenTransactionData,
   MemberRemoveData,
   EditPermissionTransaction,
-  PermissionEnum,
   SmartTokenLockTransaction,
   MemberAddData,
 } from '@/lib/contracts/types'
@@ -13,7 +12,11 @@ import Image from 'next/image'
 import strk from '../../../../../public/Images/strk.png'
 import eth from '../../../../../public/Images/eth.png'
 import { truncateAddress } from '@/lib/utils/utility'
-import { feltToAddress } from '@/lib/utils/validation'
+import {
+  extractPermissionsFromMask,
+  feltToAddress,
+} from '@/lib/utils/validation'
+import { formatTokenAmount } from '@/lib/utils/transaction-utils'
 
 const getTokenInfo = (token: string) => {
   const tokenAddress = feltToAddress(token)
@@ -66,7 +69,7 @@ export const transactionDisplayData = (
                 />
               ) : null}
               <span className="ml-1 text-theme font-semibold">
-                {`${BigInt((transactionInfo.transaction.data as TokenTransactionData)['amount'])} ${tokenInfo?.name}`}
+                {`${formatTokenAmount((transactionInfo.transaction.data as TokenTransactionData)['amount'])} ${tokenInfo?.name}`}
               </span>
             </span>
           </div>
@@ -110,7 +113,7 @@ export const transactionDisplayData = (
                 />
               ) : null}
               <span className="ml-1 text-theme font-semibold">
-                {`${BigInt((transactionInfo.transaction.data as SmartTokenLockTransaction)['amount'])} ${tokenInfo?.name}`}
+                {`${formatTokenAmount((transactionInfo.transaction.data as SmartTokenLockTransaction)['amount'])} ${tokenInfo?.name}`}
               </span>
             </span>
           </div>
@@ -169,7 +172,7 @@ export const transactionDisplayData = (
             </span>
             <span className="inline-flex items-center">
               <span className="ml-1 text-theme font-semibold">
-                {`${PermissionEnum[Number((transactionInfo.transaction.data as MemberAddData)['permissions'])]}`}
+                {`${extractPermissionsFromMask((transactionInfo.transaction.data as MemberAddData)['permissions'])}`}
               </span>
             </span>
           </div>
@@ -192,7 +195,7 @@ export const transactionDisplayData = (
             <span className="text-sm text-theme-secondary mr-1"></span>
             <span className="inline-flex items-center">
               <span className="ml-1 text-theme font-semibold">
-                {`${PermissionEnum[Number((transactionInfo.transaction.data as EditPermissionTransaction)['new_permissions'])]}`}
+                {`${extractPermissionsFromMask((transactionInfo.transaction.data as EditPermissionTransaction)['new_permissions'])}`}
               </span>
             </span>
           </div>

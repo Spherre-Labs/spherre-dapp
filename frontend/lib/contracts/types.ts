@@ -103,7 +103,7 @@ export enum PermissionEnum {
 export interface MemberAddData {
   type: TransactionType.MEMBER_ADD
   member: string
-  permissions: number // u8 bitmask
+  permissions: bigint // u8 bitmask
 }
 
 export interface MemberRemoveData {
@@ -114,7 +114,7 @@ export interface MemberRemoveData {
 export interface EditPermissionTransaction {
   type: TransactionType.MEMBER_PERMISSION_EDIT
   member: string
-  new_permissions: number // u8 bitmask
+  new_permissions: bigint // u8 bitmask
 }
 
 // Token transaction data

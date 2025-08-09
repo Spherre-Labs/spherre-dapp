@@ -3,8 +3,7 @@ import type { ContractConfig } from './types'
 // Contract addresses - CONFIRMED TO EXIST ON SEPOLIA
 export const SPHERRE_CONTRACTS = {
   SPHERRE_ACCOUNT:
-    // '0xcaaf4903ec077207db11bc020e64f78fa8e8f7a24a18cab95466e08a09b788',
-    '0x065f067f0f621ed571a33ee6d5959e342ee5fd3f1df5c7609e54a6e5c29f8080',
+    '0xcaaf4903ec077207db11bc020e64f78fa8e8f7a24a18cab95466e08a09b788',
   SPHERRE: '0x5cea714a2e7566164243ea4f66f17b35551ab54b6d55496238124ec688e58b7',
 } as const
 
