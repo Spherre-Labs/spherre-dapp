@@ -15,7 +15,7 @@ export const SpherreAccountContext = createContext<{
   setAccountAddress: (address: `0x${string}` | null) => void
 }>({
   accountAddress: null,
-  setAccountAddress: () => {},
+  setAccountAddress: () => { },
 })
 
 type SpherreAccountProviderProps = {

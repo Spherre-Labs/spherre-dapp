@@ -21,6 +21,7 @@ import { Input } from '@/components/ui/input'
 import { useSpherreAccount } from '@/app/context/account-context'
 import { useGetAccountMembers } from '@/hooks/useSpherreHooks'
 import { feltToAddress } from '@/lib/utils/validation'
+import { getAvatarUrl } from '@/lib/utils/transaction-utils'
 
 interface FilterPopoverProps {
   filters: {
@@ -132,7 +133,7 @@ export default function FilterPopover({
             : memberAddress
 
         // Assign avatar based on index (cycle through available images)
-        const avatar = `https://api.dicebear.com/9.x/avataaars/png?seed=${memberAddress}`
+        const avatar = getAvatarUrl(memberAddress)
         return {
           id: memberAddress,
           name: `Member ${index + 1} (${truncatedAddress})`,

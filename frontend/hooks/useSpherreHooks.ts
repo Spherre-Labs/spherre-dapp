@@ -24,7 +24,6 @@ import { useMemo } from 'react'
 import {
   feltToAddress,
   byteArrayToString,
-  extractPermissionsFromMask,
 } from '@/lib/utils/validation'
 
 // Factory Contract Hooks
@@ -701,7 +700,7 @@ export function useAccountInfo(accountAddress: `0x${string}`) {
           addr &&
           addr !== '0x0' &&
           addr !==
-            '0x0000000000000000000000000000000000000000000000000000000000000000',
+          '0x0000000000000000000000000000000000000000000000000000000000000000',
       )
   }, [membersRaw])
 

@@ -268,3 +268,7 @@ export function getExplorerUrl(network: string, txHash: string): string {
   }
   return `${explorers[network] || explorers['mainnet']}${txHash}`
 }
+
+export function getAvatarUrl(address: string): string {
+  return `https://api.dicebear.com/9.x/avataaars/png?seed=${address}`
+}

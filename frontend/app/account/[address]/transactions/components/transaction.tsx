@@ -3,13 +3,8 @@ import Image from 'next/image'
 import limit from '../../../../../public/Images/limit.png'
 import members from '../../../../../public/Images/Members.png'
 import backstageboys from '../../../../../public/Images/backstageboys.png'
-import avatar from '../../../../../public/Images/avatar.png'
 import swap from '../../../../../public/Images/swap.png'
 import withdraw from '../../../../../public/Images/withdraw.png'
-import strk from '../../../../../public/Images/strk.png'
-import member1 from '../../../../../public/member1.svg'
-import member2 from '../../../../../public/member2.svg'
-import member3 from '../../../../../public/member3.svg'
 import Link from 'next/link'
 import { useTheme } from '@/app/context/theme-context-provider'
 import { useSpherreAccount } from '@/app/context/account-context'
@@ -18,13 +13,16 @@ import {
   useRejectTransaction,
   useExecuteTransaction,
   useGetAccountName,
-  useGetThreshold,
 } from '@/hooks/useSpherreHooks'
 import {
   TransactionType,
   type TransactionDisplayInfo,
 } from '@/lib/contracts/types'
-import { formatTimestamp, formatTime } from '@/lib/utils/transaction-utils'
+import {
+  formatTimestamp,
+  formatTime,
+  getAvatarUrl,
+} from '@/lib/utils/transaction-utils'
 import {
   BadgeCheck,
   ChevronDown,
@@ -35,13 +33,14 @@ import {
 import { Button } from '@/components/ui/button'
 import { routes } from '@/lib/utils/routes'
 import { toTitleCase } from '@/lib/utils/text'
-
-const images = [member1, member2, member3, avatar]
+import { transactionDisplayData } from './transactionDisplayData'
+import { TransactionActionButtons } from './transactionActionButtons'
 
 interface TransactionProps {
   transactionInfo: TransactionDisplayInfo
   isExpanded: boolean
   onToggle: () => void
+  threshold: number
 }
 
 const displayApprovals = (approved: string[]) => {
@@ -50,7 +49,7 @@ const displayApprovals = (approved: string[]) => {
       {approved.slice(0, 2).map((_, index) => (
         <Image
           key={index}
-          src={images[index]}
+          src={getAvatarUrl(approved[index])}
           alt="member2"
           width={21}
           height={21}
@@ -70,6 +69,7 @@ export default function Transaction({
   transactionInfo,
   isExpanded,
   onToggle,
+  threshold,
 }: TransactionProps) {
   useTheme()
   const { accountAddress } = useSpherreAccount()
@@ -84,11 +84,10 @@ export default function Transaction({
 
   // Get account name and threshold
   const { data: accountName } = useGetAccountName(accountAddress || '0x0')
-  const { data: thresholdData } = useGetThreshold(accountAddress || '0x0')
 
   const { transaction } = transactionInfo
   const transactionStatus = transaction.status.toLowerCase()
-  const required = thresholdData ? Number(thresholdData[0]) : Infinity
+  const required = threshold ? threshold : Infinity
   const canExecute = transaction.approved.length >= required
 
   // Define type-specific elements with proper icon mapping
@@ -198,9 +197,10 @@ export default function Transaction({
 
   return (
     <div className="w-full bg-theme-bg-tertiary border border-theme-border overflow-hidden transition-colors duration-300 font-sans">
+      {/* className="w-full p-4 lg:p-6 flex items-center gap-[85px] bg-theme-bg-tertiary transition-colors duration-200" */}
       <button
         onClick={onToggle}
-        className="w-full p-4 lg:p-6 flex items-center gap-[85px] bg-theme-bg-tertiary transition-colors duration-200"
+        className="w-full p-4 lg:p-6 grid grid-cols-5 gap-[85px] bg-theme-bg-tertiary transition-colors duration-200"
       >
         {/* Icon + Title - takes more space */}
         <div className="flex items-center space-x-2 flex-[2] min-w-0">
@@ -210,71 +210,48 @@ export default function Transaction({
           </span>
         </div>
 
-        {/* Amount */}
-        {transactionInfo.amount && (
-          <div className="text-theme-secondary flex items-center transition-colors duration-300 flex-[2] min-w-0">
-            <span className="text-sm text-theme-secondary mr-1">Amount:</span>
-            <span className="inline-flex items-center">
-              <Image
-                src={strk}
-                width={16}
-                height={16}
-                className="sm:w-5 sm:h-5"
-                alt="token"
-              />
-              <span className="ml-1 text-theme font-semibold">
-                {`${transactionInfo.amount} STRK`}
-              </span>
-            </span>
-          </div>
-        )}
+        {transactionDisplayData(transactionInfo)}
 
         {/* Initiator */}
         <div className="text-theme-secondary truncate transition-colors duration-300 flex-[2] min-w-0">
-          {[
-            TransactionType.MEMBER_ADD,
-            TransactionType.MEMBER_REMOVE,
-            TransactionType.MEMBER_PERMISSION_EDIT,
-          ].includes(transaction.transactionType) ? null : (
-            <span className="text-sm text-theme-secondary mr-1">
-              Initiator:
-            </span>
-          )}
+          <span className="text-sm text-theme-secondary mr-1">Initiator:</span>
+
           <span className="text-theme font-medium">
             {transactionInfo.transaction.proposer.slice(0, 6)}...
             {transactionInfo.transaction.proposer.slice(-4)}
           </span>
         </div>
 
-        {/* Time */}
-        <div className="text-theme-secondary  transition-colors duration-300 flex-1 text-center lowercase">
-          {formatTime(transaction.dateCreated)}
-        </div>
+        <div className="flex items-center space-x-2 flex-[2] min-w-0">
+          {/* Time */}
+          <div className="text-theme-secondary  transition-colors duration-300 flex-1 text-center lowercase">
+            {formatTime(transaction.dateCreated)}
+          </div>
 
-        {/* Status */}
-        <div className="flex-1 text-center">
-          <span
-            className={` px-3 py-1 rounded-full ${
-              transactionStatus === 'pending'
-                ? 'text-light-yellow'
-                : transactionStatus === 'executed'
-                  ? 'text-green'
-                  : transactionStatus === 'approved'
+          {/* Status */}
+          <div className="flex-1 text-center">
+            <span
+              className={` px-3 py-1 rounded-full ${transactionStatus === 'pending'
+                  ? 'text-light-yellow'
+                  : transactionStatus === 'executed'
                     ? 'text-green'
-                    : transactionStatus === 'rejected'
-                      ? 'text-[#D44B4B]'
-                      : 'text-theme-secondary'
-            }`}
-          >
-            {toTitleCase(transactionStatus)}
-          </span>
-        </div>
+                    : transactionStatus === 'approved'
+                      ? 'text-light-green'
+                      : transactionStatus === 'rejected'
+                        ? 'text-[#D44B4B]'
+                        : 'text-theme-secondary'
+                }`}
+            >
+              {toTitleCase(transactionStatus)}
+            </span>
+          </div>
 
-        {/* Dropdown Arrow */}
-        <div className="flex-shrink-0 ml-auto">
-          <ChevronDown
-            className={`w-4 h-4 sm:w-5 sm:h-5 text-theme-secondary transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`}
-          />
+          {/* Dropdown Arrow */}
+          <div className="flex-shrink-0 ml-auto">
+            <ChevronDown
+              className={`w-4 h-4 sm:w-5 sm:h-5 text-theme-secondary transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`}
+            />
+          </div>
         </div>
       </button>
 
@@ -296,42 +273,24 @@ export default function Transaction({
               <div className="flex items-center mb-2">
                 <h4 className="text-xs text-light-yellow font-semibold mr-2 transition-colors duration-300">
                   Pending Approvals
+                  {transactionStatus === 'pending' ||
+                    transactionStatus === 'initiated' ? (
+                    <span>
+                      {` `}
+                      {`(${threshold - transaction.approved.length})`}
+                    </span>
+                  ) : (
+                    <></>
+                  )}
                 </h4>
-                {transactionStatus === 'approved' ||
-                transactionStatus === 'executed' ||
-                transactionStatus === 'rejected' ? (
-                  <>
-                    <div className="flex items-center gap-0">
-                      <Image
-                        src={member1}
-                        alt="member1"
-                        width={21}
-                        height={21}
-                        className="rounded-full"
-                      />
-                      <Image
-                        src={member3}
-                        alt="member3"
-                        width={21}
-                        height={21}
-                        className="rounded-full -ml-1"
-                      />
-                    </div>
-                    <div className="border border-ash w-5 h-5 text-[11px] py-[2px] px-[3px] font-bold text-theme-text-secondary flex items-center justify-center rounded-full ml-2 transition-colors duration-300">
-                      +2
-                    </div>
-                  </>
-                ) : (
-                  <></>
-                )}
               </div>
               <div className="flex justify-start gap-2 items-center mb-2">
                 <h4 className="text-xs text-green font-semibold transition-colors duration-300">
                   {`Confirmed Approvals (${transaction.approved.length})`}
                 </h4>
                 {transactionStatus === 'approved' ||
-                transactionStatus === 'executed' ||
-                transactionStatus === 'rejected' ? (
+                  transactionStatus === 'executed' ||
+                  transactionStatus === 'rejected' ? (
                   <div className="flex items-center gap-0">
                     {displayApprovals(transaction.approved)}
                   </div>
@@ -385,7 +344,7 @@ export default function Transaction({
                       )}
                     </h3>
                     <p className="text-theme-secondary font-semibold text-xs transition-colors duration-300">
-                      {`Threshold: ${transaction.approved.length} / ${thresholdData ? Number(thresholdData[0]) : 5} approved`}
+                      {`Threshold: ${transaction.approved.length} / ${threshold} approved`}
                     </p>
                   </div>
                 </div>
@@ -443,39 +402,16 @@ export default function Transaction({
             </div>
 
             {/* Action Buttons */}
-            <div className="mt-auto pt-3 sm:pt-4">
-              {transactionStatus === 'pending' && (
-                <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
-                  <Button
-                    onClick={handleApprove}
-                    disabled={isApproving}
-                    className=" text-theme px-4 sm:px-6 py-3.5 rounded-md transition duration-200 w-full"
-                  >
-                    {isApproving ? 'Approving...' : 'Approve'}
-                  </Button>
-                  <Button
-                    onClick={handleExecute}
-                    disabled={isExecuting || !canExecute}
-                    className="bg-theme-bg-secondary hover:bg-theme-bg-secondary text-theme px-4 sm:px-6 py-3.5 rounded-md transition duration-200 w-full disabled:opacity-50"
-                  >
-                    {isExecuting ? 'Executing...' : 'Execute'}
-                  </Button>
-                  <Button
-                    onClick={handleReject}
-                    disabled={isRejecting}
-                    className="bg-red-500 hover:bg-red-500 text-theme px-4 sm:px-6 py-3.5 rounded-md transition duration-200 w-full disabled:opacity-50"
-                  >
-                    {isRejecting ? 'Rejecting...' : 'Reject'}
-                  </Button>
-                </div>
-              )}
-              {(transactionStatus === 'executed' ||
-                transactionStatus === 'rejected') && (
-                <button className="bg-[#6F2FCE] hover:bg-purple-700 text-theme px-4 sm:px-6 py-2 rounded-md transition duration-200 w-full">
-                  Download CSV
-                </button>
-              )}
-            </div>
+            <TransactionActionButtons
+              transactionStatus={transactionStatus}
+              handleApprove={handleApprove}
+              handleExecute={handleExecute}
+              handleReject={handleReject}
+              isApproving={isApproving}
+              isExecuting={isExecuting}
+              isRejecting={isRejecting}
+              canExecute={canExecute}
+            />
           </div>
 
           <div className="bg-[#55534E] w-0.5 my-2 mx-6"></div>
@@ -490,7 +426,7 @@ export default function Transaction({
                 <span>Initiator:</span>
                 <span className="text-theme flex items-center gap-2 truncate transition-colors duration-300">
                   <Image
-                    src={images[Math.floor(Math.random() * images.length)]}
+                    src={getAvatarUrl(transaction.proposer)}
                     alt="avatar"
                     width={21}
                     height={21}

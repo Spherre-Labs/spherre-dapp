@@ -8,12 +8,17 @@ import {
 } from './components/DateRangePickerPopover'
 import { useTransactionIntegration } from '@/hooks/useTransactionIntegration'
 import { TransactionDisplayInfo, TransactionType } from '@/lib/contracts/types'
+import { useGetThreshold } from '@/hooks/useSpherreHooks'
+import { useSpherreAccount } from '@/app/context/account-context'
 
 const TRANSACTIONS_PER_PAGE = 30
 
 export default function TransactionsPage() {
   const [expandedId, setExpandedId] = useState<string | null>(null)
   const [currentPage, setCurrentPage] = useState(1)
+
+  const { accountAddress } = useSpherreAccount()
+  const { data: thresholdData } = useGetThreshold(accountAddress || '0x0')
 
   const [filters, setFilters] = useState({
     status: 'All' as 'Pending' | 'Executed' | 'Rejected' | 'All',
@@ -44,6 +49,8 @@ export default function TransactionsPage() {
   // Apply filters and sorting
   const filteredAndSortedTransactions = useMemo(() => {
     let filtered = [...allTransactions]
+
+    console.log(allTransactions)
 
     // Apply status filter
     if (filters.status !== 'All') {
@@ -113,7 +120,7 @@ export default function TransactionsPage() {
     if (filters.selectedTokens.length > 0) {
       filtered = filtered.filter((tx) =>
         filters.selectedTokens.some((tokenId) =>
-          tx.token?.toLowerCase().includes(tokenId.toLowerCase()),
+          tx.token?.toLowerCase()?.includes(tokenId.toLowerCase()),
         ),
       )
     }
@@ -285,6 +292,7 @@ export default function TransactionsPage() {
                     onToggle={() =>
                       toggleTransaction(txInfo.transaction.id.toString())
                     }
+                    threshold={Number(thresholdData?.[0] || 0)}
                   />
                 </div>
               ))}

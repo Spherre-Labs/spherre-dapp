@@ -9,6 +9,7 @@ import {
   formatTimestamp,
   formatTime,
   getExplorerUrl,
+  getAvatarUrl,
 } from '@/lib/utils/transaction-utils'
 import member2 from '../../../../../public/member2.svg'
 import Image from 'next/image'
@@ -101,7 +102,7 @@ export const TransactionDetails = ({
                   style={{ backgroundColor: 'var(--foreground)' }}
                 >
                   <Image
-                    src={`https://api.dicebear.com/9.x/avataaars/png?seed=${transaction.proposer}`}
+                    src={getAvatarUrl(transaction.proposer)}
                     alt="avatar"
                     width={21}
                     height={21}
@@ -387,7 +388,7 @@ export const TransactionDetails = ({
                     <div key={index} className="flex items-center gap-2">
                       <div className="w-5 h-5 bg-white rounded-full flex items-center justify-center">
                         <Image
-                          src={`https://api.dicebear.com/9.x/avataaars/png?seed=${addr}`}
+                          src={getAvatarUrl(addr)}
                           alt="member1"
                           width={20}
                           height={20}

@@ -40,6 +40,7 @@ export default {
           DEFAULT: 'hsl(var(--destructive))',
           foreground: 'hsl(var(--destructive-foreground))',
         },
+        'light-green': '#2dd4bf',
         green: '#19B360',
         'light-yellow': '#FBD645',
         border: 'hsl(var(--border))',
