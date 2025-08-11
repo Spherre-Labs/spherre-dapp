@@ -27,24 +27,33 @@ class TestAccountViews(unittest.TestCase):
         self.ctx.pop()
 
     def test_get_member_accounts_valid(self):
-        with patch.object(
-            AccountService,
-            "get_member_accounts",
-            return_value=[{"id": "1", "address": self.member.address}],
-        ):
-            res = self.client.get(f"/api/v1/accounts/member/{self.member.address}")
-            self.assertEqual(res.status_code, 200)
-            self.assertIsInstance(res.get_json(), list)
+        # Create multiple accounts for the member
+        for i in range(3):
+            AccountService.create_account(
+                address=f"0x123445678901234567890123456789012345678{i}",
+                name=f"Account {i}",
+                description=f"Description {i}",
+                threshold=1,
+                members=[self.member.address, f"0x1234456789012345678901234567890123456789{i}"],
+            )
+        res = self.client.get(f"/api/v1/accounts/member/{self.member.address}")
+        self.assertEqual(res.status_code, 200)
+        self.assertIsInstance(res.json, list)
+        data = res.json
+        self.assertEqual(len(data), 3)
+        self.assertEqual(data[0]["address"], f"0x123445678901234567890123456789012345678{0}")
+        self.assertEqual(data[1]["address"], f"0x123445678901234567890123456789012345678{1}")
+        self.assertEqual(data[2]["address"], f"0x123445678901234567890123456789012345678{2}")
+            
 
     def test_get_member_accounts_invalid_address(self):
         res = self.client.get("/api/v1/accounts/member/invalid_address")
         self.assertEqual(res.status_code, 400)
 
     def test_get_member_accounts_empty(self):
-        with patch.object(AccountService, "get_member_accounts", return_value=[]):
-            res = self.client.get(f"/api/v1/accounts/member/{self.member.address}")
-            self.assertEqual(res.status_code, 200)
-            self.assertEqual(res.get_json(), [])
+        res = self.client.get(f"/api/v1/accounts/member/{self.member.address}")
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.get_json(), [])
 
     def test_get_member_accounts_server_error(self):
         with patch.object(
