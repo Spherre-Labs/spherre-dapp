@@ -1,9 +1,8 @@
-import re
-
 from flask import Blueprint, abort, jsonify
 
 from spherre.app.serializers.account import AccountSerializer
 from spherre.app.service.account import AccountService
+from spherre.app.utils.validation import is_valid_starknet_address
 
 accounts_blueprint = Blueprint("accounts", __name__, url_prefix="/api/v1")
 
@@ -26,6 +25,3 @@ def get_member_accounts(member_address):
     except Exception:
         return jsonify({"error": "Server error"}), 500
 
-
-def is_valid_starknet_address(address):
-    return bool(re.fullmatch(r"0x[a-fA-F0-9]{64}", address))
