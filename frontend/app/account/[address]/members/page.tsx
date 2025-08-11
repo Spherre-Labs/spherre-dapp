@@ -11,6 +11,8 @@ import {
 } from '@/hooks/useSpherreHooks'
 import { useSpherreAccount } from '@/app/context/account-context'
 import AddMemberModal from './components/add-modal'
+import MemberDetailsModal from './components/member-details-modal'
+import { MemberDetailsType } from './components/member-details-modal'
 import EditMemberRolesModal from './components/edit-roles-modal'
 import ProcessingModal from '../../../components/modals/Loader'
 import SuccessModal from '../../../components/modals/SuccessModal'
@@ -43,6 +45,10 @@ const Members = () => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false)
   const [isEditRolesModalOpen, setIsEditRolesModalOpen] = useState(false)
   const [editRolesMember, setEditRolesMember] = useState<Member | null>(null)
+  const [memberDetails, setMemberDetails] = useState<MemberDetailsType | null>(
+    null,
+  )
+  const [isMemberDetailsOpen, setIsMemberDetailsOpen] = useState(false)
 
   // Transaction modals state
   const [isProcessingModalOpen, setIsProcessingModalOpen] = useState(false)
@@ -144,11 +150,18 @@ const Members = () => {
         }),
       )
 
-      setMembers(updatedMembers)
+      // Prevent unnecessary state updates to avoid re-render loops
+      const isIdentical =
+        updatedMembers.length === members.length &&
+        updatedMembers.every((m, i) => m === members[i])
+
+      if (!isIdentical) {
+        setMembers(updatedMembers)
+      }
     }
 
     fetchPermissions()
-  }, [accountAddress])
+  }, [accountAddress, members])
 
   const handleCopy = (address: string) => {
     navigator.clipboard.writeText(address)
@@ -399,6 +412,15 @@ const Members = () => {
               style={{
                 zIndex: dropdownOpen === member.id ? 20 : 10,
               }}
+              onClick={() => {
+                setMemberDetails({
+                  id: member.id,
+                  name: member.name,
+                  address: member.address,
+                  fullAddress: member.fullAddress,
+                })
+                setIsMemberDetailsOpen(true)
+              }}
             >
               {/* Header section with avatar and name */}
               <div className="flex flex-col items-center">
@@ -427,6 +449,7 @@ const Members = () => {
                               autoFocus
                               value={editName}
                               onChange={(e) => setEditName(e.target.value)}
+                              onClick={(e) => e.stopPropagation()}
                               onKeyDown={(e) => {
                                 if (e.key === 'Enter') {
                                   setEditingId(null)
@@ -437,7 +460,10 @@ const Members = () => {
                               className="bg-theme-bg-tertiary w-full text-theme text-sm sm:text-[16px] px-2 sm:px-3 py-2 rounded-md focus:outline-primary border border-theme-border"
                             />
                             <button
-                              onClick={() => setEditingId(null)}
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                setEditingId(null)
+                              }}
                               className="p-1 hover:bg-primary/20 rounded"
                             >
                               <svg
@@ -448,13 +474,16 @@ const Members = () => {
                               >
                                 <path
                                   fillRule="evenodd"
-                                  d="M16.707 5.293a1 1 0 00-1.414 0L8 12.586 4.707 9.293a1 1 0 00-1.414 1.414l4 4a1 1 0 001.414 0l8-8a1 1 0 000-1.414z"
+                                  d="M16.707 5.293a1   1 0 00-1.414 0L8 12.586 4.707 9.293a1 1 0 00-1.414 1.414l4 4a1 1 0 001.414 0l8-8a1 1 0 000-1.414z"
                                   clipRule="evenodd"
                                 />
                               </svg>
                             </button>
                             <button
-                              onClick={() => setEditingId(null)}
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                setEditingId(null)
+                              }}
                               className="p-1 hover:bg-primary/20 rounded"
                             >
                               <svg
@@ -482,7 +511,10 @@ const Members = () => {
                           {member.address}
                         </p>
                         <button
-                          onClick={() => handleCopy(member.fullAddress)}
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            handleCopy(member.fullAddress)
+                          }}
                           className="flex-shrink-0"
                         >
                           <Image
@@ -500,7 +532,10 @@ const Members = () => {
                   <div className="relative flex-shrink-0">
                     <button
                       className="dropdown-trigger"
-                      onClick={() => toggleDropdown(member.id)}
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        toggleDropdown(member.id)
+                      }}
                     >
                       <Image
                         src="/dots.svg"
@@ -515,19 +550,28 @@ const Members = () => {
                         <ul className="">
                           <li
                             className="px-3 sm:px-4 py-2 rounded-lg hover:bg-theme-bg-secondary cursor-pointer transition-colors duration-200"
-                            onClick={() => handleEditRoles(member)}
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              handleEditRoles(member)
+                            }}
                           >
                             Edit Roles
                           </li>
                           <li
                             className="px-3 sm:px-4 py-2 rounded-lg hover:bg-theme-bg-secondary cursor-pointer transition-colors duration-200"
-                            onClick={() => startEditing(member.id)}
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              startEditing(member.id)
+                            }}
                           >
                             Edit Name
                           </li>
                           <li
                             className="px-3 sm:px-4 py-2 rounded-lg hover:bg-theme-bg-secondary cursor-pointer transition-colors duration-200"
-                            onClick={() => handleRemoveMember(member)}
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              handleRemoveMember(member)
+                            }}
                           >
                             Remove Member
                           </li>
@@ -580,7 +624,10 @@ const Members = () => {
               <div className="flex items-center justify-center mt-4 sm:mt-5">
                 <button
                   className="bg-theme-bg-tertiary border border-theme-border rounded-[7px] flex items-center justify-center font-medium text-xs sm:text-[14px] text-theme w-full h-[32px] sm:h-[36px] hover:bg-theme-bg-secondary transition-colors duration-200"
-                  onClick={() => handleRemoveMember(member)}
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    handleRemoveMember(member)
+                  }}
                 >
                   Remove member
                 </button>
@@ -654,6 +701,14 @@ const Members = () => {
         onViewTransaction={handleViewTransaction}
         title={successTitle}
         message={successMessage}
+      />
+
+      {/* Member Details Modal */}
+      <MemberDetailsModal
+        isOpen={isMemberDetailsOpen}
+        onClose={() => setIsMemberDetailsOpen(false)}
+        accountAddress={accountAddress!}
+        member={memberDetails}
       />
     </div>
   )
