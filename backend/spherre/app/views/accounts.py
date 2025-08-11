@@ -24,4 +24,3 @@ def get_member_accounts(member_address):
         return jsonify(serialized_accounts), 200
     except Exception:
         return jsonify({"error": "Server error"}), 500
-

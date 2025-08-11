@@ -34,17 +34,25 @@ class TestAccountViews(unittest.TestCase):
                 name=f"Account {i}",
                 description=f"Description {i}",
                 threshold=1,
-                members=[self.member.address, f"0x1234456789012345678901234567890123456789{i}"],
+                members=[
+                    self.member.address,
+                    f"0x1234456789012345678901234567890123456789{i}",
+                ],
             )
         res = self.client.get(f"/api/v1/accounts/member/{self.member.address}")
         self.assertEqual(res.status_code, 200)
         self.assertIsInstance(res.json, list)
         data = res.json
         self.assertEqual(len(data), 3)
-        self.assertEqual(data[0]["address"], f"0x123445678901234567890123456789012345678{0}")
-        self.assertEqual(data[1]["address"], f"0x123445678901234567890123456789012345678{1}")
-        self.assertEqual(data[2]["address"], f"0x123445678901234567890123456789012345678{2}")
-            
+        self.assertEqual(
+            data[0]["address"], f"0x123445678901234567890123456789012345678{0}"
+        )
+        self.assertEqual(
+            data[1]["address"], f"0x123445678901234567890123456789012345678{1}"
+        )
+        self.assertEqual(
+            data[2]["address"], f"0x123445678901234567890123456789012345678{2}"
+        )
 
     def test_get_member_accounts_invalid_address(self):
         res = self.client.get("/api/v1/accounts/member/invalid_address")
