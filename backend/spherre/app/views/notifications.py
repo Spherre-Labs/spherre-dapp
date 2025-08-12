@@ -1,5 +1,3 @@
-import traceback
-
 from flask import Blueprint, jsonify, request
 
 from spherre.app.serializers.notifications import NotificationSchema
@@ -38,5 +36,4 @@ def get_notifications(account_address):
         return jsonify({"notifications": serialized, "pagination": pagination}), 200
 
     except Exception as e:
-        traceback.print_exc()
         return jsonify({"error": str(e)}), 500
