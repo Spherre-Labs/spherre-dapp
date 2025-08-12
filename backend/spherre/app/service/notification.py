@@ -90,7 +90,7 @@ class NotificationService:
         per_page: int = 20,
         unread_only: bool = False,
         member_id: Optional[str] = None,
-    ) -> List[Notification]:
+    ) -> tuple[List[Notification], dict]:
         """
         Retrieve all notifications for an account, optionally filter by unread status.
         """
