@@ -82,7 +82,9 @@ class TestNotificationService(TestCase):
             "Received",
         )
 
-        notifications = self.service.list_notifications_by_account(self.account_id)
+        notifications, _pagination = self.service.list_notifications_by_account(
+            self.account_id
+        )
         self.assertEqual(len(notifications), 2)
 
     def test_list_notifications_unread_only(self):
@@ -102,7 +104,7 @@ class TestNotificationService(TestCase):
         # Mark n1 as read
         self.service.mark_notification_as_read(n1.id, self.member.id)
 
-        unread = self.service.list_notifications_by_account(
+        unread, _pagination = self.service.list_notifications_by_account(
             self.account_id, unread_only=True, member_id=self.member.id
         )
         self.assertEqual(len(unread), 1)

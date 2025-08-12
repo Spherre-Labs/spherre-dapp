@@ -1,3 +1,4 @@
+from math import ceil
 from typing import List, Optional
 from uuid import uuid4
 
@@ -85,22 +86,34 @@ class NotificationService:
     def list_notifications_by_account(
         cls,
         account_id: str,
+        page: int = 1,
+        per_page: int = 20,
         unread_only: bool = False,
         member_id: Optional[str] = None,
     ) -> List[Notification]:
         """
         Retrieve all notifications for an account, optionally filter by unread status.
         """
-        query = db.session.query(Notification).filter_by(account_id=account_id)
 
+        query = Notification.query.filter_by(account_id=account_id)
+        # Unread filter
         if unread_only and member_id:
-            # Filter for notifications NOT read by the specific member
-            query = query.filter(~Notification.read_by.any(Member.id == member_id))
-        elif member_id:
-            # Filter for notifications read by the specific member
-            query = query.filter(Notification.read_by.any(Member.id == member_id))
+            query = query.filter(~Notification.read_by.any(Member.id == str(member_id)))
+        total = query.count()
+        pages = ceil(total / per_page) if per_page else 1
 
-        return query.order_by(Notification.created_at.desc()).all()
+        notifications = query.paginate(
+            page=page, per_page=per_page, error_out=False
+        ).items
+
+        pagination = {
+            "total": total,
+            "pages": pages,
+            "current_page": page,
+            "per_page": per_page,
+        }
+
+        return notifications, pagination
 
     @classmethod
     # -- 5. Get Notification by ID --

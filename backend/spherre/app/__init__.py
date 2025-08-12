@@ -3,6 +3,7 @@ from flask import Flask
 from spherre.app.config import config
 from spherre.app.extensions import cors, db, jwt, migrate
 from spherre.app.views.accounts import accounts_blueprint
+from spherre.app.views.notifications import notifications_blueprint
 
 
 def create_app(config_name="development"):
@@ -19,5 +20,6 @@ def create_app(config_name="development"):
 
     # Register blueprints
     app.register_blueprint(accounts_blueprint)
+    app.register_blueprint(notifications_blueprint)
 
     return app
