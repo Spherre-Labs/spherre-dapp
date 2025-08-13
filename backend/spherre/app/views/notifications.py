@@ -35,5 +35,5 @@ def get_notifications(account_address):
 
         return jsonify({"notifications": serialized, "pagination": pagination}), 200
 
-    except Exception as e:
+    except Exception:
         return jsonify({"error": "Internal server error"}), 500
