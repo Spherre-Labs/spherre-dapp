@@ -241,6 +241,31 @@ export function useIsMember(
   })
 }
 
+export function useGetMemberFullDetails(
+  accountAddress: `0x${string}`,
+  memberAddress: `0x${string}`,
+) {
+  return useScaffoldReadContract<
+    | {
+        address: string
+        proposed_count: bigint
+        approved_count: bigint
+        rejected_count: bigint
+        executed_count: bigint
+        date_joined: bigint
+      }
+    | undefined
+  >({
+    contractConfig: {
+      address: accountAddress,
+      abi: spherreAccountConfig.abi,
+    },
+    functionName: 'get_member_full_details',
+    args: memberAddress ? { member: memberAddress } : undefined,
+    enabled: !!(accountAddress && memberAddress),
+  })
+}
+
 export function useGetTransaction(
   accountAddress: `0x${string}`,
   transactionId: U256,
