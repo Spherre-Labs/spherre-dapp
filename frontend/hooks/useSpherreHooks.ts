@@ -245,7 +245,17 @@ export function useGetMemberFullDetails(
   accountAddress: `0x${string}`,
   memberAddress: `0x${string}`,
 ) {
-  return useScaffoldReadContract<{ address: string; proposed_count: bigint; approved_count: bigint; rejected_count: bigint; executed_count: bigint; date_joined: bigint } | undefined>({
+  return useScaffoldReadContract<
+    | {
+        address: string
+        proposed_count: bigint
+        approved_count: bigint
+        rejected_count: bigint
+        executed_count: bigint
+        date_joined: bigint
+      }
+    | undefined
+  >({
     contractConfig: {
       address: accountAddress,
       abi: spherreAccountConfig.abi,
