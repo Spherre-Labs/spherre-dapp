@@ -30,6 +30,7 @@ class SmartLock(ModelMixin, db.Model):
     lock_status = db.Column(
         Enum(LockStatus), 
         default=LockStatus.LOCKED, 
+        server_default=LockStatus.LOCKED.value,
         nullable=False
     )
 
@@ -38,5 +39,12 @@ class SmartLock(ModelMixin, db.Model):
         Index('idx_smart_lock_lock_id', 'lock_id'),
     )
 
+    def __init__(self, **kwargs):
+        # Set default lock_status if not provided
+        if 'lock_status' not in kwargs:
+            kwargs['lock_status'] = LockStatus.LOCKED
+        super().__init__(**kwargs)
+
     def __repr__(self):
-        return f"<SmartLock {self.lock_id} - {self.token} - {self.lock_status.value}>"
+        status_value = self.lock_status.value if self.lock_status else "unknown"
+        return f"<SmartLock {self.lock_id} - {self.token} - {status_value}>"

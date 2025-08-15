@@ -41,7 +41,7 @@ class SmartLockService:
         # Check if lock_id already exists
         existing_lock = cls.get_smart_lock_by_lock_id(lock_id)
         if existing_lock:
-            raise ValueError(f"SmartLock with lock_id {lock_id} already exists")
+            raise ValueError(f"Smart lock with lock_id {lock_id} already exists")
         
         # Validate parameters
         if lock_id < 0:
@@ -49,9 +49,9 @@ class SmartLockService:
         if not token:
             raise ValueError("token cannot be empty")
         if token_amount <= 0:
-            raise ValueError("token_amount must be greater than 0")
+            raise ValueError("token_amount must be positive")
         if lock_duration <= 0:
-            raise ValueError("lock_duration must be greater than 0")
+            raise ValueError("lock_duration must be positive")
         
         try:
             smart_lock = SmartLock(
@@ -89,7 +89,7 @@ class SmartLockService:
         """
         smart_lock = cls.get_smart_lock_by_lock_id(lock_id)
         if not smart_lock:
-            raise ValueError(f"SmartLock with lock_id {lock_id} not found")
+            raise ValueError(f"Smart lock with lock_id {lock_id} not found")
         
         if not isinstance(new_status, LockStatus):
             raise ValueError("new_status must be a valid LockStatus enum value")
