@@ -75,8 +75,9 @@ class TestTransactionViews(unittest.TestCase):
 
         data = res.get_json()
         self.assertEqual(len(data["transactions"]), 2)
-        self.assertEqual(data["pagination"]["pages"], 3)
-
+        self.assertEqual(data["pagination"]["total_pages"], 3)
+        self.assertTrue(data["pagination"]["has_next"])
+        self.assertFalse(data["pagination"]["has_prev"])
     def test_get_transactions_filtered_by_type(self):
         self.create_transaction(tx_type=TransactionType.TOKEN_SEND)
         self.create_transaction(tx_type=TransactionType.TOKEN_RECEIVE)
