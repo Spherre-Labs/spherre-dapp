@@ -366,6 +366,8 @@ class TransactionService:
                 "page": pagination.page,
                 "per_page": pagination.per_page,
                 "total": pagination.total,
-                "pages": pagination.pages,
+                "total_pages": pagination.pages,
+                "has_next": pagination.has_next,
+                "has_prev": pagination.has_prev,
             },
         }
