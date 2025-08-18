@@ -98,9 +98,8 @@ class TestTransactionViews(unittest.TestCase):
         self.assertEqual(res.status_code, 400)
 
     def test_get_transactions_account_not_found(self):
-        res = self.client.get(f"/api/v1/accounts/{uuid4()}/transactions")
+        res = self.client.get(f"/api/v1/accounts/0x{'f'*64}/transactions")
         self.assertEqual(res.status_code, 404)
-
     def test_get_transactions_server_error(self):
         with patch.object(
             TransactionService,
