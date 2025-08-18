@@ -1,0 +1,112 @@
+import unittest
+from unittest.mock import patch
+from uuid import uuid4
+from datetime import datetime
+
+from spherre.app import create_app, db
+from spherre.app.models import Account, Member, Transaction, TransactionType
+from spherre.app.service.transaction import TransactionService
+
+
+class TestTransactionViews(unittest.TestCase):
+    def setUp(self):
+        self.app = create_app()
+        self.client = self.app.test_client()
+        self.ctx = self.app.app_context()
+        self.ctx.push()
+        db.create_all()
+
+        # Create a member and account
+        self.member = Member(
+            id=str(uuid4()), email="test@example.com", address="0x" + "1" * 64
+        )
+        self.account = Account(
+            id=str(uuid4()), address="0x" + "2" * 64, name="Test Account"
+        )
+        db.session.add(self.member)
+        db.session.add(self.account)
+        db.session.commit()
+
+    def tearDown(self):
+        db.session.remove()
+        db.drop_all()
+        self.ctx.pop()
+
+    def create_transaction(
+        self,
+        tx_type=TransactionType.TOKEN_SEND,
+        amount=100,
+        timestamp=None,
+        status="success",
+    ):
+        tx = Transaction(
+            id=str(uuid4()),
+            account_id=self.account.id,
+            tx_type=tx_type,
+            amount=amount,
+            timestamp=timestamp or datetime.utcnow(),
+            status=status,
+        )
+        db.session.add(tx)
+        db.session.commit()
+        return tx
+
+    def test_get_transactions_success(self):
+        # Create transactions
+        self.create_transaction(amount=50)
+        self.create_transaction(amount=75)
+
+        res = self.client.get(f"/api/v1/accounts/{self.account.address}/transactions")
+        self.assertEqual(res.status_code, 200)
+
+        data = res.get_json()
+        self.assertIn("transactions", data)
+        self.assertEqual(len(data["transactions"]), 2)
+        self.assertEqual(data["pagination"]["total"], 2)
+
+    def test_get_transactions_with_pagination(self):
+        for i in range(5):
+            self.create_transaction(amount=10 * i)
+
+        res = self.client.get(
+            f"/api/v1/accounts/{self.account.address}/transactions?page=1&per_page=2"
+        )
+        self.assertEqual(res.status_code, 200)
+
+        data = res.get_json()
+        self.assertEqual(len(data["transactions"]), 2)
+        self.assertEqual(data["pagination"]["pages"], 3)
+
+    def test_get_transactions_filtered_by_type(self):
+        self.create_transaction(tx_type=TransactionType.TOKEN_SEND)
+        self.create_transaction(tx_type=TransactionType.TOKEN_RECEIVE)
+
+        res = self.client.get(
+            f"/api/v1/accounts/{self.account.address}/transactions?type={TransactionType.TOKEN_SEND.value}"
+        )
+        self.assertEqual(res.status_code, 200)
+
+        data = res.get_json()
+        self.assertEqual(len(data["transactions"]), 1)
+        self.assertEqual(data["transactions"][0]["tx_type"], TransactionType.TOKEN_SEND.value)
+
+    def test_get_transactions_invalid_pagination(self):
+        res = self.client.get(
+            f"/api/v1/accounts/{self.account.address}/transactions?page=0&per_page=-5"
+        )
+        self.assertEqual(res.status_code, 400)
+
+    def test_get_transactions_account_not_found(self):
+        res = self.client.get(f"/api/v1/accounts/{uuid4()}/transactions")
+        self.assertEqual(res.status_code, 404)
+
+    def test_get_transactions_server_error(self):
+        with patch.object(
+            TransactionService,
+            "list_transactions_by_account",
+            side_effect=Exception("DB Error"),
+        ):
+            res = self.client.get(
+                f"/api/v1/accounts/{self.account.address}/transactions"
+            )
+            self.assertEqual(res.status_code, 500)

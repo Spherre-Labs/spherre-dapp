@@ -10,3 +10,5 @@ python-dotenv==1.1.0
 ruff==0.9.10
 SQLAlchemy==2.0.39
 starknet-py==0.25.0
+marshmallow-enum==1.5.1
+

@@ -1,4 +1,6 @@
-from typing import List, Optional
+from typing import Any, Dict, List, Optional
+
+from sqlalchemy import asc, desc
 
 from spherre.app.models import session_save
 from spherre.app.models.account import Account, Member
@@ -308,15 +310,62 @@ class TransactionService:
         if not isinstance(account, Account):
             raise ValueError("account must be an Account instance")
 
-        # Start with base query for account's transactions
+        results = cls.get_filtered_transactions(
+            account=account,
+            page=1,
+            per_page=20,
+            tx_type=type,
+            status=status,
+            sort_by="date_created",
+            sort_order="desc",
+        )
+        return results.get("items")
+
+    @classmethod
+    def get_filtered_transactions(
+        cls,
+        *,
+        account,
+        page=1,
+        per_page=20,
+        tx_type=None,
+        status=None,
+        proposer_address=None,
+        date_from=None,
+        date_to=None,
+        sort_by="date_created",
+        sort_order="desc",
+    ) -> Dict[str, Any]:
         query = Transaction.query.filter_by(account_id=account.id)
 
-        # Apply filters if provided
+        # Apply filters
+        if tx_type:
+            query = query.filter(Transaction.tx_type == tx_type)
         if status:
-            query = query.filter_by(status=status)
+            query = query.filter(Transaction.status == status)
+        if proposer_address:
+            query = query.filter(Transaction.proposer_address == proposer_address)
+        if date_from:
+            query = query.filter(Transaction.date_created >= date_from)
+        if date_to:
+            query = query.filter(Transaction.date_created <= date_to)
 
-        if type:
-            query = query.filter_by(tx_type=type)
+        # Sorting
+        sort_column = getattr(Transaction, sort_by, Transaction.date_created)
+        if sort_order == "asc":
+            query = query.order_by(asc(sort_column))
+        else:
+            query = query.order_by(desc(sort_column))
 
-        # Order by creation date (most recent first)
-        return query.order_by(Transaction.date_created.desc()).all()
+        # Pagination
+        pagination = query.paginate(page=page, per_page=per_page, error_out=False)
+
+        return {
+            "items": pagination.items,
+            "pagination": {
+                "page": pagination.page,
+                "per_page": pagination.per_page,
+                "total": pagination.total,
+                "pages": pagination.pages,
+            },
+        }
