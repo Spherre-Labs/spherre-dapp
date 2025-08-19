@@ -12,6 +12,7 @@ import { useAccountInfo } from '@/hooks/useSpherreHooks'
 import { SpherreAccountContext } from '@/app/context/account-context'
 import { useRouter } from 'next/navigation'
 import { routes } from '@/lib/utils/routes'
+import NFTDetailsModal from '../components/NFTDetailsModal'
 
 export default function DashboardPage() {
   useTheme()
@@ -20,6 +21,7 @@ export default function DashboardPage() {
   const [mounted, setMounted] = useState(false)
   const { accountAddress } = useContext(SpherreAccountContext)
   const { tokensDisplay, loadingTokenData } = useTokenBalances()
+  const [nftModalOpen, setNFTModalOpen] = useState<number | undefined>()
   const info = useAccountInfo(accountAddress || '0x0')
 
   const router = useRouter()
@@ -55,6 +57,10 @@ export default function DashboardPage() {
 
   const handleDepositClose = () => {
     setDepositOpen(false)
+  }
+
+  const handleNFTDetailsClick = (val: number | undefined) => {
+    setNFTModalOpen(val);
   }
 
   const handleSelectOption = () => {
@@ -194,7 +200,7 @@ export default function DashboardPage() {
         </div>
       </div>
       <div className="w-full overflow-x-auto">
-        <Tabs loadingTokenData={loadingTokenData} tokens={tokensDisplay} />
+        <Tabs loadingTokenData={loadingTokenData} tokens={tokensDisplay} setNFTModalOpen={setNFTModalOpen}/>
       </div>
 
       {/* Add the WithdrawalModal component */}
@@ -204,6 +210,8 @@ export default function DashboardPage() {
         onSelectOption={handleSelectOption}
       />
       <DepositModal open={depositOpen} onClose={handleDepositClose} />
+
+      <NFTDetailsModal open={nftModalOpen} onClose={handleNFTDetailsClick} />
     </div>
   )
 }

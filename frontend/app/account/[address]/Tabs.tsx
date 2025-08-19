@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import Image from 'next/image'
 import nft1 from '@/public/Images/nft1.png'
 import nft2 from '@/public/Images/nft2.png'
@@ -14,9 +14,46 @@ import strk from '@/public/Images/strk.png'
 import { useTheme } from '@/app/context/theme-context-provider'
 import { getTokenImage } from '@/lib/utils/token_image'
 
+// NFT data with correctly imported image objects
+export const nfts = [
+  {
+    id: 1,
+    image: nft1,
+  },
+  {
+    id: 2,
+    image: nft2,
+  },
+  {
+    id: 3,
+    image: nft3,
+  },
+  {
+    id: 4,
+    image: nft4,
+  },
+  {
+    id: 5,
+    image: nft5,
+  },
+  {
+    id: 6,
+    image: nft6,
+  },
+  {
+    id: 7,
+    image: nft7,
+  },
+  {
+    id: 8,
+    image: nft8,
+  },
+]
+
 export default function Tabs({
   loadingTokenData,
   tokens,
+  setNFTModalOpen
 }: {
   loadingTokenData: boolean
   tokens: {
@@ -28,6 +65,7 @@ export default function Tabs({
     contract_address: `0x${string}`
     id: string
   }[]
+  setNFTModalOpen: Dispatch<SetStateAction<number | undefined>>
 }) {
   const [mounted, setMounted] = useState(false)
   useTheme()
@@ -57,42 +95,6 @@ export default function Tabs({
 
     fetchImages()
   }, [tokens, mounted])
-
-  // NFT data with correctly imported image objects
-  const nfts = [
-    {
-      id: 1,
-      image: nft1,
-    },
-    {
-      id: 2,
-      image: nft2,
-    },
-    {
-      id: 3,
-      image: nft3,
-    },
-    {
-      id: 4,
-      image: nft4,
-    },
-    {
-      id: 5,
-      image: nft5,
-    },
-    {
-      id: 6,
-      image: nft6,
-    },
-    {
-      id: 7,
-      image: nft7,
-    },
-    {
-      id: 8,
-      image: nft8,
-    },
-  ]
 
   if (!mounted) {
     return (
@@ -265,6 +267,7 @@ export default function Tabs({
               <div
                 key={nft.id}
                 className="rounded-lg overflow-hidden bg-theme-bg-secondary border-2 border-theme-border hover:border-theme-border/80 transition-all duration-200"
+                onClick={() => setNFTModalOpen(nft.id)}
               >
                 <div className="aspect-square relative">
                   <Image
