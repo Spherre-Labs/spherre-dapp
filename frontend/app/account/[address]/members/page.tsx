@@ -28,7 +28,6 @@ interface Member {
   name: string
   address: string
   fullAddress: string
-  roles: string[]
   dateAdded: string
   image: string
   permissionMask: number
@@ -66,11 +65,9 @@ const Members = () => {
     'Congratulations! your transaction has been successfully confirmed and been sent to other members of the team for approval',
   )
 
-  // Guard: if no account address yet, render a light shell (avoids non-null assertions)
-  // (You can customize this to show a loader if desired)
   const accountReady = Boolean(accountAddress)
 
-  // Smart contract hooks (only pass when account exists)
+  // Smart contract hooks
   const {
     data: contractMembers,
     isLoading,
@@ -88,9 +85,10 @@ const Members = () => {
     accountAddress ?? '0x0',
   )
 
-  // Transform contract members to UI format with default permissions
+  // Transform contract members (base data only; MemberCard fetches permissions/dates)
   const transformedMembers = useMemo(() => {
     if (!contractMembers || contractMembers.length === 0) return []
+
     return contractMembers.map((memberFelt: string, index: number) => {
       let memberAddress: string
       try {
@@ -105,9 +103,9 @@ const Members = () => {
           ? `${memberAddress.slice(0, 6)}...${memberAddress.slice(-4)}`
           : memberAddress
 
+      // Placeholder roles/mask/date for layout; MemberCard replaces with real data
       const roles: string[] = ['Voter', 'Proposer', 'Executor']
       const permissionMask = ALL_PERMISSIONS_MASK
-
       const avatarIndex = (index % 3) + 1
       const image = `/member${avatarIndex}.svg`
 
@@ -117,61 +115,19 @@ const Members = () => {
         address: truncatedAddress,
         fullAddress: memberAddress,
         roles,
-        dateAdded: '24 Mar 2025',
+        dateAdded: '—',
         image,
         permissionMask,
       } as Member
     })
   }, [contractMembers])
 
-  // Update members state when transformed members change
+  // Update members when transformed members change
   useEffect(() => {
     setMembers(transformedMembers)
   }, [transformedMembers])
 
-  // Fetch real permissions for each member and update roles
-  // Depend on transformedMembers to avoid render loops caused by members state changes.
-  useEffect(() => {
-    if (!accountReady || !transformedMembers.length) return
-
-    let cancelled = false
-    const fetchPermissions = async () => {
-      try {
-        // Placeholder: map over transformedMembers to enrich with real permissions if available
-        const updatedMembers = await Promise.all(
-          transformedMembers.map(async (m) => {
-            // TODO: replace with actual permission fetch per member
-            return m
-          }),
-        )
-        if (!cancelled) {
-          // Only update if changed (shallow check)
-          const same =
-            updatedMembers.length === members.length &&
-            updatedMembers.every((m, i) => m === members[i])
-          if (!same) setMembers(updatedMembers)
-        }
-      } catch (e) {
-        console.warn('Failed to fetch permissions for members', e)
-      }
-    }
-    fetchPermissions()
-    return () => {
-      cancelled = true
-    }
-  }, [accountReady, transformedMembers]) // intentionally NOT depending on `members`
-
-  const handleCopy = useCallback(async (address: string) => {
-    try {
-      await navigator.clipboard.writeText(address)
-      setCopiedMessage('Spherre Address copied!')
-      setTimeout(() => setCopiedMessage(null), 3000)
-    } catch {
-      setCopiedMessage('Failed to copy address')
-      setTimeout(() => setCopiedMessage(null), 3000)
-    }
-  }, [])
-
+  // Animated border gradient util (memoized)
   const getBorderGradient = useCallback(() => {
     return `linear-gradient(
       90deg,
@@ -182,6 +138,7 @@ const Members = () => {
     )`
   }, [borderPosition])
 
+  // Click outside to close dropdown
   const handleClickOutside = useCallback((event: MouseEvent) => {
     const target = event.target as HTMLElement
     if (
@@ -197,11 +154,23 @@ const Members = () => {
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [handleClickOutside])
 
+  // Border animation ticker
   useEffect(() => {
     const interval = setInterval(() => {
       setBorderPosition((prev) => (prev + 2) % 100)
     }, 100)
     return () => clearInterval(interval)
+  }, [])
+
+  const handleCopy = useCallback(async (address: string) => {
+    try {
+      await navigator.clipboard.writeText(address)
+      setCopiedMessage('Spherre Address copied!')
+      setTimeout(() => setCopiedMessage(null), 3000)
+    } catch {
+      setCopiedMessage('Failed to copy address')
+      setTimeout(() => setCopiedMessage(null), 3000)
+    }
   }, [])
 
   const handlePropose = useCallback(
@@ -245,7 +214,6 @@ const Members = () => {
       } catch (error) {
         setIsProcessingModalOpen(false)
         console.error('Error proposing member addition:', error)
-        // TODO: Show error modal
       }
     },
     [proposeMemberAdd, refetch],
@@ -298,7 +266,6 @@ const Members = () => {
       } catch (error) {
         setIsProcessingModalOpen(false)
         console.error('Error proposing role edit:', error)
-        // TODO: Show error modal
       }
     },
     [editRolesMember, proposeEditPermission, refetch],
@@ -329,7 +296,6 @@ const Members = () => {
       } catch (error) {
         setIsProcessingModalOpen(false)
         console.error('Error proposing member removal:', error)
-        // TODO: Show error modal
       }
     },
     [proposeMemberRemove, refetch],

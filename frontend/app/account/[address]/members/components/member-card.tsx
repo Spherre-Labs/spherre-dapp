@@ -9,7 +9,6 @@ interface Member {
   name: string
   address: string
   fullAddress: string
-  roles: string[]
   dateAdded: string
   image: string
   permissionMask: number
@@ -25,7 +24,7 @@ type Props = {
   setEditName: (val: string) => void
   handleCopy: (add: string) => void
   setDropdownOpen: React.Dispatch<React.SetStateAction<number | null>>
-  handleRemoveMember: (member: Member) => void
+  handleRemoveMember: (member: Member) => Promise<void>
   handleEditRoles: (member: Member) => void
 }
 
