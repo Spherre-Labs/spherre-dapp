@@ -47,7 +47,7 @@ class TransactionService:
 
         if not isinstance(proposer, Member):
             raise ValueError("proposer must be a Member instance")
-            
+
         if proposer not in account.members:
             raise ValueError("Proposer must be a member of the account")
 
