@@ -27,8 +27,10 @@ class TestTransactionViews(unittest.TestCase):
             description="Test Account Description",
         )
         self.member = Member.get_or_create(address="0x" + "1" * 64)
+        self.another_member = Member.get_or_create(address="0x" + "2" * 64)
 
         self.account.members.append(self.member)
+        self.account.members.append(self.another_member)
         db.session.commit()
 
         self.current_time = datetime.now()
@@ -41,14 +43,14 @@ class TestTransactionViews(unittest.TestCase):
     def create_transaction(
         self,
         transaction_id: int,
-        status=TransactionStatus.INITIATED,
-        type=TransactionType.TOKEN_SEND,
+        status: TransactionStatus = TransactionStatus.INITIATED,
+        tx_type: TransactionStatus = TransactionType.TOKEN_SEND,
     ):
         transaction = TransactionService.create_transaction(
             transaction_id=transaction_id,
             account=self.account,
-            status=TransactionStatus.INITIATED,
-            tx_type=TransactionType.TOKEN_SEND,
+            status=status,
+            tx_type=tx_type,
             proposer=self.member,
             date_proposed=self.current_time,
         )
@@ -171,3 +173,38 @@ class TestTransactionViews(unittest.TestCase):
                 f"/api/v1/accounts/{self.account.address}/transactions"
             )
             self.assertEqual(res.status_code, 500)
+
+    def test_get_transactions_filtered_by_proposer(self):
+        _transaction1 = self.create_transaction(transaction_id=20)
+        _transaction2 = self.create_transaction(transaction_id=21)
+        _transaction3 = TransactionService.create_transaction(
+            transaction_id=22,
+            account=self.account,
+            status=TransactionStatus.INITIATED,
+            tx_type=TransactionType.TOKEN_SEND,
+            proposer=self.another_member,
+            date_proposed=self.current_time,
+        )
+
+        db.session.commit()
+
+        res = self.client.get(
+            f"/api/v1/accounts/{self.account.address}/transactions?proposer={self.member.address}"
+        )
+        self.assertEqual(res.status_code, 200)
+
+        data = res.get_json()
+        self.assertIn("transactions", data)
+        self.assertEqual(len(data["transactions"]), 2)
+        self.assertTrue(
+            all(tx["proposer"]["id"] == self.member.id for tx in data["transactions"])
+        )
+
+    def test_get_transactions_filtered_by_invalid_proposer(self):
+        res = self.client.get(
+            f"/api/v1/accounts/{self.account.address}/transactions?proposer=0xINVALID_ADDRESS"
+        )
+        self.assertEqual(res.status_code, 400)
+        data = res.get_json()
+        self.assertIn("error", data)
+        self.assertIn("Invalid proposer address", data["error"]["code"])

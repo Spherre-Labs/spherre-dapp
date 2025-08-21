@@ -345,7 +345,12 @@ class TransactionService:
         if status:
             query = query.filter(Transaction.status == status)
         if proposer_address:
-            query = query.filter(Transaction.proposer_address == proposer_address)
+            if isinstance(proposer_address, str):
+                proposer_address = proposer_address.lower()
+            query = query.join(Transaction.proposer).filter(
+                Member.address == proposer_address
+            )
+            # query = query.filter(Transaction.proposer_address == proposer_address)
 
         if date_from:
             query = query.filter(Transaction.date_created >= date_from)

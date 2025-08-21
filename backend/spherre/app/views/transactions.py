@@ -6,6 +6,7 @@ from spherre.app.models.transaction import TransactionStatus, TransactionType
 from spherre.app.serializers.transaction import TransactionSchema
 from spherre.app.service.account import AccountService
 from spherre.app.service.transaction import TransactionService
+from spherre.app.utils.validation import is_valid_starknet_address
 
 transactions_blueprint = Blueprint("transactions", __name__, url_prefix="/api/v1")
 
@@ -76,6 +77,17 @@ def get_transactions(account_address):
         ), 400
 
     proposer = request.args.get("proposer")
+    if proposer:
+        if not is_valid_starknet_address(proposer):
+            return jsonify(
+                {
+                    "success": False,
+                    "error": {
+                        "code": "Invalid proposer address",
+                        "message": "Proposer address must be a valid address",
+                    },
+                }
+            ), 400
     sort_by = request.args.get("sort_by", "date_created")
     sort_order = request.args.get("sort_order", "desc")
 
