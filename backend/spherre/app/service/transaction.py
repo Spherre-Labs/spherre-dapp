@@ -18,7 +18,7 @@ class TransactionService:
         transaction_id: int,
         account: Account,
         status: TransactionStatus,
-        type: TransactionType,
+        tx_type: TransactionType,
         proposer: Member,
         date_proposed: int,
     ) -> Transaction:
@@ -47,15 +47,14 @@ class TransactionService:
 
         if not isinstance(proposer, Member):
             raise ValueError("proposer must be a Member instance")
-
-        # Verify proposer is a member of the account
+            
         if proposer not in account.members:
             raise ValueError("Proposer must be a member of the account")
 
         transaction = Transaction(
             transaction_id=transaction_id,
             account_id=account.id,
-            tx_type=type,
+            tx_type=tx_type,
             status=status,
             proposer_id=proposer.id,
             date_created=date_proposed,
@@ -291,7 +290,7 @@ class TransactionService:
         cls,
         account: Account,
         status: Optional[TransactionStatus] = None,
-        type: Optional[TransactionType] = None,
+        tx_type: Optional[TransactionType] = None,
     ) -> List[Transaction]:
         """
         Retrieve a list of transactions, with optional filters.
@@ -314,7 +313,7 @@ class TransactionService:
             account=account,
             page=1,
             per_page=20,
-            tx_type=type,
+            tx_type=tx_type,
             status=status,
             sort_by="date_created",
             sort_order="desc",
@@ -340,11 +339,14 @@ class TransactionService:
 
         # Apply filters
         if tx_type:
+            if isinstance(tx_type, str):
+                tx_type = TransactionType(tx_type)
             query = query.filter(Transaction.tx_type == tx_type)
         if status:
             query = query.filter(Transaction.status == status)
         if proposer_address:
             query = query.filter(Transaction.proposer_address == proposer_address)
+
         if date_from:
             query = query.filter(Transaction.date_created >= date_from)
         if date_to:

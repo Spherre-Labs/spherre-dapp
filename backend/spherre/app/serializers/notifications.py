@@ -3,6 +3,7 @@ from marshmallow import Schema, fields
 
 class AccountSchema(Schema):
     address = fields.String()
+    email = fields.String(allow_none=True)
 
 
 class NotificationSchema(Schema):

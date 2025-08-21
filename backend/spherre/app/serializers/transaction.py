@@ -6,7 +6,7 @@ from spherre.app.models.transaction import TransactionStatus, TransactionType
 
 class MemberSchema(Schema):
     id = fields.String(required=True)
-    name = fields.String()  # adjust if your Member model has different fields
+    name = fields.String()
 
 
 class TransactionSchema(Schema):
