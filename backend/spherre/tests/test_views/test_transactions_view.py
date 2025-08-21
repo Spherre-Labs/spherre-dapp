@@ -44,7 +44,7 @@ class TestTransactionViews(unittest.TestCase):
         self,
         transaction_id: int,
         status: TransactionStatus = TransactionStatus.INITIATED,
-        tx_type: TransactionStatus = TransactionType.TOKEN_SEND,
+        tx_type: TransactionType = TransactionType.TOKEN_SEND,
     ):
         transaction = TransactionService.create_transaction(
             transaction_id=transaction_id,
