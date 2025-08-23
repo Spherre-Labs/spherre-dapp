@@ -6,7 +6,8 @@ from spherre.app.models.transaction import TransactionStatus, TransactionType
 
 class MemberSchema(Schema):
     id = fields.String(required=True)
-    name = fields.String()
+    address = fields.String()
+    email = fields.String(allow_none=True)
 
 
 class TransactionSchema(Schema):

@@ -2,11 +2,10 @@ from datetime import datetime
 
 from flask import Blueprint, jsonify, request
 
-from spherre.app.models.transaction import TransactionStatus, TransactionType
 from spherre.app.serializers.transaction import TransactionSchema
 from spherre.app.service.account import AccountService
 from spherre.app.service.transaction import TransactionService
-from spherre.app.utils.validation import is_valid_starknet_address
+from spherre.app.utils.validation import validate_transaction_filters
 
 transactions_blueprint = Blueprint("transactions", __name__, url_prefix="/api/v1")
 
@@ -28,66 +27,18 @@ def get_transactions(account_address):
         ), 404
 
     # Query params
-    try:
-        page = int(request.args.get("page", 1))
-        per_page = int(request.args.get("per_page", 20))
-    except ValueError:
-        return jsonify(
-            {
-                "success": False,
-                "error": {
-                    "code": "Invalid pagination parameters",
-                    "message": "Page and per_page must be integers",
-                },
-            }
-        ), 400
-
-    if page < 1 or per_page < 1 or per_page > 100:
-        return jsonify(
-            {
-                "success": False,
-                "error": {
-                    "code": "Invalid pagination parameters",
-                    "message": "Page and per_page must be between +1 and +100",
-                },
-            }
-        ), 400
-
+    page = int(request.args.get("page", 1))
+    per_page = int(request.args.get("per_page", 20))
     tx_type = request.args.get("tx_type")
     status = request.args.get("status")
-    if tx_type and tx_type not in {e.value for e in TransactionType}:
-        return jsonify(
-            {
-                "success": False,
-                "error": {
-                    "code": "Invalid tx_type parameters",
-                    "message": "expects valid tx_type values",
-                },
-            }
-        ), 400
-    if status and status not in {e.value for e in TransactionStatus}:
-        return jsonify(
-            {
-                "success": False,
-                "error": {
-                    "code": "Invalid status parameters",
-                    "message": "Expects valid status values",
-                },
-            }
-        ), 400
-
     proposer = request.args.get("proposer")
-    if proposer:
-        if not is_valid_starknet_address(proposer):
-            return jsonify(
-                {
-                    "success": False,
-                    "error": {
-                        "code": "Invalid proposer address",
-                        "message": "Proposer address must be a valid address",
-                    },
-                }
-            ), 400
+
+    validation_error = validate_transaction_filters(
+        page, per_page, tx_type, status, proposer
+    )
+    if validation_error:
+        return validation_error
+
     sort_by = request.args.get("sort_by", "date_created")
     sort_order = request.args.get("sort_order", "desc")
 
@@ -107,11 +58,6 @@ def get_transactions(account_address):
                 },
             }
         ), 400
-
-    # date_from = datetime.fromisoformat(date_from_str) if date_from_str else None
-    # date_to = datetime.fromisoformat(date_to_str) if date_to_str else None
-
-    # Call service
     try:
         result = TransactionService.get_filtered_transactions(
             account=account,

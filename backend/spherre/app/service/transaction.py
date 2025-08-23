@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Any, Dict, List, Optional
 
 from sqlalchemy import asc, desc
@@ -324,16 +325,16 @@ class TransactionService:
     def get_filtered_transactions(
         cls,
         *,
-        account,
-        page=1,
-        per_page=20,
-        tx_type=None,
-        status=None,
-        proposer_address=None,
-        date_from=None,
-        date_to=None,
-        sort_by="date_created",
-        sort_order="desc",
+        account: Account,
+        page: int = 1,
+        per_page: int = 20,
+        tx_type: Optional[TransactionType] = None,
+        status: Optional[TransactionStatus] = None,
+        proposer_address: Optional[str] = None,
+        date_from: Optional[datetime] = None,
+        date_to: Optional[datetime] = None,
+        sort_by: str = "date_created",
+        sort_order: str = "desc",
     ) -> Dict[str, Any]:
         query = Transaction.query.filter_by(account_id=account.id)
 
