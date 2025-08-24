@@ -11,6 +11,7 @@ interface Member {
   fullAddress: string
   dateAdded: string
   image: string
+  permissions: string[]
   permissionMask: number
 }
 

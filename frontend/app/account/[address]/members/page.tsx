@@ -30,6 +30,7 @@ interface Member {
   fullAddress: string
   dateAdded: string
   image: string
+  permissions: string[]
   permissionMask: number
 }
 
@@ -117,6 +118,7 @@ const Members = () => {
         roles,
         dateAdded: '—',
         image,
+        permissions: roles,
         permissionMask,
       } as Member
     })
