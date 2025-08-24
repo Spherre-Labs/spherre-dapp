@@ -50,7 +50,7 @@ class TestTransactionService(TestCase):
             transaction_id=1,
             account=self.account,
             status=TransactionStatus.INITIATED,
-            type=TransactionType.TOKEN_SEND,
+            tx_type=TransactionType.TOKEN_SEND,
             proposer=self.member1,
             date_proposed=self.current_time,
         )
@@ -68,7 +68,7 @@ class TestTransactionService(TestCase):
                 transaction_id=None,  # Missing ID
                 account=self.account,
                 status=TransactionStatus.INITIATED,
-                type=TransactionType.TOKEN_SEND,
+                tx_type=TransactionType.TOKEN_SEND,
                 proposer=self.member1,
                 date_proposed=self.current_time,
             )
@@ -80,7 +80,7 @@ class TestTransactionService(TestCase):
                 transaction_id=2,
                 account=self.account,
                 status=TransactionStatus.INITIATED,
-                type=TransactionType.TOKEN_SEND,
+                tx_type=TransactionType.TOKEN_SEND,
                 proposer=non_member,
                 date_proposed=self.current_time,
             )
@@ -91,7 +91,7 @@ class TestTransactionService(TestCase):
             transaction_id=1,
             account=self.account,
             status=TransactionStatus.INITIATED,
-            type=TransactionType.TOKEN_SEND,
+            tx_type=TransactionType.TOKEN_SEND,
             proposer=self.member1,
             date_proposed=self.current_time,
         )
@@ -137,7 +137,7 @@ class TestTransactionService(TestCase):
             transaction_id=1,
             account=self.account,
             status=TransactionStatus.INITIATED,
-            type=TransactionType.TOKEN_SEND,
+            tx_type=TransactionType.TOKEN_SEND,
             proposer=self.member1,
             date_proposed=self.current_time,
         )
@@ -171,7 +171,7 @@ class TestTransactionService(TestCase):
             transaction_id=2,
             account=self.account,
             status=TransactionStatus.INITIATED,
-            type=TransactionType.TOKEN_SEND,
+            tx_type=TransactionType.TOKEN_SEND,
             proposer=self.member1,
             date_proposed=self.current_time,
         )
@@ -199,7 +199,7 @@ class TestTransactionService(TestCase):
             transaction_id=1,
             account=self.account,
             status=TransactionStatus.INITIATED,
-            type=TransactionType.TOKEN_SEND,
+            tx_type=TransactionType.TOKEN_SEND,
             proposer=self.member1,
             date_proposed=self.current_time,
         )
@@ -217,7 +217,7 @@ class TestTransactionService(TestCase):
             transaction_id=2,
             account=self.account,
             status=TransactionStatus.EXECUTED,  # Already executed
-            type=TransactionType.TOKEN_SEND,
+            tx_type=TransactionType.TOKEN_SEND,
             proposer=self.member1,
             date_proposed=self.current_time,
         )
@@ -254,7 +254,7 @@ class TestTransactionService(TestCase):
             transaction_id=1,
             account=self.account,
             status=TransactionStatus.INITIATED,
-            type=TransactionType.TOKEN_SEND,
+            tx_type=TransactionType.TOKEN_SEND,
             proposer=self.member1,
             date_proposed=self.current_time,
         )
@@ -281,7 +281,7 @@ class TestTransactionService(TestCase):
             transaction_id=1,
             account=self.account,
             status=TransactionStatus.INITIATED,
-            type=TransactionType.TOKEN_SEND,
+            tx_type=TransactionType.TOKEN_SEND,
             proposer=self.member1,
             date_proposed=self.current_time - timedelta(seconds=300),  # Older
         )
@@ -290,7 +290,7 @@ class TestTransactionService(TestCase):
             transaction_id=2,
             account=self.account,
             status=TransactionStatus.APPROVED,
-            type=TransactionType.TOKEN_SEND,
+            tx_type=TransactionType.TOKEN_SEND,
             proposer=self.member1,
             date_proposed=self.current_time - timedelta(seconds=200),
         )
@@ -299,7 +299,7 @@ class TestTransactionService(TestCase):
             transaction_id=3,
             account=self.account,
             status=TransactionStatus.EXECUTED,
-            type=TransactionType.MEMBER_ADD,
+            tx_type=TransactionType.MEMBER_ADD,
             proposer=self.member1,
             date_proposed=self.current_time - timedelta(seconds=100),
         )
@@ -321,7 +321,7 @@ class TestTransactionService(TestCase):
 
         # Test filtering by type
         token_send_transactions = TransactionService.transaction_list(
-            account=self.account, type=TransactionType.TOKEN_SEND
+            account=self.account, tx_type=TransactionType.TOKEN_SEND
         )
 
         assert len(token_send_transactions) == 2
@@ -333,7 +333,7 @@ class TestTransactionService(TestCase):
         approved_token_send = TransactionService.transaction_list(
             account=self.account,
             status=TransactionStatus.APPROVED,
-            type=TransactionType.TOKEN_SEND,
+            tx_type=TransactionType.TOKEN_SEND,
         )
 
         assert len(approved_token_send) == 1
