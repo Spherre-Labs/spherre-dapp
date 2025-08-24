@@ -44,7 +44,6 @@ const EditMemberRolesModal: React.FC<EditMemberRolesModalProps> = ({
   onClose,
   onPropose,
 }) => {
-  console.log(member, 'member')
   useTheme()
   const [selectedRoles, setSelectedRoles] = useState<string[]>([])
 

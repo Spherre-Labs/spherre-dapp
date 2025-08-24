@@ -105,7 +105,7 @@ const Members = () => {
           : memberAddress
 
       // Placeholder roles/mask/date for layout; MemberCard replaces with real data
-      const roles: string[] = ['Voter', 'Proposer', 'Executor']
+      const roles: string[] = []
       const permissionMask = ALL_PERMISSIONS_MASK
       const avatarIndex = (index % 3) + 1
       const image = `/member${avatarIndex}.svg`
