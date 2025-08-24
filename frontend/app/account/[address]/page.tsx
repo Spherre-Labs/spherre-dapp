@@ -12,7 +12,7 @@ import { useAccountInfo } from '@/hooks/useSpherreHooks'
 import { SpherreAccountContext } from '@/app/context/account-context'
 import { useRouter } from 'next/navigation'
 import { routes } from '@/lib/utils/routes'
-import NFTDetailsModal from '../components/NFTDetailsModal'
+import NFTDetailsModal from '../../components/NFTDetailsModal'
 
 export default function DashboardPage() {
   useTheme()

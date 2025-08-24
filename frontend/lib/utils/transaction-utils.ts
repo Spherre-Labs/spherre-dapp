@@ -12,6 +12,7 @@ import type {
   ThresholdChangeData,
   SmartTokenLockTransaction,
 } from '@/lib/contracts/types'
+import { uint256 } from 'starknet'
 
 // Map contract status to UI status
 export function mapTransactionStatus(
@@ -39,7 +40,7 @@ export function transformTransaction(
   return {
     id: baseTransaction.id,
     status: baseTransaction.tx_status.activeVariant() as
-      | 'Pending'
+      | 'Initiated'
       | 'Executed'
       | 'Rejected'
       | 'Approved',
