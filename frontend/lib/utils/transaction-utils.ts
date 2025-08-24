@@ -39,7 +39,7 @@ export function transformTransaction(
   return {
     id: baseTransaction.id,
     status: baseTransaction.tx_status.activeVariant() as
-      | 'Initiated'
+      | 'Pending'
       | 'Executed'
       | 'Rejected'
       | 'Approved',

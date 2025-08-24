@@ -36,7 +36,7 @@ export default function NFTDetailsModal({ open, onClose }: DepositModalProps) {
     writeAsync: proposeNFTTransaction,
     error: proposalError,
     isLoading: nftProposalIsLoading,
-  } = useProposeNFTTransaction(accountAddress ?? ('' as `0x${string}`))
+  } = useProposeNFTTransaction((accountAddress ?? '0x0') as `0x${string}`);
 
   const handleProposeNFTTransaction = async () => {
     setIsSending(true)
@@ -131,12 +131,18 @@ export default function NFTDetailsModal({ open, onClose }: DepositModalProps) {
           </button>
         </div>
         <div className="p-4 flex justify-between items-start">
-          <Image
-            alt="current nft"
-            width={400}
-            height={400}
-            src={currentNFT?.image || ''}
-          />
+          {
+            currentNFT ? (
+              <Image
+                alt="current nft"
+                width={400}
+                height={400}
+                src={currentNFT?.image || ''}
+              />
+            ) : (
+              <div className="w-[400px] h-[400px] bg-theme-bg-tertiary" aria-label="No NFT selected" />
+            )
+          }
 
           <div className="w-full flex flex-col items-start gap-2 px-6">
             <div className="flex items-center gap-2">
