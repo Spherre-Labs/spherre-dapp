@@ -12,7 +12,6 @@ import type {
   ThresholdChangeData,
   SmartTokenLockTransaction,
 } from '@/lib/contracts/types'
-import { uint256 } from 'starknet'
 
 // Map contract status to UI status
 export function mapTransactionStatus(

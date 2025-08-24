@@ -60,7 +60,7 @@ export default function DashboardPage() {
   }
 
   const handleNFTDetailsClick = (val: number | undefined) => {
-    setNFTModalOpen(val);
+    setNFTModalOpen(val)
   }
 
   const handleSelectOption = () => {
@@ -200,7 +200,11 @@ export default function DashboardPage() {
         </div>
       </div>
       <div className="w-full overflow-x-auto">
-        <Tabs loadingTokenData={loadingTokenData} tokens={tokensDisplay} setNFTModalOpen={setNFTModalOpen}/>
+        <Tabs
+          loadingTokenData={loadingTokenData}
+          tokens={tokensDisplay}
+          setNFTModalOpen={setNFTModalOpen}
+        />
       </div>
 
       {/* Add the WithdrawalModal component */}

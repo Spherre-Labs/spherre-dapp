@@ -53,7 +53,7 @@ export const nfts = [
 export default function Tabs({
   loadingTokenData,
   tokens,
-  setNFTModalOpen
+  setNFTModalOpen,
 }: {
   loadingTokenData: boolean
   tokens: {
