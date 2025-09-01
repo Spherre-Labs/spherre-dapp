@@ -25,9 +25,9 @@ interface Member {
   name: string
   address: string
   fullAddress: string
-  roles: string[]
   dateAdded: string
   image: string
+  permissions: string[]
   permissionMask: number
 }
 
@@ -45,12 +45,11 @@ const EditMemberRolesModal: React.FC<EditMemberRolesModalProps> = ({
   onPropose,
 }) => {
   useTheme()
-  const [selectedRoles, setSelectedRoles] = useState<string[]>(
-    member?.roles || [],
-  )
+  const [selectedRoles, setSelectedRoles] = useState<string[]>([])
 
   React.useEffect(() => {
-    setSelectedRoles(member?.roles || [])
+    if (!member) return
+    setSelectedRoles(member.permissions)
   }, [member])
 
   const toggleRole = (role: string) => {

@@ -1,6 +1,6 @@
 'use client'
 
-import { CairoOption, CairoOptionVariant } from 'starknet'
+import { CairoCustomEnum, CairoOption, CairoOptionVariant } from 'starknet'
 import { useScaffoldReadContract } from './useScaffoldReadContract'
 import { useScaffoldWriteContract } from './useScaffoldWriteContract'
 import {
@@ -104,7 +104,7 @@ export function useGetMemberPermissions(
   accountAddress: `0x${string}`,
   memberAddress: `0x${string}`,
 ) {
-  const result = useScaffoldReadContract<PermissionEnum[]>({
+  const result = useScaffoldReadContract<CairoCustomEnum[]>({
     contractConfig: {
       address: accountAddress,
       abi: spherreAccountConfig.abi,
@@ -117,27 +117,23 @@ export function useGetMemberPermissions(
   // Convert PermissionEnum array to role names
   const permissions = useMemo(() => {
     if (!result.data || !Array.isArray(result.data)) {
-      return ['Voter', 'Proposer', 'Executor'] // Default to all permissions if no data
+      return [] // Default to all permissions if no data
     }
 
     const roles: string[] = []
 
     // PermissionEnum: PROPOSER = 0, VOTER = 1, EXECUTOR = 2
     for (const permission of result.data) {
-      switch (permission) {
-        case 0: // PROPOSER
-          roles.push('Proposer')
-          break
-        case 1: // VOTER
-          roles.push('Voter')
-          break
-        case 2: // EXECUTOR
-          roles.push('Executor')
-          break
+      if (permission.activeVariant() === 'PROPOSER') {
+        roles.push('Proposer')
+      } else if (permission.activeVariant() === 'VOTER') {
+        roles.push('Voter')
+      } else if (permission.activeVariant() === 'EXECUTOR') {
+        roles.push('Executor')
       }
     }
 
-    return roles.length > 0 ? roles : ['Voter', 'Proposer', 'Executor'] // Default fallback
+    return roles // Default fallback
   }, [result.data])
 
   return {

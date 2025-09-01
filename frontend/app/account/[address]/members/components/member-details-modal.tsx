@@ -94,7 +94,6 @@ export default function MemberDetailsModal({
       ? member.image
       : getAvatarUrl(member.fullAddress)
   }, [member])
-  console.log(avatarSrc)
 
   const memberStats = useMemo((): {
     label: string

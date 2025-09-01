@@ -1,7 +1,7 @@
 'use client'
-import React, { useState, useEffect, useMemo } from 'react'
+import React, { useState, useEffect, useMemo, useCallback } from 'react'
 import Image from 'next/image'
-// import { nunito } from '@/app/fonts'
+import { useRouter } from 'next/navigation'
 import { useTheme } from '@/app/context/theme-context-provider'
 import {
   useGetAccountMembers,
@@ -21,25 +21,27 @@ import {
   ALL_PERMISSIONS_MASK,
   feltToAddress,
 } from '@/lib/utils/validation'
+import MemberCard from './components/member-card'
 
 interface Member {
   id: number
   name: string
   address: string
   fullAddress: string
-  roles: string[]
   dateAdded: string
   image: string
+  permissions: string[]
   permissionMask: number
 }
 
 const Members = () => {
   useTheme()
+  const router = useRouter()
   const { accountAddress } = useSpherreAccount()
+
   const [members, setMembers] = useState<Member[]>([])
   const [borderPosition, setBorderPosition] = useState(0)
   const [dropdownOpen, setDropdownOpen] = useState<number | null>(null)
-  const [editingId, setEditingId] = useState<number | null>(null)
   const [editName, setEditName] = useState('')
   const [copiedMessage, setCopiedMessage] = useState<string | null>(null)
   const [isAddModalOpen, setIsAddModalOpen] = useState(false)
@@ -64,49 +66,47 @@ const Members = () => {
     'Congratulations! your transaction has been successfully confirmed and been sent to other members of the team for approval',
   )
 
+  const accountReady = Boolean(accountAddress)
+
   // Smart contract hooks
   const {
     data: contractMembers,
     isLoading,
     error,
     refetch,
-  } = useGetAccountMembers(accountAddress!)
+  } = useGetAccountMembers(accountAddress ?? '0x0')
 
-  const { writeAsync: proposeMemberAdd } = useProposeMemberAdd(accountAddress!)
+  const { writeAsync: proposeMemberAdd } = useProposeMemberAdd(
+    accountAddress ?? '0x0',
+  )
   const { writeAsync: proposeMemberRemove } = useProposeMemberRemove(
-    accountAddress!,
+    accountAddress ?? '0x0',
   )
   const { writeAsync: proposeEditPermission } = useProposeEditPermission(
-    accountAddress!,
+    accountAddress ?? '0x0',
   )
 
-  // Transform contract members to UI format with real permissions
+  // Transform contract members (base data only; MemberCard fetches permissions/dates)
   const transformedMembers = useMemo(() => {
-    if (!contractMembers || contractMembers.length === 0) {
-      return []
-    }
+    if (!contractMembers || contractMembers.length === 0) return []
 
-    return contractMembers.map((memberFelt, index) => {
-      // Convert felt to address format
+    return contractMembers.map((memberFelt: string, index: number) => {
       let memberAddress: string
       try {
         memberAddress = feltToAddress(memberFelt)
       } catch (error) {
         console.warn('Failed to convert felt to address:', memberFelt, error)
-        memberAddress = memberFelt // Fallback to original felt if conversion fails
+        memberAddress = memberFelt
       }
 
-      // Generate a truncated address for display
       const truncatedAddress =
         memberAddress.length > 10
           ? `${memberAddress.slice(0, 6)}...${memberAddress.slice(-4)}`
           : memberAddress
 
-      // Default to all three roles - will be updated by permission fetching
-      const roles: string[] = ['Voter', 'Proposer', 'Executor']
+      // Placeholder roles/mask/date for layout; MemberCard replaces with real data
+      const roles: string[] = []
       const permissionMask = ALL_PERMISSIONS_MASK
-
-      // Assign avatar based on index (cycle through available images)
       const avatarIndex = (index % 3) + 1
       const image = `/member${avatarIndex}.svg`
 
@@ -116,73 +116,21 @@ const Members = () => {
         address: truncatedAddress,
         fullAddress: memberAddress,
         roles,
-        dateAdded: '24 Mar 2025', // You might want to get this from contract
+        dateAdded: '—',
         image,
+        permissions: roles,
         permissionMask,
-      }
+      } as Member
     })
   }, [contractMembers])
 
-  // Update members state only when transformed members change
+  // Update members when transformed members change
   useEffect(() => {
     setMembers(transformedMembers)
   }, [transformedMembers])
 
-  // Fetch real permissions for each member and update roles
-  useEffect(() => {
-    if (!accountAddress || !members.length) return
-
-    const fetchPermissions = async () => {
-      const updatedMembers = await Promise.all(
-        members.map(async (member) => {
-          try {
-            // This would need to be done with individual hooks in a real component
-            // For now, we'll keep the default permissions
-            return member
-          } catch (error) {
-            console.warn(
-              'Failed to fetch permissions for member:',
-              member.fullAddress,
-              error,
-            )
-            return member
-          }
-        }),
-      )
-
-      // Prevent unnecessary state updates to avoid re-render loops
-      const isIdentical =
-        updatedMembers.length === members.length &&
-        updatedMembers.every((m, i) => m === members[i])
-
-      if (!isIdentical) {
-        setMembers(updatedMembers)
-      }
-    }
-
-    fetchPermissions()
-  }, [accountAddress, members])
-
-  const handleCopy = (address: string) => {
-    navigator.clipboard.writeText(address)
-    setCopiedMessage('Spherre Address copied!')
-    setTimeout(() => setCopiedMessage(null), 3000)
-  }
-
-  const toggleDropdown = (id: number) => {
-    setDropdownOpen((prev) => (prev === id ? null : id))
-  }
-
-  const startEditing = (memberId: number) => {
-    const member = members.find((m) => m.id === memberId)
-    if (member) {
-      setEditingId(memberId)
-      setEditName(member.name)
-    }
-    setDropdownOpen(null)
-  }
-
-  const getBorderGradient = () => {
+  // Animated border gradient util (memoized)
+  const getBorderGradient = useCallback(() => {
     return `linear-gradient(
       90deg,
       transparent ${borderPosition}%,
@@ -190,9 +138,10 @@ const Members = () => {
       #6F2FCE ${(borderPosition + 20) % 100}%,
       transparent ${(borderPosition + 20) % 100}%
     )`
-  }
+  }, [borderPosition])
 
-  const handleClickOutside = (event: MouseEvent) => {
+  // Click outside to close dropdown
+  const handleClickOutside = useCallback((event: MouseEvent) => {
     const target = event.target as HTMLElement
     if (
       !target.closest('.dropdown-menu') &&
@@ -200,13 +149,14 @@ const Members = () => {
     ) {
       setDropdownOpen(null)
     }
-  }
+  }, [])
 
   useEffect(() => {
     document.addEventListener('mousedown', handleClickOutside)
     return () => document.removeEventListener('mousedown', handleClickOutside)
-  }, [])
+  }, [handleClickOutside])
 
+  // Border animation ticker
   useEffect(() => {
     const interval = setInterval(() => {
       setBorderPosition((prev) => (prev + 2) % 100)
@@ -214,145 +164,165 @@ const Members = () => {
     return () => clearInterval(interval)
   }, [])
 
-  const handlePropose = async (wallet: string, selectedRoles: string[]) => {
+  const handleCopy = useCallback(async (address: string) => {
     try {
-      setIsAddModalOpen(false)
-      setIsProcessingModalOpen(true)
-      setProcessingTitle('Proposing Member Addition!')
-      setProcessingSubtitle(
-        'Please wait while we process the member addition proposal...',
-      )
-
-      // Convert role names to permission mask
-      const permissions = selectedRoles.map((role) => {
-        switch (role) {
-          case 'Voter':
-            return 'VOTER'
-          case 'Proposer':
-            return 'PROPOSER'
-          case 'Executor':
-            return 'EXECUTOR'
-          default:
-            return 'VOTER'
-        }
-      }) as ('VOTER' | 'PROPOSER' | 'EXECUTOR')[]
-
-      const permissionMask = createPermissionMask(permissions)
-
-      await proposeMemberAdd({
-        member: wallet,
-        permissions: permissionMask,
-      })
-
-      setIsProcessingModalOpen(false)
-      setIsSuccessModalOpen(true)
-      setSuccessTitle('Member Addition Proposed!')
-      setSuccessMessage(
-        'The member addition proposal has been successfully created and sent to other members for approval.',
-      )
-
-      // Refresh members list
-      refetch()
-    } catch (error) {
-      setIsProcessingModalOpen(false)
-      console.error('Error proposing member addition:', error)
-      // TODO: Show error modal
+      await navigator.clipboard.writeText(address)
+      setCopiedMessage('Spherre Address copied!')
+      setTimeout(() => setCopiedMessage(null), 3000)
+    } catch {
+      setCopiedMessage('Failed to copy address')
+      setTimeout(() => setCopiedMessage(null), 3000)
     }
-  }
+  }, [])
 
-  const handleEditRoles = (member: Member) => {
+  const handlePropose = useCallback(
+    async (wallet: string, selectedRoles: string[]) => {
+      try {
+        setIsAddModalOpen(false)
+        setIsProcessingModalOpen(true)
+        setProcessingTitle('Proposing Member Addition!')
+        setProcessingSubtitle(
+          'Please wait while we process the member addition proposal...',
+        )
+
+        const permissions = selectedRoles.map((role) => {
+          switch (role) {
+            case 'Voter':
+              return 'VOTER'
+            case 'Proposer':
+              return 'PROPOSER'
+            case 'Executor':
+              return 'EXECUTOR'
+            default:
+              return 'VOTER'
+          }
+        }) as ('VOTER' | 'PROPOSER' | 'EXECUTOR')[]
+
+        const permissionMask = createPermissionMask(permissions)
+
+        await proposeMemberAdd({
+          member: wallet,
+          permissions: permissionMask,
+        })
+
+        setIsProcessingModalOpen(false)
+        setIsSuccessModalOpen(true)
+        setSuccessTitle('Member Addition Proposed!')
+        setSuccessMessage(
+          'The member addition proposal has been successfully created and sent to other members for approval.',
+        )
+
+        refetch()
+      } catch (error) {
+        setIsProcessingModalOpen(false)
+        console.error('Error proposing member addition:', error)
+      }
+    },
+    [proposeMemberAdd, refetch],
+  )
+
+  const handleEditRoles = useCallback((member: Member) => {
     setEditRolesMember(member)
     setIsEditRolesModalOpen(true)
-  }
+  }, [])
 
-  const handleProposeEditRoles = async (selectedRoles: string[]) => {
-    if (!editRolesMember) return
+  const handleProposeEditRoles = useCallback(
+    async (selectedRoles: string[]) => {
+      if (!editRolesMember) return
+      try {
+        setIsEditRolesModalOpen(false)
+        setIsProcessingModalOpen(true)
+        setProcessingTitle('Proposing Role Changes!')
+        setProcessingSubtitle(
+          'Please wait while we process the role change proposal...',
+        )
 
-    try {
-      setIsEditRolesModalOpen(false)
-      setIsProcessingModalOpen(true)
-      setProcessingTitle('Proposing Role Changes!')
-      setProcessingSubtitle(
-        'Please wait while we process the role change proposal...',
-      )
+        const permissions = selectedRoles.map((role) => {
+          switch (role) {
+            case 'Voter':
+              return 'VOTER'
+            case 'Proposer':
+              return 'PROPOSER'
+            case 'Executor':
+              return 'EXECUTOR'
+            default:
+              return 'VOTER'
+          }
+        }) as ('VOTER' | 'PROPOSER' | 'EXECUTOR')[]
 
-      // Convert role names to permission mask
-      const permissions = selectedRoles.map((role) => {
-        switch (role) {
-          case 'Voter':
-            return 'VOTER'
-          case 'Proposer':
-            return 'PROPOSER'
-          case 'Executor':
-            return 'EXECUTOR'
-          default:
-            return 'VOTER'
-        }
-      }) as ('VOTER' | 'PROPOSER' | 'EXECUTOR')[]
+        const newPermissionMask = createPermissionMask(permissions)
 
-      const newPermissionMask = createPermissionMask(permissions)
+        await proposeEditPermission({
+          member: editRolesMember.fullAddress,
+          new_permissions: newPermissionMask,
+        })
 
-      await proposeEditPermission({
-        member: editRolesMember.fullAddress,
-        new_permissions: newPermissionMask,
-      })
+        setIsProcessingModalOpen(false)
+        setIsSuccessModalOpen(true)
+        setSuccessTitle('Role Changes Proposed!')
+        setSuccessMessage(
+          'The role change proposal has been successfully created and sent to other members for approval.',
+        )
 
-      setIsProcessingModalOpen(false)
-      setIsSuccessModalOpen(true)
-      setSuccessTitle('Role Changes Proposed!')
-      setSuccessMessage(
-        'The role change proposal has been successfully created and sent to other members for approval.',
-      )
+        refetch()
+      } catch (error) {
+        setIsProcessingModalOpen(false)
+        console.error('Error proposing role edit:', error)
+      }
+    },
+    [editRolesMember, proposeEditPermission, refetch],
+  )
 
-      // Refresh members list
-      refetch()
-    } catch (error) {
-      setIsProcessingModalOpen(false)
-      console.error('Error proposing role edit:', error)
-      // TODO: Show error modal
-    }
-  }
+  const handleRemoveMember = useCallback(
+    async (member: Member) => {
+      try {
+        setDropdownOpen(null)
+        setIsProcessingModalOpen(true)
+        setProcessingTitle('Proposing Member Removal!')
+        setProcessingSubtitle(
+          'Please wait while we process the member removal proposal...',
+        )
 
-  const handleRemoveMember = async (member: Member) => {
-    try {
-      setDropdownOpen(null)
-      setIsProcessingModalOpen(true)
-      setProcessingTitle('Proposing Member Removal!')
-      setProcessingSubtitle(
-        'Please wait while we process the member removal proposal...',
-      )
+        await proposeMemberRemove({
+          member_address: member.fullAddress,
+        })
 
-      await proposeMemberRemove({
-        member_address: member.fullAddress,
-      })
+        setIsProcessingModalOpen(false)
+        setIsSuccessModalOpen(true)
+        setSuccessTitle('Member Removal Proposed!')
+        setSuccessMessage(
+          'The member removal proposal has been successfully created and sent to other members for approval.',
+        )
 
-      setIsProcessingModalOpen(false)
-      setIsSuccessModalOpen(true)
-      setSuccessTitle('Member Removal Proposed!')
-      setSuccessMessage(
-        'The member removal proposal has been successfully created and sent to other members for approval.',
-      )
+        refetch()
+      } catch (error) {
+        setIsProcessingModalOpen(false)
+        console.error('Error proposing member removal:', error)
+      }
+    },
+    [proposeMemberRemove, refetch],
+  )
 
-      // Refresh members list
-      refetch()
-    } catch (error) {
-      setIsProcessingModalOpen(false)
-      console.error('Error proposing member removal:', error)
-      // TODO: Show error modal
-    }
-  }
-
-  const handleViewTransaction = () => {
+  const handleViewTransaction = useCallback(() => {
     setIsSuccessModalOpen(false)
-    // Navigate to transactions page
-    window.location.href = `/${accountAddress}/transactions`
+    if (accountAddress) {
+      router.push(`/${accountAddress}/transactions`)
+    }
+  }, [router, accountAddress])
+
+  if (!accountReady) {
+    return (
+      <div className="bg-theme min-h-screen p-3 sm:p-4 lg:p-5 py-6 sm:py-8 lg:py-10 overflow-x-hidden transition-colors duration-300">
+        <div className="flex items-center justify-center h-64">
+          <div className="text-theme text-lg">Loading account…</div>
+        </div>
+      </div>
+    )
   }
 
   if (isLoading) {
     return (
-      <div
-        className={`bg-theme min-h-screen p-3 sm:p-4 lg:p-5 py-6 sm:py-8 lg:py-10 overflow-x-hidden transition-colors duration-300`}
-      >
+      <div className="bg-theme min-h-screen p-3 sm:p-4 lg:p-5 py-6 sm:py-8 lg:py-10 overflow-x-hidden transition-colors duration-300">
         <div className="flex items-center justify-center h-64">
           <div className="text-theme text-lg">Loading members...</div>
         </div>
@@ -362,9 +332,7 @@ const Members = () => {
 
   if (error) {
     return (
-      <div
-        className={`bg-theme min-h-screen p-3 sm:p-4 lg:p-5 py-6 sm:py-8 lg:py-10 overflow-x-hidden transition-colors duration-300`}
-      >
+      <div className="bg-theme min-h-screen p-3 sm:p-4 lg:p-5 py-6 sm:py-8 lg:py-10 overflow-x-hidden transition-colors duration-300">
         <div className="flex items-center justify-center h-64">
           <div className="text-red-500 text-lg">
             Error loading members: {error.message}
@@ -375,9 +343,7 @@ const Members = () => {
   }
 
   return (
-    <div
-      className={`bg-theme min-h-screen p-3 sm:p-4 lg:p-5 py-6 sm:py-8 lg:py-10 overflow-x-hidden transition-colors duration-300`}
-    >
+    <div className="bg-theme min-h-screen p-3 sm:p-4 lg:p-5 py-6 sm:py-8 lg:py-10 overflow-x-hidden transition-colors duration-300">
       <div className="flex flex-col sm:flex-row text-theme justify-between border-b-2 relative border-theme-border gap-4">
         <div className="flex items-center flex-wrap">
           <p className="cursor-pointer px-3 sm:px-4 py-2 text-sm sm:text-base transition-colors duration-200 border-b-2 border-theme text-theme">
@@ -406,233 +372,20 @@ const Members = () => {
       <div className="text-theme mt-4 sm:mt-6">
         <div className="flex flex-wrap gap-2">
           {members.map((member) => (
-            <div
+            <MemberCard
               key={member.id}
-              className="w-full sm:w-[48.8%] lg:w-[32.8%] min-h-[240px] sm:min-h-[260px] bg-theme-bg-secondary border border-theme-border rounded-[10px] relative transition-colors duration-300 pt-6 px-6 mb-2"
-              style={{
-                zIndex: dropdownOpen === member.id ? 20 : 10,
-              }}
-              onClick={() => {
-                setMemberDetails({
-                  id: member.id,
-                  name: member.name,
-                  address: member.address,
-                  fullAddress: member.fullAddress,
-                })
-                setIsMemberDetailsOpen(true)
-              }}
-            >
-              {/* Header section with avatar and name */}
-              <div className="flex flex-col items-center">
-                <div className="w-full h-[70px] sm:h-[78px] bg-theme-bg-tertiary justify-between px-2 flex items-center rounded-[7px] border border-theme-border">
-                  <div className="flex gap-2 sm:gap-3 flex-1 min-w-0">
-                    <Image
-                      src={member.image}
-                      alt="member avatar"
-                      height={40}
-                      width={40}
-                      className="rounded-full flex-shrink-0 sm:h-[50px] sm:w-[50px]"
-                    />
-                    <div className="flex flex-col min-w-0 flex-1">
-                      {editingId === member.id ? (
-                        <div className="relative">
-                          <div
-                            className="absolute inset-0 rounded-md"
-                            style={{
-                              background: getBorderGradient(),
-                              padding: '2px',
-                              zIndex: 0,
-                            }}
-                          />
-                          <div className="flex items-center gap-2 relative z-10 bg-theme-bg-secondary rounded-md">
-                            <input
-                              autoFocus
-                              value={editName}
-                              onChange={(e) => setEditName(e.target.value)}
-                              onClick={(e) => e.stopPropagation()}
-                              onKeyDown={(e) => {
-                                if (e.key === 'Enter') {
-                                  setEditingId(null)
-                                } else if (e.key === 'Escape') {
-                                  setEditingId(null)
-                                }
-                              }}
-                              className="bg-theme-bg-tertiary w-full text-theme text-sm sm:text-[16px] px-2 sm:px-3 py-2 rounded-md focus:outline-primary border border-theme-border"
-                            />
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation()
-                                setEditingId(null)
-                              }}
-                              className="p-1 hover:bg-primary/20 rounded"
-                            >
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                className="h-4 w-4 sm:h-5 sm:w-5 text-green-400"
-                                viewBox="0 0 20 20"
-                                fill="currentColor"
-                              >
-                                <path
-                                  fillRule="evenodd"
-                                  d="M16.707 5.293a1   1 0 00-1.414 0L8 12.586 4.707 9.293a1 1 0 00-1.414 1.414l4 4a1 1 0 001.414 0l8-8a1 1 0 000-1.414z"
-                                  clipRule="evenodd"
-                                />
-                              </svg>
-                            </button>
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation()
-                                setEditingId(null)
-                              }}
-                              className="p-1 hover:bg-primary/20 rounded"
-                            >
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                className="h-4 w-4 sm:h-5 sm:w-5 text-red-400"
-                                viewBox="0 0 20 20"
-                                fill="currentColor"
-                              >
-                                <path
-                                  fillRule="evenodd"
-                                  d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                                  clipRule="evenodd"
-                                />
-                              </svg>
-                            </button>
-                          </div>
-                        </div>
-                      ) : (
-                        <p className="text-base sm:text-lg lg:text-[20px] text-theme font-semibold truncate">
-                          {member.name}
-                        </p>
-                      )}
-                      <div className="flex items-center gap-[5px]">
-                        <p className="font-semibold text-sm sm:text-[16px] text-theme-secondary truncate">
-                          {member.address}
-                        </p>
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation()
-                            handleCopy(member.fullAddress)
-                          }}
-                          className="flex-shrink-0"
-                        >
-                          <Image
-                            src="/copy.svg"
-                            alt="copy"
-                            height={16}
-                            width={16}
-                            className="rounded-full mt-1 sm:h-[18px] sm:w-[18px]"
-                          />
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="relative flex-shrink-0">
-                    <button
-                      className="dropdown-trigger"
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        toggleDropdown(member.id)
-                      }}
-                    >
-                      <Image
-                        src="/dots.svg"
-                        alt="dots"
-                        height={20}
-                        width={20}
-                        className="mb-8 sm:mb-12 sm:h-6 sm:w-6"
-                      />
-                    </button>
-                    {dropdownOpen === member.id && (
-                      <div className="dropdown-menu absolute z-50 right-0 bg-theme-bg-tertiary border border-theme-border mt-[-50px] rounded-lg shadow-lg w-32 sm:w-40 text-xs sm:text-sm text-theme px-2 py-2">
-                        <ul className="">
-                          <li
-                            className="px-3 sm:px-4 py-2 rounded-lg hover:bg-theme-bg-secondary cursor-pointer transition-colors duration-200"
-                            onClick={(e) => {
-                              e.stopPropagation()
-                              handleEditRoles(member)
-                            }}
-                          >
-                            Edit Roles
-                          </li>
-                          <li
-                            className="px-3 sm:px-4 py-2 rounded-lg hover:bg-theme-bg-secondary cursor-pointer transition-colors duration-200"
-                            onClick={(e) => {
-                              e.stopPropagation()
-                              startEditing(member.id)
-                            }}
-                          >
-                            Edit Name
-                          </li>
-                          <li
-                            className="px-3 sm:px-4 py-2 rounded-lg hover:bg-theme-bg-secondary cursor-pointer transition-colors duration-200"
-                            onClick={(e) => {
-                              e.stopPropagation()
-                              handleRemoveMember(member)
-                            }}
-                          >
-                            Remove Member
-                          </li>
-                        </ul>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-
-              {/* Roles section */}
-              <div className="flex mt-4 sm:mt-5 gap-[8px] sm:gap-[10px] flex-wrap">
-                <p className="text-theme-secondary text-xs sm:text-[14px] font-semibold">
-                  Roles:
-                </p>
-                {member.roles.map((role) => {
-                  let roleStyle = ''
-                  if (role === 'Voter') {
-                    roleStyle =
-                      'bg-[#FF7BE9]/10 text-[#FF7BE9] border-[#FF7BE9]'
-                  } else if (role === 'Proposer') {
-                    roleStyle =
-                      'bg-[#FF8A25]/10 text-[#FF8A25] border-[#FF8A25]'
-                  } else if (role === 'Executor') {
-                    roleStyle =
-                      'bg-[#19B360]/10 text-[#19B360] border-[#19B360]'
-                  }
-                  return (
-                    <div
-                      key={role}
-                      className={`flex items-center justify-center text-[10px] sm:text-[12px] px-1 sm:px-2 py-[1px] sm:py-[2px] border-[1px] rounded-3xl ${roleStyle}`}
-                    >
-                      {role}
-                    </div>
-                  )
-                })}
-              </div>
-
-              {/* Date added section */}
-              <div className="flex mt-3 sm:mt-4 gap-[8px] sm:gap-[10px]">
-                <p className="text-theme-secondary text-xs sm:text-[14px] font-semibold">
-                  Date added:
-                </p>
-                <p className="text-theme text-sm sm:text-[16px] font-semibold">
-                  {member.dateAdded}
-                </p>
-              </div>
-
-              {/* Remove button section */}
-              <div className="flex items-center justify-center mt-4 sm:mt-5">
-                <button
-                  className="bg-theme-bg-tertiary border border-theme-border rounded-[7px] flex items-center justify-center font-medium text-xs sm:text-[14px] text-theme w-full h-[32px] sm:h-[36px] hover:bg-theme-bg-secondary transition-colors duration-200"
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    handleRemoveMember(member)
-                  }}
-                >
-                  Remove member
-                </button>
-              </div>
-            </div>
+              member={member}
+              dropdownOpen={dropdownOpen}
+              setMemberDetails={setMemberDetails}
+              setIsMemberDetailsOpen={setIsMemberDetailsOpen}
+              getBorderGradient={getBorderGradient}
+              editName={editName}
+              setEditName={setEditName}
+              handleCopy={handleCopy}
+              setDropdownOpen={setDropdownOpen}
+              handleRemoveMember={handleRemoveMember}
+              handleEditRoles={handleEditRoles}
+            />
           ))}
 
           {/* Add Member Box */}
