@@ -1,5 +1,11 @@
 import Image from 'next/image'
-import React, { useCallback, useContext, useMemo, useState } from 'react'
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react'
 import { MemberDetailsType } from './member-details-modal'
 import { useGetMemberFullDetails, useGetMemberPermissions } from '@/lib'
 import { SpherreAccountContext } from '@/app/context/account-context'
@@ -48,14 +54,13 @@ function MemberCardBase({
     (member.fullAddress || '0x0') as `0x${string}`,
   )
 
-  console.log(perms)
   const { data: fullDetails } = useGetMemberFullDetails(
     accountAddress || '0x0',
     (member.fullAddress || '0x0') as `0x${string}`,
   )
+  const [currentMember, setCurrentMember] = useState<Member>(member)
 
   const joinedAt = useMemo(() => {
-    console.log(fullDetails, 'hhh')
     const ts = fullDetails?.date_joined
     if (!ts) return ''
     try {
@@ -121,6 +126,12 @@ function MemberCardBase({
   const loadError = perms.error
   const isLoading = perms.isLoading
 
+  useEffect(() => {
+    if (perms.permissions.length > 0) {
+      setCurrentMember({ ...member, permissions: perms.permissions })
+    }
+  }, [perms.permissions])
+
   return (
     <div
       className="w-full sm:w-[48.8%] lg:w-[32.8%] min-h-[240px] sm:min-h-[260px] bg-theme-bg-secondary border border-theme-border rounded-[10px] relative transition-colors duration-300 pt-6 px-6 mb-2"
@@ -132,15 +143,15 @@ function MemberCardBase({
         <div className="w-full h-[70px] sm:h-[78px] bg-theme-bg-tertiary justify-between px-2 flex items-center rounded-[7px] border border-theme-border">
           <div className="flex gap-2 sm:gap-3 flex-1 min-w-0">
             <Image
-              src={member.image}
-              alt={`${member.name} avatar`}
+              src={currentMember.image}
+              alt={`${currentMember.name} avatar`}
               height={40}
               width={40}
               className="rounded-full flex-shrink-0 sm:h/[50px] sm:w/[50px] sm:h-[50px] sm:w-[50px]"
             />
 
             <div className="flex flex-col min-w-0 flex-1">
-              {editingId === member.id ? (
+              {editingId === currentMember.id ? (
                 <div className="relative" onClick={(e) => e.stopPropagation()}>
                   <div
                     className="absolute inset-0 rounded-md"
@@ -208,18 +219,18 @@ function MemberCardBase({
                 </div>
               ) : (
                 <p className="text-base sm:text-lg lg:text-[20px] text-theme font-semibold truncate">
-                  {member.name}
+                  {currentMember.name}
                 </p>
               )}
 
               <div className="flex items-center gap-[5px]">
                 <p className="font-semibold text-sm sm:text-[16px] text-theme-secondary truncate">
-                  {member.address}
+                  {currentMember.address}
                 </p>
                 <button
                   onClick={(e) => {
                     e.stopPropagation()
-                    handleCopy(member.fullAddress)
+                    handleCopy(currentMember.fullAddress)
                   }}
                   className="flex-shrink-0"
                   aria-label="Copy address"
@@ -244,7 +255,7 @@ function MemberCardBase({
               aria-controls={dropdownId}
               onClick={(e) => {
                 e.stopPropagation()
-                toggleDropdown(member.id)
+                toggleDropdown(currentMember.id)
               }}
               onKeyDown={(e) => {
                 if (e.key === 'Escape') setDropdownOpen(null)
@@ -276,12 +287,12 @@ function MemberCardBase({
                     className="px-3 sm:px-4 py-2 rounded-lg hover:bg-theme-bg-secondary cursor-pointer transition-colors duration-200"
                     onClick={(e) => {
                       e.stopPropagation()
-                      handleEditRoles(member)
+                      handleEditRoles(currentMember)
                       setDropdownOpen(null)
                     }}
                     onKeyDown={(e) => {
                       if (e.key === 'Enter') {
-                        handleEditRoles(member)
+                        handleEditRoles(currentMember)
                         setDropdownOpen(null)
                       }
                     }}
@@ -294,7 +305,7 @@ function MemberCardBase({
                     className="px-3 sm:px-4 py-2 rounded-lg hover:bg-theme-bg-secondary cursor-pointer transition-colors duration-200"
                     onClick={(e) => {
                       e.stopPropagation()
-                      startEditing(member.id)
+                      startEditing(currentMember.id)
                     }}
                     onKeyDown={(e) => {
                       if (e.key === 'Enter') startEditing(member.id)
@@ -308,12 +319,12 @@ function MemberCardBase({
                     className="px-3 sm:px-4 py-2 rounded-lg hover:bg-theme-bg-secondary cursor-pointer transition-colors duration-200"
                     onClick={(e) => {
                       e.stopPropagation()
-                      handleRemoveMember(member)
+                      handleRemoveMember(currentMember)
                       setDropdownOpen(null)
                     }}
                     onKeyDown={(e) => {
                       if (e.key === 'Enter') {
-                        handleRemoveMember(member)
+                        handleRemoveMember(currentMember)
                         setDropdownOpen(null)
                       }
                     }}
@@ -361,7 +372,7 @@ function MemberCardBase({
           className="bg-theme-bg-tertiary border border-theme-border rounded-[7px] flex items-center justify-center font-medium text-xs sm:text-[14px] text-theme w-full h-[32px] sm:h-[36px] hover:bg-theme-bg-secondary transition-colors duration-200"
           onClick={(e) => {
             e.stopPropagation()
-            handleRemoveMember(member)
+            handleRemoveMember(currentMember)
           }}
         >
           Remove member
