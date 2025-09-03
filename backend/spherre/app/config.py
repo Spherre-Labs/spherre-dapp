@@ -8,6 +8,9 @@ class Config:
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     JWT_ACCESS_TOKEN_EXPIRES = timedelta(hours=1)
     JWT_REFRESH_TOKEN_EXPIRES = timedelta(days=30)
+    DOMAIN_NAME = os.environ.get("DOMAIN_NAME") or "Spherre"
+    CHAIN_ID = os.environ.get("CHAIN_ID") or "SN_SEPOLIA"
+    VERSION = os.environ.get("VERSION") or "1"
 
 
 class DevelopmentConfig(Config):
