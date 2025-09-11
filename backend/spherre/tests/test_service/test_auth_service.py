@@ -1,7 +1,5 @@
 from unittest import TestCase
 
-from flask_jwt_extended import create_access_token, create_refresh_token
-
 from spherre.app import create_app
 from spherre.app.extensions import db
 from spherre.app.service.auth import AuthService

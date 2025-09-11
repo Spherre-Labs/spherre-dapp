@@ -45,7 +45,8 @@ def create_app(config_name="development"):
             # check if account address is a private
             if account and account.is_private:
                 # validate user is a member of the account
-                verify_jwt_in_request()  # this will raise an exception if no jwt is found
+                # this will raise an exception if no jwt is found
+                verify_jwt_in_request()
                 current_user = get_jwt_identity()
                 if not AccountService.is_account_member(account_address, current_user):
                     return jsonify(

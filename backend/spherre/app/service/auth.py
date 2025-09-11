@@ -1,6 +1,5 @@
 from flask import current_app
 from flask_jwt_extended import create_access_token, create_refresh_token
-from starknet_py.constants import EC_ORDER
 from starknet_py.hash.address import compute_address
 from starknet_py.utils.typed_data import TypedData
 
