@@ -23,6 +23,7 @@ class ProductionConfig(Config):
     SQLALCHEMY_DATABASE_URI = (
         os.environ.get("DATABASE_URL") or "postgresql://user:pass@localhost/prod_db"
     )
+    JWT_COOKIE_SECURE = True
 
 
 class TestingConfig(Config):
