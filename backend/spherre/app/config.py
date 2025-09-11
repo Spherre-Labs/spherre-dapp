@@ -11,6 +11,8 @@ class Config:
     DOMAIN_NAME = os.environ.get("DOMAIN_NAME") or "Spherre"
     CHAIN_ID = os.environ.get("CHAIN_ID") or "SN_SEPOLIA"
     VERSION = os.environ.get("VERSION") or "1"
+    ACCOUNT_CLASS_HASH = os.environ.get("ACCOUNT_CLASS_HASH") or \
+        "0x025EC026985A3BF9D0CC1FE17326B245DFDC3FF89B8FDE106542A3EA56C5A918"
 
 
 class DevelopmentConfig(Config):

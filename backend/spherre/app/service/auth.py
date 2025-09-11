@@ -1,3 +1,5 @@
+from flask import current_app
+
 from flask_jwt_extended import create_access_token, create_refresh_token
 from starknet_py.constants import EC_ORDER
 from starknet_py.hash.address import compute_address
@@ -5,6 +7,9 @@ from starknet_py.utils.typed_data import TypedData
 
 from spherre.app.models import Member
 from spherre.app.utils.signature import SignatureUtils
+
+
+
 
 
 class AuthService:
@@ -32,11 +37,19 @@ class AuthService:
         """
         Generate the address from the public key
         """
-        return compute_address(
-            class_hash=0x025EC026985A3BF9D0CC1FE17326B245DFDC3FF89B8FDE106542A3EA56C5A918,
+        public_key = int(public_key, 16) # convert the public key to an integer
+        
+        class_hash = current_app.config.get("ACCOUNT_CLASS_HASH")
+        int_class_hash = int(class_hash, 16)
+        
+        
+        address = compute_address(
+            class_hash=int_class_hash,
             constructor_calldata=[public_key],
             salt=0,
         )
+        return hex(address)
+        
 
     @classmethod
     def sign_in_member(cls, member_address: str) -> dict:
