@@ -10,3 +10,12 @@ def login_required(f):
         return f(*args, **kwargs)
 
     return decorated_function
+
+
+def login_required_optional(f):
+    @wraps(f)
+    @jwt_required(optional=True)
+    def decorated_function(*args, **kwargs):
+        return f(*args, **kwargs)
+
+    return decorated_function
