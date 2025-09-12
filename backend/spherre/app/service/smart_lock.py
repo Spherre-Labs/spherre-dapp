@@ -1,6 +1,6 @@
 from datetime import datetime
 from decimal import Decimal
-from typing import List, Optional
+from typing import List, Optional, Tuple
 
 from sqlalchemy.exc import IntegrityError
 
@@ -128,3 +128,62 @@ class SmartLockService:
             Optional[SmartLock]: The smart lock if found, None otherwise
         """
         return SmartLock.query.filter_by(lock_id=lock_id).first()
+
+    @classmethod
+    def get_smart_locks_paginated(
+        cls,
+        page: int = 1,
+        per_page: int = 20,
+        status_filter: Optional[LockStatus] = None,
+        account_address: Optional[str] = None,
+    ) -> Tuple[List[SmartLock], dict]:
+        """
+        Get paginated smart locks with optional filters.
+
+        Args:
+            page: Page number (1-based)
+            per_page: Number of items per page
+            status_filter: Optional filter by lock status
+            account_address: Optional filter by account address (if relationship exists)
+
+        Returns:
+            Tuple[List[SmartLock], dict]: Smart locks and pagination metadata
+        """
+        query = SmartLock.query
+
+        if status_filter is not None:
+            if not isinstance(status_filter, LockStatus):
+                raise ValueError("status_filter must be a valid LockStatus enum value")
+            query = query.filter_by(lock_status=status_filter)
+
+        # TODO: Add account filtering when relationship is established
+        # if account_address is not None:
+        #     query = query.join(Account).filter(Account.address == account_address)
+
+        # Get total count before pagination
+        total = query.count()
+
+        # Apply pagination
+        offset = (page - 1) * per_page
+        smart_locks = (
+            query.order_by(SmartLock.date_locked.desc())
+            .offset(offset)
+            .limit(per_page)
+            .all()
+        )
+
+        # Calculate pagination metadata
+        total_pages = (total + per_page - 1) // per_page
+        has_next = page < total_pages
+        has_prev = page > 1
+
+        pagination_meta = {
+            "page": page,
+            "per_page": per_page,
+            "total": total,
+            "total_pages": total_pages,
+            "has_next": has_next,
+            "has_prev": has_prev,
+        }
+
+        return smart_locks, pagination_meta
