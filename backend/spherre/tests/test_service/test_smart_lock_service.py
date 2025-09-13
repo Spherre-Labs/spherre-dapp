@@ -362,6 +362,47 @@ class TestSmartLockService(TestCase):
         assert len(locks_nonexistent) == 0
         assert pagination3["total"] == 0
 
+    def test_get_smart_locks_paginated_invalid_pagination(self):
+        """Test pagination validation with invalid inputs."""
+        test_date = datetime.now()
+        test_account_address = TEST_ACCOUNT_ADDRESS
+
+        # Create a smart lock for testing
+        SmartLockService.create_smart_lock(
+            lock_id=20,
+            token="TEST",
+            date_locked=test_date,
+            token_amount=Decimal("10.0"),
+            lock_duration=3600,
+            account_address=test_account_address,
+        )
+
+        # Test invalid page (page < 1)
+        with self.assertRaises(ValueError) as context:
+            SmartLockService.get_smart_locks_paginated(
+                page=0,
+                per_page=10,
+                account_address=test_account_address,
+            )
+        self.assertIn("page must be >= 1", str(context.exception))
+
+        # Test invalid per_page (per_page < 1)
+        with self.assertRaises(ValueError) as context:
+            SmartLockService.get_smart_locks_paginated(
+                page=1,
+                per_page=0,
+                account_address=test_account_address,
+            )
+        self.assertIn("per_page must be >= 1", str(context.exception))
+
+        # Test per_page > 100 (should be clamped to 100)
+        locks, pagination = SmartLockService.get_smart_locks_paginated(
+            page=1,
+            per_page=150,  # Should be clamped to 100
+            account_address=test_account_address,
+        )
+        assert pagination["per_page"] == 100
+
     def test_list_smart_locks_empty_result(self):
         """Test listing smart locks when no locks exist."""
         all_locks = SmartLockService.list_all_smart_locks()

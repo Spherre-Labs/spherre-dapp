@@ -165,6 +165,15 @@ class SmartLockService:
         if account_address is not None:
             query = query.filter_by(account_address=account_address)
 
+        # Validate pagination inputs
+        if page < 1:
+            raise ValueError("page must be >= 1")
+        if per_page < 1:
+            raise ValueError("per_page must be >= 1")
+        # Enforce service-side upper bound to protect DB/memory
+        # (align with API: max 100)
+        per_page = min(per_page, 100)
+
         # Get total count before pagination
         total = query.count()
 
@@ -178,7 +187,7 @@ class SmartLockService:
         )
 
         # Calculate pagination metadata
-        total_pages = (total + per_page - 1) // per_page
+        total_pages = (total + per_page - 1) // per_page  # safe now that per_page >= 1
         has_next = page < total_pages
         has_prev = page > 1
 
