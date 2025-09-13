@@ -33,6 +33,7 @@ class SmartLock(ModelMixin, db.Model):
         server_default=LockStatus.LOCKED.value,
         nullable=False,
     )
+    account_address = db.Column(db.String, nullable=False, index=True)
 
     # Add index for efficient querying by lock_id
     __table_args__ = (Index("idx_smart_lock_lock_id", "lock_id"),)

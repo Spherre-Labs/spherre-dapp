@@ -1,5 +1,7 @@
 from flask import Blueprint, jsonify, request
 
+from spherre.app.extensions import db
+from spherre.app.models.account import Account
 from spherre.app.serializers.smart_lock import SmartLockListResponseSerializer
 from spherre.app.service.smart_lock import SmartLockService
 from spherre.app.utils.validation import is_valid_starknet_address
@@ -23,6 +25,15 @@ def get_account_smart_locks(account_address):
         return jsonify({"error": "Invalid account address format"}), 400
 
     try:
+        # Ensure account exists
+        account_exists = (
+            db.session.query(Account.id)
+            .filter_by(address=account_address)
+            .first()
+        )
+        if not account_exists:
+            return jsonify({"error": "Account not found"}), 404
+
         # Get pagination parameters from query string
         page = request.args.get("page", 1, type=int)
         per_page = request.args.get("per_page", 20, type=int)

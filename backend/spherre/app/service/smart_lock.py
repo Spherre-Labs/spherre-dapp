@@ -21,6 +21,7 @@ class SmartLockService:
         date_locked: datetime,
         token_amount: Decimal,
         lock_duration: int,
+        account_address: str,
     ) -> SmartLock:
         """
         Create a new smart lock.
@@ -31,6 +32,7 @@ class SmartLockService:
             date_locked: Timestamp when the lock was created
             token_amount: Amount of tokens locked
             lock_duration: Duration of the lock in seconds/blocks
+            account_address: Address of the account that owns this smart lock
 
         Returns:
             SmartLock: The created smart lock instance
@@ -52,6 +54,8 @@ class SmartLockService:
             raise ValueError("token_amount must be positive")
         if lock_duration <= 0:
             raise ValueError("lock_duration must be positive")
+        if not account_address:
+            raise ValueError("account_address cannot be empty")
 
         try:
             smart_lock = SmartLock(
@@ -60,6 +64,7 @@ class SmartLockService:
                 date_locked=date_locked,
                 token_amount=token_amount,
                 lock_duration=lock_duration,
+                account_address=account_address,
             )
             db.session.add(smart_lock)
             db.session.commit()
@@ -156,9 +161,9 @@ class SmartLockService:
                 raise ValueError("status_filter must be a valid LockStatus enum value")
             query = query.filter_by(lock_status=status_filter)
 
-        # TODO: Add account filtering when relationship is established
-        # if account_address is not None:
-        #     query = query.join(Account).filter(Account.address == account_address)
+        # Account scoping
+        if account_address is not None:
+            query = query.filter_by(account_address=account_address)
 
         # Get total count before pagination
         total = query.count()
