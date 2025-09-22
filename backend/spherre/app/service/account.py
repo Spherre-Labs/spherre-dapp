@@ -1,3 +1,5 @@
+from typing import Optional
+
 from spherre.app.models import session_save
 from spherre.app.models.account import Account, Member
 
@@ -27,7 +29,7 @@ class AccountService:
         return account
 
     @classmethod
-    def get_account_by_address(cls, address: str) -> Account | None:
+    def get_account_by_address(cls, address: str) -> Optional[Account]:
         """
         Get an account by it's address
         """
@@ -63,7 +65,7 @@ class AccountService:
     @classmethod
     def add_member_to_account(
         cls, account_address: str, member_address: str
-    ) -> Account | None:
+    ) -> Optional[Account]:
         """
         Add a member to an account
         """
@@ -78,7 +80,7 @@ class AccountService:
     @classmethod
     def remove_member_from_account(
         cls, account_address: str, member_address: str
-    ) -> Account | None:
+    ) -> Optional[Account]:
         """
         Remove a member from an account
         """
@@ -95,7 +97,7 @@ class AccountService:
     @classmethod
     def update_account_threshold(
         cls, account_address: str, new_threshold: float
-    ) -> Account | None:
+    ) -> Optional[Account]:
         """
         Update the threshold of an account
         """
@@ -109,7 +111,7 @@ class AccountService:
     @classmethod
     def update_account_description(
         cls, account_address: str, new_description: str
-    ) -> Account | None:
+    ) -> Optional[Account]:
         """
         Update the description of an account
         """
@@ -121,7 +123,9 @@ class AccountService:
         return account
 
     @classmethod
-    def update_account_name(cls, account_address: str, new_name: str) -> Account | None:
+    def update_account_name(
+        cls, account_address: str, new_name: str
+    ) -> Optional[Account]:
         """
         Update the name of an account
         """
@@ -136,7 +140,7 @@ class AccountService:
     def toggle_account_privacy(
         cls,
         account_address: str,
-    ) -> Account | None:
+    ) -> Optional[Account]:
         """
         Toggle the privacy of an account
         """
@@ -148,7 +152,7 @@ class AccountService:
         return account
 
     @classmethod
-    def get_account_threshold(cls, account_address: str) -> float | None:
+    def get_account_threshold(cls, account_address: str) -> Optional[float]:
         """
         Get the threshold of an account
         """
