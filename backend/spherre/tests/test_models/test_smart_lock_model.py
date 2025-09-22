@@ -28,7 +28,7 @@ class TestSmartLockModel(TestCase):
     def test_create_smart_lock_model(self):
         """Test creating a new SmartLock instance."""
         test_account_address = TEST_ACCOUNT_ADDRESS
-        
+
         smart_lock = SmartLock(
             lock_id=1,
             token="ETH",
@@ -54,7 +54,7 @@ class TestSmartLockModel(TestCase):
     def test_smart_lock_default_status(self):
         """Test that default status is LOCKED."""
         test_account_address = TEST_ACCOUNT_ADDRESS
-        
+
         smart_lock = SmartLock(
             lock_id=2,
             token="USDC",
@@ -69,7 +69,7 @@ class TestSmartLockModel(TestCase):
     def test_update_smart_lock_status(self):
         """Test updating lock status."""
         test_account_address = TEST_ACCOUNT_ADDRESS
-        
+
         smart_lock = SmartLock(
             lock_id=3,
             token="BTC",
@@ -93,7 +93,7 @@ class TestSmartLockModel(TestCase):
     def test_smart_lock_unique_lock_id(self):
         """Test that lock_id is unique."""
         test_account_address = TEST_ACCOUNT_ADDRESS
-        
+
         # Create first smart lock
         smart_lock1 = SmartLock(
             lock_id=4,
@@ -125,7 +125,7 @@ class TestSmartLockModel(TestCase):
     def test_smart_lock_repr(self):
         """Test the string representation of SmartLock."""
         test_account_address = TEST_ACCOUNT_ADDRESS
-        
+
         smart_lock = SmartLock(
             lock_id=5,
             token="STRK",
@@ -151,7 +151,7 @@ class TestSmartLockModel(TestCase):
     def test_smart_lock_decimal_precision(self):
         """Test that token_amount handles high precision decimals correctly."""
         test_account_address = TEST_ACCOUNT_ADDRESS
-        
+
         # Test with 18 decimal precision (matching the model's scale)
         high_precision_amount = Decimal("123456789.123456789123456789")
 

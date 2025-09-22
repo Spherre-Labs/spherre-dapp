@@ -6,7 +6,7 @@ from spherre.app.models.smart_lock import LockStatus
 
 class SmartLockSerializer(Schema):
     """Serializer for SmartLock model."""
-    
+
     id = fields.Str()
     lock_id = fields.Int()
     token = fields.Str()
@@ -18,7 +18,7 @@ class SmartLockSerializer(Schema):
 
 class PaginationSerializer(Schema):
     """Serializer for pagination metadata."""
-    
+
     page = fields.Int()
     per_page = fields.Int()
     total = fields.Int()
@@ -29,6 +29,6 @@ class PaginationSerializer(Schema):
 
 class SmartLockListResponseSerializer(Schema):
     """Serializer for the complete smart lock list response."""
-    
+
     smart_locks = fields.Nested(SmartLockSerializer, many=True)
     pagination = fields.Nested(PaginationSerializer)

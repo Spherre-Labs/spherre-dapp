@@ -13,10 +13,10 @@ smart_lock_blueprint = Blueprint("smart_lock", __name__, url_prefix="/api/v1")
 def get_account_smart_locks(account_address):
     """
     Get all smart locks for a specific account with pagination.
-    
+
     Args:
         account_address: The address of the account
-        
+
     Returns:
         JSON response with smart locks and pagination metadata
     """
@@ -27,9 +27,7 @@ def get_account_smart_locks(account_address):
     try:
         # Ensure account exists
         account_exists = (
-            db.session.query(Account.id)
-            .filter_by(address=account_address)
-            .first()
+            db.session.query(Account.id).filter_by(address=account_address).first()
         )
         if not account_exists:
             return jsonify({"error": "Account not found"}), 404
@@ -38,17 +36,18 @@ def get_account_smart_locks(account_address):
         page = request.args.get("page", 1, type=int)
         per_page = request.args.get("per_page", 20, type=int)
         status_filter = request.args.get("status", type=str)
-        
+
         # Validate pagination parameters
         if page < 1:
             page = 1
         if per_page < 1 or per_page > 100:  # Limit max per_page to 100
             per_page = 20
-            
+
         # Convert status string to enum if provided
         status_enum = None
         if status_filter:
             from spherre.app.models.smart_lock import LockStatus
+
             try:
                 status_enum = LockStatus(status_filter.lower())
             except ValueError:
@@ -70,7 +69,7 @@ def get_account_smart_locks(account_address):
             "smart_locks": smart_locks,
             "pagination": pagination_meta,
         }
-        
+
         serializer = SmartLockListResponseSerializer()
         serialized_response = serializer.dump(response_data)
 
