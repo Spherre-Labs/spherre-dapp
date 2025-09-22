@@ -1,8 +1,21 @@
 from unittest import TestCase
 
+from flask_jwt_extended import decode_token
+
 from spherre.app import create_app
 from spherre.app.extensions import db
 from spherre.app.service.auth import AuthService
+
+
+def is_jwt_token(token: str) -> bool:
+    """
+    Check if a token is a valid jwt token
+    """
+    try:
+        decode_token(token)
+        return True
+    except Exception:
+        return False
 
 
 class TestAuthService(TestCase):
@@ -22,6 +35,9 @@ class TestAuthService(TestCase):
         data = AuthService.sign_in_member("0x123")
         assert data is not None
         assert data["member"] == "0x123"
+        # check if token and refresh token are jwt tokens
+        assert is_jwt_token(data["token"])
+        assert is_jwt_token(data["refresh_token"])
 
     def test_generate_address_from_public_key(self):
         address = AuthService.generate_address_from_public_key("0x123")

@@ -22,19 +22,17 @@ class SignatureUtils:
                 }
             ),
             "types": {
-                "StarknetDomain": [
+                "StarkNetDomain": [
                     Parameter(**{"name": "name", "type": "felt"}),
                     Parameter(**{"name": "chainId", "type": "felt"}),
                     Parameter(**{"name": "version", "type": "felt"}),
                 ],
                 "Message": [
-                    Parameter(**{"name": "name", "type": "felt"}),
-                    Parameter(**{"name": "age", "type": "felt"}),
-                    Parameter(**{"name": "address", "type": "felt"}),
+                    Parameter(**{"name": "agreement", "type": "felt"}),
                 ],
             },
             "primary_type": "Message",
-            "message": {},
+            "message": {"agreement": "i agree to signin to spherre"},
         }
         return data.copy()
 
@@ -61,20 +59,23 @@ class SignatureUtils:
 
     @classmethod
     def verify_signatures(
-        cls, typed_data: TypedData, signatures: list[str], public_key: str
+        cls, typed_data: TypedData, signatures: list[int], public_key: int
     ) -> bool:
         """
         Verify the signature with the typed data, signature list and the public key
         Args:
             typed_data(TypedData): This is used for generating a message hash
                 for signature verification.
-            signatures(list[str]): This is a list of the signatures that represent
+            signatures(list[int]): This is a list of the signatures that represent
                 the message that is signed.
-            public_key(str): The public key of the signer.
+            public_key(int): The public key of the signer.
         """
-        int_signatures = list(map(lambda x: int(x), signatures))
-        int_public_key = int(public_key, 16)
-        message_hash = typed_data.message_hash(int_public_key)
-        return verify_message_signature(
-            message_hash, [int_signatures[3], int_signatures[4]], public_key
-        )
+        message_hash = typed_data.message_hash(public_key)
+        return verify_message_signature(message_hash, signatures, public_key)
+
+    @classmethod
+    def convert_public_key_to_int(cls, public_key: str) -> int:
+        """
+        Convert the public key to an integer
+        """
+        return int(public_key, 16)

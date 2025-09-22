@@ -1,6 +1,7 @@
 from marshmallow import Schema, ValidationError, fields, post_load, validates
 
 from spherre.app.service.auth import AuthService
+from spherre.app.utils.signature import SignatureUtils
 
 
 class SignInSerializer(Schema):
@@ -20,15 +21,14 @@ class SignInSerializer(Schema):
     public_key = fields.String(required=True)
 
     @validates("signatures")
-    def validate_signatures(self, signatures: list[int], data_key: str):
-        if len(signatures) < 5:
-            raise ValidationError("Signatures must be a list of 5 integers")
+    def validate_signatures(self, signatures: list[int]):
+        if len(signatures) != 2:
+            raise ValidationError("Signatures must be a list of 2 integers")
 
     @post_load
     def validate_signin_request(self, data: dict, **kwargs):
-        if not AuthService.validate_signin_request(
-            data["signatures"], data["public_key"]
-        ):
+        public_key = SignatureUtils.convert_public_key_to_int(data["public_key"])
+        if not AuthService.validate_signin_request(data["signatures"], public_key):
             raise ValidationError("Invalid signatures")
         data["address"] = AuthService.generate_address_from_public_key(
             data["public_key"]
