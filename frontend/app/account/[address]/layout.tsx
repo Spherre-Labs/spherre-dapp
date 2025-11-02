@@ -15,7 +15,7 @@ import Apps from '@/public/Images/Apps.png'
 import Settings from '@/public/Images/Settings.png'
 import Support from '@/public/Images/Support.png'
 import SmartLock from '@/public/Images/Smart-lock.png'
-import { NavItem } from './navigation'
+import { NavItem, getSelectedPage } from './navigation'
 import { usePathname } from 'next/navigation'
 import { useSpherreAccount } from '@/app/context/account-context'
 import { useGetAccountName } from '@/lib'
@@ -34,15 +34,15 @@ export default function DappLayout({ children, params }: DappLayoutProps) {
   const [isMobile, setIsMobile] = useState(false)
   const [isUltraWide, setIsUltraWide] = useState(false)
   const pathname = usePathname()
-  const selectedPage = pathname
   const account_address = useSpherreAccount().accountAddress
   const { address } = React.use(params)
   const addressToUse = account_address ?? (address as `0x${string}`)
+  const selectedPage = getSelectedPage(pathname, addressToUse)
   const { data: accountName } = useGetAccountName(addressToUse)
   const [title, setTitle] = useState(pathname)
 
   // Define navigation items using addressToUse for all routes
-  const navItems: NavItem[] = [
+  const allNavItems: NavItem[] = [
     {
       name: 'Dashboard',
       icon: Dashboard,
@@ -100,6 +100,9 @@ export default function DappLayout({ children, params }: DappLayoutProps) {
       route: routes(addressToUse).support,
     },
   ]
+
+  // Filter out items with comingSoon: true to keep sidebar neater
+  const navItems = allNavItems.filter((item) => !item.comingSoon)
 
   // Check for mobile and ultra-wide screen sizes - only use window after mount
   useEffect(() => {

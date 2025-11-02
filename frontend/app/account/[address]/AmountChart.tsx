@@ -1,5 +1,5 @@
 'use client'
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect, useCallback, useRef } from 'react'
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -59,6 +59,8 @@ const AmountAnalysisChart: React.FC<AmountAnalysisChartProps> = ({
   const [selectedYear, setSelectedYear] = useState<string>(
     moment().format('YYYY'),
   )
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false)
+  const dropdownRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     setMounted(true)
@@ -106,13 +108,15 @@ const AmountAnalysisChart: React.FC<AmountAnalysisChartProps> = ({
               ? moment().startOf('day')
               : moment().startOf('day').year(selectedYearInt)
 
-          // Generate 24 hourly data points
-          for (let i = 0; i < 24; i++) {
-            const date = moment(dayStart).add(i, 'hours').toDate()
+          // Generate data points every 30 minutes (48 points total)
+          for (let i = 0; i < 48; i++) {
+            const date = moment(dayStart)
+              .add(i * 30, 'minutes')
+              .toDate()
 
             // Small random changes for hourly data - only after mount
             if (mounted) {
-              baseValue += (Math.random() - 0.5) * 20
+              baseValue += (Math.random() - 0.5) * 15
             }
 
             data.push({
@@ -134,19 +138,21 @@ const AmountAnalysisChart: React.FC<AmountAnalysisChartProps> = ({
                   .startOf('day')
                   .year(selectedYearInt)
 
-          // Generate 7 daily data points
-          for (let i = 0; i < 7; i++) {
-            const date = moment(weekStart).add(i, 'days').toDate()
+          // Generate data points every 4 hours (42 points total)
+          for (let i = 0; i < 42; i++) {
+            const date = moment(weekStart)
+              .add(i * 4, 'hours')
+              .toDate()
 
             // Slightly larger changes for daily data - only after mount
             if (mounted) {
-              baseValue += (Math.random() - 0.5) * 50
+              baseValue += (Math.random() - 0.5) * 30
             }
 
             data.push({
               date,
               year: moment(date).format('YYYY'),
-              displayDate: moment(date).format('MMM DD'),
+              displayDate: moment(date).format('MMM DD HH:mm'),
               value: Math.max(50, Math.round(baseValue)),
             })
           }
@@ -156,14 +162,14 @@ const AmountAnalysisChart: React.FC<AmountAnalysisChartProps> = ({
           // For 1M, create data for the last 30 days but in the selected year
           const monthStart =
             selectedYearInt === currentYear
-              ? moment().subtract(15, 'days').startOf('day')
+              ? moment().subtract(29, 'days').startOf('day')
               : moment()
-                  .subtract(15, 'days')
+                  .subtract(29, 'days')
                   .startOf('day')
                   .year(selectedYearInt)
 
           // Generate 30 daily data points
-          for (let i = 0; i < 15; i++) {
+          for (let i = 0; i < 30; i++) {
             const date = moment(monthStart).add(i, 'days').toDate()
 
             // More noticeable changes for monthly view - only after mount
@@ -181,18 +187,20 @@ const AmountAnalysisChart: React.FC<AmountAnalysisChartProps> = ({
           break
 
         case '3M':
-          // For 3M, create data for the last 12 weeks but in the selected year
+          // For 3M, create data for the last 90 days but in the selected year
           const quarterStart =
             selectedYearInt === currentYear
-              ? moment().subtract(11, 'weeks').startOf('week')
+              ? moment().subtract(89, 'days').startOf('day')
               : moment()
-                  .subtract(11, 'weeks')
-                  .startOf('week')
+                  .subtract(89, 'days')
+                  .startOf('day')
                   .year(selectedYearInt)
 
-          // Generate 12 weekly data points
-          for (let i = 0; i < 12; i++) {
-            const date = moment(quarterStart).add(i, 'weeks').toDate()
+          // Generate data points every 3 days (30 points total)
+          for (let i = 0; i < 30; i++) {
+            const date = moment(quarterStart)
+              .add(i * 3, 'days')
+              .toDate()
 
             // Larger changes for 3-month view - only after mount
             if (mounted) {
@@ -308,6 +316,10 @@ const AmountAnalysisChart: React.FC<AmountAnalysisChartProps> = ({
       return {
         responsive: true,
         maintainAspectRatio: false,
+        backgroundColor: 'transparent',
+        layout: {
+          padding: 0,
+        },
         scales: {
           x: {
             type: 'time',
@@ -323,14 +335,18 @@ const AmountAnalysisChart: React.FC<AmountAnalysisChartProps> = ({
               },
             },
             grid: {
-              display: true,
-              color: colors.gridColor,
-              lineWidth: 1,
-              drawOnChartArea: true,
-              drawTicks: true,
+              display: false, // Hide vertical grid lines for cleaner look
             },
             ticks: {
               color: colors.tickColor,
+              maxTicksLimit: 6, // Limit number of x-axis labels
+              font: {
+                size: 11,
+              },
+              padding: 8, // Add spacing between labels and chart
+            },
+            border: {
+              display: false,
             },
           },
           y: {
@@ -338,47 +354,72 @@ const AmountAnalysisChart: React.FC<AmountAnalysisChartProps> = ({
             grid: {
               display: true,
               color: colors.gridColor,
-              lineWidth: 1,
+              lineWidth: 0.5, // Thinner grid lines
               drawOnChartArea: true,
-              drawTicks: true,
+              drawTicks: false,
             },
             ticks: {
               color: colors.tickColor,
+              maxTicksLimit: 5, // Limit number of y-axis labels
+              font: {
+                size: 11,
+              },
+              padding: 12, // Add spacing between price labels and chart
+              callback: function (value: string | number) {
+                // Simplify y-axis labels
+                if (typeof value === 'number') {
+                  if (value >= 1000) {
+                    return (value / 1000).toFixed(1) + 'K'
+                  }
+                  return value.toFixed(0)
+                }
+                return value
+              },
+            },
+            border: {
+              display: false,
             },
           },
         },
         plugins: {
           legend: {
-            display: false, // Hide legend since we only have one dataset
+            display: false,
           },
           tooltip: {
+            enabled: true,
             mode: 'index',
-            intersect: false, // Allow tooltip when near point
+            intersect: false,
             backgroundColor: colors.tooltipBg,
-            cornerRadius: 10,
+            cornerRadius: 8,
             titleColor: colors.tooltipText,
             bodyColor: colors.tooltipText,
-            borderColor: '#6F2FCE',
-            borderWidth: 0,
-            padding: 12,
-            displayColors: true,
-            boxWidth: 8,
-            boxHeight: 8,
-            usePointStyle: true, // This makes the legend markers circular
-            // @ts-expect-error Chart.js types don't properly define pointStyle as allowing 'circle'
-            pointStyle: 'circle',
-            boxPadding: 3,
+            borderColor: 'rgba(111, 47, 206, 0.2)',
+            borderWidth: 1,
+            padding: 8,
+            displayColors: false, // Remove color box for cleaner tooltip
+            titleFont: {
+              size: 11,
+              weight: 500,
+            },
+            bodyFont: {
+              size: 12,
+              weight: 600,
+            },
             callbacks: {
+              title: () => '', // Remove title for cleaner look
               label: (context: TooltipItem<'line'>): string => {
-                let label = 'Price: '
                 if (
                   context.parsed &&
                   context.parsed.y !== null &&
                   context.parsed.y !== undefined
                 ) {
-                  label += `${context.parsed.y.toLocaleString()}`
+                  const value = context.parsed.y
+                  if (value >= 1000) {
+                    return `$${(value / 1000).toFixed(1)}K`
+                  }
+                  return `$${value.toFixed(0)}`
                 }
-                return label
+                return ''
               },
             },
           },
@@ -390,17 +431,18 @@ const AmountAnalysisChart: React.FC<AmountAnalysisChartProps> = ({
         },
         elements: {
           point: {
-            radius: 3, // Center point size
+            radius: 0, // Hide points by default for cleaner look
             hoverRadius: 4,
-            backgroundColor: '#6F2FCE', // Center point color
-            borderColor: 'rgba(0, 0, 0, 0)', // Transparent space
-            borderWidth: 5, // Width of transparent space
+            backgroundColor: '#6F2FCE',
+            borderColor: 'white',
+            borderWidth: 2,
             hoverBackgroundColor: '#6F2FCE',
-            hoverBorderColor: '#6F2FCE',
-            hoverBorderWidth: 5,
+            hoverBorderColor: 'white',
+            hoverBorderWidth: 2,
           },
           line: {
-            tension: 0.4, // Smooth curve
+            tension: 0.3, // Slightly less curved for more professional look
+            borderWidth: 2,
           },
         },
       }
@@ -417,31 +459,47 @@ const AmountAnalysisChart: React.FC<AmountAnalysisChartProps> = ({
           label: 'Price',
           data: data.map((item) => item.value),
           borderColor: '#6F2FCE',
-          backgroundColor: 'rgba(111, 47, 206, 0.1)', // Area fill color
-          fill: true,
-          tension: 0.4,
-          // Point styling
-          pointRadius: 3, // Center point size
-          pointHoverRadius: 4, // Slightly larger on hover
-          pointBackgroundColor: '#6F2FCE', // Center point color
+          backgroundColor: 'transparent', // No background fill
+          fill: false, // Disable area fill completely
+          tension: 0.3,
+          borderWidth: 2,
+          // Point styling - hidden by default, shown on hover
+          pointRadius: 0,
+          pointHoverRadius: 4,
+          pointBackgroundColor: '#6F2FCE',
           pointHoverBackgroundColor: '#6F2FCE',
-          pointBorderColor: 'rgba(0, 0, 0, 0)', // Transparent space
-          pointBorderWidth: 5, // Width of transparent space
-          pointHoverBorderColor: 'rgba(0, 0, 0, 0)',
-          pointHoverBorderWidth: 5,
-          // We'll use a custom point style with the outer border
+          pointBorderColor: 'white',
+          pointBorderWidth: 2,
+          pointHoverBorderColor: 'white',
+          pointHoverBorderWidth: 2,
           pointStyle: 'circle',
-          // Additional styling for tooltip
-          hoverBackgroundColor: '#6F2FCE',
         },
       ],
     }
   }
 
   // Handle year selection change
-  const handleYearChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedYear(e.target.value)
+  const handleYearChange = (year: string) => {
+    setSelectedYear(year)
+    setIsDropdownOpen(false)
   }
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsDropdownOpen(false)
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [])
 
   // Handle date range change
   const handleDateRangeChange = (range: DateRangeType) => {
@@ -491,90 +549,154 @@ const AmountAnalysisChart: React.FC<AmountAnalysisChartProps> = ({
   const colors = getThemeColors()
 
   return (
-    <div className="bg-theme-bg-secondary border border-theme-border rounded-lg p-6 w-full transition-colors duration-300">
-      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6 gap-2 sm:gap-0">
+    <div className="border border-theme-border rounded-lg p-4 sm:p-6 w-full transition-colors duration-300">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-4 gap-3 sm:gap-0">
         <div className="flex items-center gap-2">
-          <h2 className="text-xl font-semibold text-theme transition-colors duration-300">
+          <h2 className="text-lg sm:text-xl font-medium text-theme transition-colors duration-300">
             Price Analysis
           </h2>
         </div>
-        {/* Desktop: Range buttons */}
-        <div
-          className="hidden sm:flex"
-          style={{
-            display: 'flex',
-            gap: '10px',
-            backgroundColor: colors.selectorBg,
-            padding: '4px',
-            borderRadius: '7.1px',
-          }}
-        >
-          {dateRangeOptions.map((range) => (
-            <button
-              key={range}
-              onClick={() => handleDateRangeChange(range)}
-              style={{
-                padding: '6px 8px',
-                backgroundColor:
-                  dateRange === range ? '#6F2FCE' : 'transparent',
-                color: dateRange === range ? 'white' : colors.selectorText,
-                border: 'none',
-                borderRadius: '4px',
-                cursor: 'pointer',
-                fontSize: '12.93px',
-                fontWeight: dateRange === range ? 'bold' : 'normal',
-                transition: 'all 0.2s ease',
-              }}
-            >
-              {range}
-            </button>
-          ))}
-        </div>
-        <div className="relative ml-2">
-          <select
-            value={selectedYear}
-            onChange={handleYearChange}
-            disabled={dateRange === 'ALL'}
-            className={`rounded-md px-3 py-1 text-sm font-medium appearance-none pr-8 focus:outline-none focus:ring-2 focus:ring-primary border border-theme-border transition-colors duration-300 ${
-              dateRange === 'ALL'
-                ? 'cursor-not-allowed opacity-50'
-                : 'cursor-pointer'
-            }`}
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+          {/* Simplified Range buttons */}
+          <div
+            className="flex"
             style={{
-              backgroundColor: colors.selectBg,
-              color: dateRange !== 'ALL' ? '#6F2FCE' : colors.selectText,
+              gap: '6px',
+              backgroundColor: colors.selectorBg,
+              padding: '3px',
+              borderRadius: '8px',
             }}
           >
-            {availableYears.map((year) => (
-              <option
-                key={year}
-                value={year}
+            {dateRangeOptions.map((range) => (
+              <button
+                key={range}
+                onClick={() => handleDateRangeChange(range)}
                 style={{
-                  color: year === selectedYear ? '#6F2FCE' : colors.selectText,
-                  backgroundColor: colors.selectBg,
+                  padding: '4px 8px',
+                  backgroundColor:
+                    dateRange === range ? '#6F2FCE' : 'transparent',
+                  color: dateRange === range ? 'white' : colors.selectorText,
+                  border: 'none',
+                  borderRadius: '5px',
+                  cursor: 'pointer',
+                  fontSize: '11px',
+                  fontWeight: dateRange === range ? '600' : '400',
+                  transition: 'all 0.2s ease',
+                  minWidth: '28px',
                 }}
               >
-                {year}
-              </option>
+                {range}
+              </button>
             ))}
-          </select>
-          <div className="pointer-events-none absolute inset-y-0 right-[75%] flex items-center px-2 text-theme-muted">
-            <svg
-              className="h-4 w-4 fill-current"
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 20 20"
+          </div>
+          {/* Ultra Modern Custom Dropdown */}
+          <div className="relative" ref={dropdownRef}>
+            <div
+              onClick={() =>
+                dateRange !== 'ALL' && setIsDropdownOpen(!isDropdownOpen)
+              }
+              className={`relative rounded-xl px-4 py-2.5 text-sm font-bold cursor-pointer transition-all duration-300 border-2 ${
+                dateRange === 'ALL'
+                  ? 'cursor-not-allowed opacity-40 border-gray-300'
+                  : isDropdownOpen
+                    ? 'border-primary shadow-lg shadow-primary/20 scale-105'
+                    : 'border-transparent hover:border-primary/30 hover:shadow-md hover:scale-102'
+              }`}
+              style={{
+                background:
+                  dateRange !== 'ALL'
+                    ? isDropdownOpen
+                      ? 'linear-gradient(135deg, rgba(111, 47, 206, 0.1) 0%, rgba(111, 47, 206, 0.05) 50%, rgba(111, 47, 206, 0.1) 100%)'
+                      : `linear-gradient(135deg, ${colors.selectBg} 0%, rgba(111, 47, 206, 0.03) 100%)`
+                    : colors.selectBg,
+                color: dateRange !== 'ALL' ? '#6F2FCE' : colors.selectText,
+                minWidth: '80px',
+                backdropFilter: 'blur(10px)',
+              }}
             >
-              <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
-            </svg>
+              <div className="flex items-center justify-between">
+                <span className="font-bold text-base">{selectedYear}</span>
+                <div
+                  className={`ml-3 transition-all duration-300 ${
+                    isDropdownOpen ? 'rotate-180 scale-110' : 'rotate-0'
+                  }`}
+                >
+                  <svg className="h-4 w-4 fill-current" viewBox="0 0 20 20">
+                    <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
+                  </svg>
+                </div>
+              </div>
+            </div>
+
+            {/* Custom Dropdown Menu */}
+            {isDropdownOpen && dateRange !== 'ALL' && (
+              <div
+                className="absolute top-full left-0 right-0 mt-2 rounded-xl border-2 border-primary/20 shadow-2xl shadow-primary/10 z-50 overflow-hidden backdrop-blur-md"
+                style={{
+                  background: `linear-gradient(135deg, ${colors.selectBg} 0%, rgba(111, 47, 206, 0.02) 100%)`,
+                  animation: 'slideDown 0.2s ease-out',
+                }}
+              >
+                {availableYears.map((year, index) => (
+                  <div
+                    key={year}
+                    onClick={() => handleYearChange(year)}
+                    className={`px-4 py-3 text-sm font-semibold cursor-pointer transition-all duration-200 ${
+                      year === selectedYear
+                        ? 'bg-primary text-white shadow-inner'
+                        : 'hover:bg-primary/10 hover:text-primary'
+                    }`}
+                    style={{
+                      color:
+                        year === selectedYear ? 'white' : colors.selectText,
+                      borderBottom:
+                        index < availableYears.length - 1
+                          ? `1px solid rgba(111, 47, 206, 0.1)`
+                          : 'none',
+                    }}
+                  >
+                    <div className="flex items-center justify-between">
+                      <span>{year}</span>
+                      {year === selectedYear && (
+                        <svg
+                          className="h-4 w-4 fill-current"
+                          viewBox="0 0 20 20"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                            clipRule="evenodd"
+                          />
+                        </svg>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </div>
       <div className="w-full overflow-x-auto" style={{ overflowY: 'hidden' }}>
         <div
-          className="h-[320px]"
-          style={{ minWidth: isMobile ? minChartWidth : '100%' }}
+          className="chart-container h-[280px] sm:h-[320px]"
+          style={{
+            minWidth: isMobile ? minChartWidth : '100%',
+            backgroundColor: 'transparent',
+          }}
         >
-          <Line data={chartData} options={chartOptions} />
+          <Line
+            data={chartData}
+            options={{
+              ...chartOptions,
+              plugins: {
+                ...chartOptions.plugins,
+                filler: {
+                  propagate: false,
+                },
+              },
+            }}
+          />
         </div>
       </div>
     </div>

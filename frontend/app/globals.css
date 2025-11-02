@@ -882,3 +882,26 @@ select {
     margin-right: -10% !important;
   }
 }
+
+/* Custom dropdown animation */
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Additional hover scale utilities */
+.hover\:scale-102:hover {
+  transform: scale(1.02);
+}
+
+/* Force chart canvas to be transparent - more specific selector */
+.chart-container canvas {
+  background: transparent !important;
+  background-color: transparent !important;
+}
