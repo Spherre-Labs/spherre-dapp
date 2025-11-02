@@ -182,9 +182,7 @@ export default function DappLayout({ children, params }: DappLayoutProps) {
             setSidebarExpanded={setSidebarExpanded}
           />
           <main className="flex-1 bg-theme transition-colors duration-300 pt-16 lg:pt-20">
-            <div className="container-large debug-container px-4 sm:px-6 lg:px-8 pt-4 sm:pt-6 lg:pt-8 pb-4 sm:pb-6 lg:pb-8">
-              {children}
-            </div>
+            <div className="global-content-container">{children}</div>
           </main>
         </div>
       </div>

@@ -242,7 +242,7 @@ export default function TransactionsPage() {
 
   if (isLoading) {
     return (
-      <div className="p-6">
+      <div className="p-4 sm:p-6 lg:p-8">
         <h1 className="text-2xl font-bold mb-6 text-theme">
           Transaction Activity
         </h1>
@@ -258,7 +258,7 @@ export default function TransactionsPage() {
   }
 
   return (
-    <div className="p-6">
+    <div className="p-4 sm:p-6 lg:p-8">
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold text-theme">Transaction Activity</h1>
 

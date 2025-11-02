@@ -871,7 +871,7 @@ select {
   }
 }
 
-/* Ultra-wide monitor specific styles (2560px and above) */
+/* Legacy ultra-wide support - now integrated into global container */
 @media (min-width: 2560px) {
   .ultrawide-content {
     width: 120% !important;
@@ -898,6 +898,35 @@ select {
 /* Additional hover scale utilities */
 .hover\:scale-102:hover {
   transform: scale(1.02);
+}
+
+/* Global Layout Consistency System */
+.global-content-container {
+  width: 100%;
+  max-width: 1400px; /* Standardized max width */
+  margin: 0 auto; /* Center the container */
+  padding: 1rem 1rem; /* Base padding for mobile */
+}
+
+/* Responsive padding for different screen sizes */
+@media (min-width: 640px) {
+  .global-content-container {
+    padding: 1.5rem 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .global-content-container {
+    padding: 2rem 2rem;
+  }
+}
+
+/* Ultra-wide screen support - maintain centering */
+@media (min-width: 2560px) {
+  .global-content-container {
+    max-width: 1680px; /* Slightly larger for ultra-wide */
+    padding: 2.5rem 2.5rem;
+  }
 }
 
 /* Force chart canvas to be transparent - more specific selector */

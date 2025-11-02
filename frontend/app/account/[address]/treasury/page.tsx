@@ -188,7 +188,7 @@ const TreasuryPage = () => {
   }
 
   return (
-    <div className=" sm:py-6 lg:py-8 p-2 sm:px-4 lg:px-6 rounded-[10px] flex flex-col gap-y-4 sm:gap-y-6 lg:gap-y-8  mx-1 sm:mx-4 overflow-x-hidden w-full min-h-[90vh] bg-theme-bg-secondary transition-colors duration-300">
+    <div className="rounded-[10px] flex flex-col gap-y-4 sm:gap-y-6 lg:gap-y-8 overflow-x-hidden w-full min-h-[90vh] bg-theme-bg-secondary transition-colors duration-300 p-4 sm:p-6 lg:p-8">
       <ErrorBoundary
         errorComponent={({ error }) => (
           <div className="text-red-500 py-4 sm:py-6 lg:py-8 px-3 sm:px-6 lg:px-[28px]">

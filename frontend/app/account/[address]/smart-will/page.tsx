@@ -105,7 +105,7 @@ const SmartWillPage = () => {
   if (!mounted) return null
 
   return (
-    <div className="p-4 font-['Nunito_Sans'] bg-theme min-h-screen transition-colors duration-300">
+    <div className="font-['Nunito_Sans'] bg-theme min-h-screen transition-colors duration-300 p-4 sm:p-6 lg:p-8">
       <h1 className="text-2xl font-bold flex items-center gap-2.5 text-gray-900 dark:text-white transition-colors duration-300">
         Smart Will{' '}
         <Info size={20} className="text-gray-500 dark:text-[#8E9BAE]" />{' '}
