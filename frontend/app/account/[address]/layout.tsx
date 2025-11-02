@@ -171,7 +171,9 @@ export default function DappLayout({ children, params }: DappLayoutProps) {
             setSidebarExpanded={setSidebarExpanded}
           />
           <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-x-hidden bg-theme transition-colors duration-300">
-            <div className={`max-w-full ${isUltraWide ? 'main-content-centered' : ''}`}>
+            <div
+              className={`max-w-full ${isUltraWide ? 'main-content-centered' : ''}`}
+            >
               {children}
             </div>
           </main>

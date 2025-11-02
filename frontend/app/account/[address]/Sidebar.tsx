@@ -118,7 +118,7 @@ const Sidebar = ({
   )
 
   // On ultra-wide, always expanded; on mobile, use sidebarExpanded; otherwise use expanded
-  const isExpanded = isUltraWide ? true : (isMobile ? sidebarExpanded : expanded)
+  const isExpanded = isUltraWide ? true : isMobile ? sidebarExpanded : expanded
 
   if (!mounted) return null
 
