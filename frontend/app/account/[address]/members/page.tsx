@@ -165,6 +165,26 @@ const Members = () => {
     return () => clearInterval(interval)
   }, [])
 
+  // Session-gated skeleton (show once per session for 5s max)
+  const [minSkeletonElapsed, setMinSkeletonElapsed] = useState(false)
+  useEffect(() => {
+    try {
+      const done = sessionStorage.getItem('membersSkeletonShown') === 'true'
+      if (done) {
+        setMinSkeletonElapsed(true)
+        return
+      }
+    } catch {}
+
+    const id = setTimeout(() => {
+      setMinSkeletonElapsed(true)
+      try {
+        sessionStorage.setItem('membersSkeletonShown', 'true')
+      } catch {}
+    }, 5000)
+    return () => clearTimeout(id)
+  }, [])
+
   const handleCopy = useCallback(async (address: string) => {
     try {
       await navigator.clipboard.writeText(address)
@@ -320,25 +340,6 @@ const Members = () => {
       </div>
     )
   }
-
-  const [minSkeletonElapsed, setMinSkeletonElapsed] = useState(false)
-  useEffect(() => {
-    try {
-      const done = sessionStorage.getItem('membersSkeletonShown') === 'true'
-      if (done) {
-        setMinSkeletonElapsed(true)
-        return
-      }
-    } catch {}
-
-    const id = setTimeout(() => {
-      setMinSkeletonElapsed(true)
-      try {
-        sessionStorage.setItem('membersSkeletonShown', 'true')
-      } catch {}
-    }, 5000)
-    return () => clearTimeout(id)
-  }, [])
 
   if (isLoading || !minSkeletonElapsed) {
     return (
