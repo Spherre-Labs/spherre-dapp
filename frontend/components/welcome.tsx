@@ -78,7 +78,7 @@ const Welcome = () => {
   ]
   return (
     <div className="bg-theme transition-colors duration-300 min-h-screen">
-      <div className="container-large px-4 sm:px-6 lg:px-8">
+      <div className="w-full px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col lg:flex-row min-h-screen">
           {/* Left Section with Image */}
           <div className="lg:w-2/5">
