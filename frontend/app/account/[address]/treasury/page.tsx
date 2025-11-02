@@ -1,5 +1,5 @@
 'use client'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import TreasuryHeader from './components/treasury-header'
 import TreasuryStatscard from './components/treasury-statscard'
 import TreasuryPortfoliochat from './components/treasury-portfoliochat'
@@ -10,6 +10,8 @@ import DepositModal from '@/app/components/deposit-modal'
 import { useTokenBalances } from '@/hooks/useTokenBalances'
 import { useNftTransactionList } from '@/hooks/useSpherreHooks'
 import { useSpherreAccount } from '@/app/context/account-context'
+import NFTDetailsModal from '@/app/components/NFTDetailsModal'
+import { Skeleton } from '@/components/ui/skeleton'
 
 const chartDataByPeriod = {
   '1D': {
@@ -129,6 +131,7 @@ const TreasuryPage = () => {
   >('1Y')
   const [withdrawOpen, setWithdrawOpen] = useState(false)
   const [depositOpen, setDepositOpen] = useState(false)
+  const [nftModalOpen, setNFTModalOpen] = useState<number | undefined>()
 
   // Token data
   const { tokensDisplay, loadingTokenData } = useTokenBalances()
@@ -185,8 +188,29 @@ const TreasuryPage = () => {
     setSelectedPeriod(period as '1D' | '7D' | '1M' | '3M' | '1Y')
   }
 
+  // 5s minimum skeleton for consistency
+  const [minSkeletonElapsed, setMinSkeletonElapsed] = useState(false)
+  useEffect(() => {
+    try {
+      const done = sessionStorage.getItem('treasurySkeletonShown') === 'true'
+      if (done) {
+        setMinSkeletonElapsed(true)
+        return
+      }
+    } catch {}
+
+    const id = setTimeout(() => {
+      setMinSkeletonElapsed(true)
+      try {
+        sessionStorage.setItem('treasurySkeletonShown', 'true')
+      } catch {}
+    }, 5000)
+    return () => clearTimeout(id)
+  }, [])
+  const isPending = loadingTokenData || !minSkeletonElapsed
+
   return (
-    <div className=" sm:py-6 lg:py-8 p-2 sm:px-4 lg:px-6 rounded-[10px] flex flex-col gap-y-4 sm:gap-y-6 lg:gap-y-8 border-theme-border border-2 mx-1 sm:mx-4 overflow-x-hidden w-full min-h-[90vh] bg-theme-bg-secondary transition-colors duration-300">
+    <div className="rounded-[10px] flex flex-col gap-y-4 sm:gap-y-6 lg:gap-y-8 overflow-x-hidden w-full min-h-[90vh] bg-theme-bg-secondary transition-colors duration-300 p-4 sm:p-6 lg:p-8">
       <ErrorBoundary
         errorComponent={({ error }) => (
           <div className="text-red-500 py-4 sm:py-6 lg:py-8 px-3 sm:px-6 lg:px-[28px]">
@@ -200,28 +224,57 @@ const TreasuryPage = () => {
         )}
       >
         <div className=" lg:space-y-8 w-full">
-          <TreasuryHeader
-            balance={totalBalance.toFixed(2)}
-            isBalanceVisible={isBalanceVisible}
-            toggleBalance={toggleBalance}
-            onWithdraw={handleWithdraw}
-            onDeposit={handleDeposit}
-            onTrade={handleTrade}
-          />
+          {isPending ? (
+            <div className="bg-theme-bg-tertiary border border-theme-border rounded-lg p-4 sm:p-6">
+              <div className="h-6 w-48 bg-theme-bg-secondary rounded animate-pulse mb-4 mx-1" />
+              <div className="flex gap-3">
+                <Skeleton className="h-10 w-28 bg-theme-bg-secondary rounded-lg mx-1" />
+                <Skeleton className="h-10 w-28 bg-theme-bg-secondary rounded-lg mx-1" />
+                <Skeleton className="h-10 w-28 bg-theme-bg-secondary rounded-lg mx-1" />
+              </div>
+            </div>
+          ) : (
+            <TreasuryHeader
+              balance={totalBalance.toFixed(2)}
+              isBalanceVisible={isBalanceVisible}
+              toggleBalance={toggleBalance}
+              onWithdraw={handleWithdraw}
+              onDeposit={handleDeposit}
+              onTrade={handleTrade}
+            />
+          )}
 
-          <TreasuryStatscard
-            totalTokens={
-              tokensDisplay.filter((t) => parseFloat(t.balance) > 0).length
-            }
-            totalStakes={0}
-            totalNFTs={nftList?.length ?? 0}
-          />
+          {isPending ? (
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
+              {Array.from({ length: 3 }).map((_, i) => (
+                <Skeleton
+                  key={i}
+                  className="h-28 w-full bg-theme-bg-secondary rounded-lg"
+                />
+              ))}
+            </div>
+          ) : (
+            <TreasuryStatscard
+              totalTokens={
+                tokensDisplay.filter((t) => parseFloat(t.balance) > 0).length
+              }
+              totalStakes={0}
+              totalNFTs={nftList?.length ?? 0}
+            />
+          )}
 
-          <TreasuryPortfoliochat
-            data={chartData}
-            onPeriodChange={handlePeriodChange}
-            topTokens={topTokens}
-          />
+          {isPending ? (
+            <div className="bg-theme-bg-tertiary border border-theme-border rounded-lg p-4 sm:p-6">
+              <div className="h-5 w-40 bg-theme-bg-secondary rounded animate-pulse mb-4 mx-1" />
+              <div className="h-[280px] w-full bg-theme-bg-secondary rounded-lg mx-1" />
+            </div>
+          ) : (
+            <TreasuryPortfoliochat
+              data={chartData}
+              onPeriodChange={handlePeriodChange}
+              topTokens={topTokens}
+            />
+          )}
 
           <div
             className="w-full flex min-w-0"
@@ -236,6 +289,7 @@ const TreasuryPage = () => {
               <Tabs
                 loadingTokenData={loadingTokenData}
                 tokens={tokensDisplay}
+                setNFTModalOpen={setNFTModalOpen}
               />
             </div>
           </div>
@@ -248,6 +302,7 @@ const TreasuryPage = () => {
           onSelectOption={handleWithdrawSelect}
         />
         <DepositModal open={depositOpen} onClose={handleDepositClose} />
+        <NFTDetailsModal open={nftModalOpen} onClose={setNFTModalOpen} />
       </ErrorBoundary>
     </div>
   )

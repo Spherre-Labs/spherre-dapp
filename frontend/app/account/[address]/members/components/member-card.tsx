@@ -130,7 +130,7 @@ function MemberCardBase({
     if (perms.permissions.length > 0) {
       setCurrentMember({ ...member, permissions: perms.permissions })
     }
-  }, [perms.permissions])
+  }, [perms.permissions, member])
 
   return (
     <div

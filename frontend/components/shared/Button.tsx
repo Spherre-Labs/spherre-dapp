@@ -17,7 +17,7 @@ export const Button: React.FC<ButtonProps> = ({
 }) => {
   const variantStyles = {
     primary: 'bg-[#6F2FCE] text-white',
-    secondary: 'bg-[#1C1D1F] text-[#FFFFFF]',
+    secondary: 'bg-[#1D1E22] text-[#FFFFFF]',
     outline: 'border-2 border-[#6F2FCE] text-[#6F2FCE] bg-transparent',
   }
 

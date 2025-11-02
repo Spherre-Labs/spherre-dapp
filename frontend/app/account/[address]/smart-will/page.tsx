@@ -105,7 +105,7 @@ const SmartWillPage = () => {
   if (!mounted) return null
 
   return (
-    <div className="p-4 font-['Nunito_Sans'] bg-theme min-h-screen transition-colors duration-300">
+    <div className="font-['Nunito_Sans'] bg-theme min-h-screen transition-colors duration-300 p-4 sm:p-6 lg:p-8">
       <h1 className="text-2xl font-bold flex items-center gap-2.5 text-gray-900 dark:text-white transition-colors duration-300">
         Smart Will{' '}
         <Info size={20} className="text-gray-500 dark:text-[#8E9BAE]" />{' '}
@@ -126,7 +126,7 @@ const SmartWillPage = () => {
           </p>
         </div>
 
-        <div className="w-full flex-1 bg-gray-50 dark:bg-[#1C1D1F] rounded-[10px] p-4 h-fit flex flex-col items-start gap-10 transition-colors duration-300">
+        <div className="w-full flex-1 bg-gray-50 dark:bg-[#1D1E22] rounded-[10px] p-4 h-fit flex flex-col items-start gap-10 transition-colors duration-300">
           <h2 className="text-gray-900 dark:text-[#FFFFFF] text-xl font-bold transition-colors duration-300">
             All Wallets
           </h2>
@@ -248,7 +248,7 @@ const SmartWillPage = () => {
               <Button
                 onClick={resetCountdown}
                 variant="secondary"
-                className="bg-gray-200 dark:bg-[#272729] !p-2.5 rounded-[10px] text-gray-700 dark:text-white transition-colors duration-300"
+                className="bg-gray-200 dark:bg-[#24252A] !p-2.5 rounded-[10px] text-gray-700 dark:text-white transition-colors duration-300"
               >
                 <TimerReset />
                 Reset Countdown

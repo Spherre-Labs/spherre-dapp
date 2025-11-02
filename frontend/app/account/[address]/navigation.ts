@@ -2,18 +2,18 @@
 import { StaticImageData } from 'next/image'
 
 export const routeToPageMap = (address: string) => ({
-  [`/${address}/`]: 'Dashboard',
-  [`/${address}/trade`]: 'Trade',
-  [`/${address}/members`]: 'Members',
-  [`/${address}/transactions`]: 'Transactions',
-  [`/${address}/stake`]: 'Stake',
-  [`/${address}/smart-will`]: 'Smart Will',
-  [`/${address}/treasury`]: 'Treasury',
-  [`/${address}/payments`]: 'Payments',
-  [`/${address}/apps`]: 'Apps',
-  [`/${address}/settings`]: 'Settings',
-  [`/${address}/support`]: 'Support',
-  [`/${address}/smart`]: 'Smart Lock',
+  [`/account/${address}/`]: 'Dashboard',
+  [`/account/${address}/trade`]: 'Trade',
+  [`/account/${address}/members`]: 'Members',
+  [`/account/${address}/transactions`]: 'Transactions',
+  [`/account/${address}/stake`]: 'Stake',
+  [`/account/${address}/smart-will`]: 'Smart Will',
+  [`/account/${address}/treasury`]: 'Treasury',
+  [`/account/${address}/payments`]: 'Payments',
+  [`/account/${address}/apps`]: 'Apps',
+  [`/account/${address}/settings`]: 'Settings',
+  [`/account/${address}/support`]: 'Support',
+  [`/account/${address}/smart`]: 'Smart Lock',
 })
 
 export type PageName = keyof typeof routeToPageMap

@@ -15,7 +15,7 @@ import Apps from '@/public/Images/Apps.png'
 import Settings from '@/public/Images/Settings.png'
 import Support from '@/public/Images/Support.png'
 import SmartLock from '@/public/Images/Smart-lock.png'
-import { NavItem } from './navigation'
+import { NavItem, getSelectedPage } from './navigation'
 import { usePathname } from 'next/navigation'
 import { useSpherreAccount } from '@/app/context/account-context'
 import { useGetAccountName } from '@/lib'
@@ -30,17 +30,19 @@ interface DappLayoutProps {
 export default function DappLayout({ children, params }: DappLayoutProps) {
   // All hooks at the top - ALWAYS called in the same order
   const [sidebarExpanded, setSidebarExpanded] = useState(false)
+  const [desktopSidebarExpanded, setDesktopSidebarExpanded] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
+  const [isUltraWide, setIsUltraWide] = useState(false)
   const pathname = usePathname()
-  const selectedPage = pathname
   const account_address = useSpherreAccount().accountAddress
   const { address } = React.use(params)
   const addressToUse = account_address ?? (address as `0x${string}`)
+  const selectedPage = getSelectedPage(pathname, addressToUse)
   const { data: accountName } = useGetAccountName(addressToUse)
   const [title, setTitle] = useState(pathname)
 
   // Define navigation items using addressToUse for all routes
-  const navItems: NavItem[] = [
+  const allNavItems: NavItem[] = [
     {
       name: 'Dashboard',
       icon: Dashboard,
@@ -99,49 +101,49 @@ export default function DappLayout({ children, params }: DappLayoutProps) {
     },
   ]
 
-  // Check for mobile screen size - only use window after mount
+  // Filter out items with comingSoon: true to keep sidebar neater
+  const navItems = allNavItems.filter((item) => !item.comingSoon)
+
+  // Check for mobile and ultra-wide screen sizes - only use window after mount
   useEffect(() => {
     if (typeof window === 'undefined') return
 
-    const checkMobile = () => {
+    const checkScreenSize = () => {
       setIsMobile(window.innerWidth < 768)
+      setIsUltraWide(window.innerWidth >= 2560)
     }
 
-    checkMobile()
-    window.addEventListener('resize', checkMobile)
+    checkScreenSize()
+    window.addEventListener('resize', checkScreenSize)
 
-    return () => window.removeEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkScreenSize)
   }, [])
 
-  // Listen for sidebar expansion state changes - only use document after mount
+  // Track desktop sidebar expansion for layout adjustments
   useEffect(() => {
     if (typeof window === 'undefined') return
 
-    const sidebar = document.getElementById('sidebar')
-
-    const handleSidebarHover = () => {
-      if (!isMobile) {
-        setSidebarExpanded(true)
-      }
-    }
-    const handleSidebarLeave = () => {
-      if (!isMobile) {
-        setSidebarExpanded(false)
+    // Listen to localStorage changes for pinned state
+    const checkPinnedState = () => {
+      const isPinned = localStorage.getItem('sidebarPinned')
+      if (isPinned) {
+        setDesktopSidebarExpanded(JSON.parse(isPinned))
       }
     }
 
-    if (sidebar && !isMobile) {
-      sidebar.addEventListener('mouseenter', handleSidebarHover)
-      sidebar.addEventListener('mouseleave', handleSidebarLeave)
-    }
+    checkPinnedState()
 
-    return () => {
-      if (sidebar && !isMobile) {
-        sidebar.removeEventListener('mouseenter', handleSidebarHover)
-        sidebar.removeEventListener('mouseleave', handleSidebarLeave)
-      }
+    // Also check on storage events (for cross-tab sync)
+    window.addEventListener('storage', checkPinnedState)
+    return () => window.removeEventListener('storage', checkPinnedState)
+  }, [])
+
+  // Handle ultra-wide screen behavior
+  useEffect(() => {
+    if (isUltraWide) {
+      setDesktopSidebarExpanded(true)
     }
-  }, [isMobile])
+  }, [isUltraWide])
 
   useEffect(() => {
     if (accountName) {
@@ -150,27 +152,40 @@ export default function DappLayout({ children, params }: DappLayoutProps) {
   }, [accountName])
 
   return (
-    <div className="bg-theme min-h-screen overflow-x-hidden transition-colors duration-300">
-      <div className="flex min-h-screen">
-        <Sidebar
-          accountName={accountName ?? 'Spherre Account'}
-          navItems={navItems}
-          selectedPage={selectedPage}
-          isMobile={isMobile}
-          sidebarExpanded={sidebarExpanded}
-          setSidebarExpanded={setSidebarExpanded}
-        />
-        <div className="flex-1 flex flex-col min-h-screen">
+    <>
+      <Sidebar
+        accountName={accountName ?? 'Spherre Account'}
+        navItems={navItems}
+        selectedPage={selectedPage}
+        isMobile={isMobile}
+        isUltraWide={isUltraWide}
+        sidebarExpanded={sidebarExpanded}
+        setSidebarExpanded={setSidebarExpanded}
+        desktopSidebarExpanded={desktopSidebarExpanded}
+        setDesktopSidebarExpanded={setDesktopSidebarExpanded}
+      />
+      <div className="bg-theme min-h-screen transition-colors duration-300">
+        <div
+          className={`flex flex-col min-h-screen main-content-transition ${
+            isMobile
+              ? 'ml-0'
+              : isUltraWide
+                ? 'ml-64'
+                : desktopSidebarExpanded
+                  ? 'ml-64'
+                  : 'ml-16'
+          }`}
+        >
           <Navbar
             title={title}
             isMobile={isMobile}
             setSidebarExpanded={setSidebarExpanded}
           />
-          <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-x-hidden bg-theme transition-colors duration-300">
-            <div className="max-w-full">{children}</div>
+          <main className="flex-1 bg-theme transition-colors duration-300 pt-16 lg:pt-20">
+            <div className="global-content-container">{children}</div>
           </main>
         </div>
       </div>
-    </div>
+    </>
   )
 }

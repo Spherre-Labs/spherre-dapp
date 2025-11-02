@@ -273,7 +273,7 @@ const TreasuryPortfoliochat = ({
       {/* Desktop Layout: Side by Side (Original) */}
       <div className="hidden lg:grid lg:grid-cols-4 lg:h-[445px] gap-6">
         {/* Chart Section - Desktop */}
-        <div className="lg:col-span-3 h-full bg-theme-bg-secondary rounded-[10px] p-4 border-4 border-theme-border transition-colors duration-300">
+        <div className="lg:col-span-3 h-full bg-theme-bg-secondary rounded-[10px] p-4 border border-theme-border transition-colors duration-300">
           <div className="flex items-center justify-between mb-4">
             {/* Left: Token/NFT Legend */}
             <div className="flex items-center gap-6">
@@ -324,7 +324,7 @@ const TreasuryPortfoliochat = ({
           </div>
         </div>
         {/* Top Tokens Section - Desktop */}
-        <div className="bg-theme-bg-secondary h-full rounded-[10px] p-4 border-4 border-theme-border transition-colors duration-300">
+        <div className="bg-theme-bg-secondary h-full rounded-[10px] p-4 border border-theme-border transition-colors duration-300">
           <h3 className="text-lg font-semibold text-theme mb-4">Top Tokens</h3>
           <div className="flex flex-col h-[calc(100%-2rem)]">
             {topTokens.map((token, index) => {

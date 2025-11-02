@@ -22,6 +22,7 @@ import {
   feltToAddress,
 } from '@/lib/utils/validation'
 import MemberCard from './components/member-card'
+import { Skeleton } from '@/components/ui/skeleton'
 
 interface Member {
   id: number
@@ -162,6 +163,26 @@ const Members = () => {
       setBorderPosition((prev) => (prev + 2) % 100)
     }, 100)
     return () => clearInterval(interval)
+  }, [])
+
+  // Session-gated skeleton (show once per session for 5s max)
+  const [minSkeletonElapsed, setMinSkeletonElapsed] = useState(false)
+  useEffect(() => {
+    try {
+      const done = sessionStorage.getItem('membersSkeletonShown') === 'true'
+      if (done) {
+        setMinSkeletonElapsed(true)
+        return
+      }
+    } catch {}
+
+    const id = setTimeout(() => {
+      setMinSkeletonElapsed(true)
+      try {
+        sessionStorage.setItem('membersSkeletonShown', 'true')
+      } catch {}
+    }, 5000)
+    return () => clearTimeout(id)
   }, [])
 
   const handleCopy = useCallback(async (address: string) => {
@@ -312,7 +333,7 @@ const Members = () => {
 
   if (!accountReady) {
     return (
-      <div className="bg-theme min-h-screen p-3 sm:p-4 lg:p-5 py-6 sm:py-8 lg:py-10 overflow-x-hidden transition-colors duration-300">
+      <div className="overflow-x-hidden transition-colors duration-300">
         <div className="flex items-center justify-center h-64">
           <div className="text-theme text-lg">Loading account…</div>
         </div>
@@ -320,11 +341,19 @@ const Members = () => {
     )
   }
 
-  if (isLoading) {
+  if (isLoading || !minSkeletonElapsed) {
     return (
-      <div className="bg-theme min-h-screen p-3 sm:p-4 lg:p-5 py-6 sm:py-8 lg:py-10 overflow-x-hidden transition-colors duration-300">
-        <div className="flex items-center justify-center h-64">
-          <div className="text-theme text-lg">Loading members...</div>
+      <div className="overflow-x-hidden transition-colors duration-300 p-4 sm:p-6 lg:p-8">
+        <div className="bg-theme-bg-tertiary border border-theme-border rounded-lg p-4 sm:p-6">
+          <div className="h-6 w-48 bg-theme-bg-secondary rounded animate-pulse mb-6 mx-1" />
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <Skeleton
+                key={i}
+                className="h-60 w-full rounded-lg bg-theme-bg-secondary mx-1"
+              />
+            ))}
+          </div>
         </div>
       </div>
     )
@@ -332,7 +361,7 @@ const Members = () => {
 
   if (error) {
     return (
-      <div className="bg-theme min-h-screen p-3 sm:p-4 lg:p-5 py-6 sm:py-8 lg:py-10 overflow-x-hidden transition-colors duration-300">
+      <div className="overflow-x-hidden transition-colors duration-300">
         <div className="flex items-center justify-center h-64">
           <div className="text-red-500 text-lg">
             Error loading members: {error.message}
@@ -343,7 +372,7 @@ const Members = () => {
   }
 
   return (
-    <div className="bg-theme min-h-screen p-3 sm:p-4 lg:p-5 py-6 sm:py-8 lg:py-10 overflow-x-hidden transition-colors duration-300">
+    <div className="overflow-x-hidden transition-colors duration-300">
       <div className="flex flex-col sm:flex-row text-theme justify-between border-b-2 relative border-theme-border gap-4">
         <div className="flex items-center flex-wrap">
           <p className="cursor-pointer px-3 sm:px-4 py-2 text-sm sm:text-base transition-colors duration-200 border-b-2 border-theme text-theme">
