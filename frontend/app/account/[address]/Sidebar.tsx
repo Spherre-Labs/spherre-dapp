@@ -6,7 +6,7 @@ import Image from 'next/image'
 import SidebarProfile from './Profile'
 import { NavItem } from './navigation'
 import Link from 'next/link'
-import { X } from 'lucide-react'
+import { X, Pin, PinOff } from 'lucide-react'
 import { useSpherreAccount } from '../../context/account-context'
 import { sliceWalletAddress } from '@/components/utils'
 
@@ -35,14 +35,22 @@ const Sidebar = ({
   // State to track sidebar expansion
   const [expanded, setExpanded] = useState(false) // Start with false for SSR
 
+  // State to track if sidebar is pinned (fixed) or hover mode
+  const [isPinned, setIsPinned] = useState(false)
+
   const { accountAddress } = useSpherreAccount()
 
-  // Load saved preference after mount
+  // Load saved preferences after mount
   useEffect(() => {
     if (mounted && typeof window !== 'undefined') {
-      const saved = localStorage.getItem('sidebarExpanded')
-      if (saved !== null) {
-        setExpanded(JSON.parse(saved))
+      const savedExpanded = localStorage.getItem('sidebarExpanded')
+      if (savedExpanded !== null) {
+        setExpanded(JSON.parse(savedExpanded))
+      }
+
+      const savedPinned = localStorage.getItem('sidebarPinned')
+      if (savedPinned !== null) {
+        setIsPinned(JSON.parse(savedPinned))
       }
     }
   }, [mounted])
@@ -54,17 +62,24 @@ const Sidebar = ({
     }
   }, [expanded, mounted])
 
+  // Store pinned state in localStorage when it changes
+  useEffect(() => {
+    if (mounted && typeof window !== 'undefined') {
+      localStorage.setItem('sidebarPinned', JSON.stringify(isPinned))
+    }
+  }, [isPinned, mounted])
+
   // References for staggered animations
   const itemsRef = useRef<(HTMLLIElement | null)[]>([])
 
-  // Reset expanded state when clicking outside (not on ultra-wide)
+  // Reset expanded state when clicking outside (not on ultra-wide or when pinned)
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const sidebar = document.getElementById('sidebar')
       if (sidebar && !sidebar.contains(event.target as Node)) {
         if (isMobile) {
           setSidebarExpanded(false)
-        } else if (!isUltraWide) {
+        } else if (!isUltraWide && !isPinned) {
           setExpanded(false)
         }
       }
@@ -74,7 +89,7 @@ const Sidebar = ({
     return () => {
       document.removeEventListener('mousedown', handleClickOutside)
     }
-  }, [isMobile, isUltraWide, setSidebarExpanded])
+  }, [isMobile, isUltraWide, isPinned, setSidebarExpanded])
 
   // Set animation delays for staggered menu reveal
   useEffect(() => {
@@ -85,13 +100,13 @@ const Sidebar = ({
     })
   }, [expanded])
 
-  // Handle keyboard navigation (not on ultra-wide)
+  // Handle keyboard navigation (not on ultra-wide or when pinned)
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         if (isMobile) {
           setSidebarExpanded(false)
-        } else if (!isUltraWide) {
+        } else if (!isUltraWide && !isPinned) {
           setExpanded(false)
         }
       }
@@ -101,7 +116,7 @@ const Sidebar = ({
     return () => {
       window.removeEventListener('keydown', handleKeyDown)
     }
-  }, [isMobile, isUltraWide, setSidebarExpanded])
+  }, [isMobile, isUltraWide, isPinned, setSidebarExpanded])
 
   // Tooltip component for collapsed state
   const Tooltip = ({
@@ -117,8 +132,15 @@ const Sidebar = ({
     </div>
   )
 
-  // On ultra-wide, always expanded; on mobile, use sidebarExpanded; otherwise use expanded
-  const isExpanded = isUltraWide ? true : isMobile ? sidebarExpanded : expanded
+  // Determine if sidebar should be expanded:
+  // - Ultra-wide: always expanded
+  // - Mobile: use sidebarExpanded state
+  // - Desktop: if pinned, always expanded; otherwise use hover-based expanded state
+  const isExpanded = isUltraWide
+    ? true
+    : isMobile
+      ? sidebarExpanded
+      : isPinned || expanded
 
   if (!mounted) return null
 
@@ -139,12 +161,16 @@ const Sidebar = ({
             ? `fixed top-0 left-0 h-screen w-64 transform transition-transform duration-300 z-30 ${
                 isExpanded ? 'translate-x-0' : '-translate-x-full'
               }`
-            : `flex-shrink-0 transition-all duration-300 ${isExpanded ? 'w-64' : 'w-16'}`
+            : `fixed top-0 left-0 h-screen flex-shrink-0 transition-all duration-300 ${isExpanded ? 'w-64' : 'w-16'}`
         } sidebar-bg text-theme border-r border-theme sidebar-transition`}
-        onMouseEnter={() => !isMobile && !isUltraWide && setExpanded(true)}
-        onMouseLeave={() => !isMobile && !isUltraWide && setExpanded(false)}
+        onMouseEnter={() =>
+          !isMobile && !isUltraWide && !isPinned && setExpanded(true)
+        }
+        onMouseLeave={() =>
+          !isMobile && !isUltraWide && !isPinned && setExpanded(false)
+        }
       >
-        <div className="p-4 h-full flex flex-col">
+        <div className="p-4 h-full flex flex-col overflow-hidden">
           {/* Mobile close button */}
           {isMobile && (
             <div className="flex justify-end mb-4">
@@ -160,7 +186,7 @@ const Sidebar = ({
           {/* Logo */}
           <div
             className={`flex items-center sidebar-transition ${
-              mounted && isExpanded ? 'gap-4 mb-14' : 'justify-center mb-14'
+              mounted && isExpanded ? 'gap-4 mb-8' : 'justify-center mb-8'
             }`}
           >
             <Image
@@ -178,6 +204,26 @@ const Sidebar = ({
               </h2>
             </div>
           </div>
+
+          {/* Pin/Unpin Toggle Button - Only visible on desktop (not mobile or ultra-wide) */}
+          {!isMobile && !isUltraWide && (
+            <div
+              className={`mb-6 ${isExpanded ? 'px-3' : 'flex justify-center'}`}
+            >
+              <button
+                onClick={() => setIsPinned(!isPinned)}
+                className={`p-2 rounded-lg transition-colors duration-200 hover:bg-theme-tertiary ${
+                  isPinned
+                    ? 'bg-primary/10 text-primary'
+                    : 'text-theme-secondary'
+                }`}
+                title={isPinned ? 'Unpin sidebar' : 'Pin sidebar'}
+                aria-label={isPinned ? 'Unpin sidebar' : 'Pin sidebar'}
+              >
+                {isPinned ? <Pin size={18} /> : <PinOff size={18} />}
+              </button>
+            </div>
+          )}
 
           {/* Menu Items */}
           <ul className="flex flex-col gap-5 text-[16px] flex-1 overflow-y-auto">

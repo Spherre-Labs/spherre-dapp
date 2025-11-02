@@ -30,6 +30,7 @@ interface DappLayoutProps {
 export default function DappLayout({ children, params }: DappLayoutProps) {
   // All hooks at the top - ALWAYS called in the same order
   const [sidebarExpanded, setSidebarExpanded] = useState(false)
+  const [desktopSidebarExpanded, setDesktopSidebarExpanded] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
   const [isUltraWide, setIsUltraWide] = useState(false)
   const pathname = usePathname()
@@ -115,36 +116,24 @@ export default function DappLayout({ children, params }: DappLayoutProps) {
     return () => window.removeEventListener('resize', checkScreenSize)
   }, [])
 
-  // Listen for sidebar expansion state changes - only use document after mount
-  // Disable hover behavior on ultra-wide screens
+  // Track desktop sidebar expansion for layout adjustments
   useEffect(() => {
     if (typeof window === 'undefined') return
 
-    const sidebar = document.getElementById('sidebar')
-
-    const handleSidebarHover = () => {
-      if (!isMobile && !isUltraWide) {
-        setSidebarExpanded(true)
-      }
-    }
-    const handleSidebarLeave = () => {
-      if (!isMobile && !isUltraWide) {
-        setSidebarExpanded(false)
+    // Listen to localStorage changes for pinned state
+    const checkPinnedState = () => {
+      const isPinned = localStorage.getItem('sidebarPinned')
+      if (isPinned) {
+        setDesktopSidebarExpanded(JSON.parse(isPinned))
       }
     }
 
-    if (sidebar && !isMobile && !isUltraWide) {
-      sidebar.addEventListener('mouseenter', handleSidebarHover)
-      sidebar.addEventListener('mouseleave', handleSidebarLeave)
-    }
+    checkPinnedState()
 
-    return () => {
-      if (sidebar && !isMobile && !isUltraWide) {
-        sidebar.removeEventListener('mouseenter', handleSidebarHover)
-        sidebar.removeEventListener('mouseleave', handleSidebarLeave)
-      }
-    }
-  }, [isMobile, isUltraWide])
+    // Also check on storage events (for cross-tab sync)
+    window.addEventListener('storage', checkPinnedState)
+    return () => window.removeEventListener('storage', checkPinnedState)
+  }, [])
 
   useEffect(() => {
     if (accountName) {
@@ -153,24 +142,27 @@ export default function DappLayout({ children, params }: DappLayoutProps) {
   }, [accountName])
 
   return (
-    <div className="bg-theme min-h-screen overflow-x-hidden transition-colors duration-300">
-      <div className="flex min-h-screen">
-        <Sidebar
-          accountName={accountName ?? 'Spherre Account'}
-          navItems={navItems}
-          selectedPage={selectedPage}
-          isMobile={isMobile}
-          isUltraWide={isUltraWide}
-          sidebarExpanded={sidebarExpanded}
-          setSidebarExpanded={setSidebarExpanded}
-        />
-        <div className="flex-1 flex flex-col min-h-screen">
+    <>
+      <Sidebar
+        accountName={accountName ?? 'Spherre Account'}
+        navItems={navItems}
+        selectedPage={selectedPage}
+        isMobile={isMobile}
+        isUltraWide={isUltraWide}
+        sidebarExpanded={sidebarExpanded}
+        setSidebarExpanded={setSidebarExpanded}
+      />
+      <div className="bg-theme min-h-screen transition-colors duration-300">
+        <div
+          className={`flex flex-col min-h-screen ${isMobile ? 'ml-0' : desktopSidebarExpanded || isUltraWide ? 'ml-64' : 'ml-16'}`}
+          style={{ transition: 'margin-left 300ms ease' }}
+        >
           <Navbar
             title={title}
             isMobile={isMobile}
             setSidebarExpanded={setSidebarExpanded}
           />
-          <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-x-hidden bg-theme transition-colors duration-300">
+          <main className="flex-1 p-4 sm:p-6 lg:p-8 bg-theme transition-colors duration-300">
             <div
               className={`max-w-full ${isUltraWide ? 'main-content-centered' : ''}`}
             >
@@ -179,6 +171,6 @@ export default function DappLayout({ children, params }: DappLayoutProps) {
           </main>
         </div>
       </div>
-    </div>
+    </>
   )
 }
