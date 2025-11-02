@@ -405,6 +405,7 @@ body {
   background-color: var(--theme-bg-tertiary);
   color: var(--theme-text);
   border-left: 3px solid var(--primary-color);
+  padding-left: 8px;
 }
 
 /* Tooltip styles for collapsed sidebar */
