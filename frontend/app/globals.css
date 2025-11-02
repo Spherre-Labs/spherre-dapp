@@ -870,3 +870,13 @@ select {
     margin: 1.5rem;
   }
 }
+
+/* Ultra-wide monitor specific styles (2560px and above) */
+@media (min-width: 2560px) {
+  .ultrawide-content {
+    width: 120% !important;
+    max-width: none !important;
+    padding: 2.5rem !important;
+    gap: 2.5rem !important;
+  }
+}
