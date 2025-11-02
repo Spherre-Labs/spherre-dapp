@@ -13,6 +13,7 @@ import {
   ChartData,
   TooltipItem,
 } from 'chart.js'
+import type { Chart } from 'chart.js'
 import { Line } from 'react-chartjs-2'
 import 'chartjs-adapter-moment'
 import moment from 'moment'
@@ -61,9 +62,21 @@ const AmountAnalysisChart: React.FC<AmountAnalysisChartProps> = ({
   )
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
+  const chartRef = useRef<Chart<'line'> | null>(null)
+  const [isChartReady, setIsChartReady] = useState(false)
 
   useEffect(() => {
     setMounted(true)
+
+    // Add a small delay to ensure container is properly sized
+    const timer = setTimeout(() => {
+      setIsChartReady(true)
+      if (chartRef.current) {
+        chartRef.current.resize()
+      }
+    }, 150)
+
+    return () => clearTimeout(timer)
   }, [])
 
   // Available years (last 7 years)
@@ -317,6 +330,7 @@ const AmountAnalysisChart: React.FC<AmountAnalysisChartProps> = ({
         responsive: true,
         maintainAspectRatio: false,
         backgroundColor: 'transparent',
+        resizeDelay: 0,
         layout: {
           padding: 0,
         },
@@ -501,6 +515,21 @@ const AmountAnalysisChart: React.FC<AmountAnalysisChartProps> = ({
     }
   }, [])
 
+  // Handle window resize to ensure chart stays properly sized
+  useEffect(() => {
+    const handleResize = () => {
+      if (chartRef.current) {
+        // Small delay to ensure container has updated dimensions
+        setTimeout(() => {
+          chartRef.current?.resize()
+        }, 100)
+      }
+    }
+
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [mounted])
+
   // Handle date range change
   const handleDateRangeChange = (range: DateRangeType) => {
     setDateRange(range)
@@ -512,6 +541,15 @@ const AmountAnalysisChart: React.FC<AmountAnalysisChartProps> = ({
     const data = generateChartData(dateRange, selectedYear)
     setChartData(prepareChartData(data))
     setChartOptions(getChartOptions(dateRange))
+
+    // Force chart resize after data update
+    const timer = setTimeout(() => {
+      if (chartRef.current) {
+        chartRef.current.resize()
+      }
+    }, 50)
+
+    return () => clearTimeout(timer)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dateRange, selectedYear, actualTheme, mounted])
 
@@ -685,18 +723,31 @@ const AmountAnalysisChart: React.FC<AmountAnalysisChartProps> = ({
             backgroundColor: 'transparent',
           }}
         >
-          <Line
-            data={chartData}
-            options={{
-              ...chartOptions,
-              plugins: {
-                ...chartOptions.plugins,
-                filler: {
-                  propagate: false,
+          {isChartReady && mounted ? (
+            <Line
+              ref={chartRef}
+              data={chartData}
+              options={{
+                ...chartOptions,
+                onResize: () => {
+                  // Chart resize handler - ensures proper dimensions
                 },
-              },
-            }}
-          />
+                plugins: {
+                  ...chartOptions.plugins,
+                  filler: {
+                    propagate: false,
+                  },
+                },
+              }}
+            />
+          ) : (
+            <div className="flex items-center justify-center h-full">
+              <div className="animate-pulse">
+                <div className="h-4 bg-theme-border rounded w-32 mb-4"></div>
+                <div className="h-64 bg-theme-border rounded"></div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
