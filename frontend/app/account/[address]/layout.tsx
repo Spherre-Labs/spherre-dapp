@@ -31,6 +31,7 @@ export default function DappLayout({ children, params }: DappLayoutProps) {
   // All hooks at the top - ALWAYS called in the same order
   const [sidebarExpanded, setSidebarExpanded] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
+  const [isUltraWide, setIsUltraWide] = useState(false)
   const pathname = usePathname()
   const selectedPage = pathname
   const account_address = useSpherreAccount().accountAddress
@@ -99,49 +100,51 @@ export default function DappLayout({ children, params }: DappLayoutProps) {
     },
   ]
 
-  // Check for mobile screen size - only use window after mount
+  // Check for mobile and ultra-wide screen sizes - only use window after mount
   useEffect(() => {
     if (typeof window === 'undefined') return
 
-    const checkMobile = () => {
+    const checkScreenSize = () => {
       setIsMobile(window.innerWidth < 768)
+      setIsUltraWide(window.innerWidth >= 2560)
     }
 
-    checkMobile()
-    window.addEventListener('resize', checkMobile)
+    checkScreenSize()
+    window.addEventListener('resize', checkScreenSize)
 
-    return () => window.removeEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkScreenSize)
   }, [])
 
   // Listen for sidebar expansion state changes - only use document after mount
+  // Disable hover behavior on ultra-wide screens
   useEffect(() => {
     if (typeof window === 'undefined') return
 
     const sidebar = document.getElementById('sidebar')
 
     const handleSidebarHover = () => {
-      if (!isMobile) {
+      if (!isMobile && !isUltraWide) {
         setSidebarExpanded(true)
       }
     }
     const handleSidebarLeave = () => {
-      if (!isMobile) {
+      if (!isMobile && !isUltraWide) {
         setSidebarExpanded(false)
       }
     }
 
-    if (sidebar && !isMobile) {
+    if (sidebar && !isMobile && !isUltraWide) {
       sidebar.addEventListener('mouseenter', handleSidebarHover)
       sidebar.addEventListener('mouseleave', handleSidebarLeave)
     }
 
     return () => {
-      if (sidebar && !isMobile) {
+      if (sidebar && !isMobile && !isUltraWide) {
         sidebar.removeEventListener('mouseenter', handleSidebarHover)
         sidebar.removeEventListener('mouseleave', handleSidebarLeave)
       }
     }
-  }, [isMobile])
+  }, [isMobile, isUltraWide])
 
   useEffect(() => {
     if (accountName) {
@@ -157,6 +160,7 @@ export default function DappLayout({ children, params }: DappLayoutProps) {
           navItems={navItems}
           selectedPage={selectedPage}
           isMobile={isMobile}
+          isUltraWide={isUltraWide}
           sidebarExpanded={sidebarExpanded}
           setSidebarExpanded={setSidebarExpanded}
         />
@@ -167,7 +171,9 @@ export default function DappLayout({ children, params }: DappLayoutProps) {
             setSidebarExpanded={setSidebarExpanded}
           />
           <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-x-hidden bg-theme transition-colors duration-300">
-            <div className="max-w-full">{children}</div>
+            <div className={`max-w-full ${isUltraWide ? 'main-content-centered' : ''}`}>
+              {children}
+            </div>
           </main>
         </div>
       </div>

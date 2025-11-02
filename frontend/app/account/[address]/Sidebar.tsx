@@ -15,6 +15,7 @@ interface SidebarProps {
   navItems: NavItem[]
   selectedPage: string
   isMobile: boolean
+  isUltraWide: boolean
   sidebarExpanded: boolean
   setSidebarExpanded: (expanded: boolean) => void
 }
@@ -24,6 +25,7 @@ const Sidebar = ({
   navItems,
   selectedPage,
   isMobile,
+  isUltraWide,
   sidebarExpanded,
   setSidebarExpanded,
 }: SidebarProps) => {
@@ -55,14 +57,14 @@ const Sidebar = ({
   // References for staggered animations
   const itemsRef = useRef<(HTMLLIElement | null)[]>([])
 
-  // Reset expanded state when clicking outside
+  // Reset expanded state when clicking outside (not on ultra-wide)
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const sidebar = document.getElementById('sidebar')
       if (sidebar && !sidebar.contains(event.target as Node)) {
         if (isMobile) {
           setSidebarExpanded(false)
-        } else {
+        } else if (!isUltraWide) {
           setExpanded(false)
         }
       }
@@ -72,7 +74,7 @@ const Sidebar = ({
     return () => {
       document.removeEventListener('mousedown', handleClickOutside)
     }
-  }, [isMobile, setSidebarExpanded])
+  }, [isMobile, isUltraWide, setSidebarExpanded])
 
   // Set animation delays for staggered menu reveal
   useEffect(() => {
@@ -83,13 +85,13 @@ const Sidebar = ({
     })
   }, [expanded])
 
-  // Handle keyboard navigation
+  // Handle keyboard navigation (not on ultra-wide)
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         if (isMobile) {
           setSidebarExpanded(false)
-        } else {
+        } else if (!isUltraWide) {
           setExpanded(false)
         }
       }
@@ -99,7 +101,7 @@ const Sidebar = ({
     return () => {
       window.removeEventListener('keydown', handleKeyDown)
     }
-  }, [isMobile, setSidebarExpanded])
+  }, [isMobile, isUltraWide, setSidebarExpanded])
 
   // Tooltip component for collapsed state
   const Tooltip = ({
@@ -115,7 +117,8 @@ const Sidebar = ({
     </div>
   )
 
-  const isExpanded = isMobile ? sidebarExpanded : expanded
+  // On ultra-wide, always expanded; on mobile, use sidebarExpanded; otherwise use expanded
+  const isExpanded = isUltraWide ? true : (isMobile ? sidebarExpanded : expanded)
 
   if (!mounted) return null
 
@@ -138,8 +141,8 @@ const Sidebar = ({
               }`
             : `flex-shrink-0 transition-all duration-300 ${isExpanded ? 'w-64' : 'w-16'}`
         } sidebar-bg text-theme border-r border-theme sidebar-transition`}
-        onMouseEnter={() => !isMobile && setExpanded(true)}
-        onMouseLeave={() => !isMobile && setExpanded(false)}
+        onMouseEnter={() => !isMobile && !isUltraWide && setExpanded(true)}
+        onMouseLeave={() => !isMobile && !isUltraWide && setExpanded(false)}
       >
         <div className="p-4 h-full flex flex-col">
           {/* Mobile close button */}

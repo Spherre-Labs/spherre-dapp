@@ -698,6 +698,14 @@ body {
   }
 }
 
+/* Ultra-wide and 4K centered layout */
+@media (min-width: 2560px) {
+  .main-content-centered {
+    max-width: 2200px;
+    margin: 0 auto;
+  }
+}
+
 /* Ensure no horizontal scroll on mobile */
 html,
 body {
