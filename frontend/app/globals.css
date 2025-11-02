@@ -770,32 +770,6 @@ body {
   background-color: #374151;
 }
 
-/* Responsive utilities for common patterns */
-.responsive-container {
-  width: 100%;
-  max-width: 100%;
-  margin: 0 auto;
-  padding: 0 1rem;
-}
-
-@media (min-width: 640px) {
-  .responsive-container {
-    padding: 0 1.5rem;
-  }
-}
-
-@media (min-width: 1024px) {
-  .responsive-container {
-    padding: 0 2rem;
-  }
-}
-
-@media (min-width: 1280px) {
-  .responsive-container {
-    padding: 0 2.5rem;
-  }
-}
-
 /* Ultra-wide and 4K centered layout */
 @media (min-width: 2560px) {
   .main-content-centered {
@@ -868,18 +842,6 @@ select {
   .card-responsive {
     padding: 2rem;
     margin: 1.5rem;
-  }
-}
-
-/* Legacy ultra-wide support - now integrated into global container */
-@media (min-width: 2560px) {
-  .ultrawide-content {
-    width: 120% !important;
-    max-width: none !important;
-    padding: 2.5rem !important;
-    gap: 2.5rem !important;
-    margin-left: -10% !important;
-    margin-right: -10% !important;
   }
 }
 

@@ -4,6 +4,7 @@ import logo from '../public/Images/spherrelogo.png'
 import wall from '../public/Images/wall.png'
 import add from '../public/Images/Add.png'
 import Logo from './shared/Logo'
+import ThemeButton from './shared/ThemeButton'
 import { useRouter } from 'next/navigation'
 import { Connector, useAccount, useConnect } from '@starknet-react/core'
 import { StarknetkitConnector, useStarknetkitConnectModal } from 'starknetkit'
@@ -143,58 +144,25 @@ const Welcome = () => {
 
                 {/* Responsive Button */}
                 {address ? (
-                  <button
+                  <ThemeButton
                     onClick={() => router.push('/create-account/step-1')}
-                    className={`w-full sm:w-72 flex items-center justify-center gap-1 px-6 py-2 rounded-lg mx-auto my-3 transition-all duration-200 ${
-                      actualTheme === 'dark'
-                        ? 'bg-white text-black hover:bg-gray-200'
-                        : 'bg-gray-900 text-white hover:bg-gray-800'
-                    }`}
+                    icon={add}
                   >
-                    <Image src={add} height={30} width={24} alt={'add'} />
-                    <p
-                      className={
-                        actualTheme === 'dark' ? 'text-black' : 'text-white'
-                      }
-                    >
-                      Create Spherre
-                    </p>
-                  </button>
+                    Create Spherre
+                  </ThemeButton>
                 ) : (
-                  <button
-                    onClick={connectWallet}
-                    className={`w-full sm:w-72 flex items-center justify-center gap-1 px-6 py-2 rounded-lg mx-auto my-3 transition-all duration-200 ${
-                      actualTheme === 'dark'
-                        ? 'bg-white text-black hover:bg-gray-200'
-                        : 'bg-gray-900 text-white hover:bg-gray-800'
-                    }`}
-                  >
-                    <p
-                      className={
-                        actualTheme === 'dark' ? 'text-black' : 'text-white'
-                      }
-                    >
-                      Connect Wallet
-                    </p>
-                  </button>
+                  <ThemeButton onClick={connectWallet}>
+                    Connect Wallet
+                  </ThemeButton>
                 )}
-                <button
-                  onClick={() => router.push(`/account/${accountAddress}`)}
-                  className={`w-full sm:w-72 flex items-center justify-center gap-1 px-6 py-2 rounded-lg mx-auto my-3 transition-all duration-200 ${
-                    actualTheme === 'dark'
-                      ? 'bg-white text-black hover:bg-gray-200'
-                      : 'bg-gray-900 text-white hover:bg-gray-800'
-                  }`}
-                >
-                  <Image src={add} height={30} width={24} alt={'add'} />
-                  <p
-                    className={
-                      actualTheme === 'dark' ? 'text-black' : 'text-white'
-                    }
+                {accountAddress && (
+                  <ThemeButton
+                    onClick={() => router.push(`/account/${accountAddress}`)}
+                    icon={add}
                   >
                     Go to default account
-                  </p>
-                </button>
+                  </ThemeButton>
+                )}
               </div>
             </div>
 
