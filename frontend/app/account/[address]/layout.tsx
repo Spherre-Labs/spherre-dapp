@@ -135,6 +135,13 @@ export default function DappLayout({ children, params }: DappLayoutProps) {
     return () => window.removeEventListener('storage', checkPinnedState)
   }, [])
 
+  // Handle ultra-wide screen behavior
+  useEffect(() => {
+    if (isUltraWide) {
+      setDesktopSidebarExpanded(true)
+    }
+  }, [isUltraWide])
+
   useEffect(() => {
     if (accountName) {
       setTitle(accountName)
@@ -151,21 +158,28 @@ export default function DappLayout({ children, params }: DappLayoutProps) {
         isUltraWide={isUltraWide}
         sidebarExpanded={sidebarExpanded}
         setSidebarExpanded={setSidebarExpanded}
+        desktopSidebarExpanded={desktopSidebarExpanded}
+        setDesktopSidebarExpanded={setDesktopSidebarExpanded}
       />
       <div className="bg-theme min-h-screen transition-colors duration-300">
         <div
-          className={`flex flex-col min-h-screen ${isMobile ? 'ml-0' : desktopSidebarExpanded || isUltraWide ? 'ml-64' : 'ml-16'}`}
-          style={{ transition: 'margin-left 300ms ease' }}
+          className={`flex flex-col min-h-screen main-content-transition ${
+            isMobile
+              ? 'ml-0'
+              : isUltraWide
+                ? 'ml-64'
+                : desktopSidebarExpanded
+                  ? 'ml-64'
+                  : 'ml-16'
+          }`}
         >
           <Navbar
             title={title}
             isMobile={isMobile}
             setSidebarExpanded={setSidebarExpanded}
           />
-          <main className="flex-1 p-4 sm:p-6 lg:p-8 bg-theme transition-colors duration-300">
-            <div
-              className={`max-w-full ${isUltraWide ? 'main-content-centered' : ''}`}
-            >
+          <main className="flex-1 bg-theme transition-colors duration-300 pt-16 lg:pt-20">
+            <div className="container-large debug-container px-4 sm:px-6 lg:px-8 pt-4 sm:pt-6 lg:pt-8 pb-4 sm:pb-6 lg:pb-8">
               {children}
             </div>
           </main>

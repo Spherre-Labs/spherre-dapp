@@ -27,7 +27,7 @@ export default function WithdrawStepTwo({
       <div className="flex flex-col gap-6">
         <div className=" flex flex-col gap-5 md:p-6">
           <label className="block text-xl text-gray-500">Enter Amount</label>
-          <div className="flex border border-[#272729] rounded-lg p-4 text-white">
+          <div className="flex border border-[#24252A] rounded-lg p-4 text-white">
             <div className="flex-1 flex flex-col gap-2">
               <Input
                 type="text"

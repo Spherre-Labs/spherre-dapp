@@ -18,6 +18,8 @@ interface SidebarProps {
   isUltraWide: boolean
   sidebarExpanded: boolean
   setSidebarExpanded: (expanded: boolean) => void
+  desktopSidebarExpanded: boolean
+  setDesktopSidebarExpanded: (expanded: boolean) => void
 }
 
 const Sidebar = ({
@@ -28,6 +30,7 @@ const Sidebar = ({
   isUltraWide,
   sidebarExpanded,
   setSidebarExpanded,
+  setDesktopSidebarExpanded,
 }: SidebarProps) => {
   const [mounted, setMounted] = useState(false)
   useEffect(() => setMounted(true), [])
@@ -68,6 +71,21 @@ const Sidebar = ({
       localStorage.setItem('sidebarPinned', JSON.stringify(isPinned))
     }
   }, [isPinned, mounted])
+
+  // Update parent state when sidebar expansion changes (hover or pin)
+  useEffect(() => {
+    if (mounted && !isMobile && !isUltraWide) {
+      const shouldExpand = isPinned || expanded
+      setDesktopSidebarExpanded(shouldExpand)
+    }
+  }, [
+    isPinned,
+    expanded,
+    mounted,
+    isMobile,
+    isUltraWide,
+    setDesktopSidebarExpanded,
+  ])
 
   // References for staggered animations
   const itemsRef = useRef<(HTMLLIElement | null)[]>([])
@@ -149,7 +167,7 @@ const Sidebar = ({
       {/* Mobile overlay */}
       {isMobile && isExpanded && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-50 z-20 lg:hidden"
+          className="fixed inset-0 bg-black bg-opacity-50 z-25 lg:hidden"
           onClick={() => setSidebarExpanded(false)}
         />
       )}
@@ -161,8 +179,8 @@ const Sidebar = ({
             ? `fixed top-0 left-0 h-screen w-64 transform transition-transform duration-300 z-30 ${
                 isExpanded ? 'translate-x-0' : '-translate-x-full'
               }`
-            : `fixed top-0 left-0 h-screen flex-shrink-0 transition-all duration-300 ${isExpanded ? 'w-64' : 'w-16'}`
-        } sidebar-bg text-theme border-r border-theme sidebar-transition`}
+            : `fixed top-0 left-0 h-screen flex-shrink-0 transition-all duration-300 z-20 ${isExpanded ? 'w-64' : 'w-16'}`
+        } sidebar-bg text-theme border-r border-theme-border sidebar-transition`}
         onMouseEnter={() =>
           !isMobile && !isUltraWide && !isPinned && setExpanded(true)
         }

@@ -312,7 +312,7 @@ const Members = () => {
 
   if (!accountReady) {
     return (
-      <div className="bg-theme min-h-screen p-3 sm:p-4 lg:p-5 py-6 sm:py-8 lg:py-10 overflow-x-hidden transition-colors duration-300">
+      <div className="overflow-x-hidden transition-colors duration-300">
         <div className="flex items-center justify-center h-64">
           <div className="text-theme text-lg">Loading account…</div>
         </div>
@@ -322,7 +322,7 @@ const Members = () => {
 
   if (isLoading) {
     return (
-      <div className="bg-theme min-h-screen p-3 sm:p-4 lg:p-5 py-6 sm:py-8 lg:py-10 overflow-x-hidden transition-colors duration-300">
+      <div className="overflow-x-hidden transition-colors duration-300">
         <div className="flex items-center justify-center h-64">
           <div className="text-theme text-lg">Loading members...</div>
         </div>
@@ -332,7 +332,7 @@ const Members = () => {
 
   if (error) {
     return (
-      <div className="bg-theme min-h-screen p-3 sm:p-4 lg:p-5 py-6 sm:py-8 lg:py-10 overflow-x-hidden transition-colors duration-300">
+      <div className="overflow-x-hidden transition-colors duration-300">
         <div className="flex items-center justify-center h-64">
           <div className="text-red-500 text-lg">
             Error loading members: {error.message}
@@ -343,7 +343,7 @@ const Members = () => {
   }
 
   return (
-    <div className="bg-theme min-h-screen p-3 sm:p-4 lg:p-5 py-6 sm:py-8 lg:py-10 overflow-x-hidden transition-colors duration-300">
+    <div className="overflow-x-hidden transition-colors duration-300">
       <div className="flex flex-col sm:flex-row text-theme justify-between border-b-2 relative border-theme-border gap-4">
         <div className="flex items-center flex-wrap">
           <p className="cursor-pointer px-3 sm:px-4 py-2 text-sm sm:text-base transition-colors duration-200 border-b-2 border-theme text-theme">

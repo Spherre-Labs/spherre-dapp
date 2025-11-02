@@ -95,7 +95,7 @@ const Navbar: React.FC<NavbarProps> = ({
   ]
 
   return (
-    <nav className="sticky top-0 z-10 bg-theme-secondary border-b border-theme text-theme flex justify-between items-center p-3 lg:p-4 transition-colors duration-300">
+    <nav className="fixed top-0 left-0 right-0 z-40 bg-theme-secondary border-b border-theme text-theme flex justify-between items-center p-3 lg:p-4 transition-colors duration-300">
       <div className="flex items-center gap-3">
         {/* Mobile menu button */}
         {isMobile && (

@@ -71,7 +71,7 @@ export default function DashboardPage() {
   if (!mounted) return null
 
   return (
-    <div className="py-4 sm:py-6 lg:py-8 px-1 sm:px-4 lg:px-6 rounded-[10px] flex flex-col gap-y-4 sm:gap-y-6 lg:gap-y-8 border-theme-border border-2 mx-1 sm:mx-4 overflow-x-hidden w-full min-h-[90vh] bg-theme-bg-secondary transition-colors duration-300">
+    <div className="rounded-[10px] flex flex-col gap-y-4 sm:gap-y-6 lg:gap-y-8 border-theme-border border-2 overflow-x-hidden w-full min-h-[90vh] bg-theme-bg-secondary transition-colors duration-300 p-4 sm:p-6 lg:p-8">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4 lg:gap-[15px] w-full">
         <div className="bg-theme-bg-tertiary border border-theme-border rounded-[10px] py-4 sm:py-6 lg:py-[25px] px-3 sm:px-6 lg:px-[28px] w-full transition-colors duration-300">
           <div className="grid gap-y-4 sm:gap-y-6 lg:gap-y-[26px] mb-6 sm:mb-8 lg:mb-[55px]">

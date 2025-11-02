@@ -77,124 +77,130 @@ const Welcome = () => {
     { value: 'system', label: 'System', icon: <Monitor size={16} /> },
   ]
   return (
-    <div className="flex flex-col lg:flex-row bg-theme transition-colors duration-300 min-h-screen">
-      {/* Left Section with Image */}
-      <div className="lg:w-[40vw]">
-        <Image
-          src={wall}
-          alt={''}
-          className="h-32 lg:h-screen p-4 rounded-lg"
-        />
-      </div>
+    <div className="bg-theme transition-colors duration-300 min-h-screen">
+      <div className="container-large px-4 sm:px-6 lg:px-8">
+        <div className="flex flex-col lg:flex-row min-h-screen">
+          {/* Left Section with Image */}
+          <div className="lg:w-2/5">
+            <Image
+              src={wall}
+              alt={''}
+              className="h-32 lg:h-screen p-4 rounded-lg"
+            />
+          </div>
 
-      {/* Right Section */}
-      <div className="flex-1 flex flex-col justify-between p-4 lg:p-14">
-        <div className="flex items-center justify-between">
-          <Logo className="w-[50px]" href="/" image={logo} />
+          {/* Right Section */}
+          <div className="flex-1 flex flex-col justify-between p-4 lg:p-14">
+            <div className="flex items-center justify-between">
+              <Logo className="w-[50px]" href="/" image={logo} />
 
-          <div className="relative" ref={themeMenuRef}>
-            <button
-              onClick={toggleThemeMenu}
-              className="p-2 hover:bg-theme-bg-secondary rounded-lg transition-colors duration-200 border border-theme-border"
-              aria-label="Toggle theme"
-            >
-              {getThemeIcon()}
-            </button>
+              <div className="relative" ref={themeMenuRef}>
+                <button
+                  onClick={toggleThemeMenu}
+                  className="p-2 hover:bg-theme-bg-secondary rounded-lg transition-colors duration-200 border border-theme-border"
+                  aria-label="Toggle theme"
+                >
+                  {getThemeIcon()}
+                </button>
 
-            {isThemeMenuOpen && (
-              <div className="absolute right-0 top-full mt-2 z-50 w-40 bg-theme-bg-secondary border border-theme-border rounded-lg shadow-lg py-1">
-                {themeOptions.map((option) => (
+                {isThemeMenuOpen && (
+                  <div className="absolute right-0 top-full mt-2 z-50 w-40 bg-theme-bg-secondary border border-theme-border rounded-lg shadow-lg py-1">
+                    {themeOptions.map((option) => (
+                      <button
+                        key={option.value}
+                        onClick={() => {
+                          setTheme(option.value as 'light' | 'dark' | 'system')
+                          setIsThemeMenuOpen(false)
+                        }}
+                        className={`w-full flex items-center gap-3 px-3 py-2 text-sm transition-colors ${
+                          theme === option.value
+                            ? 'bg-primary text-white'
+                            : 'text-theme-secondary hover:bg-theme-bg-tertiary hover:text-theme'
+                        }`}
+                      >
+                        {option.icon}
+                        <span>{option.label}</span>
+                        {theme === option.value && (
+                          <span className="ml-auto text-xs">✓</span>
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Centered Content */}
+            <div className="flex flex-col justify-center items-center flex-1 gap-4">
+              <p className="opacity-40 text-theme transition-colors duration-300">
+                Welcome to Spherre!
+              </p>
+              <div className="text-center">
+                {/* Responsive Text */}
+                <p className="text-lg md:text-2xl lg:text-4xl w-full md:w-[80%] lg:w-[60%] mx-auto text-theme transition-colors duration-300">
+                  The Future of Secure, Collaborative Crypto Management!
+                </p>
+
+                {/* Responsive Button */}
+                {address ? (
                   <button
-                    key={option.value}
-                    onClick={() => {
-                      setTheme(option.value as 'light' | 'dark' | 'system')
-                      setIsThemeMenuOpen(false)
-                    }}
-                    className={`w-full flex items-center gap-3 px-3 py-2 text-sm transition-colors ${
-                      theme === option.value
-                        ? 'bg-primary text-white'
-                        : 'text-theme-secondary hover:bg-theme-bg-tertiary hover:text-theme'
+                    onClick={() => router.push('/create-account/step-1')}
+                    className={`w-full sm:w-72 flex items-center justify-center gap-1 px-6 py-2 rounded-lg mx-auto my-3 transition-all duration-200 ${
+                      actualTheme === 'dark'
+                        ? 'bg-white text-black hover:bg-gray-200'
+                        : 'bg-gray-900 text-white hover:bg-gray-800'
                     }`}
                   >
-                    {option.icon}
-                    <span>{option.label}</span>
-                    {theme === option.value && (
-                      <span className="ml-auto text-xs">✓</span>
-                    )}
+                    <Image src={add} height={30} width={24} alt={'add'} />
+                    <p
+                      className={
+                        actualTheme === 'dark' ? 'text-black' : 'text-white'
+                      }
+                    >
+                      Create Spherre
+                    </p>
                   </button>
-                ))}
+                ) : (
+                  <button
+                    onClick={connectWallet}
+                    className={`w-full sm:w-72 flex items-center justify-center gap-1 px-6 py-2 rounded-lg mx-auto my-3 transition-all duration-200 ${
+                      actualTheme === 'dark'
+                        ? 'bg-white text-black hover:bg-gray-200'
+                        : 'bg-gray-900 text-white hover:bg-gray-800'
+                    }`}
+                  >
+                    <p
+                      className={
+                        actualTheme === 'dark' ? 'text-black' : 'text-white'
+                      }
+                    >
+                      Connect Wallet
+                    </p>
+                  </button>
+                )}
+                <button
+                  onClick={() => router.push(`/account/${accountAddress}`)}
+                  className={`w-full sm:w-72 flex items-center justify-center gap-1 px-6 py-2 rounded-lg mx-auto my-3 transition-all duration-200 ${
+                    actualTheme === 'dark'
+                      ? 'bg-white text-black hover:bg-gray-200'
+                      : 'bg-gray-900 text-white hover:bg-gray-800'
+                  }`}
+                >
+                  <Image src={add} height={30} width={24} alt={'add'} />
+                  <p
+                    className={
+                      actualTheme === 'dark' ? 'text-black' : 'text-white'
+                    }
+                  >
+                    Go to default account
+                  </p>
+                </button>
               </div>
-            )}
+            </div>
+
+            <div className="h-8"></div>
           </div>
         </div>
-
-        {/* Centered Content */}
-        <div className="flex flex-col justify-center items-center flex-1 gap-4">
-          <p className="opacity-40 text-theme transition-colors duration-300">
-            Welcome to Spherre!
-          </p>
-          <div className="text-center">
-            {/* Responsive Text */}
-            <p className="text-lg md:text-2xl lg:text-4xl w-full md:w-[80%] lg:w-[60%] mx-auto text-theme transition-colors duration-300">
-              The Future of Secure, Collaborative Crypto Management!
-            </p>
-
-            {/* Responsive Button */}
-            {address ? (
-              <button
-                onClick={() => router.push('/create-account/step-1')}
-                className={`w-full sm:w-72 flex items-center justify-center gap-1 px-6 py-2 rounded-lg mx-auto my-3 transition-all duration-200 ${
-                  actualTheme === 'dark'
-                    ? 'bg-white text-black hover:bg-gray-200'
-                    : 'bg-gray-900 text-white hover:bg-gray-800'
-                }`}
-              >
-                <Image src={add} height={30} width={24} alt={'add'} />
-                <p
-                  className={
-                    actualTheme === 'dark' ? 'text-black' : 'text-white'
-                  }
-                >
-                  Create Spherre
-                </p>
-              </button>
-            ) : (
-              <button
-                onClick={connectWallet}
-                className={`w-full sm:w-72 flex items-center justify-center gap-1 px-6 py-2 rounded-lg mx-auto my-3 transition-all duration-200 ${
-                  actualTheme === 'dark'
-                    ? 'bg-white text-black hover:bg-gray-200'
-                    : 'bg-gray-900 text-white hover:bg-gray-800'
-                }`}
-              >
-                <p
-                  className={
-                    actualTheme === 'dark' ? 'text-black' : 'text-white'
-                  }
-                >
-                  Connect Wallet
-                </p>
-              </button>
-            )}
-            <button
-              onClick={() => router.push(`/account/${accountAddress}`)}
-              className={`w-full sm:w-72 flex items-center justify-center gap-1 px-6 py-2 rounded-lg mx-auto my-3 transition-all duration-200 ${
-                actualTheme === 'dark'
-                  ? 'bg-white text-black hover:bg-gray-200'
-                  : 'bg-gray-900 text-white hover:bg-gray-800'
-              }`}
-            >
-              <Image src={add} height={30} width={24} alt={'add'} />
-              <p
-                className={actualTheme === 'dark' ? 'text-black' : 'text-white'}
-              >
-                Go to default account
-              </p>
-            </button>
-          </div>
-        </div>
-
-        <div className="h-8"></div>
       </div>
     </div>
   )

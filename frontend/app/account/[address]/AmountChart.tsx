@@ -74,9 +74,9 @@ const AmountAnalysisChart: React.FC<AmountAnalysisChartProps> = ({
     return {
       gridColor: actualTheme === 'dark' ? '#292929' : '#e2e8f0',
       tickColor: actualTheme === 'dark' ? '#FFFFFF' : '#374151',
-      tooltipBg: actualTheme === 'dark' ? '#272729' : '#f8fafc',
+      tooltipBg: actualTheme === 'dark' ? '#24252A' : '#f8fafc',
       tooltipText: actualTheme === 'dark' ? '#FFFFFF' : '#374151',
-      selectorBg: actualTheme === 'dark' ? '#272729' : '#f1f5f9',
+      selectorBg: actualTheme === 'dark' ? '#24252A' : '#f1f5f9',
       selectorText: actualTheme === 'dark' ? '#8E9BAE' : '#64748b',
       selectBg: actualTheme === 'dark' ? '#2D2F34' : '#f8fafc',
       selectText: actualTheme === 'dark' ? '#9CA3AF' : '#6b7280',

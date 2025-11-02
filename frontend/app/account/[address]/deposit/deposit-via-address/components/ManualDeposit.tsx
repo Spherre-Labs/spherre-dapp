@@ -25,7 +25,7 @@ const ManualDeposit = () => {
       margin: 2, // Less whitespace
       color: {
         dark: '#ffffff',
-        light: '#1C1D1F',
+        light: '#1D1E22',
       },
       errorCorrectionLevel: 'H',
     }).then(setSrc)
@@ -112,7 +112,7 @@ const ManualDeposit = () => {
 
       <div className="flex flex-col h-[322px] w-full">
         <div className="flex justify-between gap-5">
-          <div className="size-[250px] relative overflow-hidden rounded-[10px] bg-gray-100 dark:bg-[#1C1D1F] p-2 shadow-lg transition-colors duration-300">
+          <div className="size-[250px] relative overflow-hidden rounded-[10px] bg-gray-100 dark:bg-[#1D1E22] p-2 shadow-lg transition-colors duration-300">
             {src ? (
               <>
                 <Image
@@ -127,7 +127,7 @@ const ManualDeposit = () => {
                   alt="member avatar"
                   height={60}
                   width={60}
-                  className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-gray-100 dark:bg-[#1C1D1F] p-2 transition-colors duration-300"
+                  className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-gray-100 dark:bg-[#1D1E22] p-2 transition-colors duration-300"
                 />
               </>
             ) : (
@@ -183,7 +183,7 @@ const ManualDeposit = () => {
       <div className="flex justify-between gap-5 mt-5">
         <button
           onClick={downloadQRCode}
-          className="w-[304px] h-[50px] rounded-[7px] bg-gray-200 dark:bg-[#272729] text-gray-900 dark:text-white transition-colors duration-300"
+          className="w-[304px] h-[50px] rounded-[7px] bg-gray-200 dark:bg-[#24252A] text-gray-900 dark:text-white transition-colors duration-300"
         >
           Save as image
         </button>{' '}
