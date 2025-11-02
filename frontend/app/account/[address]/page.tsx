@@ -13,12 +13,14 @@ import { SpherreAccountContext } from '@/app/context/account-context'
 import { useRouter } from 'next/navigation'
 import { routes } from '@/lib/utils/routes'
 import NFTDetailsModal from '../../components/NFTDetailsModal'
+import { Eye, EyeOff } from 'lucide-react'
 
 export default function DashboardPage() {
   useTheme()
   const [open, setOpen] = useState(false)
   const [depositOpen, setDepositOpen] = useState(false)
   const [mounted, setMounted] = useState(false)
+  const [isBalanceVisible, setIsBalanceVisible] = useState(true)
   const { accountAddress } = useContext(SpherreAccountContext)
   const { tokensDisplay, loadingTokenData } = useTokenBalances()
   const [nftModalOpen, setNFTModalOpen] = useState<number | undefined>()
@@ -63,6 +65,10 @@ export default function DashboardPage() {
     setNFTModalOpen(val)
   }
 
+  const toggleBalance = () => {
+    setIsBalanceVisible(!isBalanceVisible)
+  }
+
   const handleSelectOption = () => {
     router.push(routes(accountAddress).withdraw)
     // Handle the selected option
@@ -80,13 +86,19 @@ export default function DashboardPage() {
                 <h3 className="text-theme-secondary font-semibold text-sm sm:text-base lg:text-[16px] transition-colors duration-300">
                   Wallet Balance
                 </h3>
-                <Image
-                  className="pt-1"
-                  height={20}
-                  width={20}
-                  src="/eye.svg"
-                  alt="Eye Icon"
-                />
+                <button
+                  onClick={toggleBalance}
+                  className="focus:outline-none hover:opacity-70 transition-opacity duration-200"
+                  aria-label={
+                    isBalanceVisible ? 'Hide balance' : 'Show balance'
+                  }
+                >
+                  {isBalanceVisible ? (
+                    <Eye size={20} className="text-theme-secondary" />
+                  ) : (
+                    <EyeOff size={20} className="text-theme-secondary" />
+                  )}
+                </button>
               </div>
               <Image
                 className="pt-1"
@@ -97,7 +109,11 @@ export default function DashboardPage() {
               />
             </div>
             <h2 className="text-2xl sm:text-3xl lg:text-[45px] text-theme font-semibold transition-colors duration-300">
-              {loadingTokenData ? 'Loading...' : `$${totalValue.toFixed(2)}`}
+              {loadingTokenData
+                ? 'Loading...'
+                : isBalanceVisible
+                  ? `$${totalValue.toFixed(2)}`
+                  : '•••••'}
             </h2>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-x-3">

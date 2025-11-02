@@ -10,6 +10,7 @@ import DepositModal from '@/app/components/deposit-modal'
 import { useTokenBalances } from '@/hooks/useTokenBalances'
 import { useNftTransactionList } from '@/hooks/useSpherreHooks'
 import { useSpherreAccount } from '@/app/context/account-context'
+import NFTDetailsModal from '@/app/components/NFTDetailsModal'
 
 const chartDataByPeriod = {
   '1D': {
@@ -129,6 +130,7 @@ const TreasuryPage = () => {
   >('1Y')
   const [withdrawOpen, setWithdrawOpen] = useState(false)
   const [depositOpen, setDepositOpen] = useState(false)
+  const [nftModalOpen, setNFTModalOpen] = useState<number | undefined>()
 
   // Token data
   const { tokensDisplay, loadingTokenData } = useTokenBalances()
@@ -186,7 +188,7 @@ const TreasuryPage = () => {
   }
 
   return (
-    <div className=" sm:py-6 lg:py-8 p-2 sm:px-4 lg:px-6 rounded-[10px] flex flex-col gap-y-4 sm:gap-y-6 lg:gap-y-8 border-theme-border border-2 mx-1 sm:mx-4 overflow-x-hidden w-full min-h-[90vh] bg-theme-bg-secondary transition-colors duration-300">
+    <div className=" sm:py-6 lg:py-8 p-2 sm:px-4 lg:px-6 rounded-[10px] flex flex-col gap-y-4 sm:gap-y-6 lg:gap-y-8  mx-1 sm:mx-4 overflow-x-hidden w-full min-h-[90vh] bg-theme-bg-secondary transition-colors duration-300">
       <ErrorBoundary
         errorComponent={({ error }) => (
           <div className="text-red-500 py-4 sm:py-6 lg:py-8 px-3 sm:px-6 lg:px-[28px]">
@@ -236,6 +238,7 @@ const TreasuryPage = () => {
               <Tabs
                 loadingTokenData={loadingTokenData}
                 tokens={tokensDisplay}
+                setNFTModalOpen={setNFTModalOpen}
               />
             </div>
           </div>
@@ -248,6 +251,7 @@ const TreasuryPage = () => {
           onSelectOption={handleWithdrawSelect}
         />
         <DepositModal open={depositOpen} onClose={handleDepositClose} />
+        <NFTDetailsModal open={nftModalOpen} onClose={setNFTModalOpen} />
       </ErrorBoundary>
     </div>
   )
