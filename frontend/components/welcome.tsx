@@ -16,7 +16,7 @@ import { useSpherreAccount } from '@/app/context/account-context'
 const Welcome = () => {
   // for navigation
   const router = useRouter()
-  const { actualTheme, theme, setTheme } = useTheme()
+  const { theme, setTheme } = useTheme()
   const [isThemeMenuOpen, setIsThemeMenuOpen] = useState(false)
   const themeMenuRef = useRef<HTMLDivElement>(null)
 
