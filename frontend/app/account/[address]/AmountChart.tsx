@@ -575,10 +575,18 @@ const AmountAnalysisChart: React.FC<AmountAnalysisChartProps> = ({
 
   if (!mounted) {
     return (
-      <div className="bg-theme-bg-secondary border border-theme-border rounded-lg p-6 w-full transition-colors duration-300">
-        <div className="animate-pulse">
-          <div className="h-6 bg-theme-bg-tertiary rounded w-1/4 mb-4"></div>
-          <div className="h-64 bg-theme-bg-tertiary rounded"></div>
+      <div className="bg-theme-bg-tertiary border border-theme-border rounded-lg p-6 w-full transition-colors duration-300">
+        <div className="space-y-4">
+          <div className="h-5 w-40 rounded bg-theme-bg-secondary animate-pulse" />
+          <div className="relative h-64 w-full rounded bg-theme-bg-tertiary border border-theme-border overflow-hidden">
+            <div className="absolute inset-0 p-3 grid grid-rows-5 gap-3">
+              <div className="h-8 w-full rounded bg-theme-bg-secondary animate-pulse" />
+              <div className="h-8 w-full rounded bg-theme-bg-secondary animate-pulse" />
+              <div className="h-8 w-full rounded bg-theme-bg-secondary animate-pulse" />
+              <div className="h-8 w-full rounded bg-theme-bg-secondary animate-pulse" />
+              <div className="h-8 w-full rounded bg-theme-bg-secondary animate-pulse" />
+            </div>
+          </div>
         </div>
       </div>
     )

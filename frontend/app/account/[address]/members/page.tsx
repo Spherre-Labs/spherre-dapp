@@ -22,6 +22,7 @@ import {
   feltToAddress,
 } from '@/lib/utils/validation'
 import MemberCard from './components/member-card'
+import { Skeleton } from '@/components/ui/skeleton'
 
 interface Member {
   id: number
@@ -320,11 +321,38 @@ const Members = () => {
     )
   }
 
-  if (isLoading) {
+  const [minSkeletonElapsed, setMinSkeletonElapsed] = useState(false)
+  useEffect(() => {
+    try {
+      const done = sessionStorage.getItem('membersSkeletonShown') === 'true'
+      if (done) {
+        setMinSkeletonElapsed(true)
+        return
+      }
+    } catch {}
+
+    const id = setTimeout(() => {
+      setMinSkeletonElapsed(true)
+      try {
+        sessionStorage.setItem('membersSkeletonShown', 'true')
+      } catch {}
+    }, 5000)
+    return () => clearTimeout(id)
+  }, [])
+
+  if (isLoading || !minSkeletonElapsed) {
     return (
-      <div className="overflow-x-hidden transition-colors duration-300">
-        <div className="flex items-center justify-center h-64">
-          <div className="text-theme text-lg">Loading members...</div>
+      <div className="overflow-x-hidden transition-colors duration-300 p-4 sm:p-6 lg:p-8">
+        <div className="bg-theme-bg-tertiary border border-theme-border rounded-lg p-4 sm:p-6">
+          <div className="h-6 w-48 bg-theme-bg-secondary rounded animate-pulse mb-6 mx-1" />
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <Skeleton
+                key={i}
+                className="h-60 w-full rounded-lg bg-theme-bg-secondary mx-1"
+              />
+            ))}
+          </div>
         </div>
       </div>
     )

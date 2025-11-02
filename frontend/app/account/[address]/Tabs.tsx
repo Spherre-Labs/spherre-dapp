@@ -13,6 +13,7 @@ import nft8 from '@/public/Images/nft8.png'
 import strk from '@/public/Images/strk.png'
 import { useTheme } from '@/app/context/theme-context-provider'
 import { getTokenImage } from '@/lib/utils/token_image'
+import { Skeleton } from '@/components/ui/skeleton'
 
 // NFT data with correctly imported image objects
 export const nfts = [
@@ -68,12 +69,32 @@ export default function Tabs({
   setNFTModalOpen: Dispatch<SetStateAction<number | undefined>>
 }) {
   const [mounted, setMounted] = useState(false)
+  const [minSkeletonElapsed, setMinSkeletonElapsed] = useState(false)
   useTheme()
   const [activeTab, setActiveTab] = useState('Tokens')
   const [tokenImages, setTokenImages] = useState<Record<string, string>>({})
 
   useEffect(() => {
     setMounted(true)
+  }, [])
+
+  // Keep skeletons visible for at least 5 seconds on initial load
+  useEffect(() => {
+    try {
+      const done = sessionStorage.getItem('tokensSkeletonShown') === 'true'
+      if (done) {
+        setMinSkeletonElapsed(true)
+        return
+      }
+    } catch {}
+
+    const id = setTimeout(() => {
+      setMinSkeletonElapsed(true)
+      try {
+        sessionStorage.setItem('tokensSkeletonShown', 'true')
+      } catch {}
+    }, 5000)
+    return () => clearTimeout(id)
   }, [])
 
   useEffect(() => {
@@ -144,109 +165,91 @@ export default function Tabs({
       </div>
 
       {activeTab === 'Tokens' &&
-        (loadingTokenData ? (
-          <div className="p-8 flex justify-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-4 border-theme-border border-t-theme transition-colors duration-300"></div>
-          </div>
-        ) : (
-          <div className="my-2 px-2 py-2 rounded-lg">
-            {/* Mobile View - Card Layout */}
-            <div className="block sm:hidden">
-              {tokens.map((token) => (
-                <div
-                  key={token.coin}
-                  className="mb-3 p-3 rounded-lg bg-theme-bg-secondary border border-theme-border hover:bg-theme-bg-tertiary transition-colors duration-200"
-                >
-                  <div className="flex items-center justify-between mb-2">
-                    <div className="flex items-center gap-2">
-                      <Image
-                        src={tokenImages[token.coin] || strk}
-                        width={20}
-                        height={20}
-                        alt="token icon"
-                      />
-                      <span className="text-theme font-medium transition-colors duration-300">
-                        {token.coin}
-                      </span>
-                    </div>
-                    <div className="text-theme font-semibold transition-colors duration-300">
-                      {token.price}
-                    </div>
-                  </div>
+        (() => {
+          const isPending = loadingTokenData || !minSkeletonElapsed
+          if (isPending) {
+            return (
+              <div className="my-2 rounded-lg bg-theme-bg-tertiary border border-theme-border p-4 sm:p-6">
+                <div className="space-y-4">
+                  {/* Header skeleton */}
+                  <div className="h-5 w-40 rounded bg-theme-bg-secondary animate-pulse mx-1 sm:mx-2" />
 
-                  <div className="grid grid-cols-2 gap-2 text-xs">
-                    <div>
-                      <span className="text-theme-secondary">Balance: </span>
-                      <span className="text-theme transition-colors duration-300">
-                        {token.balance}
-                      </span>
-                    </div>
-                    <div>
-                      <span className="text-theme-secondary">Value: </span>
-                      <span className="text-theme transition-colors duration-300">
-                        {token.value}
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="mt-2">
-                    <div className="flex justify-between items-center mb-1">
-                      <span className="text-theme-secondary text-xs">Size</span>
-                      <span className="text-theme-secondary text-xs">
-                        {token.size}
-                      </span>
-                    </div>
-                    <div className="relative w-full h-1 bg-theme-bg-tertiary rounded-full">
+                  {/* Mobile skeleton cards */}
+                  <div className="block sm:hidden space-y-3">
+                    {Array.from({ length: 3 }).map((_, i) => (
                       <div
-                        className="absolute top-0 left-0 h-1 bg-gray-900 dark:bg-white rounded-full transition-colors duration-300"
-                        style={{ width: token.size }}
-                      ></div>
+                        key={i}
+                        className="p-4 rounded-lg bg-theme-bg-secondary mx-1"
+                      />
+                    ))}
+                  </div>
+
+                  {/* Desktop skeleton table */}
+                  <div className="hidden sm:block">
+                    <div className="min-w-[600px] space-y-3">
+                      {Array.from({ length: 5 }).map((_, i) => (
+                        <div
+                          key={i}
+                          className="h-10 rounded-lg bg-theme-bg-secondary animate-pulse mx-2"
+                        />
+                      ))}
                     </div>
                   </div>
                 </div>
-              ))}
-            </div>
-
-            {/* Desktop/Tablet View - Table Layout */}
-            <div className="hidden sm:block overflow-x-auto">
-              <div className="min-w-[600px]">
-                <div className="flex text-xs sm:text-sm text-theme-secondary font-semibold mb-1 gap-6 transition-colors duration-300">
-                  <div className="w-1/5">Coin</div>
-                  <div className="w-1/5">Price</div>
-                  <div className="w-1/5">Balance</div>
-                  <div className="w-1/5">Value</div>
-                  <div className="w-1/5">Size</div>
-                </div>
+              </div>
+            )
+          }
+          return (
+            <div className="my-2 px-2 py-2 rounded-lg">
+              {/* Mobile View - Card Layout */}
+              <div className="block sm:hidden">
                 {tokens.map((token) => (
                   <div
                     key={token.coin}
-                    className="flex items-center gap-6 rounded-lg px-3 py-3 hover:bg-theme-bg-tertiary transition-colors duration-200"
+                    className="mb-3 p-3 rounded-lg bg-theme-bg-secondary border border-theme-border hover:bg-theme-bg-tertiary transition-colors duration-200"
                   >
-                    <div className="flex items-center gap-1 w-1/5">
-                      <Image
-                        src={tokenImages[token.coin] || strk}
-                        width={18}
-                        height={18}
-                        alt="starknet token icon"
-                      />
-                      <span className="text-theme transition-colors duration-300">
-                        {token.coin}
-                      </span>
-                    </div>
-                    <div className="w-1/5 text-theme transition-colors duration-300">
-                      {token.price}
-                    </div>
-                    <div className="w-1/5 text-theme transition-colors duration-300">
-                      {token.balance}
-                    </div>
-                    <div className="w-1/5 text-theme transition-colors duration-300">
-                      {token.value}
-                    </div>
-                    <div className="w-1/5 flex flex-col items-start gap-[3px]">
-                      <div className="text-[10px] sm:text-sm mt-1 text-left text-theme-secondary transition-colors duration-300">
-                        {token.size}
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center gap-2">
+                        <Image
+                          src={tokenImages[token.coin] || strk}
+                          width={20}
+                          height={20}
+                          alt="token icon"
+                        />
+                        <span className="text-theme font-medium transition-colors duration-300">
+                          {token.coin}
+                        </span>
                       </div>
-                      <div className="relative w-full h-1 rounded-full">
+                      <div className="text-theme font-semibold transition-colors duration-300">
+                        {token.price}
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-2 text-xs">
+                      <div>
+                        <span className="text-theme-secondary">Balance: </span>
+                        <span className="text-theme transition-colors duration-300">
+                          {token.balance}
+                        </span>
+                      </div>
+                      <div>
+                        <span className="text-theme-secondary">Value: </span>
+                        <span className="text-theme transition-colors duration-300">
+                          {token.value}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="mt-2">
+                      <div className="flex justify-between items-center mb-1">
+                        <span className="text-theme-secondary text-xs">
+                          Size
+                        </span>
+                        <span className="text-theme-secondary text-xs">
+                          {token.size}
+                        </span>
+                      </div>
+                      <div className="relative w-full h-1 bg-theme-bg-tertiary rounded-full">
                         <div
                           className="absolute top-0 left-0 h-1 bg-gray-900 dark:bg-white rounded-full transition-colors duration-300"
                           style={{ width: token.size }}
@@ -256,29 +259,89 @@ export default function Tabs({
                   </div>
                 ))}
               </div>
+
+              {/* Desktop/Tablet View - Table Layout */}
+              <div className="hidden sm:block overflow-x-auto">
+                <div className="min-w-[600px]">
+                  <div className="flex text-xs sm:text-sm text-theme-secondary font-semibold mb-1 gap-6 transition-colors duration-300">
+                    <div className="w-1/5">Coin</div>
+                    <div className="w-1/5">Price</div>
+                    <div className="w-1/5">Balance</div>
+                    <div className="w-1/5">Value</div>
+                    <div className="w-1/5">Size</div>
+                  </div>
+                  {tokens.map((token) => (
+                    <div
+                      key={token.coin}
+                      className="flex items-center gap-6 rounded-lg px-3 py-3 hover:bg-theme-bg-tertiary transition-colors duration-200"
+                    >
+                      <div className="flex items-center gap-1 w-1/5">
+                        <Image
+                          src={tokenImages[token.coin] || strk}
+                          width={18}
+                          height={18}
+                          alt="starknet token icon"
+                        />
+                        <span className="text-theme transition-colors duration-300">
+                          {token.coin}
+                        </span>
+                      </div>
+                      <div className="w-1/5 text-theme transition-colors duration-300">
+                        {token.price}
+                      </div>
+                      <div className="w-1/5 text-theme transition-colors duration-300">
+                        {token.balance}
+                      </div>
+                      <div className="w-1/5 text-theme transition-colors duration-300">
+                        {token.value}
+                      </div>
+                      <div className="w-1/5 flex flex-col items-start gap-[3px]">
+                        <div className="text-[10px] sm:text-sm mt-1 text-left text-theme-secondary transition-colors duration-300">
+                          {token.size}
+                        </div>
+                        <div className="relative w-full h-1 rounded-full">
+                          <div
+                            className="absolute top-0 left-0 h-1 bg-gray-900 dark:bg-white rounded-full transition-colors duration-300"
+                            style={{ width: token.size }}
+                          ></div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
-          </div>
-        ))}
+          )
+        })()}
 
       {activeTab === 'NFT' && (
         <div className="p-2 sm:p-4">
           <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-4">
-            {nfts.map((nft) => (
-              <div
-                key={nft.id}
-                className="rounded-lg overflow-hidden bg-theme-bg-secondary border-2 border-theme-border hover:border-theme-border/80 transition-all duration-200"
-                onClick={() => setNFTModalOpen(nft.id)}
-              >
-                <div className="aspect-square relative">
-                  <Image
-                    src={nft.image}
-                    alt={`NFT ${nft.id}`}
-                    fill
-                    className="object-cover"
-                  />
-                </div>
-              </div>
-            ))}
+            {nfts.length === 0
+              ? Array.from({ length: 8 }).map((_, i) => (
+                  <div
+                    key={i}
+                    className="rounded-lg overflow-hidden bg-theme-bg-secondary border-2 border-theme-border"
+                  >
+                    <Skeleton className="aspect-square w-full bg-theme-bg-secondary" />
+                  </div>
+                ))
+              : nfts.map((nft) => (
+                  <div
+                    key={nft.id}
+                    className="rounded-lg overflow-hidden bg-theme-bg-secondary border-2 border-theme-border hover:border-theme-border/80 transition-all duration-200"
+                    onClick={() => setNFTModalOpen(nft.id)}
+                  >
+                    <div className="aspect-square relative">
+                      <Image
+                        src={nft.image}
+                        alt={`NFT ${nft.id}`}
+                        fill
+                        className="object-cover"
+                      />
+                    </div>
+                  </div>
+                ))}
           </div>
         </div>
       )}
