@@ -7,6 +7,7 @@ import { Copy, LogOut, X } from 'lucide-react'
 import { useAccount, useDisconnect } from '@starknet-react/core'
 import { useRouter } from 'next/navigation'
 import { useTheme } from '@/app/context/theme-context-provider'
+import { useWalletAuth } from '@/app/context/wallet-auth-context'
 
 const WalletConnected = ({ address }: { address: string }) => {
   const { actualTheme } = useTheme()
@@ -15,6 +16,7 @@ const WalletConnected = ({ address }: { address: string }) => {
   const { disconnect } = useDisconnect()
   const { address: walletAddress } = useAccount()
   const router = useRouter()
+  const { logout } = useWalletAuth()
   // Dummy balance for now
   const balance = '0.00'
 
@@ -60,7 +62,8 @@ const WalletConnected = ({ address }: { address: string }) => {
   }
 
   const handleDisconnect = async () => {
-    await disconnect()
+    // Use the auth context logout to clear all auth state
+    logout()
     setPanelOpen(false)
     router.push('/') // Route to connect wallet page (home)
   }
