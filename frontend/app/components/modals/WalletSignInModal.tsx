@@ -31,7 +31,7 @@ const WalletSignInModal = () => {
 
     try {
       // Get the public key from the account
-      // @ts-ignore - Accessing signer from account
+      // @ts-expect-error - Accessing signer from account
       const publicKey = await account.signer.getPubKey()
 
       if (!publicKey) {
@@ -97,17 +97,18 @@ const WalletSignInModal = () => {
 
       // Mark as authenticated
       authenticate()
-    } catch (err: any) {
+    } catch (err) {
       console.error('Sign-in error:', err)
+      const errorMessage = err instanceof Error ? err.message : 'Unknown error'
       if (
-        err?.message?.includes('User rejected') ||
-        err?.message?.includes('rejected')
+        errorMessage.includes('User rejected') ||
+        errorMessage.includes('rejected')
       ) {
         setError('Signature request was rejected. Please try again.')
-      } else if (err?.message?.includes('Invalid signatures')) {
+      } else if (errorMessage.includes('Invalid signatures')) {
         setError('Signature verification failed. Please try again.')
       } else {
-        setError(err?.message || 'Failed to sign in. Please try again.')
+        setError(errorMessage || 'Failed to sign in. Please try again.')
       }
     } finally {
       setIsLoading(false)

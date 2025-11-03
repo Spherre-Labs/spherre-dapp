@@ -13,7 +13,6 @@ const WalletConnected = ({ address }: { address: string }) => {
   const { actualTheme } = useTheme()
   const [panelOpen, setPanelOpen] = useState(false)
   const [copied, setCopied] = useState(false)
-  const { disconnect } = useDisconnect()
   const { address: walletAddress } = useAccount()
   const router = useRouter()
   const { logout } = useWalletAuth()
