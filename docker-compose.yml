@@ -1,0 +1,76 @@
+services:
+  db:
+    container_name: spherre_db
+    image: postgres:14
+    volumes:
+      - spherre-db-data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    env_file:
+      - ./backend/.env
+
+  backend:
+    container_name: spherre_backend
+    build:
+      context: ./
+      dockerfile: ./backend/dockerfile
+    volumes:
+      - ./backend:/home/spherre_backend/src
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./backend/db.sqlite3:/home/spherre_backend/src/db.sqlite3
+    networks:
+      - spherre_network
+    ports:
+      - "8000:8000"
+
+  frontend:
+    container_name: spherre_frontend
+    build:
+      context: ./
+      dockerfile: ./frontend/dockerfile
+    volumes:
+      - ./frontend:/home/spherre_frontend/src
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - spherre_network
+    ports:
+      - "3000:3000"
+
+  indexer:
+    image: apibara/starknet:7a540aab7addef4fc20e67224570185748fd3919
+    container_name: apibara
+    command: >
+      --rpc https://starknet-sepolia.infura.io/v3/YOUR_INFURA_KEY
+      --sink mongo
+      --sink-url mongodb://mongo:27017/apibara
+    depends_on:
+      - mongo
+    restart: unless-stopped
+    environment:
+      - LOG_LEVEL=info
+  
+  mongo:
+    image: mongo:6
+    container_name: mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    restart: unless-stopped
+
+volumes:
+  spherre-db-data:
+  mongo_data:
+
+networks:
+  spherre_network:
+    driver: bridge

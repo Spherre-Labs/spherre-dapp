@@ -1,0 +1,95 @@
+# Node modules
+node_modules
+.pnp
+.pnp.js
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.log
+
+# Build output
+dist
+build
+out
+.next
+.cache
+.parcel-cache
+coverage
+
+# Environment & secrets
+.env
+.env.*.local
+*.env
+*.pem
+*.key
+*.crt
+*.secret
+
+# Version control & editor
+.git
+.gitignore
+.vscode
+.idea
+.history
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Temp
+tmp
+temp
+
+# Python application
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg
+*.egg-info/
+pip-wheel-metadata/
+wheels/
+build/
+dist/
+eggs/
+parts/
+bin/
+var/
+.installed.cfg
+*.manifest
+*.spec
+.Python
+
+# Virtualenvs
+env/
+venv/
+.venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Python tooling caches
+.pytest_cache/
+.mypy_cache/
+.pyre/
+.pytype/
+ipython/
+.profile_default/
+profile_default/
+htmlcov/
+.coverage
+.coverage.*
+pip-log.txt
+celerybeat-schedule
+instance/
+.webassets-cache
+.ipynb_checkpoints
+.python-version
+
+
+node_modules/
+package-lock.json
+pnpm-lock.yaml
+yarn.lock
