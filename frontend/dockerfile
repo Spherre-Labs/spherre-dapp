@@ -1,0 +1,22 @@
+FROM node:22-bullseye-slim
+
+WORKDIR /home/spherre_frontend/src
+
+RUN apt-get update && \
+    apt-get install -y python3 make g++ && \
+    rm -rf /var/lib/apt/lists/*
+
+COPY frontend/package.json ./
+
+ENV TURBO_DISABLED=1
+
+RUN npm install -g turbo && npm install --force
+
+COPY frontend .
+
+
+# RUN turbo run build
+
+EXPOSE 3000
+
+CMD ["npm", "run", "dev"]
