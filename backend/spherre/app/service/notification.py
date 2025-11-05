@@ -3,7 +3,13 @@ from typing import List, Optional
 from uuid import uuid4
 
 from spherre.app.extensions import db
-from spherre.app.models import Member, Notification, NotificationType
+from spherre.app.models import (
+    Account,
+    Member,
+    Notification,
+    NotificationPreference,
+    NotificationType,
+)
 from spherre.app.utils.email import mock_send_email
 
 
@@ -122,3 +128,56 @@ class NotificationService:
         Retrieve a single notification by its ID.
         """
         return db.session.query(Notification).filter_by(id=notification_id).first()
+
+    @classmethod
+    def get_notification_preference_for_member(
+        cls, member_address: str, account_address: str
+    ) -> Optional[NotificationPreference]:
+        account = db.session.query(Account).filter_by(address=account_address).first()
+        if not account:
+            return None
+        member = db.session.query(Member).filter_by(id=member_address).first()
+        if not member:
+            return None
+        notification_preference = (
+            db.session.query(NotificationPreference)
+            .filter_by(member_id=member.id, account_id=account.id)
+            .first()
+        )
+        return notification_preference
+
+    @classmethod
+    def toggle_member_email_notification_preference(
+        cls,
+        member_address: str,
+        account_address: str,
+        email_enabled: Optional[bool] = None,
+    ) -> bool:
+        """
+        Toggle the email notification preference of the member in an account
+        """
+        account = db.session.query(Account).filter_by(address=account_address).first()
+        if not account:
+            return False
+        member = db.session.query(Member).filter_by(id=member_address).first()
+        if not member:
+            return False
+
+        notification_preference = (
+            db.session.query(NotificationPreference)
+            .filter_by(member_id=member.id, account_id=account.id)
+            .first()
+        )
+        if not notification_preference:
+            notification_preference = NotificationPreference.create(
+                member_id=member.id,
+                account_id=account.id,
+                email_enabled=email_enabled if email_enabled is not None else True,
+            )
+        else:
+            notification_preference.email_enabled = (
+                not notification_preference.email_enabled
+            )
+            notification_preference.save()
+
+        return True

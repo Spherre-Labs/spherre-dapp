@@ -45,3 +45,21 @@ class Notification(ModelMixin, db.Model):
     title = db.Column(db.String, nullable=True)
     message = db.Column(db.String, nullable=False)
     read_by = db.relationship("Member", secondary=notification_readers)
+
+
+class NotificationPreference(ModelMixin, db.Model):
+    """
+    Model representing the notification preference of a member in an account
+    """
+
+    __tablename__ = "notification_preferences"
+
+    account_id = db.Column(db.String, db.ForeignKey("accounts.id"), nullable=False)
+    account = db.relationship(
+        "Account", foreign_keys=[account_id], backref="notification_preferences"
+    )
+    member_id = db.Column(db.String, db.ForeignKey("members.id"), nullable=False)
+    member = db.relationship(
+        "Member", foreign_keys=[member_id], backref="member_preferences"
+    )
+    email_enabled: bool = db.Column(db.Boolean, default=True)

@@ -8,6 +8,7 @@ from spherre.app.extensions import cors, db, jwt, migrate
 from spherre.app.views.accounts import accounts_blueprint
 from spherre.app.views.auth import auth_blueprint
 from spherre.app.views.notifications import notifications_blueprint
+from spherre.app.views.settings import settings_blueprint
 from spherre.app.views.smart_lock import smart_lock_blueprint
 from spherre.app.views.transactions import transactions_blueprint
 
@@ -31,6 +32,7 @@ def create_app(config_name="development"):
     app.register_blueprint(smart_lock_blueprint)
     app.register_blueprint(transactions_blueprint)
     app.register_blueprint(auth_blueprint)
+    app.register_blueprint(settings_blueprint)
 
     @app.before_request
     def validate_private_account_access():
