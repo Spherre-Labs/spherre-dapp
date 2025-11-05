@@ -109,3 +109,94 @@ def update_email(account_address: str):
     return jsonify({"success": True}), 201
 
 
+@settings_blueprint.route(
+    "/accounts/<string:account_address>/settings/email_notification/toggle",
+    methods=["POST"],
+)
+@jwt_required()
+def toggle_email_notification_preference(account_address: str):
+    account = AccountService.get_account_by_address(account_address)
+    if not account:
+        return jsonify(
+            {
+                "success": False,
+                "error": {
+                    "code": "NotFound",
+                    "message": "Account not found",
+                },
+            }
+        ), 404
+    current_user = get_jwt_identity()
+    # check if member is account member
+    check = AccountService.is_account_member(account_address, current_user)
+    if not check:
+        (
+            jsonify(
+                {
+                    "success": False,
+                    "error": {
+                        "code": "NotAuthorized",
+                        "message": "User is not account member",
+                    },
+                }
+            ),
+            403,
+        )
+    data = request.json
+
+    # get member
+    member = MemberService.get_member_by_address(current_user)
+    if not member.email:
+        return jsonify({"error": "Member does not have an email"}), 400
+    notification_preference = (
+        NotificationService.get_notification_preference_for_member(
+            member_address=member.address, account_address=account_address
+        )
+    )
+    if data.get("email_enabled") and isinstance(data["email_enabled"], bool):
+        email_enabled = data["email_enable"]
+    else:
+        email_enabled = not notification_preference
+    NotificationService.toggle_member_email_notification_preference(
+        member_address=member.address,
+        account_address=account_address,
+        email_enabled=email_enabled,
+    )
+    return jsonify({"success": True}), 201
+
+
+@settings_blueprint.route(
+    "/accounts/<string:account_address>/settings/email_notification/", methods=["GET"]
+)
+@jwt_required(optional=True)
+def get_email_notification_preference(account_address: str):
+    account = AccountService.get_account_by_address(account_address)
+    if not account:
+        return jsonify(
+            {
+                "success": False,
+                "error": {
+                    "code": "NotFound",
+                    "message": "Account not found",
+                },
+            }
+        ), 404
+    current_user = get_jwt_identity()
+    if not current_user:
+        return jsonify({"email_enabled": False})
+
+    # check if member is account member
+    check = AccountService.is_account_member(account_address, current_user)
+    if not check:
+        return jsonify({"email_enabled": False})
+
+    # get member
+    member = MemberService.get_member_by_address(current_user)
+    if not member.email:
+        return jsonify({"email_enabled": False})
+    notification_preference = (
+        NotificationService.get_notification_preference_for_member(
+            member_address=member.address, account_address=account_address
+        )
+    )
+    return jsonify({"email_enabled": notification_preference.email_enabled})
