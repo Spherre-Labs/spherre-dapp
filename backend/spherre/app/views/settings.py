@@ -110,7 +110,7 @@ def update_email(account_address: str):
 
 
 @settings_blueprint.route(
-    "/accounts/<string:account_address>/settings/email_notification/toggle",
+    "/accounts/<string:account_address>/settings/email/notification/toggle",
     methods=["POST"],
 )
 @jwt_required()
@@ -166,7 +166,7 @@ def toggle_email_notification_preference(account_address: str):
 
 
 @settings_blueprint.route(
-    "/accounts/<string:account_address>/settings/email_notification/", methods=["GET"]
+    "/accounts/<string:account_address>/settings/email/notification/", methods=["GET"]
 )
 @jwt_required(optional=True)
 def get_email_notification_preference(account_address: str):

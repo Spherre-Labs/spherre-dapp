@@ -5,7 +5,6 @@ from flask_jwt_extended import create_access_token
 
 from spherre.app import create_app, db
 from spherre.app.models import Account, Member
-from spherre.app.service.notification import NotificationService
 
 
 class TestSettingsViews(unittest.TestCase):
@@ -74,3 +73,15 @@ class TestSettingsViews(unittest.TestCase):
 
         self.assertIsNotNone(member)
         self.assertEqual(member.email, "testemail@testemail.com")
+
+    def test_notification_preference_toggle(self):
+        # mock authentication
+        token = create_access_token(identity=self.member_with_email.address)
+
+        headers = {"Authorization": f"Bearer {token}"}
+        res = self.client.post(
+            f"/api/v1/accounts/{self.account.address}/settings/email/notification/toggle",
+            json={},
+            headers=headers,
+        )
+        self.assertEqual(res.status_code, 201)
