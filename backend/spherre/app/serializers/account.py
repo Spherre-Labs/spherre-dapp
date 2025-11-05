@@ -10,3 +10,7 @@ class AccountSerializer(Schema):
     threshold = fields.Int()
     created_at = fields.DateTime()
     updated_at = fields.DateTime()
+
+
+class EmailRequestSerializer(Schema):
+    email = fields.Email()
