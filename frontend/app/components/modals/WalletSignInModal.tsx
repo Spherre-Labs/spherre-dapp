@@ -32,11 +32,7 @@ const WalletSignInModal = () => {
     try {
       // Get the public key from the account
       // @ts-expect-error - Accessing signer from account
-      const publicKey = await account.signer.getPubKey()
-
-      if (!publicKey) {
-        throw new Error('Could not retrieve public key from wallet')
-      }
+      
 
       // Create typed data matching backend's expected format
       const typedDataMessage = {
@@ -62,19 +58,29 @@ const WalletSignInModal = () => {
       // Request signature from wallet
       const signature = await account.signMessage(typedDataMessage)
 
-      if (!signature || signature.length !== 2) {
+      if (!signature) {
         throw new Error('Invalid signature format')
       }
 
+      const publicKey = await account.signer.getPubKey()
+
+      if (!publicKey) {
+        throw new Error('Could not retrieve public key from wallet')
+      }
+      
+      const mainSignatures = [signature[-2], signature[-1]]
+
       // Convert signature to numbers for backend
-      const signatures = signature.map((sig: string | bigint) =>
+      const signatures = mainSignatures.map((sig: string | bigint) =>
         typeof sig === 'string' ? parseInt(sig, 16) : Number(sig),
       )
-
+      console.log("Signature length: ", signature.length)
+      console.log("Signature", signatures)
+      console.log("Public Key", publicKey)
       // Send to backend for authentication
       const response = await SpherreApi.signIn({
         signatures,
-        public_key: publicKey.toString(),
+        public_key: publicKey,
       })
 
       // Store JWT tokens
