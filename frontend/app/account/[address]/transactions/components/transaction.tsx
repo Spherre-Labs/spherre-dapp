@@ -202,38 +202,38 @@ export default function Transaction({
       {/* className="w-full p-4 lg:p-6 flex items-center gap-[85px] bg-theme-bg-tertiary transition-colors duration-200" */}
       <button
         onClick={onToggle}
-        className="w-full p-4 lg:p-6 grid grid-cols-5 gap-[85px] bg-theme-bg-tertiary transition-colors duration-200"
+        className="w-full rounded-none bg-theme-bg-tertiary px-4 py-4 lg:px-6 transition-colors duration-200 hover:bg-theme-bg-tertiary/80"
       >
-        {/* Icon + Title - takes more space */}
-        <div className="flex items-center space-x-2 flex-[2] min-w-0">
-          {getTypeIcon(transaction.transactionType)}
-          <span className="font-sans text-theme font-medium truncate transition-colors duration-300">
-            {transactionInfo.title}
-          </span>
-        </div>
-
-        {transactionDisplayData(transactionInfo)}
-
-        {/* Initiator */}
-        <div className="text-theme-secondary truncate transition-colors duration-300 flex-[2] min-w-0">
-          <span className="text-sm text-theme-secondary mr-1">Initiator:</span>
-
-          <span className="text-theme font-medium">
-            {transactionInfo.transaction.proposer.slice(0, 6)}...
-            {transactionInfo.transaction.proposer.slice(-4)}
-          </span>
-        </div>
-
-        <div className="flex items-center space-x-2 flex-[2] min-w-0">
-          {/* Time */}
-          <div className="text-theme-secondary  transition-colors duration-300 flex-1 text-center lowercase">
-            {formatTime(transaction.dateCreated)}
+        <div className="flex flex-wrap items-center justify-between gap-6">
+          {/* Icon + Title */}
+          <div className="flex min-w-[200px] flex-[1.1] items-center gap-2">
+            {getTypeIcon(transaction.transactionType)}
+            <span className="font-sans text-theme font-medium truncate transition-colors duration-300">
+              {transactionInfo.title}
+            </span>
           </div>
 
-          {/* Status */}
-          <div className="flex-1 text-center">
+          {/* Dynamic transaction metadata */}
+          <div className="flex min-w-[260px] flex-[1.2] flex-wrap items-center justify-center gap-6">
+            {transactionDisplayData(transactionInfo)}
+          </div>
+
+          {/* Initiator */}
+          <div className="flex min-w-[160px] flex-1 items-center justify-center gap-2 text-theme-secondary transition-colors duration-300">
+            <span className="text-sm text-theme-secondary">Initiator:</span>
+            <span className="text-theme font-medium">
+              {transactionInfo.transaction.proposer.slice(0, 6)}...
+              {transactionInfo.transaction.proposer.slice(-4)}
+            </span>
+          </div>
+
+          {/* Time + Status + Chevron */}
+          <div className="flex min-w-[160px] flex-1 items-center justify-end gap-3">
+            <div className="text-theme-secondary transition-colors duration-300 whitespace-nowrap">
+              {formatTime(transaction.dateCreated)}
+            </div>
             <span
-              className={` px-3 py-1 rounded-full ${
+              className={`whitespace-nowrap px-3 py-1 rounded-full ${
                 transactionStatus === 'initiated'
                   ? 'text-light-yellow'
                   : transactionStatus === 'executed'
@@ -247,13 +247,11 @@ export default function Transaction({
             >
               {toTitleCase(transactionStatus)}
             </span>
-          </div>
-
-          {/* Dropdown Arrow */}
-          <div className="flex-shrink-0 ml-auto">
-            <ChevronDown
-              className={`w-4 h-4 sm:w-5 sm:h-5 text-theme-secondary transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`}
-            />
+            <div className="flex-shrink-0">
+              <ChevronDown
+                className={`w-4 h-4 sm:w-5 sm:h-5 text-theme-secondary transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`}
+              />
+            </div>
           </div>
         </div>
       </button>
@@ -502,5 +500,4 @@ export default function Transaction({
         </div>
       </div>
     </div>
-  )
-
+  )}
