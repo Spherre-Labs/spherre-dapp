@@ -301,19 +301,24 @@ export function useTransactionIntegration(
 
   // Convert to display format and apply filters
   const displayTransactions = useMemo(() => {
-    let transactions = processedTransactions.map(getTransactionDisplayInfo)
+    const sanitized = processedTransactions
+      .map(getTransactionDisplayInfo)
+      .filter(
+        (tx): tx is TransactionDisplayInfo =>
+          tx !== null &&
+          tx.transaction !== undefined &&
+          !!tx.transaction.transactionType,
+      )
 
-    // Apply status filter
-    if (filterStatus) {
-      transactions = filterTransactionsByStatus(transactions, filterStatus)
-    }
+    const statusFiltered = filterStatus
+      ? filterTransactionsByStatus(sanitized, filterStatus)
+      : sanitized
 
-    // Apply type filter
-    if (filterType) {
-      transactions = filterTransactionsByType(transactions, filterType)
-    }
+    const typeFiltered = filterType
+      ? filterTransactionsByType(statusFiltered, filterType)
+      : statusFiltered
 
-    return sortTransactionsByDate(transactions)
+    return sortTransactionsByDate(typeFiltered)
   }, [processedTransactions, filterStatus, filterType])
 
   // Group transactions by date
@@ -346,8 +351,7 @@ export function useTransactionIntegration(
   const enhancedError = useMemo(() => {
     if (!error) return null
 
-    // Log detailed error information
-    console.error('Transaction integration error details:', {
+    const errorDetails = {
       baseError: errorBase?.message,
       tokenError: errorToken?.message,
       nftError: errorNft?.message,
@@ -357,12 +361,20 @@ export function useTransactionIntegration(
       smartLockError: errorSmartLock?.message,
       thresholdError: errorThreshold?.message,
       accountAddress,
-    })
+    }
 
-    // Return user-friendly error
-    return new Error(
-      'Unable to fetch transactions. Please check network or contract state.',
-    )
+    console.error('Transaction integration error details:', errorDetails)
+
+    const messages = Object.entries(errorDetails)
+      .filter(([, value]) => Boolean(value))
+      .map(([key, value]) => `${key}: ${value}`)
+
+    const message =
+      messages.length > 0
+        ? `Unable to fetch transactions:\n${messages.join('\n')}`
+        : 'Unable to fetch transactions. Please check network or contract state.'
+
+    return new Error(message)
   }, [
     error,
     errorBase,
