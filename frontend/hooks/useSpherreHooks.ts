@@ -116,14 +116,13 @@ export function useGetMemberPermissions(
   })
 
   // Convert PermissionEnum array to usable roles
-  const permissions = useMemo(() => {
+  const permissionsMeta = useMemo(() => {
     if (!result.data || !Array.isArray(result.data)) {
       return {
         roles: [] as string[],
         hasProposerRole: false,
         hasVoterRole: false,
         hasExecutorRole: false,
-        raw: [],
       }
     }
 
@@ -151,13 +150,13 @@ export function useGetMemberPermissions(
       hasProposerRole,
       hasVoterRole,
       hasExecutorRole,
-      raw: result.data,
     }
   }, [result.data])
 
   return {
     ...result,
-    permissions,
+    permissions: permissionsMeta.roles,
+    permissionsMeta,
   }
 }
 
@@ -175,9 +174,7 @@ export function useAccountPermissions(accountAddress: `0x${string}`) {
   )
 
   const normalized = useMemo(() => {
-    const perms = memberAddress ? result.permissions : null
-
-    if (!perms) {
+    if (!memberAddress) {
       return {
         roles: [] as string[],
         hasProposerRole: false,
@@ -186,13 +183,14 @@ export function useAccountPermissions(accountAddress: `0x${string}`) {
       }
     }
 
+    const meta = result.permissionsMeta
     return {
-      roles: perms.roles,
-      hasProposerRole: perms.hasProposerRole,
-      hasVoterRole: perms.hasVoterRole,
-      hasExecutorRole: perms.hasExecutorRole,
+      roles: meta?.roles ?? [],
+      hasProposerRole: meta?.hasProposerRole ?? false,
+      hasVoterRole: meta?.hasVoterRole ?? false,
+      hasExecutorRole: meta?.hasExecutorRole ?? false,
     }
-  }, [result.permissions])
+  }, [result.permissionsMeta, memberAddress])
 
   return {
     permissions: normalized.roles,

@@ -276,7 +276,7 @@ export default function MemberDetailsModal({
         <div className="flex flex-wrap items-center gap-3 mb-5">
           <div className="text-sm text-theme-secondary">Roles:</div>
           <div className="flex items-center gap-2 flex-wrap">
-            {(perms.permissions || []).map((role) => {
+          {(Array.isArray(perms.permissions) ? perms.permissions : []).map((role) => {
               let styles = 'border-theme-border text-theme-secondary'
               if (role === 'Voter')
                 styles = 'bg-[#FF7BE9]/10 text-[#FF7BE9] border-[#FF7BE9]'
