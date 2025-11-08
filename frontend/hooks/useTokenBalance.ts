@@ -9,10 +9,16 @@ export const useTokenBalance = (
   const { address } = useAccount()
   const [balance, setBalance] = useState(0)
 
-  const { data, error } = useBalance({
+  const {
+    data,
+    error,
+    refetch,
+    isFetching,
+  } = useBalance({
     address: walletAddress || address,
     token: tokenAddress || DEFAULT_TOKEN,
-    enabled: !!address,
+    enabled: !!(walletAddress || address),
+    watch: true,
   })
 
   useEffect(() => {
@@ -21,5 +27,30 @@ export const useTokenBalance = (
     }
   }, [data])
 
-  return { balance, symbol: data?.symbol, decimals: data?.decimals }
+  useEffect(() => {
+    if (!address && !walletAddress) return
+
+    const interval = setInterval(() => {
+      if (refetch) {
+        void refetch()
+      }
+    }, 15000)
+
+    return () => {
+      clearInterval(interval)
+    }
+  }, [address, walletAddress, refetch])
+
+  return {
+    balance,
+    symbol: data?.symbol,
+    decimals: data?.decimals,
+    isLoading: isFetching,
+    error,
+    refresh: () => {
+      if (refetch) {
+        void refetch()
+      }
+    },
+  }
 }
