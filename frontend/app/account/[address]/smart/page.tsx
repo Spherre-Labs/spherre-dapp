@@ -11,6 +11,7 @@ import {
 } from '@/hooks/useSpherreHooks'
 import { useCurrentAccountAddress } from '@/app/context/account-context'
 import { TransactionType } from '@/lib/contracts/types'
+import { mapTransactionStatus } from '@/lib/utils/transaction-utils'
 import type { SmartLockPlan } from '@/types/smart-lock'
 import { TokenUtils, AVAILABLE_TOKENS } from '@/lib/utils/token'
 import { contractAddressToHex } from '@/lib/utils/transaction-utils'
@@ -205,11 +206,18 @@ export default function SmartLock() {
     let smartLockIndex = 0
 
     return baseTransactions
-      .filter(
-        (transaction) =>
-          transaction.tx_type.activeVariant() ===
-          TransactionType.SMART_TOKEN_LOCK,
-      )
+      .filter((transaction) => {
+        if (
+          transaction.tx_type.activeVariant() !==
+          TransactionType.SMART_TOKEN_LOCK
+        ) {
+          return false
+        }
+
+        const statusVariant = transaction.tx_status.activeVariant()
+        // Only show executed transactions
+        return mapTransactionStatus(statusVariant) === 'success'
+      })
       .map((transaction) => {
         const smartLockData = smartLockTransactions?.[smartLockIndex]
 
