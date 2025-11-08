@@ -9,6 +9,7 @@ interface SuccessModalProps {
   message?: string
   closeLabel?: string
   viewLabel?: string
+  additionalContent?: React.ReactNode
 }
 
 const SuccessModal: React.FC<SuccessModalProps> = ({
@@ -19,6 +20,7 @@ const SuccessModal: React.FC<SuccessModalProps> = ({
   message = 'Congratulations! your transaction has been successfully confirmed and been sent to other members of the team for approval',
   closeLabel = 'Close',
   viewLabel = 'View Transaction',
+  additionalContent,
 }) => {
   // useTheme() // Initialize theme context
 
@@ -62,6 +64,11 @@ const SuccessModal: React.FC<SuccessModalProps> = ({
         <p className="text-theme-secondary text-lg mb-8 transition-colors duration-300">
           {message}
         </p>
+        {additionalContent && (
+          <div className="text-theme-secondary text-sm mb-6 transition-colors duration-300">
+            {additionalContent}
+          </div>
+        )}
         <div className="flex w-full gap-4 mt-2">
           <button
             onClick={onClose}

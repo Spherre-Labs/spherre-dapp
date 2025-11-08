@@ -7,6 +7,7 @@ import {
   useSmartTokenLockTransactionList,
   useTransactionList,
   useProposeSmartTokenLockTransaction,
+  useAccountPermissions,
 } from '@/hooks/useSpherreHooks'
 import { useCurrentAccountAddress } from '@/app/context/account-context'
 import { TransactionType } from '@/lib/contracts/types'
@@ -15,6 +16,11 @@ import { TokenUtils, AVAILABLE_TOKENS } from '@/lib/utils/token'
 import { contractAddressToHex } from '@/lib/utils/transaction-utils'
 import ProcessingModal from '../../../components/modals/Loader'
 import SuccessModal from '../../../components/modals/SuccessModal'
+import { useTokenBalances } from '@/hooks/useTokenBalances'
+import {
+  recordSmartLockPlanName,
+  getSmartLockPlanName,
+} from '@/lib/utils/smart-lock-plan-store'
 
 interface SmartLockPlanData {
   name: string
@@ -24,11 +30,23 @@ interface SmartLockPlanData {
   durationType: 'days' | 'weeks' | 'months'
 }
 
+type SmartLockTokenOption = {
+  symbol: string
+  name: string
+  address: `0x${string}`
+  decimals: number
+  icon?: string
+  balanceValue: number
+  formattedBalance: string
+  rawAmount: bigint
+}
+
 export default function SmartLock() {
   const accountAddress = useCurrentAccountAddress()
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isProcessingModalOpen, setIsProcessingModalOpen] = useState(false)
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false)
+  const [permissionsError, setPermissionsError] = useState<string | null>(null)
   const [processingTitle, setProcessingTitle] = useState(
     'Processing Transaction!',
   )
@@ -54,6 +72,9 @@ export default function SmartLock() {
     error: smartLockError,
     refetch: refetchSmartLockTransactions,
   } = useSmartTokenLockTransactionList(accountAddress ?? '0x0')
+
+  const { hasProposerRole, hasExecutorRole, permissionsLoading, permissions } =
+    useAccountPermissions(accountAddress ?? '0x0')
 
   const { writeAsync: proposeSmartLockTransaction, isLoading: isProposing } =
     useProposeSmartTokenLockTransaction(accountAddress ?? '0x0')
@@ -118,6 +139,59 @@ export default function SmartLock() {
     [],
   )
 
+  const { tokensDisplay, loadingTokenData } = useTokenBalances()
+
+  const smartLockTokenOptions = useMemo<SmartLockTokenOption[]>(() => {
+    if (!tokensDisplay.length) {
+      return AVAILABLE_TOKENS.map((token) => ({
+        symbol: token.symbol,
+        name: token.name,
+        address: token.address as `0x${string}`,
+        icon: token.icon,
+        decimals: token.decimals,
+        balanceValue: Number.NaN,
+        formattedBalance: '0',
+        rawAmount: BigInt(0),
+      }))
+    }
+
+    return tokensDisplay.map((display) => {
+      const metadata =
+        AVAILABLE_TOKENS.find(
+          (token) =>
+            token.address.toLowerCase() === display.contract_address.toLowerCase(),
+        ) ?? {
+          symbol: display.coin,
+          name: display.coin,
+          address: display.contract_address as `0x${string}`,
+          decimals: display.decimals ?? 18,
+        }
+
+      return {
+        symbol: metadata.symbol,
+        name: metadata.name,
+        address: metadata.address as `0x${string}`,
+        icon: metadata.icon,
+        decimals: metadata.decimals,
+        balanceValue: display.balanceValue,
+        formattedBalance: display.balance,
+        rawAmount: display.rawAmount,
+      }
+    })
+  }, [tokensDisplay])
+
+  const smartLockTokenMapBySymbol = useMemo(() => {
+    return new Map<string, SmartLockTokenOption>(
+      smartLockTokenOptions.map((token) => [token.symbol, token]),
+    )
+  }, [smartLockTokenOptions])
+
+  const smartLockTokenMapByAddress = useMemo(() => {
+    return new Map<string, SmartLockTokenOption>(
+      smartLockTokenOptions.map((token) => [token.address.toLowerCase(), token]),
+    )
+  }, [smartLockTokenOptions])
+
   const plans = useMemo<SmartLockPlan[]>(() => {
     if (!baseTransactions || !smartLockTransactions) return []
 
@@ -150,10 +224,25 @@ export default function SmartLock() {
           smartLockData.token,
         ).toLowerCase()
 
-        const tokenInfo =
+        const tokenMeta =
+          smartLockTokenMapByAddress.get(normalizedTokenAddress) ??
           AVAILABLE_TOKENS.find(
             (token) => token.address.toLowerCase() === normalizedTokenAddress,
-          ) ?? AVAILABLE_TOKENS[0]
+          )
+
+        const tokenInfo = tokenMeta
+          ? {
+              symbol: tokenMeta.symbol,
+              name: tokenMeta.name,
+              address: tokenMeta.address,
+              decimals: tokenMeta.decimals,
+            }
+          : {
+              symbol: 'TOKEN',
+              name: 'Token',
+              address: smartLockData.token as `0x${string}`,
+              decimals: 18,
+            }
 
         const amountFormatted = TokenUtils.formatTokenAmount(
           smartLockData.amount,
@@ -165,11 +254,25 @@ export default function SmartLock() {
           smartLockData.duration,
         )
 
+        const storedName =
+          accountAddress && typeof accountAddress === 'string'
+            ? getSmartLockPlanName({
+                account: accountAddress,
+                token: normalizedTokenAddress,
+                amount: smartLockData.amount,
+                duration: smartLockData.duration,
+              })
+            : null
+
+        const planName =
+          storedName ??
+          (smartLockData.transaction_id
+            ? `Smart Lock #${smartLockData.transaction_id.toString()}`
+            : `Smart Lock #${transaction.id.toString()}`)
+
         return {
           id: transaction.id.toString(),
-          name: smartLockData.transaction_id
-            ? `Smart Lock #${smartLockData.transaction_id.toString()}`
-            : `Smart Lock #${transaction.id.toString()}`,
+          name: planName,
           token: tokenInfo.symbol,
           dateCreated: formatDateString(transaction.date_created),
           amount: amountFormatted,
@@ -185,8 +288,10 @@ export default function SmartLock() {
   }, [
     baseTransactions,
     smartLockTransactions,
+    accountAddress,
     computeUnlockMetadata,
     formatDateString,
+    smartLockTokenMapByAddress,
   ])
 
   const handleCreatePlan = useCallback(
@@ -206,9 +311,12 @@ export default function SmartLock() {
         setIsProcessingModalOpen(true)
 
         const tokenInfo =
-          AVAILABLE_TOKENS.find(
-            (token) => token.symbol === planData.token,
-          ) ?? AVAILABLE_TOKENS[0]
+          smartLockTokenMapBySymbol.get(planData.token) ??
+          smartLockTokenOptions[0]
+
+        if (!tokenInfo) {
+          throw new Error('Unsupported token selected')
+        }
 
         const amountWei = TokenUtils.parseTokenAmount(
           planData.amount,
@@ -225,10 +333,20 @@ export default function SmartLock() {
           duration: durationSeconds,
         })
 
+        recordSmartLockPlanName(
+          {
+            account: accountAddress,
+            token: tokenInfo.address.toLowerCase(),
+            amount: amountWei,
+            duration: durationSeconds,
+          },
+          planData.name.trim(),
+        )
+
         setIsProcessingModalOpen(false)
         setSuccessTitle('Smart Lock Transaction Proposed!')
         setSuccessMessage(
-          'The smart lock transaction proposal has been submitted for member approval.',
+          'The smart lock proposal is now pending multisig approvals.',
         )
         setIsSuccessModalOpen(true)
 
@@ -252,6 +370,8 @@ export default function SmartLock() {
       proposeSmartLockTransaction,
       refetchSmartLockTransactions,
       refetchBaseTransactions,
+      smartLockTokenMapBySymbol,
+      smartLockTokenOptions,
     ],
   )
 
@@ -260,7 +380,11 @@ export default function SmartLock() {
   }, [])
 
   const isLoading =
-    isBaseTransactionsLoading || isSmartLockLoading || isProposing
+    isBaseTransactionsLoading ||
+    isSmartLockLoading ||
+    isProposing ||
+    loadingTokenData ||
+    permissionsLoading
 
   const error = baseTransactionsError || smartLockError
 
@@ -281,12 +405,22 @@ export default function SmartLock() {
       <SmartLockPlans
         plans={plans}
         isLoading={isLoading}
-        onCreateNewPlan={() => setIsModalOpen(true)}
+        onCreateNewPlan={() => {
+          if (!hasProposerRole) {
+            setPermissionsError(
+              'Only members with the Proposer role can create smart lock plans.',
+            )
+            return
+          }
+          setPermissionsError(null)
+          setIsModalOpen(true)
+        }}
       />
       <CreateSmartLockPlanModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onSubmit={handleCreatePlan}
+        availableTokens={smartLockTokenOptions}
       />
 
       <ProcessingModal
@@ -301,6 +435,12 @@ export default function SmartLock() {
         onClose={handleSuccessModalClose}
         title={successTitle}
         message={successMessage}
+        additionalContent={
+          <p className="text-sm text-theme-secondary">
+            This transaction now requires approvals from members with the Voter
+            role, and execution by a member with the Executor role.
+          </p>
+        }
       />
     </section>
   )

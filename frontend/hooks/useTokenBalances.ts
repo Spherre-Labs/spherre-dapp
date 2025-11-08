@@ -254,10 +254,12 @@ async function fetchBalances(
         return {
           coin: t.symbol,
           price,
+          rawBalance: t.balance,
           balance: floatBalance,
           value,
           contract_address: t.contract_address,
           id: t.id,
+          decimals: t.decimals,
         }
       }),
     )
@@ -271,6 +273,9 @@ async function fetchBalances(
       coin: t.coin,
       price: `$${t.price.toFixed(2)}`,
       balance: t.balance.toFixed(4),
+      balanceValue: t.balance,
+      rawAmount: t.rawBalance,
+      decimals: t.decimals,
       value: `$${t.value.toFixed(2)}`,
       size:
         computedTotalValue > 0
@@ -298,6 +303,9 @@ export type TokenDisplay = {
   coin: string
   price: string
   balance: string
+  balanceValue: number
+  rawAmount: bigint
+  decimals: number
   value: string
   size: string
   contract_address: `0x${string}`
