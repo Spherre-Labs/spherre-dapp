@@ -24,7 +24,10 @@ const createDefaultState = (): BalancesState => ({
 })
 
 const balanceStore = new Map<string, BalancesState>()
-const balanceSubscribers = new Map<string, Set<(state: BalancesState) => void>>()
+const balanceSubscribers = new Map<
+  string,
+  Set<(state: BalancesState) => void>
+>()
 const pollers = new Map<string, ReturnType<typeof setInterval>>()
 const inFlightRequests = new Set<string>()
 
@@ -223,7 +226,8 @@ async function fetchBalances(
       rawData.map(async (t) => {
         const divisor = BigInt(10) ** BigInt(t.decimals)
         const floatBalance =
-          Number(t.balance) / Number(divisor === BigInt(0) ? BigInt(1) : divisor)
+          Number(t.balance) /
+          Number(divisor === BigInt(0) ? BigInt(1) : divisor)
 
         if (!Number.isFinite(floatBalance)) {
           console.warn(`Balance conversion overflow for token ${t.symbol}`)

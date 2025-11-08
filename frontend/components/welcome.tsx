@@ -12,6 +12,7 @@ import { useTheme } from '@/app/context/theme-context-provider'
 import { Sun, Moon, Monitor } from 'lucide-react'
 import { useState, useEffect, useRef } from 'react'
 import { useSpherreAccount } from '@/app/context/account-context'
+import { useAuth } from '@/app/context/auth-context'
 
 const Welcome = () => {
   // for navigation
@@ -35,6 +36,14 @@ const Welcome = () => {
 
   const { address } = useAccount()
   const { accountAddress } = useSpherreAccount()
+  const {
+    isAuthenticated,
+    hasAccount,
+    accounts,
+    authenticateWithWallet,
+    isAuthenticating,
+    authError,
+  } = useAuth()
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -87,6 +96,7 @@ const Welcome = () => {
               src={wall}
               alt={''}
               className="h-32 lg:h-screen p-4 rounded-lg"
+              priority
             />
           </div>
 
@@ -142,26 +152,44 @@ const Welcome = () => {
                   The Future of Secure, Collaborative Crypto Management!
                 </p>
 
-                {/* Responsive Button */}
-                {address ? (
+                {!address && (
+                  <ThemeButton onClick={connectWallet}>
+                    Connect Wallet
+                  </ThemeButton>
+                )}
+                {address && !isAuthenticated && (
+                  <ThemeButton
+                    onClick={() => authenticateWithWallet()}
+                    className="disabled:opacity-60 disabled:cursor-not-allowed"
+                    disabled={isAuthenticating}
+                  >
+                    {isAuthenticating ? 'Connecting…' : 'Connect Wallet'}
+                  </ThemeButton>
+                )}
+                {address && isAuthenticated && hasAccount && (
+                  <ThemeButton
+                    onClick={() => {
+                      const targetAccount =
+                        accounts[0]?.address || accountAddress
+                      if (targetAccount) {
+                        router.push(`/account/${targetAccount}`)
+                      }
+                    }}
+                    icon={add}
+                  >
+                    Go to dashboard
+                  </ThemeButton>
+                )}
+                {address && isAuthenticated && !hasAccount && (
                   <ThemeButton
                     onClick={() => router.push('/create-account/step-1')}
                     icon={add}
                   >
                     Create Spherre
                   </ThemeButton>
-                ) : (
-                  <ThemeButton onClick={connectWallet}>
-                    Connect Wallet
-                  </ThemeButton>
                 )}
-                {accountAddress && (
-                  <ThemeButton
-                    onClick={() => router.push(`/account/${accountAddress}`)}
-                    icon={add}
-                  >
-                    Go to default account
-                  </ThemeButton>
+                {authError && (
+                  <p className="mt-3 text-sm text-red-400">{authError}</p>
                 )}
               </div>
             </div>

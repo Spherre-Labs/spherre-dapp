@@ -6,6 +6,7 @@ import { StarknetProvider } from './components/Providers'
 import { OnboardingProvider } from '@/context/OnboardingContext'
 import { ThemeProvider } from '@/app/context/theme-context-provider'
 import { SpherreAccountProvider } from './context/account-context'
+import { AuthProvider } from './context/auth-context'
 import { GlobalModalProvider } from './components/modals/GlobalModalProvider'
 
 const geistSans = Geist({
@@ -46,9 +47,17 @@ export const metadata: Metadata = {
       },
     ],
   },
-  viewport: 'width=device-width, initial-scale=1',
   robots: 'index, follow',
 }
+
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  themeColor: '#000000',
+}
+export const metadataBase = new URL(
+  process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000',
+)
 
 export default function RootLayout({
   children,
@@ -69,11 +78,13 @@ export default function RootLayout({
         <div id="modal-root"></div>
         <GlobalModalProvider>
           <ThemeProvider>
-            <SpherreAccountProvider>
-              <StarknetProvider>
-                <OnboardingProvider>{children}</OnboardingProvider>
-              </StarknetProvider>
-            </SpherreAccountProvider>
+            <StarknetProvider>
+              <SpherreAccountProvider>
+                <AuthProvider>
+                  <OnboardingProvider>{children}</OnboardingProvider>
+                </AuthProvider>
+              </SpherreAccountProvider>
+            </StarknetProvider>
           </ThemeProvider>
         </GlobalModalProvider>
       </body>

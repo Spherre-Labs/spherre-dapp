@@ -6,7 +6,7 @@ import {
   useContext,
   useEffect,
 } from 'react'
-import { isValidStarknetAddress, SPHERRE_CONTRACTS } from '@/lib'
+import { isValidStarknetAddress } from '@/lib'
 import { validateAndParseAddress } from 'starknet'
 import { useParams } from 'next/navigation'
 
@@ -27,7 +27,7 @@ export const SpherreAccountProvider = ({
 }: SpherreAccountProviderProps) => {
   // Declaring the default spherre account address for the main time
   const [accountAddress, _setAccountAddress] = useState<`0x${string}` | null>(
-    SPHERRE_CONTRACTS.SPHERRE_ACCOUNT,
+    null,
   )
   // Load from localStorage after mount, but don't block rendering
   useEffect(() => {

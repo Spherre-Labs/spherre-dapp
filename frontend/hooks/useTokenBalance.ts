@@ -9,12 +9,7 @@ export const useTokenBalance = (
   const { address } = useAccount()
   const [balance, setBalance] = useState(0)
 
-  const {
-    data,
-    error,
-    refetch,
-    isFetching,
-  } = useBalance({
+  const { data, error, refetch, isFetching } = useBalance({
     address: walletAddress || address,
     token: tokenAddress || DEFAULT_TOKEN,
     enabled: !!(walletAddress || address),

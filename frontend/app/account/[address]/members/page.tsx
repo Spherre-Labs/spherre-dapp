@@ -96,39 +96,39 @@ const Members = () => {
 
     return contractMembers
       .map((memberFelt: string, index: number) => {
-      let memberAddress: string
-      try {
-        memberAddress = feltToAddress(memberFelt)
-      } catch (error) {
-        console.warn('Failed to convert felt to address:', memberFelt, error)
-        memberAddress = memberFelt
-      }
+        let memberAddress: string
+        try {
+          memberAddress = feltToAddress(memberFelt)
+        } catch (error) {
+          console.warn('Failed to convert felt to address:', memberFelt, error)
+          memberAddress = memberFelt
+        }
 
         if (memberAddress.toLowerCase() === ZERO_ADDRESS) {
           return null
         }
 
-      const truncatedAddress =
-        memberAddress.length > 10
-          ? `${memberAddress.slice(0, 6)}...${memberAddress.slice(-4)}`
-          : memberAddress
+        const truncatedAddress =
+          memberAddress.length > 10
+            ? `${memberAddress.slice(0, 6)}...${memberAddress.slice(-4)}`
+            : memberAddress
 
-      // Placeholder roles/mask/date for layout; MemberCard replaces with real data
-      const roles: string[] = []
-      const permissionMask = ALL_PERMISSIONS_MASK
-      const avatarIndex = (index % 3) + 1
-      const image = `/member${avatarIndex}.svg`
+        // Placeholder roles/mask/date for layout; MemberCard replaces with real data
+        const roles: string[] = []
+        const permissionMask = ALL_PERMISSIONS_MASK
+        const avatarIndex = (index % 3) + 1
+        const image = `/member${avatarIndex}.svg`
 
-      return {
-        id: index + 1,
-        name: `Member ${index + 1}`,
-        address: truncatedAddress,
-        fullAddress: memberAddress,
-        roles,
-        dateAdded: '—',
-        image,
-        permissions: roles,
-        permissionMask,
+        return {
+          id: index + 1,
+          name: `Member ${index + 1}`,
+          address: truncatedAddress,
+          fullAddress: memberAddress,
+          roles,
+          dateAdded: '—',
+          image,
+          permissions: roles,
+          permissionMask,
         } as Member
       })
       .filter((member): member is Member => member !== null)

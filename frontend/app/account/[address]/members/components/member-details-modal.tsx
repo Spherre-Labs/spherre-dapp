@@ -276,23 +276,25 @@ export default function MemberDetailsModal({
         <div className="flex flex-wrap items-center gap-3 mb-5">
           <div className="text-sm text-theme-secondary">Roles:</div>
           <div className="flex items-center gap-2 flex-wrap">
-          {(Array.isArray(perms.permissions) ? perms.permissions : []).map((role) => {
-              let styles = 'border-theme-border text-theme-secondary'
-              if (role === 'Voter')
-                styles = 'bg-[#FF7BE9]/10 text-[#FF7BE9] border-[#FF7BE9]'
-              if (role === 'Proposer')
-                styles = 'bg-[#FF8A25]/10 text-[#FF8A25] border-[#FF8A25]'
-              if (role === 'Executor')
-                styles = 'bg-[#19B360]/10 text-[#19B360] border-[#19B360]'
-              return (
-                <span
-                  key={role}
-                  className={`text-xs px-2 py-0.5 rounded-2xl border ${styles}`}
-                >
-                  {role}
-                </span>
-              )
-            })}
+            {(Array.isArray(perms.permissions) ? perms.permissions : []).map(
+              (role) => {
+                let styles = 'border-theme-border text-theme-secondary'
+                if (role === 'Voter')
+                  styles = 'bg-[#FF7BE9]/10 text-[#FF7BE9] border-[#FF7BE9]'
+                if (role === 'Proposer')
+                  styles = 'bg-[#FF8A25]/10 text-[#FF8A25] border-[#FF8A25]'
+                if (role === 'Executor')
+                  styles = 'bg-[#19B360]/10 text-[#19B360] border-[#19B360]'
+                return (
+                  <span
+                    key={role}
+                    className={`text-xs px-2 py-0.5 rounded-2xl border ${styles}`}
+                  >
+                    {role}
+                  </span>
+                )
+              },
+            )}
           </div>
         </div>
 

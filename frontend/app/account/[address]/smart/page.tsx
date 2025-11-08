@@ -157,16 +157,16 @@ export default function SmartLock() {
     }
 
     return tokensDisplay.map((display) => {
-      const metadata =
-        AVAILABLE_TOKENS.find(
-          (token) =>
-            token.address.toLowerCase() === display.contract_address.toLowerCase(),
-        ) ?? {
-          symbol: display.coin,
-          name: display.coin,
-          address: display.contract_address as `0x${string}`,
-          decimals: display.decimals ?? 18,
-        }
+      const metadata = AVAILABLE_TOKENS.find(
+        (token) =>
+          token.address.toLowerCase() ===
+          display.contract_address.toLowerCase(),
+      ) ?? {
+        symbol: display.coin,
+        name: display.coin,
+        address: display.contract_address as `0x${string}`,
+        decimals: display.decimals ?? 18,
+      }
 
       return {
         symbol: metadata.symbol,
@@ -189,7 +189,10 @@ export default function SmartLock() {
 
   const smartLockTokenMapByAddress = useMemo(() => {
     return new Map<string, SmartLockTokenOption>(
-      smartLockTokenOptions.map((token) => [token.address.toLowerCase(), token]),
+      smartLockTokenOptions.map((token) => [
+        token.address.toLowerCase(),
+        token,
+      ]),
     )
   }, [smartLockTokenOptions])
 

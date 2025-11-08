@@ -100,10 +100,7 @@ function persist() {
   }
 }
 
-export function recordSmartLockPlanName(
-  args: PlanKeyArgs,
-  name: string,
-): void {
+export function recordSmartLockPlanName(args: PlanKeyArgs, name: string): void {
   ensureLoaded()
   memoryStore.set(buildKey(args), name)
   persist()
@@ -120,4 +117,3 @@ export function deleteSmartLockPlanName(args: PlanKeyArgs): void {
     persist()
   }
 }
-

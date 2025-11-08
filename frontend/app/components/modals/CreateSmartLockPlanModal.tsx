@@ -380,7 +380,8 @@ export default function CreateSmartLockPlanModal({
             </div>
             {selectedToken && Number.isFinite(selectedToken.balanceValue) && (
               <p className="text-xs text-theme-secondary mt-1">
-                Available: {selectedToken.formattedBalance} {selectedToken.symbol}
+                Available: {selectedToken.formattedBalance}{' '}
+                {selectedToken.symbol}
               </p>
             )}
             {errors.amount && (

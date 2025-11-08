@@ -74,6 +74,7 @@ class ApiClient {
           ...headers,
         },
         body: body ? JSON.stringify(body) : undefined,
+        credentials: 'include',
         signal: controller.signal,
       })
 
@@ -188,18 +189,23 @@ export const ApiUtils = {
   async handleResponse<T>(
     apiCall: () => Promise<ApiResponse<T>>,
     errorMessage = 'API request failed',
+    options?: { suppressErrorLog?: boolean },
   ): Promise<T> {
     try {
       const response = await apiCall()
 
       if (!response.success) {
-        console.error(`${errorMessage}:`, response.error)
+        if (!options?.suppressErrorLog) {
+          console.error(`${errorMessage}:`, response.error)
+        }
         throw new Error(response.error || errorMessage)
       }
 
       return response.data as T
     } catch (error) {
-      console.error(`${errorMessage}:`, error)
+      if (!options?.suppressErrorLog) {
+        console.error(`${errorMessage}:`, error)
+      }
       throw error instanceof Error ? error : new Error(errorMessage)
     }
   },

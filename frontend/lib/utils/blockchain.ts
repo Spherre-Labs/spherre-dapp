@@ -1,9 +1,4 @@
-import {
-  Abi,
-  Contract,
-  RpcProvider,
-  type ProviderInterface,
-} from 'starknet'
+import { Abi, Contract, RpcProvider, type ProviderInterface } from 'starknet'
 
 let sharedProvider: ProviderInterface | null = null
 
