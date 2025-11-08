@@ -1,6 +1,7 @@
 'use client'
 
 import {
+  useAccount,
   useContract,
   useSendTransaction,
   useTransactionReceipt,
@@ -31,6 +32,8 @@ export function useScaffoldWriteContract({
 }: UseScaffoldWriteContractProps): ContractWriteResult {
   const [lastTransactionHash, setLastTransactionHash] = useState<string>()
 
+  const { address, status, connector } = useAccount()
+
   const { contract } = useContract({
     address: contractConfig.address.startsWith('0x')
       ? (contractConfig.address as `0x${string}`)
@@ -60,6 +63,16 @@ export function useScaffoldWriteContract({
 
   const writeAsync = useCallback(
     async (args: ContractFunctionArgs = {}) => {
+      if (!address || status !== 'connected' || !connector) {
+        const connectionError = new Error(
+          'Wallet not connected. Please connect your wallet before submitting the transaction.',
+        )
+        if (onError) {
+          onError(connectionError)
+        }
+        throw connectionError
+      }
+
       if (!contract) {
         throw new Error('Contract not initialized')
       }
@@ -150,6 +163,9 @@ export function useScaffoldWriteContract({
       sendAsync,
       onSuccess,
       onError,
+      address,
+      status,
+      connector,
     ],
   )
 
