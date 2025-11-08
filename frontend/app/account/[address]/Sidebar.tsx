@@ -167,7 +167,7 @@ const Sidebar = ({
             ? `fixed top-16 left-0 h-[calc(100vh-4rem)] w-64 transform transition-transform duration-300 z-30 ${
                 isExpanded ? 'translate-x-0' : '-translate-x-full'
               }`
-            : `fixed top-16 left-0 h-[calc(100vh-4rem)] flex-shrink-0 transition-all duration-300 z-20 ${isExpanded ? 'w-64' : 'w-16'}`
+            : `fixed top-[5.3rem] left-0 h-[calc(100vh-4rem)] flex-shrink-0 transition-all duration-300 z-20 ${isExpanded ? 'w-64' : 'w-16'}`
         } sidebar-bg text-theme border-r border-theme-border sidebar-transition overflow-x-hidden`}
         onMouseEnter={() =>
           !isMobile && !isUltraWide && !isPinned && setExpanded(true)
