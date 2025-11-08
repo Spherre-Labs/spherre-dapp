@@ -10,7 +10,8 @@ class EventEnum(Enum):
     ACCOUNT_CREATION = 1
     TOKEN_TRANSFER = 2
     TRANSACTION_PROPOSAL = 3
-    TRANSACTION_EXECUTION = 4
+    TRANSACTION_APPROVAL = 4
+    TRANSACTION_EXECUTION = 5
 
 
 EVENT_SELECTORS = bidict(
@@ -22,7 +23,12 @@ EVENT_SELECTORS = bidict(
             "0x99cd8bde557814842a3121e8ddfd433a539b8c9f14bf31ebf108d12e6196e9"
         ),
         EventEnum.TRANSACTION_PROPOSAL: felt.from_hex(""),
-        EventEnum.TRANSACTION_EXECUTION: felt.from_hex(""),
+        EventEnum.TRANSACTION_APPROVAL: felt.from_hex(
+            "0x8fac5268bfb16142e4e1fce5f985e337db83f8b307525a0960480cd8473436"
+        ),
+        EventEnum.TRANSACTION_EXECUTION: felt.from_hex(
+            "0x1dcde06aabdbca2f80aa51392b345d7549d7757aa855f7e37f5d335ac8243b1"
+        ),
     }
 )
 

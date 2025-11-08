@@ -1,6 +1,9 @@
+from spherre.indexer.service.types import AccountCreationEvent
+
+
 class EventHandlers:
     @classmethod
-    def handle_account_creation(cls):
+    def handle_account_creation(cls, data: AccountCreationEvent):
         pass
 
     @classmethod
