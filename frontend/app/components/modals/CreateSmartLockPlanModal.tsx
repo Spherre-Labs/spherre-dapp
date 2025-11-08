@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react'
 import { X, ChevronDown, Calendar } from 'lucide-react'
 import Image from 'next/image'
 import { useTheme } from '@/app/context/theme-context-provider'
+import type { TokenInfo } from '@/lib/contracts/types'
+import { AVAILABLE_TOKENS } from '@/lib/utils/token'
 
 interface CreateSmartLockPlanModalProps {
   isOpen: boolean
@@ -18,28 +20,6 @@ interface SmartLockPlanData {
   duration: string
   durationType: 'days' | 'weeks' | 'months'
 }
-
-interface Token {
-  symbol: string
-  name: string
-  icon: string
-  address: string
-}
-
-const AVAILABLE_TOKENS: Token[] = [
-  {
-    symbol: 'USDT',
-    name: 'Tether USD',
-    icon: '/Images/usdt.png',
-    address: '0x...',
-  },
-  {
-    symbol: 'STRK',
-    name: 'Starknet Token',
-    icon: '/Images/strk.png',
-    address: '0x...',
-  },
-]
 
 const DURATION_PRESETS = [
   { label: '1 Day', value: '1', type: 'days' as const },
@@ -59,7 +39,7 @@ export default function CreateSmartLockPlanModal({
   useTheme() // Initialize theme context
   const [formData, setFormData] = useState<SmartLockPlanData>({
     name: '',
-    token: 'USDT',
+    token: AVAILABLE_TOKENS[0]?.symbol ?? 'STRK',
     amount: '',
     duration: '5',
     durationType: 'days',
@@ -114,7 +94,7 @@ export default function CreateSmartLockPlanModal({
 
   const selectedToken = AVAILABLE_TOKENS.find(
     (token) => token.symbol === formData.token,
-  )
+  ) as (TokenInfo & { icon?: string }) | undefined
 
   const validateForm = (): boolean => {
     const newErrors: Partial<SmartLockPlanData> = {}
@@ -153,7 +133,7 @@ export default function CreateSmartLockPlanModal({
       // Reset form
       setFormData({
         name: '',
-        token: 'USDT',
+        token: AVAILABLE_TOKENS[0]?.symbol ?? 'STRK',
         amount: '',
         duration: '5',
         durationType: 'days',

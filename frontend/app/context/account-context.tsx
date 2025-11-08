@@ -86,14 +86,9 @@ export const useCurrentAccountAddress = () => {
   const params = useParams()
   const { accountAddress } = useSpherreAccount()
 
-  // If we have an account address from context, use it, otherwise use URL param
-  if (accountAddress) {
-    return accountAddress
-  }
-
   if (params?.address && typeof params.address === 'string') {
     return params.address as `0x${string}`
   }
 
-  return null
+  return accountAddress
 }

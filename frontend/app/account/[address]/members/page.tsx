@@ -35,6 +35,9 @@ interface Member {
   permissionMask: number
 }
 
+const ZERO_ADDRESS =
+  '0x0000000000000000000000000000000000000000000000000000000000000000'
+
 const Members = () => {
   useTheme()
   const router = useRouter()
@@ -91,7 +94,8 @@ const Members = () => {
   const transformedMembers = useMemo(() => {
     if (!contractMembers || contractMembers.length === 0) return []
 
-    return contractMembers.map((memberFelt: string, index: number) => {
+    return contractMembers
+      .map((memberFelt: string, index: number) => {
       let memberAddress: string
       try {
         memberAddress = feltToAddress(memberFelt)
@@ -99,6 +103,10 @@ const Members = () => {
         console.warn('Failed to convert felt to address:', memberFelt, error)
         memberAddress = memberFelt
       }
+
+        if (memberAddress.toLowerCase() === ZERO_ADDRESS) {
+          return null
+        }
 
       const truncatedAddress =
         memberAddress.length > 10
@@ -121,8 +129,9 @@ const Members = () => {
         image,
         permissions: roles,
         permissionMask,
-      } as Member
-    })
+        } as Member
+      })
+      .filter((member): member is Member => member !== null)
   }, [contractMembers])
 
   // Update members when transformed members change

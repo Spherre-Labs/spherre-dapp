@@ -1,7 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { categories } from '@/lib/smart-lock-mock-data'
+import { useState, useEffect, useMemo } from 'react'
 import { SmartEmpty } from '@/components/smart-lock/smart-empty'
 import { SmartHeader } from '@/components/smart-lock/smart-header'
 import { SmartNotFound } from './smart-not-found'
@@ -10,31 +9,50 @@ import { SmartPlanCard } from './smart-plan-card'
 import { SmartPlanCardSkeleton } from './smart-plan-card-skeleton'
 import type { SmartLockPlan } from '@/types/smart-lock'
 import { useTheme } from '@/app/context/theme-context-provider'
+import { categories as mockCategories } from '@/lib/smart-lock-mock-data'
 
 interface SmartLockPlansProps {
   plans: SmartLockPlan[]
+  isLoading: boolean
   onCreateNewPlan: () => void
 }
 
 export default function SmartLockPlans({
   plans: initialPlans,
+  isLoading: loadingFromProps,
   onCreateNewPlan,
 }: SmartLockPlansProps) {
   useTheme()
-  const [plans, setPlans] = useState<SmartLockPlan[]>([])
-  const [filteredPlans, setFilteredPlans] = useState<SmartLockPlan[]>([])
+  const [plans, setPlans] = useState<SmartLockPlan[]>(initialPlans)
+  const [filteredPlans, setFilteredPlans] =
+    useState<SmartLockPlan[]>(initialPlans)
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedDate, setSelectedDate] = useState('all')
   const [selectedFilters, setSelectedFilters] = useState<string[]>([])
-  const [isLoading, setIsLoading] = useState(true)
+  const [isLoading, setIsLoading] = useState(loadingFromProps)
 
   useEffect(() => {
-    // Simulate loading - change to empty array to test SmartEmpty component
-    setTimeout(() => {
-      setPlans(initialPlans) // Use the plans passed from parent
-      setFilteredPlans(initialPlans) // Use the plans passed from parent
-      setIsLoading(false)
-    }, 2000)
+    setPlans(initialPlans)
+    setFilteredPlans(initialPlans)
+  }, [initialPlans])
+
+  useEffect(() => {
+    setIsLoading(loadingFromProps)
+  }, [loadingFromProps])
+
+  const categories = useMemo(() => {
+    const planCategories = Array.from(
+      new Set(initialPlans.map((plan) => plan.category).filter(Boolean)),
+    )
+
+    const combined = [...mockCategories]
+    for (const category of planCategories) {
+      if (category && !combined.includes(category)) {
+        combined.push(category)
+      }
+    }
+
+    return combined
   }, [initialPlans])
 
   useEffect(() => {
