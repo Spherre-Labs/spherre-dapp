@@ -1,3 +1,5 @@
+
+
 from apibara.indexer import IndexerRunner, IndexerRunnerConfiguration, Info
 from apibara.indexer.indexer import IndexerConfiguration
 from apibara.protocol.proto.stream_pb2 import Cursor, DataFinality
@@ -97,7 +99,7 @@ class AccountIndexer(StarkNetIndexer):
 
     def initial_configuration(self) -> Filter:
         # Return initial configuration of the indexer.
-        address = felt.from_hex(SPHERRE_CONTRACT_ADDRESS)
+        address = felt.from_hex(self.account_address)
         return IndexerConfiguration(
             filter=Filter().add_event(
                 EventFilter()
@@ -110,6 +112,10 @@ class AccountIndexer(StarkNetIndexer):
 
     def handle_data(self, info, data):
         pass
+    
+
+def run_in_thread(self):
+    pass
 
 
 async def run_indexer(
