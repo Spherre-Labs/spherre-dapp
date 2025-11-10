@@ -27,7 +27,7 @@ export function StarknetProvider({ children }: { children: React.ReactNode }) {
       rpc: (chain) => {
         if (chain.id === sepolia.id) {
           return {
-            nodeUrl: 'https://starknet-sepolia.public.blastapi.io/rpc/v0_7',
+            nodeUrl: process.env.NEXT_PUBLIC_RPC_URL,
           }
         }
         // Don't provide mainnet RPC to force Sepolia usage

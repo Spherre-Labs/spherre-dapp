@@ -228,8 +228,8 @@ const AuthenticationExample = () => {
           }`}
         >
           This button requires authentication before executing sensitive
-          operations. If you&apos;re not authenticated, clicking it will open the
-          sign-in modal.
+          operations. If you&apos;re not authenticated, clicking it will open
+          the sign-in modal.
         </p>
 
         <button

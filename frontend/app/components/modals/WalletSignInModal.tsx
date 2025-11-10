@@ -32,7 +32,6 @@ const WalletSignInModal = () => {
     try {
       // Get the public key from the account
       // @ts-expect-error - Accessing signer from account
-      
 
       // Create typed data matching backend's expected format
       const typedDataMessage = {
@@ -67,16 +66,16 @@ const WalletSignInModal = () => {
       if (!publicKey) {
         throw new Error('Could not retrieve public key from wallet')
       }
-      
+
       const mainSignatures = [signature[-2], signature[-1]]
 
       // Convert signature to numbers for backend
       const signatures = mainSignatures.map((sig: string | bigint) =>
         typeof sig === 'string' ? parseInt(sig, 16) : Number(sig),
       )
-      console.log("Signature length: ", signature.length)
-      console.log("Signature", signatures)
-      console.log("Public Key", publicKey)
+      console.log('Signature length: ', signature.length)
+      console.log('Signature', signatures)
+      console.log('Public Key', publicKey)
       // Send to backend for authentication
       const response = await SpherreApi.signIn({
         signatures,
