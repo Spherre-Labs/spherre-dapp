@@ -43,7 +43,7 @@ export const SpherreAccountProvider = ({
         window.localStorage.removeItem('SpherreAccountAddress')
       }
     }
-  }, [])
+  }, [params?.address])
 
   const setAccountAddress = (address: `0x${string}` | null) => {
     if (address && !isValidStarknetAddress(address)) {

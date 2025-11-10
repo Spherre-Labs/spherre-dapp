@@ -4,15 +4,11 @@ import { useState, useMemo, useCallback } from 'react'
 import SmartLockPlans from '@/components/smart-lock/smart-lock-plans'
 import CreateSmartLockPlanModal from '@/app/components/modals/CreateSmartLockPlanModal'
 import {
-  useSmartTokenLockTransactionList,
-  useTransactionList,
   useProposeSmartTokenLockTransaction,
   useAccountPermissions,
   useLockedPlansList,
 } from '@/hooks/useSpherreHooks'
 import { useCurrentAccountAddress } from '@/app/context/account-context'
-import { TransactionType } from '@/lib/contracts/types'
-import { mapTransactionStatus } from '@/lib/utils/transaction-utils'
 import type { SmartLockPlan } from '@/types/smart-lock'
 import { TokenUtils, AVAILABLE_TOKENS } from '@/lib/utils/token'
 import { contractAddressToHex } from '@/lib/utils/transaction-utils'
@@ -68,8 +64,9 @@ export default function SmartLock() {
     refetch: refetchlockedPlans,
   } = useLockedPlansList(accountAddress ?? '0x0')
 
-  const { hasProposerRole, hasExecutorRole, permissionsLoading, permissions } =
-    useAccountPermissions(accountAddress ?? '0x0')
+  const { hasProposerRole, permissionsLoading } = useAccountPermissions(
+    accountAddress ?? '0x0',
+  )
 
   const { writeAsync: proposeSmartLockTransaction, isLoading: isProposing } =
     useProposeSmartTokenLockTransaction(accountAddress ?? '0x0')
@@ -249,12 +246,11 @@ export default function SmartLock() {
               duration: plan.lock_duration,
             })
           : null
-
-      const planName = storedName ?? 'Smart Lock Plan: ' + tokenInfo.symbol
+      // storedName could be used for display if plan naming is required
 
       return {
         id: (idx + 1).toString(),
-        name: 'Lock Plan',
+        name: storedName ?? 'Lock Plan',
         token: tokenInfo.symbol,
         dateCreated: formatDateString(plan.date_locked),
         amount: amountFormatted,
@@ -374,6 +370,11 @@ export default function SmartLock() {
       {error && (
         <div className="bg-red-500/10 text-red-500 px-4 py-2 rounded-lg border border-red-500/40 text-sm">
           {error.message}
+        </div>
+      )}
+      {permissionsError && (
+        <div className="bg-red-500/10 text-red-500 px-4 py-2 rounded-lg border border-red-500/40 text-sm">
+          {permissionsError}
         </div>
       )}
 

@@ -36,14 +36,8 @@ const Welcome = () => {
 
   const { address } = useAccount()
   const { accountAddress } = useSpherreAccount()
-  const {
-    isAuthenticated,
-    hasAccount,
-    accounts,
-    authenticateWithWallet,
-    isAuthenticating,
-    authError,
-  } = useAuth()
+  const { isAuthenticated, hasAccount, accounts, isAuthenticating, authError } =
+    useAuth()
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {

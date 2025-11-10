@@ -47,7 +47,6 @@ export const AuthContext = createContext<AuthContextValue | undefined>(
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [state, setState] = useState<AuthState>(defaultState)
   const [isAuthenticating, setIsAuthenticating] = useState(false)
-  const [hasAttemptedAutoAuth, setHasAttemptedAutoAuth] = useState(false)
   const [authError, setAuthError] = useState<string | null>(null)
   const { setAccountAddress } = useSpherreAccount()
   const { account, address } = useAccount()
@@ -230,23 +229,19 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     // Reset auto-auth attempt tracker when wallet address changes or disconnects
-    // setHasAttemptedAutoAuth(false)
   }, [address])
 
   useEffect(() => {
     if (!account || !address) return
     if (state.loading) return
     if (state.isAuthenticated) return
-    if (hasAttemptedAutoAuth) return
 
-    // setHasAttemptedAutoAuth(true)
     // authenticateWithWallet()
   }, [
     account,
     address,
     state.loading,
     state.isAuthenticated,
-    hasAttemptedAutoAuth,
     authenticateWithWallet,
   ])
 
