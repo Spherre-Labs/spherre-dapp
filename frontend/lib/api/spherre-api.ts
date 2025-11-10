@@ -34,10 +34,30 @@ export interface Transaction {
   executedAt?: string
 }
 
+// Auth types
+export interface SignInRequest {
+  signatures: number[]
+  public_key: string
+}
+
+export interface SignInResponse {
+  token: string
+  refresh_token: string
+  member: string
+}
+
 /**
  * Spherre API functions
  */
 export const SpherreApi = {
+  // Authentication
+  async signIn(data: SignInRequest): Promise<SignInResponse> {
+    return ApiUtils.handleResponse(
+      () => apiClient.post('/api/v1/auth/signin', data),
+      'Failed to sign in',
+    )
+  },
+
   // User management
   async getUser(address: string): Promise<User> {
     return ApiUtils.handleResponse(
