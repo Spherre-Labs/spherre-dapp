@@ -191,9 +191,7 @@ const Sidebar = ({
 
           {/* Logo - Simple and Always Visible */}
           <div
-            className={`flex items-center justify-center flex-shrink-0 ${
-              isExpanded ? 'py-6 px-4' : 'py-4 px-2'
-            }`}
+            className={`flex items-center justify-center flex-shrink-0 py-4 px-2`}
           >
             <Image
               src={logo}
@@ -201,16 +199,14 @@ const Sidebar = ({
               width={40}
               height={40}
               priority
-              className={`transition-all duration-300 ${
-                isExpanded ? 'w-10 h-10' : 'w-8 h-8'
-              }`}
+              className={`transition-all duration-300 w-8 h-8`}
             />
           </div>
 
           {/* Menu Items - Fill remaining space between logo and profile */}
           <div className="flex-1 min-h-0 flex flex-col">
             <ul
-              className={`flex flex-col ${isExpanded ? 'gap-5' : 'gap-6 mt-3'} text-[16px] flex-1 overflow-y-auto overflow-x-hidden`}
+              className={`flex flex-col gap-5 text-[16px] flex-1 overflow-y-auto overflow-x-hidden`}
             >
               {navItems.map((item, index) => (
                 <li
@@ -223,7 +219,7 @@ const Sidebar = ({
                   {isExpanded ? (
                     <Link
                       href={item?.route ?? `/account/${accountAddress}/`}
-                      className={`flex items-center p-3 rounded-lg mx-2 sidebar-transition sidebar-menu-item ${
+                      className={`flex items-center p-2 rounded-lg mx-2 sidebar-transition sidebar-menu-item ${
                         selectedPage === item.name
                           ? 'active'
                           : 'text-theme-secondary hover:text-theme'
@@ -234,8 +230,8 @@ const Sidebar = ({
                         <Image
                           src={item.icon}
                           alt={item.name}
-                          width={24}
-                          height={24}
+                          width={20}
+                          height={20}
                           className="sidebar-transition"
                         />
                         {item.notification && (
@@ -244,7 +240,7 @@ const Sidebar = ({
                           </span>
                         )}
                       </div>
-                      <span className="truncate">{item.name}</span>
+                      <span className="truncate text-sm">{item.name}</span>
                       {item.comingSoon && (
                         <span className="text-[10px] text-green-400 border-[0.5px] bg-green-400/10 border-green-400/40 px-2 py-[0.5px] rounded-xl ml-auto flex-shrink-0">
                           Coming soon
@@ -255,18 +251,23 @@ const Sidebar = ({
                     <Tooltip content={item.name}>
                       <Link
                         href={item?.route ?? `/${accountAddress}/`}
-                        className={`flex items-center justify-center mx-auto rounded-lg sidebar-transition sidebar-menu-item ${
+                        className={`flex flex-col items-center justify-center mx-auto rounded-lg sidebar-transition sidebar-menu-item ${
                           selectedPage === item.name
                             ? 'active'
                             : 'text-theme-secondary hover:text-theme'
                         }`}
                         style={{
-                          width: '32px',
-                          height: '32px',
+                          width: '40px',
+                          height: '40px',
+                          paddingTop: '6px',
+                          paddingBottom: '6px',
                         }}
                         onClick={() => isMobile && setSidebarExpanded(false)}
                       >
-                        <div className="relative flex items-center justify-center">
+                        <div
+                          className="relative flex items-center justify-center"
+                          style={{ minHeight: '24px' }}
+                        >
                           <Image
                             src={item.icon}
                             alt={item.name}
@@ -290,7 +291,7 @@ const Sidebar = ({
 
           {/* Pin/Unpin Toggle Button - Only visible on desktop (not mobile or ultra-wide) */}
           {!isMobile && !isUltraWide && (
-            <div className={`${isExpanded ? 'mb-5 px-3' : 'hidden'}`}>
+            <div className={`${isExpanded ? '' : 'hidden'}`}>
               <button
                 onClick={() => setIsPinned(!isPinned)}
                 className={`p-2 rounded-lg transition-colors duration-200 hover:bg-theme-tertiary ${

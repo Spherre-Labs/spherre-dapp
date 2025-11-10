@@ -154,20 +154,16 @@ const Welcome = () => {
                 {address && !isAuthenticated && (
                   <ThemeButton
                     // onClick={() => authenticateWithWallet()}
-                    className="disabled:opacity-60 disabled:cursor-not-allowed"
+                    onClick={() => {}}
                     disabled={isAuthenticating}
                   >
-                    {isAuthenticating ? 'Connecting…' : 'Connect Wallet'}
+                    {isAuthenticating ? 'Connecting…' : 'Sign In'}
                   </ThemeButton>
                 )}
                 {address && (
                   <ThemeButton
                     onClick={() => {
-                      const targetAccount =
-                        accounts[0]?.address || accountAddress
-                      if (targetAccount) {
-                        router.push(`/account/${targetAccount}`)
-                      }
+                      router.push(`/account/${accountAddress}`)
                     }}
                     icon={add}
                   >
