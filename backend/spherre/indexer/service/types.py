@@ -76,3 +76,10 @@ class AccountCreationEvent(BaseEventModel):
     threshold: int
     deployer: int
     date_deployed: int
+
+
+class TokenTransferEvent(BaseEventModel):
+    account_address: str
+    from_address: str
+    to_address: str
+    amount: int

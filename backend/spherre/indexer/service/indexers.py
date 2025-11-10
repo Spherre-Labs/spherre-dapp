@@ -1,5 +1,3 @@
-
-
 from apibara.indexer import IndexerRunner, IndexerRunnerConfiguration, Info
 from apibara.indexer.indexer import IndexerConfiguration
 from apibara.protocol.proto.stream_pb2 import Cursor, DataFinality
@@ -10,17 +8,26 @@ from loguru import logger
 from pydantic import ValidationError
 
 from spherre.indexer.config import NETWORK, SPHERRE_CONTRACT_ADDRESS
-from spherre.indexer.service.event_handlers import EventHandlers
+from spherre.indexer.service.event_handlers import DATA_HANDLERS
 from spherre.indexer.service.types import (
     EVENT_SELECTORS,
     AccountCreationEvent,
     EventEnum,
 )
+from spherre.indexer.service.utils import DATA_TRANSFORMERS
 
 
 class SpherreMainIndexer(StarkNetIndexer):
     def start_account_indexer(self, address: str):
-        pass
+        # create a new filter for the account address
+        account_address = felt.from_hex(address)
+        filter = (
+            EventFilter()
+            .with_from_address(account_address)
+            .with_keys([EVENT_SELECTORS.values()])
+        )
+        # add the filter to the indexer
+        self.update_filter(filter)
 
     def indexer_id(self) -> str:
         return "spherre"
@@ -43,76 +50,43 @@ class SpherreMainIndexer(StarkNetIndexer):
         for event_with_tx in data.events:
             tx_hash = felt.to_hex(event_with_tx.transaction.meta.hash)
             event = event_with_tx.event
+            event_address = felt.to_hex(event.from_address)
+            logger.info("Transaction Hash:", tx_hash)
 
-            account_address = felt.to_hex(event.data[0])
-            owner = felt.to_hex(event.data[1])
-            name = felt.to_hex(event.data[2])
-            description = felt.to_hex(event.data[3])
-            members_array_length = felt.to_int(event.data[4])
-            members = []
-            for i in range(5, members_array_length + 1 + 4):
-                members.append(felt.to_hex(event.data[i]))
-            threshold = felt.to_int(event.data[i + 1])
-            deployer = felt.to_hex(event.data[i + 2])
-            date_deployed = felt.to_int(event.data[i + 3])
-
-            print("Account Deployed")
-            print("Transaction Hash:", tx_hash)
-            print("Account Address:", account_address)
-            print("Owner:", owner)
-            print("Name:", name)
-            print("Description:", description)
-            print("Members:", members)
-            print("Threshold:", threshold)
-            print("Deployer:", deployer)
-            print("Date Deployed:", date_deployed)
-
-            try:
-                account_data = AccountCreationEvent(
-                    account_address=account_address,
-                    owner=owner,
-                    name=name,
-                    description=description,
-                    members=members,
-                    threshold=threshold,
-                    deployer=deployer,
-                    date_deployed=date_deployed,
-                )
-                # handle the account creation event
-                EventHandlers.handle_account_creation(account_data)
-                # start a new account indexer in another thread
-            except ValidationError as err:
-                logger.error("Error parsing account creation event data")
-                logger.error(err)
+            if event_address != SPHERRE_CONTRACT_ADDRESS:
+                event_type = event.keys
+                event_enum = EVENT_SELECTORS.inverse[event_type]
+                transformed_data = DATA_TRANSFORMERS[event_enum](event)
+                if transformed_data:
+                    DATA_HANDLERS[event_enum](transformed_data)
+                    logger.info(
+                        f"Event with type '{event_type}' from address '{event_address}' handled"
+                    )
+                else:
+                    logger.error(
+                        f"Failed to handle event of type '{event_type}' from address '{event_address}'"
+                    )
+            else:
+                event_type = event.keys
+                if event_type == EVENT_SELECTORS[EventEnum.ACCOUNT_CREATION]:
+                    transformed_data = DATA_TRANSFORMERS[EventEnum.ACCOUNT_CREATION](
+                        event
+                    )
+                    if transformed_data:
+                        DATA_HANDLERS[EventEnum.ACCOUNT_CREATION](transformed_data)
+                        self.start_account_indexer(transformed_data.account_address)
+                        logger.info(
+                            f"Account created for address '{transformed_data.account_address}'"
+                        )
+                    else:
+                        account_address = felt.to_hex(event.data[0])
+                        logger.error(
+                            f"Failed to handle account creation event of address '{account_address}'"
+                        )
 
     async def handle_invalidate(self, _info: Info, _cursor: Cursor):
         raise ValueError("data must be finalized")
 
-
-class AccountIndexer(StarkNetIndexer):
-    def __init__(self, account_address: str):
-        self.account_address = account_address
-        super().__init__()
-
-    def indexer_id(self) -> str:
-        return self.account_address
-
-    def initial_configuration(self) -> Filter:
-        # Return initial configuration of the indexer.
-        address = felt.from_hex(self.account_address)
-        return IndexerConfiguration(
-            filter=Filter().add_event(
-                EventFilter()
-                .with_from_address(address)
-                .with_keys(list(EVENT_SELECTORS.values()))
-            ),
-            starting_cursor=starknet_cursor(10_000),
-            finality=DataFinality.DATA_STATUS_ACCEPTED,
-        )
-
-    def handle_data(self, info, data):
-        pass
-    
 
 def run_in_thread(self):
     pass
