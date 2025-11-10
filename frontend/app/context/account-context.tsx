@@ -29,11 +29,14 @@ export const SpherreAccountProvider = ({
   const [accountAddress, _setAccountAddress] = useState<`0x${string}` | null>(
     null,
   )
+  const params = useParams()
   // Load from localStorage after mount, but don't block rendering
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const value = window.localStorage.getItem('SpherreAccountAddress')
-      if (value && isValidStarknetAddress(value)) {
+      if (params?.address && typeof params.address === 'string') {
+        _setAccountAddress(params.address as `0x${string}`)
+      } else if (value && isValidStarknetAddress(value)) {
         _setAccountAddress(value as `0x${string}`)
       } else if (value) {
         console.error('Invalid address in local storage:', value)

@@ -159,14 +159,14 @@ const Welcome = () => {
                 )}
                 {address && !isAuthenticated && (
                   <ThemeButton
-                    onClick={() => authenticateWithWallet()}
+                    // onClick={() => authenticateWithWallet()}
                     className="disabled:opacity-60 disabled:cursor-not-allowed"
                     disabled={isAuthenticating}
                   >
                     {isAuthenticating ? 'Connecting…' : 'Connect Wallet'}
                   </ThemeButton>
                 )}
-                {address && isAuthenticated && hasAccount && (
+                {address && (
                   <ThemeButton
                     onClick={() => {
                       const targetAccount =

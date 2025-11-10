@@ -20,6 +20,7 @@ import type {
   ThresholdChangeData,
   SmartTokenLockTransaction,
   PermissionEnum,
+  LockedPlan,
 } from '@/lib/contracts/types'
 import { useMemo } from 'react'
 import { feltToAddress, byteArrayToString } from '@/lib/utils/validation'
@@ -806,4 +807,19 @@ export function useAccountInfo(accountAddress: `0x${string}`) {
       countError,
     ],
   )
+}
+
+// Smart Lock
+export function useLockedPlansList(accountAddress: `0x${string}`) {
+  const args = {}
+
+  return useScaffoldReadContract<LockedPlan[]>({
+    contractConfig: {
+      address: accountAddress,
+      abi: spherreAccountConfig.abi,
+    },
+    functionName: 'get_all_locked_plans',
+    args,
+    enabled: !!accountAddress,
+  })
 }

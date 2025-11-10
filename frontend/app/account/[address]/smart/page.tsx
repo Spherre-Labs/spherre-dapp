@@ -8,6 +8,7 @@ import {
   useTransactionList,
   useProposeSmartTokenLockTransaction,
   useAccountPermissions,
+  useLockedPlansList,
 } from '@/hooks/useSpherreHooks'
 import { useCurrentAccountAddress } from '@/app/context/account-context'
 import { TransactionType } from '@/lib/contracts/types'
@@ -61,18 +62,11 @@ export default function SmartLock() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
   const {
-    data: baseTransactions,
-    isLoading: isBaseTransactionsLoading,
-    error: baseTransactionsError,
-    refetch: refetchBaseTransactions,
-  } = useTransactionList(accountAddress ?? '0x0')
-
-  const {
-    data: smartLockTransactions,
-    isLoading: isSmartLockLoading,
-    error: smartLockError,
-    refetch: refetchSmartLockTransactions,
-  } = useSmartTokenLockTransactionList(accountAddress ?? '0x0')
+    data: lockedPlans,
+    isLoading: islockedPlansLoading,
+    error: lockedPlansError,
+    refetch: refetchlockedPlans,
+  } = useLockedPlansList(accountAddress ?? '0x0')
 
   const { hasProposerRole, hasExecutorRole, permissionsLoading, permissions } =
     useAccountPermissions(accountAddress ?? '0x0')
@@ -197,7 +191,7 @@ export default function SmartLock() {
   }, [smartLockTokenOptions])
 
   const plans = useMemo<SmartLockPlan[]>(() => {
-    if (!baseTransactions || !smartLockTransactions) return []
+    if (!lockedPlans) return []
 
     const defaultImages = [
       '/Smart-Lock-Banner-1.png',
@@ -208,97 +202,72 @@ export default function SmartLock() {
 
     let smartLockIndex = 0
 
-    return baseTransactions
-      .filter((transaction) => {
-        if (
-          transaction.tx_type.activeVariant() !==
-          TransactionType.SMART_TOKEN_LOCK
-        ) {
-          return false
-        }
+    return lockedPlans.map((plan, idx) => {
+      const currentIndex = smartLockIndex
+      smartLockIndex += 1
 
-        const statusVariant = transaction.tx_status.activeVariant()
-        // Only show executed transactions
-        return mapTransactionStatus(statusVariant) === 'success'
-      })
-      .map((transaction) => {
-        const smartLockData = smartLockTransactions?.[smartLockIndex]
+      const normalizedTokenAddress = contractAddressToHex(
+        plan.token,
+      ).toLowerCase()
 
-        if (!smartLockData) {
-          return null
-        }
-
-        const currentIndex = smartLockIndex
-        smartLockIndex += 1
-
-        const normalizedTokenAddress = contractAddressToHex(
-          smartLockData.token,
-        ).toLowerCase()
-
-        const tokenMeta =
-          smartLockTokenMapByAddress.get(normalizedTokenAddress) ??
-          AVAILABLE_TOKENS.find(
-            (token) => token.address.toLowerCase() === normalizedTokenAddress,
-          )
-
-        const tokenInfo = tokenMeta
-          ? {
-              symbol: tokenMeta.symbol,
-              name: tokenMeta.name,
-              address: tokenMeta.address,
-              decimals: tokenMeta.decimals,
-            }
-          : {
-              symbol: 'TOKEN',
-              name: 'Token',
-              address: smartLockData.token as `0x${string}`,
-              decimals: 18,
-            }
-
-        const amountFormatted = TokenUtils.formatTokenAmount(
-          smartLockData.amount,
-          tokenInfo,
+      const tokenMeta =
+        smartLockTokenMapByAddress.get(normalizedTokenAddress) ??
+        AVAILABLE_TOKENS.find(
+          (token) => token.address.toLowerCase() === normalizedTokenAddress,
         )
 
-        const { unlockDate, isUnlockable } = computeUnlockMetadata(
-          transaction.date_created,
-          smartLockData.duration,
-        )
+      const tokenInfo = tokenMeta
+        ? {
+            symbol: tokenMeta.symbol,
+            name: tokenMeta.name,
+            address: tokenMeta.address,
+            decimals: tokenMeta.decimals,
+          }
+        : {
+            symbol: 'TOKEN',
+            name: 'Token',
+            address: plan.token as `0x${string}`,
+            decimals: 18,
+          }
 
-        const storedName =
-          accountAddress && typeof accountAddress === 'string'
-            ? getSmartLockPlanName({
-                account: accountAddress,
-                token: normalizedTokenAddress,
-                amount: smartLockData.amount,
-                duration: smartLockData.duration,
-              })
-            : null
+      const amountFormatted = TokenUtils.formatTokenAmount(
+        plan.token_amount,
+        tokenInfo,
+      )
 
-        const planName =
-          storedName ??
-          (smartLockData.transaction_id
-            ? `Smart Lock #${smartLockData.transaction_id.toString()}`
-            : `Smart Lock #${transaction.id.toString()}`)
+      const { unlockDate, isUnlockable } = computeUnlockMetadata(
+        plan.date_locked,
+        plan.lock_duration,
+      )
 
-        return {
-          id: transaction.id.toString(),
-          name: planName,
-          token: tokenInfo.symbol,
-          dateCreated: formatDateString(transaction.date_created),
-          amount: amountFormatted,
-          unlockDate,
-          isUnlockable,
-          category: 'Custom',
-          imageUrl:
-            defaultImages[currentIndex % defaultImages.length] ??
-            defaultImages[0],
-        } satisfies SmartLockPlan
-      })
-      .filter((plan): plan is SmartLockPlan => Boolean(plan))
+      const storedName =
+        accountAddress && typeof accountAddress === 'string'
+          ? getSmartLockPlanName({
+              account: accountAddress,
+              token: normalizedTokenAddress,
+              amount: plan.token_amount,
+              duration: plan.lock_duration,
+            })
+          : null
+
+      const planName = storedName ?? 'Smart Lock Plan: ' + tokenInfo.symbol
+
+      return {
+        id: (idx + 1).toString(),
+        name: 'Lock Plan',
+        token: tokenInfo.symbol,
+        dateCreated: formatDateString(plan.date_locked),
+        amount: amountFormatted,
+        unlockDate,
+        isUnlockable,
+        category: 'Custom',
+        imageUrl:
+          defaultImages[currentIndex % defaultImages.length] ??
+          defaultImages[0],
+      } satisfies SmartLockPlan
+    })
   }, [
-    baseTransactions,
-    smartLockTransactions,
+    lockedPlans,
     accountAddress,
     computeUnlockMetadata,
     formatDateString,
@@ -361,10 +330,7 @@ export default function SmartLock() {
         )
         setIsSuccessModalOpen(true)
 
-        await Promise.all([
-          refetchSmartLockTransactions(),
-          refetchBaseTransactions(),
-        ])
+        await Promise.all([refetchlockedPlans()])
       } catch (error) {
         console.error('Error proposing smart lock transaction:', error)
         setIsProcessingModalOpen(false)
@@ -379,8 +345,7 @@ export default function SmartLock() {
       accountAddress,
       convertDurationToSeconds,
       proposeSmartLockTransaction,
-      refetchSmartLockTransactions,
-      refetchBaseTransactions,
+      refetchlockedPlans,
       smartLockTokenMapBySymbol,
       smartLockTokenOptions,
     ],
@@ -391,13 +356,12 @@ export default function SmartLock() {
   }, [])
 
   const isLoading =
-    isBaseTransactionsLoading ||
-    isSmartLockLoading ||
+    islockedPlansLoading ||
     isProposing ||
     loadingTokenData ||
     permissionsLoading
 
-  const error = baseTransactionsError || smartLockError
+  const error = lockedPlansError
 
   return (
     <section className="space-y-4">

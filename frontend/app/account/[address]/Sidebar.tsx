@@ -290,9 +290,7 @@ const Sidebar = ({
 
           {/* Pin/Unpin Toggle Button - Only visible on desktop (not mobile or ultra-wide) */}
           {!isMobile && !isUltraWide && (
-            <div
-              className={`mb-40 ${isExpanded ? 'px-3' : 'flex justify-center'}`}
-            >
+            <div className={`${isExpanded ? 'mb-5 px-3' : 'hidden'}`}>
               <button
                 onClick={() => setIsPinned(!isPinned)}
                 className={`p-2 rounded-lg transition-colors duration-200 hover:bg-theme-tertiary ${

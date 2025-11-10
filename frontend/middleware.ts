@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
-const PROTECTED_PATHS = ['/account', '/create-account', '/smart']
+const PROTECTED_PATHS = []
 
 export function middleware(request: NextRequest) {
   const { nextUrl, cookies } = request

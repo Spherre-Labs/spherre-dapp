@@ -225,12 +225,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, [account, address, applySession, isAuthenticating, resolvePublicKey])
 
   useEffect(() => {
-    refreshSession()
+    // refreshSession()
   }, [refreshSession])
 
   useEffect(() => {
     // Reset auto-auth attempt tracker when wallet address changes or disconnects
-    setHasAttemptedAutoAuth(false)
+    // setHasAttemptedAutoAuth(false)
   }, [address])
 
   useEffect(() => {
@@ -239,8 +239,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     if (state.isAuthenticated) return
     if (hasAttemptedAutoAuth) return
 
-    setHasAttemptedAutoAuth(true)
-    authenticateWithWallet()
+    // setHasAttemptedAutoAuth(true)
+    // authenticateWithWallet()
   }, [
     account,
     address,
