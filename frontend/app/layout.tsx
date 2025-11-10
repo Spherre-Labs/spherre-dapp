@@ -8,6 +8,8 @@ import { ThemeProvider } from '@/app/context/theme-context-provider'
 import { SpherreAccountProvider } from './context/account-context'
 import { AuthProvider } from './context/auth-context'
 import { GlobalModalProvider } from './components/modals/GlobalModalProvider'
+import { WalletAuthProvider } from './context/wallet-auth-context'
+import WalletSignInModal from './components/modals/WalletSignInModal'
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -81,7 +83,10 @@ export default function RootLayout({
             <StarknetProvider>
               <SpherreAccountProvider>
                 <AuthProvider>
-                  <OnboardingProvider>{children}</OnboardingProvider>
+                  <WalletAuthProvider>
+                    <WalletSignInModal />
+                    <OnboardingProvider>{children}</OnboardingProvider>
+                  </WalletAuthProvider>
                 </AuthProvider>
               </SpherreAccountProvider>
             </StarknetProvider>
