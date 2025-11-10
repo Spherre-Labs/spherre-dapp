@@ -5,13 +5,11 @@ from apibara.starknet import EventFilter, Filter, StarkNetIndexer, felt
 from apibara.starknet.cursor import starknet_cursor
 from apibara.starknet.proto.starknet_pb2 import Block
 from loguru import logger
-from pydantic import ValidationError
 
 from spherre.indexer.config import NETWORK, SPHERRE_CONTRACT_ADDRESS
 from spherre.indexer.service.event_handlers import DATA_HANDLERS
 from spherre.indexer.service.types import (
     EVENT_SELECTORS,
-    AccountCreationEvent,
     EventEnum,
 )
 from spherre.indexer.service.utils import DATA_TRANSFORMERS
@@ -60,11 +58,17 @@ class SpherreMainIndexer(StarkNetIndexer):
                 if transformed_data:
                     DATA_HANDLERS[event_enum](transformed_data)
                     logger.info(
-                        f"Event with type '{event_type}' from address '{event_address}' handled"
+                        (
+                            f"Event with type '{event_type}' from address"
+                            f"'{event_address}' handled"
+                        )
                     )
                 else:
                     logger.error(
-                        f"Failed to handle event of type '{event_type}' from address '{event_address}'"
+                        (
+                            f"Failed to handle event of type '{event_type}'"
+                            f"from address '{event_address}'"
+                        )
                     )
             else:
                 event_type = event.keys
@@ -76,12 +80,18 @@ class SpherreMainIndexer(StarkNetIndexer):
                         DATA_HANDLERS[EventEnum.ACCOUNT_CREATION](transformed_data)
                         self.start_account_indexer(transformed_data.account_address)
                         logger.info(
-                            f"Account created for address '{transformed_data.account_address}'"
+                            (
+                                "Account created for address "
+                                f"'{transformed_data.account_address}'"
+                            )
                         )
                     else:
                         account_address = felt.to_hex(event.data[0])
                         logger.error(
-                            f"Failed to handle account creation event of address '{account_address}'"
+                            (
+                                "Failed to handle account creation event"
+                                f"of address '{account_address}'"
+                            )
                         )
 
     async def handle_invalidate(self, _info: Info, _cursor: Cursor):
