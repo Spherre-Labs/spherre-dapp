@@ -35,6 +35,9 @@ interface Member {
   permissionMask: number
 }
 
+const ZERO_ADDRESS =
+  '0x0000000000000000000000000000000000000000000000000000000000000000'
+
 const Members = () => {
   useTheme()
   const router = useRouter()
@@ -91,38 +94,44 @@ const Members = () => {
   const transformedMembers = useMemo(() => {
     if (!contractMembers || contractMembers.length === 0) return []
 
-    return contractMembers.map((memberFelt: string, index: number) => {
-      let memberAddress: string
-      try {
-        memberAddress = feltToAddress(memberFelt)
-      } catch (error) {
-        console.warn('Failed to convert felt to address:', memberFelt, error)
-        memberAddress = memberFelt
-      }
+    return contractMembers
+      .map((memberFelt: string, index: number) => {
+        let memberAddress: string
+        try {
+          memberAddress = feltToAddress(memberFelt)
+        } catch (error) {
+          console.warn('Failed to convert felt to address:', memberFelt, error)
+          memberAddress = memberFelt
+        }
 
-      const truncatedAddress =
-        memberAddress.length > 10
-          ? `${memberAddress.slice(0, 6)}...${memberAddress.slice(-4)}`
-          : memberAddress
+        if (memberAddress.toLowerCase() === ZERO_ADDRESS) {
+          return null
+        }
 
-      // Placeholder roles/mask/date for layout; MemberCard replaces with real data
-      const roles: string[] = []
-      const permissionMask = ALL_PERMISSIONS_MASK
-      const avatarIndex = (index % 3) + 1
-      const image = `/member${avatarIndex}.svg`
+        const truncatedAddress =
+          memberAddress.length > 10
+            ? `${memberAddress.slice(0, 6)}...${memberAddress.slice(-4)}`
+            : memberAddress
 
-      return {
-        id: index + 1,
-        name: `Member ${index + 1}`,
-        address: truncatedAddress,
-        fullAddress: memberAddress,
-        roles,
-        dateAdded: '—',
-        image,
-        permissions: roles,
-        permissionMask,
-      } as Member
-    })
+        // Placeholder roles/mask/date for layout; MemberCard replaces with real data
+        const roles: string[] = []
+        const permissionMask = ALL_PERMISSIONS_MASK
+        const avatarIndex = (index % 3) + 1
+        const image = `/member${avatarIndex}.svg`
+
+        return {
+          id: index + 1,
+          name: `Member ${index + 1}`,
+          address: truncatedAddress,
+          fullAddress: memberAddress,
+          roles,
+          dateAdded: '—',
+          image,
+          permissions: roles,
+          permissionMask,
+        } as Member
+      })
+      .filter((member): member is Member => member !== null)
   }, [contractMembers])
 
   // Update members when transformed members change

@@ -1,5 +1,6 @@
 'use client'
 
+import { useAccount } from '@starknet-react/core'
 import { CairoCustomEnum, CairoOption, CairoOptionVariant } from 'starknet'
 import { useScaffoldReadContract } from './useScaffoldReadContract'
 import { useScaffoldWriteContract } from './useScaffoldWriteContract'
@@ -19,6 +20,7 @@ import type {
   ThresholdChangeData,
   SmartTokenLockTransaction,
   PermissionEnum,
+  LockedPlan,
 } from '@/lib/contracts/types'
 import { useMemo } from 'react'
 import { feltToAddress, byteArrayToString } from '@/lib/utils/validation'
@@ -114,31 +116,89 @@ export function useGetMemberPermissions(
     enabled: !!(accountAddress && memberAddress),
   })
 
-  // Convert PermissionEnum array to role names
-  const permissions = useMemo(() => {
+  // Convert PermissionEnum array to usable roles
+  const permissionsMeta = useMemo(() => {
     if (!result.data || !Array.isArray(result.data)) {
-      return [] // Default to all permissions if no data
+      return {
+        roles: [] as string[],
+        hasProposerRole: false,
+        hasVoterRole: false,
+        hasExecutorRole: false,
+      }
     }
 
     const roles: string[] = []
+    let hasProposerRole = false
+    let hasVoterRole = false
+    let hasExecutorRole = false
 
-    // PermissionEnum: PROPOSER = 0, VOTER = 1, EXECUTOR = 2
     for (const permission of result.data) {
-      if (permission.activeVariant() === 'PROPOSER') {
+      const variant = permission.activeVariant()
+      if (variant === 'PROPOSER') {
+        hasProposerRole = true
         roles.push('Proposer')
-      } else if (permission.activeVariant() === 'VOTER') {
+      } else if (variant === 'VOTER') {
+        hasVoterRole = true
         roles.push('Voter')
-      } else if (permission.activeVariant() === 'EXECUTOR') {
+      } else if (variant === 'EXECUTOR') {
+        hasExecutorRole = true
         roles.push('Executor')
       }
     }
 
-    return roles // Default fallback
+    return {
+      roles,
+      hasProposerRole,
+      hasVoterRole,
+      hasExecutorRole,
+    }
   }, [result.data])
 
   return {
     ...result,
-    permissions,
+    permissions: permissionsMeta.roles,
+    permissionsMeta,
+  }
+}
+
+export function useAccountPermissions(accountAddress: `0x${string}`) {
+  const { address: walletAddress } = useAccount()
+
+  const memberAddress =
+    walletAddress && walletAddress !== '0x0'
+      ? (walletAddress as `0x${string}`)
+      : undefined
+
+  const result = useGetMemberPermissions(
+    accountAddress ?? ('0x0' as `0x${string}`),
+    memberAddress ?? ('0x0' as `0x${string}`),
+  )
+
+  const normalized = useMemo(() => {
+    if (!memberAddress) {
+      return {
+        roles: [] as string[],
+        hasProposerRole: false,
+        hasVoterRole: false,
+        hasExecutorRole: false,
+      }
+    }
+
+    const meta = result.permissionsMeta
+    return {
+      roles: meta?.roles ?? [],
+      hasProposerRole: meta?.hasProposerRole ?? false,
+      hasVoterRole: meta?.hasVoterRole ?? false,
+      hasExecutorRole: meta?.hasExecutorRole ?? false,
+    }
+  }, [result.permissionsMeta, memberAddress])
+
+  return {
+    permissions: normalized.roles,
+    hasProposerRole: normalized.hasProposerRole,
+    hasVoterRole: normalized.hasVoterRole,
+    hasExecutorRole: normalized.hasExecutorRole,
+    permissionsLoading: Boolean(memberAddress) && result.isLoading,
   }
 }
 
@@ -747,4 +807,19 @@ export function useAccountInfo(accountAddress: `0x${string}`) {
       countError,
     ],
   )
+}
+
+// Smart Lock
+export function useLockedPlansList(accountAddress: `0x${string}`) {
+  const args = {}
+
+  return useScaffoldReadContract<LockedPlan[]>({
+    contractConfig: {
+      address: accountAddress,
+      abi: spherreAccountConfig.abi,
+    },
+    functionName: 'get_all_locked_plans',
+    args,
+    enabled: !!accountAddress,
+  })
 }

@@ -86,18 +86,6 @@ export const transactionDisplayData = (
       )
 
     case TransactionType.SMART_TOKEN_LOCK:
-      // amount
-      // :
-      // 2n
-      // duration
-      // :
-      // 200000000n
-      // token
-      // :
-      // 2009894490435840142178314390393166646092438090257831307886760648929397478285n
-      // transaction_id
-      // :
-      // 9n
       return (
         <>
           <div className="text-theme-secondary flex items-center transition-colors duration-300 flex-[2] min-w-0">
@@ -114,15 +102,6 @@ export const transactionDisplayData = (
               ) : null}
               <span className="ml-1 text-theme font-semibold">
                 {`${formatTokenAmount((transactionInfo.transaction.data as SmartTokenLockTransaction)['amount'])} ${tokenInfo?.name}`}
-              </span>
-            </span>
-          </div>
-
-          <div className="text-theme-secondary flex items-center transition-colors duration-300 flex-[2] min-w-0">
-            <span className="text-sm text-theme-secondary mr-1">Duration:</span>
-            <span className="inline-flex items-center">
-              <span className="ml-1 text-theme font-semibold">
-                {`${BigInt((transactionInfo.transaction.data as SmartTokenLockTransaction)['duration'])}s`}
               </span>
             </span>
           </div>

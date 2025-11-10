@@ -6,7 +6,7 @@ import {
   useContext,
   useEffect,
 } from 'react'
-import { isValidStarknetAddress, SPHERRE_CONTRACTS } from '@/lib'
+import { isValidStarknetAddress } from '@/lib'
 import { validateAndParseAddress } from 'starknet'
 import { useParams } from 'next/navigation'
 
@@ -27,20 +27,23 @@ export const SpherreAccountProvider = ({
 }: SpherreAccountProviderProps) => {
   // Declaring the default spherre account address for the main time
   const [accountAddress, _setAccountAddress] = useState<`0x${string}` | null>(
-    SPHERRE_CONTRACTS.SPHERRE_ACCOUNT,
+    null,
   )
+  const params = useParams()
   // Load from localStorage after mount, but don't block rendering
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const value = window.localStorage.getItem('SpherreAccountAddress')
-      if (value && isValidStarknetAddress(value)) {
+      if (params?.address && typeof params.address === 'string') {
+        _setAccountAddress(params.address as `0x${string}`)
+      } else if (value && isValidStarknetAddress(value)) {
         _setAccountAddress(value as `0x${string}`)
       } else if (value) {
         console.error('Invalid address in local storage:', value)
         window.localStorage.removeItem('SpherreAccountAddress')
       }
     }
-  }, [])
+  }, [params?.address])
 
   const setAccountAddress = (address: `0x${string}` | null) => {
     if (address && !isValidStarknetAddress(address)) {
@@ -86,14 +89,9 @@ export const useCurrentAccountAddress = () => {
   const params = useParams()
   const { accountAddress } = useSpherreAccount()
 
-  // If we have an account address from context, use it, otherwise use URL param
-  if (accountAddress) {
-    return accountAddress
-  }
-
   if (params?.address && typeof params.address === 'string') {
     return params.address as `0x${string}`
   }
 
-  return null
+  return accountAddress
 }

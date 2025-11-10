@@ -6,6 +6,7 @@ import { StarknetProvider } from './components/Providers'
 import { OnboardingProvider } from '@/context/OnboardingContext'
 import { ThemeProvider } from '@/app/context/theme-context-provider'
 import { SpherreAccountProvider } from './context/account-context'
+import { AuthProvider } from './context/auth-context'
 import { GlobalModalProvider } from './components/modals/GlobalModalProvider'
 import { WalletAuthProvider } from './context/wallet-auth-context'
 import WalletSignInModal from './components/modals/WalletSignInModal'
@@ -48,9 +49,17 @@ export const metadata: Metadata = {
       },
     ],
   },
-  viewport: 'width=device-width, initial-scale=1',
   robots: 'index, follow',
 }
+
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  themeColor: '#000000',
+}
+export const metadataBase = new URL(
+  process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000',
+)
 
 export default function RootLayout({
   children,
@@ -71,14 +80,16 @@ export default function RootLayout({
         <div id="modal-root"></div>
         <GlobalModalProvider>
           <ThemeProvider>
-            <SpherreAccountProvider>
-              <StarknetProvider>
-                <WalletAuthProvider>
-                  <OnboardingProvider>{children}</OnboardingProvider>
-                  <WalletSignInModal />
-                </WalletAuthProvider>
-              </StarknetProvider>
-            </SpherreAccountProvider>
+            <StarknetProvider>
+              <SpherreAccountProvider>
+                <AuthProvider>
+                  <WalletAuthProvider>
+                    <WalletSignInModal />
+                    <OnboardingProvider>{children}</OnboardingProvider>
+                  </WalletAuthProvider>
+                </AuthProvider>
+              </SpherreAccountProvider>
+            </StarknetProvider>
           </ThemeProvider>
         </GlobalModalProvider>
       </body>

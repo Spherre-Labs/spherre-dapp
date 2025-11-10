@@ -127,7 +127,7 @@ function MemberCardBase({
   const isLoading = perms.isLoading
 
   useEffect(() => {
-    if (perms.permissions.length > 0) {
+    if (Array.isArray(perms.permissions) && perms.permissions.length > 0) {
       setCurrentMember({ ...member, permissions: perms.permissions })
     }
   }, [perms.permissions, member])
@@ -343,17 +343,19 @@ function MemberCardBase({
         <p className="text-theme-secondary text-xs sm:text-[14px] font-semibold">
           Roles:
         </p>
-        {(perms.permissions || []).map((role) => {
-          const roleStyle = roleStyleMap[role] ?? ''
-          return (
-            <div
-              key={role}
-              className={`flex items-center justify-center text-[10px] sm:text-[12px] px-1 sm:px-2 py-[1px] sm:py-[2px] border-[1px] rounded-3xl ${roleStyle}`}
-            >
-              {role}
-            </div>
-          )
-        })}
+        {(Array.isArray(perms.permissions) ? perms.permissions : []).map(
+          (role) => {
+            const roleStyle = roleStyleMap[role] ?? ''
+            return (
+              <div
+                key={role}
+                className={`flex items-center justify-center text-[10px] sm:text-[12px] px-1 sm:px-2 py-[1px] sm:py-[2px] border-[1px] rounded-3xl ${roleStyle}`}
+              >
+                {role}
+              </div>
+            )
+          },
+        )}
       </div>
 
       {/* Date added section */}

@@ -6,12 +6,14 @@ interface ThemeButtonProps {
   onClick: () => void
   icon?: StaticImageData
   children: React.ReactNode
+  disabled?: boolean
 }
 
 const ThemeButton: React.FC<ThemeButtonProps> = ({
   onClick,
   icon,
   children,
+  disabled,
 }) => {
   const { actualTheme } = useTheme()
 
@@ -22,7 +24,8 @@ const ThemeButton: React.FC<ThemeButtonProps> = ({
         actualTheme === 'dark'
           ? 'bg-white text-black hover:bg-gray-200'
           : 'bg-gray-900 text-white hover:bg-gray-800'
-      }`}
+      } ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+      disabled={disabled}
     >
       {icon && <Image src={icon} height={30} width={24} alt="" />}
       <p className={actualTheme === 'dark' ? 'text-black' : 'text-white'}>

@@ -92,6 +92,14 @@ export interface SpherreTransaction {
   date_executed: bigint
 }
 
+export interface LockedPlan {
+  token: `0x${string}`
+  date_locked: bigint
+  token_amount: bigint
+  lock_duration: bigint
+  lock_status: CairoCustomEnum
+}
+
 // Permission types
 export enum PermissionEnum {
   PROPOSER = 0,

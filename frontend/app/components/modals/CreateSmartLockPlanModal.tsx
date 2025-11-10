@@ -1,15 +1,11 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { X, ChevronDown, Calendar } from 'lucide-react'
 import Image from 'next/image'
 import { useTheme } from '@/app/context/theme-context-provider'
-
-interface CreateSmartLockPlanModalProps {
-  isOpen: boolean
-  onClose: () => void
-  onSubmit: (planData: SmartLockPlanData) => Promise<void>
-}
+import type { TokenInfo } from '@/lib/contracts/types'
+import { AVAILABLE_TOKENS } from '@/lib/utils/token'
 
 interface SmartLockPlanData {
   name: string
@@ -19,27 +15,17 @@ interface SmartLockPlanData {
   durationType: 'days' | 'weeks' | 'months'
 }
 
-interface Token {
-  symbol: string
-  name: string
-  icon: string
-  address: string
+type SmartLockTokenOption = TokenInfo & {
+  balanceValue: number
+  formattedBalance: string
 }
 
-const AVAILABLE_TOKENS: Token[] = [
-  {
-    symbol: 'USDT',
-    name: 'Tether USD',
-    icon: '/Images/usdt.png',
-    address: '0x...',
-  },
-  {
-    symbol: 'STRK',
-    name: 'Starknet Token',
-    icon: '/Images/strk.png',
-    address: '0x...',
-  },
-]
+interface CreateSmartLockPlanModalProps {
+  isOpen: boolean
+  onClose: () => void
+  onSubmit: (planData: SmartLockPlanData) => Promise<void>
+  availableTokens?: SmartLockTokenOption[]
+}
 
 const DURATION_PRESETS = [
   { label: '1 Day', value: '1', type: 'days' as const },
@@ -55,11 +41,26 @@ export default function CreateSmartLockPlanModal({
   isOpen,
   onClose,
   onSubmit,
+  availableTokens,
 }: CreateSmartLockPlanModalProps) {
   useTheme() // Initialize theme context
+  const tokenOptions = useMemo<SmartLockTokenOption[]>(() => {
+    if (availableTokens && availableTokens.length > 0) {
+      return availableTokens
+    }
+
+    return AVAILABLE_TOKENS.map((token) => ({
+      ...token,
+      balanceValue: Number.NaN,
+      formattedBalance: '0',
+    }))
+  }, [availableTokens])
+
+  const defaultTokenSymbol =
+    tokenOptions.length > 0 ? tokenOptions[0].symbol : 'STRK'
   const [formData, setFormData] = useState<SmartLockPlanData>({
     name: '',
-    token: 'USDT',
+    token: defaultTokenSymbol,
     amount: '',
     duration: '5',
     durationType: 'days',
@@ -110,9 +111,22 @@ export default function CreateSmartLockPlanModal({
     return () => document.removeEventListener('keydown', handleEscape)
   }, [isOpen, isSubmitting, onClose])
 
+  useEffect(() => {
+    setFormData((prev) => {
+      if (tokenOptions.some((token) => token.symbol === prev.token)) {
+        return prev
+      }
+
+      return {
+        ...prev,
+        token: tokenOptions[0]?.symbol ?? 'STRK',
+      }
+    })
+  }, [tokenOptions])
+
   if (!isOpen) return null
 
-  const selectedToken = AVAILABLE_TOKENS.find(
+  const selectedToken = tokenOptions.find(
     (token) => token.symbol === formData.token,
   )
 
@@ -127,6 +141,12 @@ export default function CreateSmartLockPlanModal({
       newErrors.amount = 'Amount is required'
     } else if (isNaN(Number(formData.amount)) || Number(formData.amount) <= 0) {
       newErrors.amount = 'Please enter a valid amount'
+    } else if (
+      selectedToken &&
+      Number.isFinite(selectedToken.balanceValue) &&
+      Number(formData.amount) > selectedToken.balanceValue
+    ) {
+      newErrors.amount = `Amount exceeds available ${selectedToken.symbol} balance (${selectedToken.formattedBalance})`
     }
 
     if (selectedDurationPreset === 'Custom' && !customDuration.trim()) {
@@ -153,7 +173,7 @@ export default function CreateSmartLockPlanModal({
       // Reset form
       setFormData({
         name: '',
-        token: 'USDT',
+        token: tokenOptions[0]?.symbol ?? defaultTokenSymbol,
         amount: '',
         duration: '5',
         durationType: 'days',
@@ -279,7 +299,7 @@ export default function CreateSmartLockPlanModal({
 
               {showTokenDropdown && (
                 <div className="token-dropdown absolute top-full left-0 right-0 mt-1 bg-theme-bg-tertiary border border-theme-border rounded-lg shadow-lg z-10 transition-colors duration-300">
-                  {AVAILABLE_TOKENS.map((token) => (
+                  {tokenOptions.map((token) => (
                     <button
                       key={token.symbol}
                       type="button"
@@ -309,6 +329,11 @@ export default function CreateSmartLockPlanModal({
                         <div className="text-theme-secondary text-xs transition-colors duration-300">
                           {token.name}
                         </div>
+                        {Number.isFinite(token.balanceValue) && (
+                          <div className="text-theme-secondary text-xs transition-colors duration-300">
+                            Available: {token.formattedBalance}
+                          </div>
+                        )}
                       </div>
                     </button>
                   ))}
@@ -322,18 +347,43 @@ export default function CreateSmartLockPlanModal({
             <label className="block text-sm font-medium text-theme mb-2 transition-colors duration-300">
               Enter Amount
             </label>
-            <input
-              type="text"
-              value={formData.amount}
-              onChange={(e) =>
-                setFormData((prev) => ({ ...prev, amount: e.target.value }))
-              }
-              placeholder="Enter amount to lock"
-              className={`w-full bg-theme-bg-tertiary text-theme rounded-lg px-4 py-3 placeholder:text-theme-secondary focus:outline-none focus:ring-2 focus:ring-primary border transition-colors duration-300 ${
-                errors.amount ? 'border-red-500' : 'border-transparent'
-              }`}
-              disabled={isSubmitting}
-            />
+            <div className="relative">
+              <input
+                type="text"
+                value={formData.amount}
+                onChange={(e) =>
+                  setFormData((prev) => ({ ...prev, amount: e.target.value }))
+                }
+                placeholder="Enter amount to lock"
+                className={`w-full bg-theme-bg-tertiary text-theme rounded-lg px-4 py-3 pr-20 placeholder:text-theme-secondary focus:outline-none focus:ring-2 focus:ring-primary border transition-colors duration-300 ${
+                  errors.amount ? 'border-red-500' : 'border-transparent'
+                }`}
+                disabled={isSubmitting}
+              />
+              <button
+                type="button"
+                onClick={() =>
+                  selectedToken &&
+                  Number.isFinite(selectedToken.balanceValue) &&
+                  setFormData((prev) => ({
+                    ...prev,
+                    amount: selectedToken.formattedBalance.replace(/,/g, ''),
+                  }))
+                }
+                className="absolute top-1/2 right-2 -translate-y-1/2 px-3 py-1.5 rounded-md bg-theme-bg-tertiary text-theme-secondary hover:bg-theme-bg-secondary transition-colors duration-300 text-sm disabled:opacity-50"
+                disabled={
+                  !selectedToken || !Number.isFinite(selectedToken.balanceValue)
+                }
+              >
+                Max
+              </button>
+            </div>
+            {selectedToken && Number.isFinite(selectedToken.balanceValue) && (
+              <p className="text-xs text-theme-secondary mt-1">
+                Available: {selectedToken.formattedBalance}{' '}
+                {selectedToken.symbol}
+              </p>
+            )}
             {errors.amount && (
               <p className="text-red-500 text-xs mt-1">{errors.amount}</p>
             )}

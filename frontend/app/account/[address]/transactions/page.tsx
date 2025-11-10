@@ -280,12 +280,9 @@ export default function TransactionsPage() {
             <h2 className="font-sans font-medium text-theme-secondary mb-2 transition-colors duration-300">
               {date}
             </h2>
-            <div className="">
-              {txns.map((txInfo, index) => (
-                <div
-                  key={txInfo.transaction.id.toString()}
-                  className={`bg-theme-bg-tertiary border border-theme-border overflow-hidden transition-colors duration-300 ${index === 0 ? 'rounded-t-lg' : ''} ${index === txns.length - 1 ? 'rounded-b-lg' : ''}`}
-                >
+            <div className="space-y-3">
+              {txns.map((txInfo) => (
+                <div key={txInfo.transaction.id.toString()}>
                   <Transaction
                     transactionInfo={txInfo}
                     isExpanded={expandedId === txInfo.transaction.id.toString()}
